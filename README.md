@@ -101,17 +101,6 @@ dart run flutter_launcher_icons
 dart run flutter_native_splash:create
 ```
 
-## Building on Other Platforms
-
-Hero Smith is a Flutter project and is intended to be buildable on multiple platforms (Android, iOS, macOS, Linux, Windows, Web). If you clone this repository, you can generally build and run the app on whatever platforms your development machine supports.
-
-Notes:
-
-- Platform support depends on your OS and installed toolchain (Xcode, Android SDK, Visual Studio build tools, Linux desktop libraries, etc.). These requirements vary by environment and change over time.
-- iOS/macOS builds require a Mac due to Apple tooling.
-- The app relies on bundled assets under `hero_smith/data/` (declared in `pubspec.yaml`), so make sure assets are present when adapting/packaging.
-- If you’re unsure what your machine supports, `flutter doctor` is the best starting point.
-
 ### Database Reset
 
 Delete the local database file or uninstall the app to reset all data.
@@ -151,6 +140,18 @@ flutter build apk --release
 # Build App Bundle (for Play Store)
 flutter build appbundle --release
 ```
+
+## Building on Other Platforms
+
+Hero Smith is a Flutter project and is intended to be buildable on multiple platforms (Android, iOS, macOS, Linux, Windows, Web). If you clone this repository, you can generally build and run the app on whatever platforms your development machine supports.
+
+Notes:
+
+- Platform support depends on your OS and installed toolchain (Xcode, Android SDK, Visual Studio build tools, Linux desktop libraries, etc.). These requirements vary by environment and change over time.
+- iOS/macOS builds require a Mac due to Apple tooling.
+- The app relies on bundled assets under `hero_smith/data/` (declared in `pubspec.yaml`), so make sure assets are present when adapting/packaging.
+- If you’re unsure what your machine supports, `flutter doctor` is the best starting point.
+
 ---
 
 *Hero Smith is a fan-made, independent product published under the DRAW STEEL Creator License and is not affiliated with MCDM Productions, LLC. DRAW STEEL © 2024 MCDM Productions, LLC.*
