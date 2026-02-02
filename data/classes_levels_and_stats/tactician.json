@@ -1,0 +1,192 @@
+{
+  "classId": "class_tactician",
+  "name": "Tactician",
+  "type": "class",
+  "starting_characteristics": {
+    "motto": "“Your line is broken, Varrox! Your wizard is dead. Hahah! You should have negotiated!” — Sir John of Tor",
+    "heroicResourceName": "Focus",
+    "baseStamina": 21,
+    "stamina_per_level": 9,
+    "baseRecoveries": 10,
+    "baseSpeed": 5,
+    "baseStability": 0,
+    "baseDisengage": 1,
+
+    "potency_progression": {
+      "characteristic": "Reason",
+      "modifiers": {
+        "weak": -2,
+        "average": -1,
+        "strong": 0
+      }
+    },
+
+    "starting_skills": {
+      "granted_skills": ["Lead"],
+      "skill_groups": [
+        "Exploration",
+        {
+          "individual_skill_choices": [
+            "Alertness",
+            "Architecture",
+            "Blacksmithing",
+            "Brag",
+            "Culture",
+            "Empathize",
+            "Fletching",
+            "Mechanics",
+            "Monsters",
+            "Search",
+            "Strategy"
+          ]
+        }
+      ],
+      "skill_count": 2,
+      "quick_build": ["Lead", "Monsters", "Strategy"]
+    },
+    "fixed_starting_characteristics": { "might": 2, "reason": 2 },
+    "starting_characteristics_arrays": [
+      {
+        "values": [2, -1, -1]
+      },
+      { "values": [1, 1, -1] },
+      { "values": [1, 0, 0] }
+    ]
+  },
+  "levels": [
+    {
+      "level": 1,
+      "features": [
+        {
+          "name": "Tactical Doctrine",
+
+          "grant_type": "pick",
+          "type": "class_subclass"
+        },
+        { "name": "Focus", "grant_type": "granted" },
+        {
+          "name": "Doctrine Feature",
+          "grant_type": "granted",
+          "type": "subclass"
+        },
+        {
+          "name": "Doctrine Triggered Action",
+          "grant_type": "granted",
+          "type": "subclass"
+        },
+        { "name": "Mark", "grant_type": "ability" },
+        { "name": "Strike Now", "grant_type": "ability" },
+        { "name": "Field Arsenal", "grant_type": "granted" },
+        { "name": "Kit", "grant_type": "pick", "count": 2 }
+      ],
+      "new_abilities": { "3_cost": 1, "5_cost": 1 }
+    },
+    {
+      "level": 2,
+      "features": [
+        {
+          "name": "Doctrine Feature",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "perks": [
+        {
+          "count": 1,
+          "perk_groups": ["interpersonal", "intrigue", "exploration"]
+        }
+      ],
+      "new_subclass_abilities": { "5_cost": 1 }
+    },
+    {
+      "level": 3,
+      "features": [{ "name": "Out of Position", "grant_type": "granted" }],
+      "new_abilities": { "7_cost": 1 }
+    },
+    {
+      "level": 4,
+      "features": [
+        { "name": "Focus on Their Weakness", "grant_type": "granted" },
+        { "name": "Improved Field Arsenal", "grant_type": "granted" }
+      ],
+      "perks": [{ "count": 1 }],
+      "skills": [{ "count": 1 }],
+      "characteristics": [
+        { "Might": { "setTo": 3 } },
+        { "Reason": { "setTo": 3 } }
+      ]
+    },
+    {
+      "level": 5,
+      "features": [
+        {
+          "name": "Doctrine Feature",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "new_abilities": { "9_cost": 1 }
+    },
+    {
+      "level": 6,
+      "features": [{ "name": "Master of Arms", "grant_type": "granted" }],
+      "perks": [
+        {
+          "count": 1,
+          "perk_groups": ["interpersonal", "intrigue", "exploration"]
+        }
+      ],
+      "new_subclass_abilities": { "9_cost": 1 }
+    },
+    {
+      "level": 7,
+      "features": [
+        { "name": "Heightened Focus", "grant_type": "granted" },
+        { "name": "Seize the Initiative", "grant_type": "granted" },
+        {
+          "name": "Doctrine Feature",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "skills": [{ "count": 1 }],
+      "characteristics": [{ "All": { "increaseBy": 1, "max": 4 } }]
+    },
+    {
+      "level": 8,
+      "features": [
+        {
+          "name": "Doctrine Feature",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "perks": [{ "count": 1 }],
+      "new_abilities": { "11_cost": 1 }
+    },
+    {
+      "level": 9,
+      "features": [{ "name": "Grandmaster of Arms", "grant_type": "granted" }],
+      "new_subclass_abilities": { "11_cost": 1 }
+    },
+    {
+      "level": 10,
+      "features": [
+        { "name": "Command", "grant_type": "granted" },
+        { "name": "True Focus", "grant_type": "granted" },
+        { "name": "Warmaster", "grant_type": "granted" }
+      ],
+      "perks": [
+        {
+          "count": 1,
+          "perk_groups": ["interpersonal", "intrigue", "exploration"]
+        }
+      ],
+      "skills": [{ "count": 1 }],
+      "characteristics": [
+        { "Might": { "setTo": 5 } },
+        { "Reason": { "setTo": 5 } }
+      ]
+    }
+  ]
+}

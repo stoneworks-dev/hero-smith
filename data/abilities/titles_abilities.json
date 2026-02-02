@@ -1,0 +1,273 @@
+[
+  {
+    "type": "ability",
+    "id": "come_out_to_play",
+    "name": "Come Out to Play",
+    "costs": {
+      "resource": "any type",
+      "amount": 1
+    },
+    "story_text": "Come out to play-yay!",
+    "keywords": ["Area", "Magic"],
+    "action_type": "Maneuver",
+    "range": {
+      "distance": null,
+      "area": "5 burst"
+    },
+    "targets": "Each enemy in the area hidden to you",
+    "effect": "Each target who has P<average is taunted by you until the end of their next turn, and you know the location of each creature taunted in this way."
+  },
+  {
+    "type": "ability",
+    "id": "holy_terror",
+    "name": "Holy Terror",
+    "costs": {
+      "resource": "any type",
+      "amount": 3
+    },
+    "story_text": "Return to your grave!",
+    "keywords": ["Area", "Magic"],
+    "action_type": "Maneuver",
+    "range": {
+      "distance": null,
+      "area": "3 burst"
+    },
+    "targets": "Each undead enemy in the area",
+    "effect": "Each target takes holy damage equal to your Reason, Intuition, or Presence score (your choice). Additionally, each target who has P<strong is frightened (save ends)."
+  },
+  {
+    "type": "ability",
+    "id": "showstopper",
+    "name": "Showstopper",
+    "costs": { "resource": "heroic_resource", "amount": 5 },
+    "story_text": "Show’s over, kids!",
+    "keywords": ["Melee", "Strike", "Weapon"],
+    "action_type": "Main action",
+    "range": { "distance": "Melee 1", "area": null },
+    "targets": "One creature",
+    "power_roll": {
+      "label": "Power roll",
+      "characteristics": ["Might", "Agility"],
+      "tiers": {
+        "low": {
+          "damage_expression": null,
+          "base_damage_value": 6,
+          "characteristic_damage_options": ["Might", "Agility"],
+          "damage_types": null,
+          "secondary_damage_expression": null,
+          "descriptive_text": "slowed (save ends)",
+          "potencies": [],
+          "conditions": ["slowed"],
+          "all_text": "6 + M or A damage; slowed (save ends)"
+        },
+        "mid": {
+          "damage_expression": null,
+          "base_damage_value": 10,
+          "characteristic_damage_options": ["Might", "Agility"],
+          "damage_types": null,
+          "secondary_damage_expression": null,
+          "descriptive_text": "frightened (save ends)",
+          "potencies": [],
+          "conditions": ["frightened"],
+          "all_text": "10 + M or A damage; frightened (save ends)"
+        },
+        "high": {
+          "damage_expression": null,
+          "base_damage_value": 14,
+          "characteristic_damage_options": ["Might", "Agility"],
+          "damage_types": null,
+          "secondary_damage_expression": null,
+          "descriptive_text": "dazed (save ends)",
+          "potencies": [],
+          "conditions": ["dazed"],
+          "all_text": "14 + M or A damage; dazed (save ends)"
+        }
+      }
+    },
+    "effect": "If you kill a non-minion opponent using this ability, each enemy within 3 squares of you is frightened (save ends).",
+    "special_effect": null
+  },
+  {
+    "type": "ability",
+    "id": "charge",
+    "name": "Charge!",
+    "costs": { "resource": "heroic_resource", "amount": 9 },
+    "story_text": "Follow me!",
+    "keywords": ["Area"],
+    "action_type": "Main action",
+    "range": { "distance": null, "area": "3 burst" },
+    "targets": "Self and each ally in the area",
+    "effect": "Each target can use the Charge main action.",
+    "special_effect": null
+  },
+  {
+    "type": "ability",
+    "id": "the_harder_they_fall",
+    "name": "The Harder They Fall",
+    "costs": { "resource": "heroic_resource", "amount": 7 },
+    "story_text": "Timber!",
+    "keywords": ["Melee", "Strike", "Weapon"],
+    "action_type": "Action",
+    "range": { "distance": "Melee 1", "area": null },
+    "targets": "One creature",
+    "power_roll": {
+      "label": "Power roll",
+      "characteristics": ["Might", "Agility"],
+      "tiers": {
+        "low": {
+          "damage_expression": null,
+          "base_damage_value": 7,
+          "characteristic_damage_options": ["Might", "Agility"],
+          "damage_types": null,
+          "secondary_damage_expression": null,
+          "descriptive_text": "prone (save ends); target can’t stand (save ends)",
+          "potencies": [],
+          "conditions": ["prone"],
+          "all_text": "7 + M or A damage; prone (save ends); can’t stand (save ends)"
+        },
+        "mid": {
+          "damage_expression": null,
+          "base_damage_value": 11,
+          "characteristic_damage_options": ["Might", "Agility"],
+          "damage_types": null,
+          "secondary_damage_expression": null,
+          "descriptive_text": "prone (save ends); target can’t stand (save ends)",
+          "potencies": [],
+          "conditions": ["prone"],
+          "all_text": "11 + M or A damage; prone (save ends); can’t stand (save ends)"
+        },
+        "high": {
+          "damage_expression": null,
+          "base_damage_value": 16,
+          "characteristic_damage_options": ["Might", "Agility"],
+          "damage_types": null,
+          "secondary_damage_expression": null,
+          "descriptive_text": "prone (save ends); target can’t stand (save ends)",
+          "potencies": [],
+          "conditions": ["prone"],
+          "all_text": "16 + M or A damage; prone (save ends); can’t stand (save ends)"
+        }
+      }
+    },
+    "effect": null,
+    "special_effect": "If the target is size 2 or larger, you gain an edge on this ability."
+  },
+  {
+    "type": "ability",
+    "id": "timely_distraction",
+    "name": "Timely Distraction",
+    "costs": { "resource": null, "amount": null },
+    "story_text": "Coming through with hot soup! I better watch out for that banana peel!",
+    "keywords": ["Ranged"],
+    "action_type": "triggered action",
+    "range": { "distance": "Ranged 10", "area": null },
+    "targets": "One creature",
+    "trigger_text": "Trigger: An ally makes a test to lie to, pick the pocket of, hide from, or sneak by the target and doesn’t like the outcome.",
+    "effect": "An ally makes a test to lie, pick pockets, hide from, or sneak by the target and doesn’t like the outcome; the ally rerolls the test. Once used on a target, you can’t use it again on the same target for 1 hour.",
+    "special_effect": null
+  },
+  {
+    "type": "ability",
+    "id": "knightly_challenge",
+    "name": "Knightly Challenge",
+    "costs": { "resource": "heroic_resource", "amount": 5 },
+    "story_text": "Have at thee!",
+    "keywords": ["Melee", "Strike", "Weapon"],
+    "action_type": "Main action",
+    "range": { "distance": "Melee 1", "area": null },
+    "targets": "One creature",
+    "power_roll": {
+      "label": "Power roll",
+      "characteristics": ["Might", "Agility"],
+      "tiers": {
+        "low": {
+          "damage_expression": null,
+          "base_damage_value": 7,
+          "characteristic_damage_options": ["Might", "Agility"],
+          "damage_types": null,
+          "secondary_damage_expression": null,
+          "descriptive_text": "taunted (save ends)",
+          "potencies": [],
+          "conditions": ["taunted"],
+          "all_text": "7 + M or A damage; taunted (save ends)"
+        },
+        "mid": {
+          "damage_expression": null,
+          "base_damage_value": 11,
+          "characteristic_damage_options": ["Might", "Agility"],
+          "damage_types": null,
+          "secondary_damage_expression": null,
+          "descriptive_text": "taunted (save ends)",
+          "potencies": [],
+          "conditions": ["taunted"],
+          "all_text": "11 + M or A damage; taunted (save ends)"
+        },
+        "high": {
+          "damage_expression": null,
+          "base_damage_value": 16,
+          "characteristic_damage_options": ["Might", "Agility"],
+          "damage_types": null,
+          "secondary_damage_expression": null,
+          "descriptive_text": "taunted (save ends)",
+          "potencies": [],
+          "conditions": ["taunted"],
+          "all_text": "16 + M or A damage; taunted (save ends)"
+        }
+      }
+    },
+    "effect": "You can end the taunted condition on the target as a free maneuver.",
+    "special_effect": null
+  },
+  {
+    "type": "ability",
+    "id": "the_devils_chord",
+    "name": "The Devil’s Chord",
+    "costs": { "resource": "heroic_resource", "amount": 9 },
+    "story_text": "Helloooo Orden!",
+    "keywords": ["Area", "Magic"],
+    "action_type": "Main action",
+    "range": { "distance": null, "area": "5 burst" },
+    "targets": "Each creature in the area",
+    "power_roll": {
+      "label": "Power roll",
+      "characteristics": ["Presence"],
+      "tiers": {
+        "low": {
+          "damage_expression": null,
+          "base_damage_value": 6,
+          "characteristic_damage_options": ["Presence"],
+          "damage_types": ["sonic"],
+          "secondary_damage_expression": null,
+          "descriptive_text": "weakened (save ends)",
+          "potencies": [],
+          "conditions": ["weakened"],
+          "all_text": "6 + P sonic damage; weakened (save ends)"
+        },
+        "mid": {
+          "damage_expression": null,
+          "base_damage_value": 10,
+          "characteristic_damage_options": ["Presence"],
+          "damage_types": ["sonic"],
+          "secondary_damage_expression": null,
+          "descriptive_text": "weakened and bleeding (save ends)",
+          "potencies": [],
+          "conditions": ["weakened", "bleeding"],
+          "all_text": "10 + P sonic damage; weakened and bleeding (save ends)"
+        },
+        "high": {
+          "damage_expression": null,
+          "base_damage_value": 10,
+          "characteristic_damage_options": ["Presence"],
+          "damage_types": ["sonic"],
+          "secondary_damage_expression": null,
+          "descriptive_text": "weakened and bleeding (save ends)",
+          "potencies": [],
+          "conditions": ["weakened", "bleeding"],
+          "all_text": "10 + P sonic damage; weakened and bleeding (save ends)"
+        }
+      }
+    },
+    "effect": "The soul of any creature killed by this ability is dragged to Hell.",
+    "special_effect": "On low tier you take 4 sonic damage unless you have the Performance skill."
+  }
+]

@@ -1,0 +1,89 @@
+[
+  {
+    "id": "prayer_of_destruction",
+    "type": "prayer",
+    "name": "Prayer of Destruction",
+    "description": "Your god infuses wrath within your being. You gain a +1 bonus to rolled damage with magic abilities.",
+    "keywords": ["Magic"],
+    "bonus_damage": 1
+  },
+  {
+    "id": "prayer_of_distance",
+    "type": "prayer",
+    "name": "Prayer of Distance",
+    "description": "Your god blesses you with the ability to stretch your divine magic farther. You have a +2 bonus to the distance of your ranged magic abilities.",
+    "keywords": ["Ranged", "Magic"],
+    "ranged_distance_bonus": {
+      "1st_echelon": 2,
+      "2nd_echelon": 2,
+      "3rd_echelon": 2
+    }
+  },
+  {
+    "id": "prayer_OF_soldier_skill",
+    "type": "prayer",
+    "name": "Prayer of Soldier's Skill",
+    "description": "Your god gives your mind the training of a soldier. You can wear light armor and wield light weapons effectively, even though you don't have a kit. While you wear light armor, you gain a +3 bonus to Stamina, and that bonus increases by 3 at 4th, 7th, and 10th levels. While you wield a light weapon, you gain a +1 damage bonus with weapon abilities, including free strikes. You can use light armor treasures and light weapon treasures. If you have a kit, you can't take this blessing.",
+    "equipment_description": "You can wear light armor and wield light weapons effectively, even though you don’t have a kit.",
+    "equipment": {
+      "armor": {
+        "none": false,
+        "light": true,
+        "medium": false,
+        "heavy": false,
+        "shield": false
+      },
+      "weapons": {
+        "bow": false,
+        "ensnaring_weapon": false,
+        "light": true,
+        "medium": false,
+        "heavy": false,
+        "polearm": false,
+        "unarmed_strikes": false,
+        "whip": false
+      }
+    },
+    "stamina_bonus": 3,
+    "speed_bonus": null,
+    "stability_bonus": null,
+    "melee_damage_bonus": {
+      "1st_tier": 1,
+      "2nd_tier": 1,
+      "3rd_tier": 1
+    },
+    "ranged_damage_bonus": {
+      "1st_tier": null,
+      "2nd_tier": null,
+      "3rd_tier": null
+    },
+    "melee_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "ranged_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "disengage_bonus": null,
+    "incompatible_with_kit": true
+  },
+  {
+    "id": "prayer_of_speed",
+    "type": "prayer",
+    "name": "Prayer of Speed",
+    "description": "Your god blesses your flesh and infuses it with divine quickness. You gain a +1 bonus to speed and to the distance you can shift when you take the Disengage move action.",
+    "speed_bonus": 1,
+    "disengage_bonus": 1
+  },
+  {
+    "id": "prayer_of_steel",
+    "type": "prayer",
+    "name": "Prayer of Steel",
+    "description": "Your god fills your body with the light of creation, making you harder to hurt and move. You gain a +6 bonus to Stamina, and this bonus increases by 6 at 4th, 7th, and 10th levels. Additionally, you gain a +1 bonus to stability.",
+    "stamina_bonus": 6,
+    "stability_bonus": 1
+  }
+]

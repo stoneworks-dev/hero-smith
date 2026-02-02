@@ -1,0 +1,24 @@
+{
+  "type": "ability",
+  "id": "test_id",
+  "name": "test_name",
+  "level": "Some integer value 1-10",
+  "resource": "Wrath/Piety/Essence/Ferocity/Discipline/Insight/Focus/Clarity/Drama/Signature",
+  "resource_value": "1/2/3/5/7/9/11",
+  "story_text": "test_story_text",
+  "keywords": "Area/Charge/Magic/Melee/Psionic/Ranged/Strike/Weapon",
+  "action_type": "main action/maneuver/move action/triggered action/free maneuver/free triggered action",
+  "trigger_text": "If the action is a triggered action or free triggered action, this field contains the trigger condition.",
+  "distance": "Melee/Ranged/Melee or Ranged/Self, Aura/Burst/Cube/Line/Wall + *integer value or text*",
+  "targets": "Creature/Object/Enemy/Ally/Self/Each [Target]",
+  "power_roll": "Power Roll + Might(M/m)/Agility(A/a)/Reason(R/r)/Intuition(I/i)/Presence(P/p)",
+  "tier_effects": [
+    {
+      "tier1": "Some effect description for tier 1",
+      "tier2": "Some effect description for tier 2",
+      "tier3": "Some effect description for tier 3"
+    }
+  ],
+  "effect": "test_effect",
+  "special_effect": "*This field is filled when the ability has a special effect that costs resources or needs some conditions to be met.*"
+}

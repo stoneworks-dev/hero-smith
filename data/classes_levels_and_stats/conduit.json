@@ -1,0 +1,213 @@
+{
+  "classId": "class_conduit",
+  "name": "Conduit",
+  "type": "class",
+  "starting_characteristics": {
+    "motto": "The gods judge our actions, and our inaction. - Dazar",
+    "heroicResourceName": "Piety",
+    "baseStamina": 18,
+    "stamina_per_level": 6,
+    "baseRecoveries": 8,
+    "baseSpeed": 5,
+    "baseStability": 0,
+    "baseDisengage": 1,
+
+    "potency_progression": {
+      "characteristic": "Intuition",
+      "modifiers": {
+        "weak": -2,
+        "average": -1,
+        "strong": 0
+      }
+    },
+
+    "starting_skills": {
+      "skill_groups": ["interpersonal", "lore"],
+      "skill_count": 2,
+      "quick_build": ["Read Person", "Religion"]
+    },
+    "fixed_starting_characteristics": {
+      "intuition": 2
+    },
+    "starting_characteristics_arrays": [
+      {
+        "values": [2, 2, -1, -1]
+      },
+      {
+        "values": [2, 1, 1, -1]
+      },
+      {
+        "values": [2, 1, 0, 0]
+      },
+      {
+        "values": [1, 1, 1, 0]
+      }
+    ]
+  },
+  "levels": [
+    {
+      "level": 1,
+      "features": [
+        {
+          "name": "Deity and Domains",
+          "type": "subclass",
+          "deity": 1,
+          "domain": 2
+        },
+        { "name": "Piety", "grant_type": "granted" },
+        {
+          "name": "Domain Feature",
+          "grant_type": "pick",
+          "count": 1,
+          "type": "class_subclass"
+        },
+        {
+          "name": "Domain Piety and Effects",
+          "grant_type": "granted",
+          "type": "subclass"
+        },
+        { "name": "Healing Grace", "grant_type": "ability" },
+        { "name": "Ray of Wrath", "grant_type": "ability" },
+        { "name": "Triggered Action", "grant_type": "pick", "count": 1 },
+        { "name": "Prayer", "grant_type": "pick", "count": 1 },
+        { "name": "Conduit Ward", "grant_type": "pick", "count": 1 }
+      ],
+      "new_abilities": {
+        "signature": 2,
+        "3_cost": 1,
+        "5_cost": 1
+      }
+    },
+    {
+      "level": 2,
+      "features": [
+        { "name": "The Lists of Heaven", "grant_type": "ability" },
+        {
+          "name": "Domain Feature",
+          "grant_type": "pick",
+          "count": 1,
+          "type": "subclass"
+        }
+      ],
+      "perks": [
+        {
+          "count": 1,
+          "perk_groups": ["crafting", "lore", "supernatural"]
+        }
+      ],
+      "new_subclass_abilities": {
+        "5_cost": 1
+      }
+    },
+    {
+      "level": 3,
+      "features": ["Minor Miracle"],
+      "new_abilities": {
+        "7_cost": 1
+      }
+    },
+    {
+      "level": 4,
+      "features": [
+        { "name": "Blessed Domain", "grant_type": "granted" },
+        {
+          "name": "Domain Feature",
+          "grant_type": "pick",
+          "count": 1,
+          "type": "subclass"
+        }
+      ],
+      "perks": [{ "count": 1 }],
+      "skills": [{ "count": 1 }],
+      "characteristics": [
+        { "Intuition": { "setTo": 3 } },
+        { "Any": { "increaseBy": 1, "max": 3 } }
+      ]
+    },
+    {
+      "level": 5,
+      "features": [
+        {
+          "name": "Domain Feature",
+          "grant_type": "pick",
+          "count": 1,
+          "type": "subclass"
+        }
+      ],
+      "new_abilities": {
+        "9_cost": 1
+      }
+    },
+    {
+      "level": 6,
+      "features": [{ "name": "Burgeoning Saint", "grant_type": "granted" }],
+      "perks": [
+        {
+          "count": 1,
+          "perk_groups": ["crafting", "lore", "supernatural"]
+        }
+      ],
+      "new_subclass_abilities": {
+        "9_cost": 1
+      }
+    },
+    {
+      "level": 7,
+      "features": [
+        { "name": "Faithful's Reward", "grant_type": "granted" },
+        {
+          "name": "Domain Feature",
+          "grant_type": "pick",
+          "count": 1,
+          "type": "subclass"
+        }
+      ],
+      "skills": [{ "count": 1 }],
+      "characteristics": [{ "All": { "increaseBy": 1, "max": 4 } }]
+    },
+    {
+      "level": 8,
+      "features": [
+        {
+          "name": "Domain Feature",
+          "grant_type": "pick",
+          "count": 1,
+          "type": "subclass"
+        }
+      ],
+      "perks": [{ "count": 1 }],
+      "new_abilities": {
+        "11_cost": 1
+      }
+    },
+    {
+      "level": 9,
+      "features": [
+        { "name": "Faith's Sword", "grant_type": "granted" },
+        { "name": "Ordained", "grant_type": "granted" }
+      ],
+      "new_subclass_abilities": {
+        "11_cost": 1
+      }
+    },
+    {
+      "level": 10,
+      "features": [
+        { "name": "Avatar", "grant_type": "granted" },
+        { "name": "Divine Power", "grant_type": "granted" },
+        { "name": "Most Pious", "grant_type": "granted" }
+      ],
+      "perks": [
+        {
+          "count": 1,
+          "restrictions": ["crafting", "lore", "supernatural"]
+        }
+      ],
+      "skills": [{ "count": 1 }],
+      "characteristics": [
+        { "Intuition": { "setTo": 5 } },
+        { "Any": { "increaseBy": 1, "max": 5 } }
+      ]
+    }
+  ]
+}

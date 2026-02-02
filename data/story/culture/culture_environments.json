@@ -1,0 +1,42 @@
+[
+  {
+    "id": "culture_environment_wilderness",
+    "type": "culture_environment",
+    "name": "Wilderness",
+    "description": "A wilderness culture doesn't try to tame the terrain in which its people live, whether desert, forest, swamp, tundra, ocean, or more exotic climes.",
+    "skillGroups": ["crafting", "exploration"],
+    "skillDescription": "One skill from the crafting or exploration skill groups"
+  },
+  {
+    "id": "culture_environment_urban",
+    "type": "culture_environment",
+    "name": "Urban",
+    "description": "An urban culture is always centered in a city.",
+    "skillGroups": ["interpersonal", "intrigue"],
+    "skillDescription": "One skill from the interpersonal or intrigue skill groups"
+  },
+  {
+    "id": "culture_environment_secluded",
+    "type": "culture_environment",
+    "name": "Secluded",
+    "description": "A secluded culture is based in one relatively close-quarters structure—a building, a cavern, and so forth—and interacts with other cultures only rarely.",
+    "skillGroups": ["interpersonal", "lore"],
+    "skillDescription": "One skill from the interpersonal or lore skill groups"
+  },
+  {
+    "id": "culture_environment_rural",
+    "type": "culture_environment",
+    "name": "Rural",
+    "description": "A rural culture is one located in a town, village, or smaller settled enclave.",
+    "skillGroups": ["crafting", "lore"],
+    "skillDescription": "One skill from the crafting or lore skill groups"
+  },
+  {
+    "id": "culture_environment_nomadic",
+    "type": "culture_environment",
+    "name": "Nomadic",
+    "description": "A nomadic culture travels from place to place to survive.",
+    "skillGroups": ["exploration", "interpersonal"],
+    "skillDescription": "One skill from the exploration or interpersonal skill groups"
+  }
+]

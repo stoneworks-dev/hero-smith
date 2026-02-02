@@ -1,0 +1,1088 @@
+[
+  {
+    "type": "ability",
+    "id": "a-squad-unto-myself-5-discipline",
+    "name": "A Squad Unto Myself",
+    "level": 1,
+    "resource": "Discipline",
+    "resource_value": 5,
+    "story_text": "You move so quickly, it seems as though an army assaulted your foes.",
+    "keywords": "Area/Psionic/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "2 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "6 damage",
+        "tier2": "9 damage",
+        "tier3": "13 damage"
+      }
+    ],
+    "effect": "You can take the Disengage move action as a free maneuver before or after you use this ability.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "arcane-disruptor-5-discipline",
+    "name": "Arcane Disruptor",
+    "level": 1,
+    "resource": "Discipline",
+    "resource_value": 5,
+    "story_text": "Your blow reorders a foe's body, causing pain if they attempt to channel sorcery.",
+    "keywords": "Melee/Psionic/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "8 + A psychic damage; M < WEAK, weakened (save ends)",
+        "tier2": "12 + A psychic damage; M < AVERAGE, weakened (save ends)",
+        "tier3": "16 + A psychic damage; M < STRONG, weakened (save ends)"
+      }
+    ],
+    "effect": "While weakened this way, the target takes damage equal to your Intuition score whenever they use a supernatural ability that costs Malice.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "chronal-spike-3-discipline",
+    "name": "Chronal Spike",
+    "level": 1,
+    "resource": "Discipline",
+    "resource_value": 3,
+    "story_text": "You foresee the best moment to strike, then exploit it.",
+    "keywords": "Melee/Psionic/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "7 + A damage",
+        "tier2": "10 + A damage",
+        "tier3": "13 + A damage"
+      }
+    ],
+    "effect": "You can shift up to half your speed before or after you make this strike. Additionally, whenever an effect lets you make a free strike or use a signature ability, you can use this ability instead, paying its discipline cost as usual.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "dance-of-blows",
+    "name": "Dance of Blows",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "You strike everywhere at once, tricking an enemy into moving out of position.",
+    "keywords": "Area/Psionic/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "1 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "3 damage",
+        "tier2": "4 damage",
+        "tier3": "5 damage"
+      }
+    ],
+    "effect": "You can slide one adjacent enemy up to a number of squares equal to your Intuition score.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "faster-than-the-eye",
+    "name": "Faster Than the Eye",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "You strike so quickly that your hands become a blur.",
+    "keywords": "Melee/Psionic/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "Two creatures or objects",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "4 damage",
+        "tier2": "5 damage",
+        "tier3": "7 damage"
+      }
+    ],
+    "effect": "You can deal damage equal to your Agility score to one creature or object adjacent to you.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "impart-force-5-discipline",
+    "name": "Impart Force",
+    "level": 1,
+    "resource": "Discipline",
+    "resource_value": 5,
+    "story_text": "A single touch from you, and your enemy flies backward.",
+    "keywords": "Melee/Psionic/Strike/Weapon",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Intuition",
+    "tier_effects": [
+      {
+        "tier1": "Push 3",
+        "tier2": "Push 5",
+        "tier3": "Push 7"
+      }
+    ],
+    "effect": "An object you target must be your size or smaller. You gain an edge on this ability. Additionally, for each square you push the target, they take 1 psychic damage.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "inertial-shield",
+    "name": "Inertial Shield",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "You intuit the course of an incoming attack, reducing its effects.",
+    "keywords": "Psionic",
+    "action_type": "triggered action",
+    "trigger_text": "You take damage.",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You take half the damage.\n\nThe potency of one effect associated with the damage is reduced by 1 for you.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "inertial-step",
+    "name": "Inertial Step",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "You flit about the battlefield and take an opportunistic strike.",
+    "keywords": "Melee/Psionic/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "5 + A damage",
+        "tier2": "7 + A damage",
+        "tier3": "10 + A damage"
+      }
+    ],
+    "effect": "You can shift up to half your speed before or after you make this strike.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "joint-lock",
+    "name": "Joint Lock",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "You contort your enemy's body into a stance they struggle to escape from.",
+    "keywords": "Melee/Psionic/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "4 + A damage; A < WEAK, grabbed",
+        "tier2": "7 + A damage; A < AVERAGE, grabbed",
+        "tier3": "9 + A damage; A < STRONG, grabbed"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "kinetic-strike",
+    "name": "Kinetic Strike",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "Your opponent staggers. They cannot ignore you.",
+    "keywords": "Melee/Psionic/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "4 + A damage; taunted (EoT)",
+        "tier2": "5 + A damage; taunted (EoT), slide 1",
+        "tier3": "6 + A damage; taunted (EoT), slide 2"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "magnetic-strike",
+    "name": "Magnetic Strike",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "The force of your blow extends past the limits of your body, pulling your enemy closer.",
+    "keywords": "Melee/Psionic/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 2",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "5 + A psychic damage; vertical pull 1",
+        "tier2": "8 + A psychic damage; vertical pull 2",
+        "tier3": "11 + A psychic damage; vertical pull 3"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "null-field",
+    "name": "Null Field",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "You project an aura that dampens the power of your foes.",
+    "keywords": "Area/Psionic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "1 aura",
+    "targets": "Each enemy in the area",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Each target reduces their potencies by 1.\nOnce as a free maneuver on each of your turns, you can spend 1 discipline and give your Null Field one of the following additional effects until the start of your next turn:\n- Gravitic Disruption: The first time on a turn that a target takes damage, you can slide them up to 2 squares.\n- Inertial Anchor: Any target who starts their turn in the area can't shift.\n- Synaptic Break: Whenever you or any ally uses an ability against a target that has a potency effect, the potency is increased by 1.\nThis ability remains active even after an encounter ends. It ends only if you are dying or if you willingly end it (no action required).",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "phase-inversion-strike",
+    "name": "Phase Inversion Strike",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "You step momentarily out of phase as you pull an enemy through you.",
+    "keywords": "Melee/Psionic/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "4 + A damage; push 2",
+        "tier2": "6 + A damage; push 4",
+        "tier3": "8 + A damage; push 6"
+      }
+    ],
+    "effect": "Before the push is resolved, you teleport the target to a square adjacent to you and opposite the one they started in. If the target can't be teleported this way, you can't push them.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "phase-strike-5-discipline",
+    "name": "Phase Strike",
+    "level": 1,
+    "resource": "Discipline",
+    "resource_value": 5,
+    "story_text": "For a moment, your foe slips out of phase with this manifold.",
+    "keywords": "Melee/Psionic/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "3 + A psychic damage; I < WEAK, the target goes out of phase (save ends)",
+        "tier2": "4 + A psychic damage; I < AVERAGE, the target goes out of phase (save ends)",
+        "tier3": "6 + A psychic damage; I < STRONG, the target goes out of phase (save ends)"
+      }
+    ],
+    "effect": "A target who goes out of phase is slowed, has their stability reduced by 2, and can't obtain a tier 3 outcome on ability rolls.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "pressure-points",
+    "name": "Pressure Points",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "You strike at key nerve clusters to leave your foe staggered.",
+    "keywords": "Melee/Psionic/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "4 + A damage; A < WEAK, weakened (save ends)",
+        "tier2": "7 + A damage; A < AVERAGE, weakened (save ends)",
+        "tier3": "9 + A damage; A < STRONG, weakened (save ends)"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "psychic-pulse-3-discipline",
+    "name": "Psychic Pulse",
+    "level": 1,
+    "resource": "Discipline",
+    "resource_value": 3,
+    "story_text": "A burst of psionic energy interferes with your enemy's synapses.",
+    "keywords": "Area/Psionic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "2 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Each target takes psychic damage equal to twice your Intuition score. Until the start of your next turn, the size of your Null Field ability increases by 1. At the end of your current turn, each enemy in the area of your Null Field ability takes psychic damage equal to your Intuition score.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "relentless-nemesis-3-discipline",
+    "name": "Relentless Nemesis",
+    "level": 1,
+    "resource": "Discipline",
+    "resource_value": 3,
+    "story_text": "You strike, and for the next few moments, your enemy can't escape you.",
+    "keywords": "Melee/Psionic/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "6 + A damage",
+        "tier2": "8 + A damage",
+        "tier3": "12 + A damage"
+      }
+    ],
+    "effect": "Until the start of your next turn, whenever the target moves or is force moved, you can use a free triggered action to shift up to your speed. You must end this shift adjacent to the target.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "stunning-blow-3-discipline",
+    "name": "Stunning Blow",
+    "level": 1,
+    "resource": "Discipline",
+    "resource_value": 3,
+    "story_text": "You focus your psionic technique into a concussive punch.",
+    "keywords": "Melee/Psionic/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "4 + A damage; I < WEAK, dazed and slowed (save ends)",
+        "tier2": "5 + A damage; I < AVERAGE, dazed and slowed (save ends)",
+        "tier3": "7 + A damage; I < STRONG, dazed and slowed (save ends)"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "blur-5-discipline",
+    "name": "Blur",
+    "level": 2,
+    "subclass": "Chronokinetic",
+    "resource": "Discipline",
+    "resource_value": 5,
+    "story_text": "You release stored time, allowing you to act twice.",
+    "keywords": "Psionic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You can use a signature or heroic ability. You gain an edge on that ability's power rolls.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "entropic-field-5-discipline",
+    "name": "Entropic Field",
+    "level": 2,
+    "subclass": "Cryokinetic",
+    "resource": "Discipline",
+    "resource_value": 5,
+    "story_text": "You drastically increase the local entropy.",
+    "keywords": "Area/Psionic/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 cube within 1",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "6 cold damage; A < WEAK, slowed (save ends)",
+        "tier2": "9 cold damage; A < AVERAGE, slowed (save ends)",
+        "tier3": "13 cold damage; A < STRONG, slowed (save ends)"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "force-redirected-5-discipline",
+    "name": "Force Redirected",
+    "level": 2,
+    "subclass": "Chronokinetic",
+    "resource": "Discipline",
+    "resource_value": 5,
+    "story_text": "The force of your strike moves your target in a surprising direction.",
+    "keywords": "Melee/Psionic/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 3",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "8 + A damage; slide 1",
+        "tier2": "12 + A damage; slide 3",
+        "tier3": "16 + A damage; slide 5"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "gravitic-strike-5-discipline",
+    "name": "Gravitic Strike",
+    "level": 2,
+    "subclass": "Metakinetic",
+    "resource": "Discipline",
+    "resource_value": 5,
+    "story_text": "Your fist emanates gravitic force that pulls a distant enemy closer.",
+    "keywords": "Melee/Psionic/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 3",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "8 + A psychic damage; vertical pull 3",
+        "tier2": "12 + A psychic damage; vertical pull 5",
+        "tier3": "16 + A psychic damage; vertical pull 7"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "heat-sink-5-discipline",
+    "name": "Heat Sink",
+    "level": 2,
+    "subclass": "Cryokinetic",
+    "resource": "Discipline",
+    "resource_value": 5,
+    "story_text": "You absorb ambient heat, coating the ground in frost and precipitating snow from the air.",
+    "keywords": "Psionic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Until the start of your next turn, the size of your Null Field ability increases by 1, and you and any ally benefit from concealment while in the area. At the end of this turn, each enemy in the area takes cold damage equal to your Intuition score.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "kinetic-shield-5-discipline",
+    "name": "Kinetic Shield",
+    "level": 2,
+    "subclass": "Metakinetic",
+    "resource": "Discipline",
+    "resource_value": 5,
+    "story_text": "You manifest a force barrier that absorbs incoming kinetic energy.",
+    "keywords": "Psionic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "Power Roll + Intuition",
+    "tier_effects": [
+      {
+        "tier1": "You gain 10 temporary Stamina.",
+        "tier2": "You gain 15 temporary Stamina.",
+        "tier3": "You gain 20 temporary Stamina."
+      }
+    ],
+    "effect": "While you have temporary Stamina from this ability, you can't be made bleeding even while dying.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "absorption-field-7-discipline",
+    "name": "Absorption Field",
+    "level": 3,
+    "resource": "Discipline",
+    "resource_value": 7,
+    "story_text": "Your null field absorbs kinetic energy.",
+    "keywords": "Psionic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Until the end of the encounter, the size of your Null Field ability increases by 1. While the area of that ability is enlarged this way, each enemy in the area takes a bane on ability rolls.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "molecular-rearrangement-field-7-discipline",
+    "name": "Molecular Rearrangement Field",
+    "level": 3,
+    "resource": "Discipline",
+    "resource_value": 7,
+    "story_text": "Your enemies' wounds open, your allies' wounds close.",
+    "keywords": "Psionic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Until the end of the encounter, the size of your Null Field ability increases by 1. While the area of that ability is enlarged this way, each enemy who has I < AVERAGE and enters the area for the first time in a combat round or starts their turn there is bleeding (save ends). Each ally who enters the area for the first time in a combat round or starts their turn there gains temporary Stamina equal to your Intuition score.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "stabilizing-field-7-discipline",
+    "name": "Stabilizing Field",
+    "level": 3,
+    "resource": "Discipline",
+    "resource_value": 7,
+    "story_text": "You project order, making it harder for your enemies to interfere with you and your allies.",
+    "keywords": "Psionic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Until the end of the encounter, the size of your Null Field ability increases by 1. While the area of that ability is enlarged this way, you ignore difficult terrain and reduce the potency of enemy effects targeting you by 1 for you. You can also use a free triggered action at the start of each of your turns to end one effect on you that is ended by a saving throw or that ends at the end of your turn. Each ally in the area also gains these benefits.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "synapse-field-7-discipline",
+    "name": "Synapse Field",
+    "level": 3,
+    "resource": "Discipline",
+    "resource_value": 7,
+    "story_text": "Attacks made by allies in your null field disrupt your enemies' thoughts, causing psychic pain.",
+    "keywords": "Psionic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Until the end of the encounter, the size of your Null Field ability increases by 1. While the area of that ability is enlarged this way, whenever an enemy in the area takes rolled damage, they take extra psychic damage equal to twice your Intuition score.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "anticipating-strike-9-discipline",
+    "name": "Anticipating Strike",
+    "level": 5,
+    "resource": "Discipline",
+    "resource_value": 9,
+    "story_text": "You suddenly strike an enemy, then grab them in a psionically enhanced grip.",
+    "keywords": "Melee/Psionic/Strike/Weapon",
+    "action_type": "free triggered",
+    "trigger_text": "The target moves or uses a main action.",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "7 + A damage; I < WEAK, restrained (save ends)",
+        "tier2": "10 + A damage; I < AVERAGE, restrained (save ends)",
+        "tier3": "13 + A damage; I < STRONG, restrained (save ends)"
+      }
+    ],
+    "effect": "This strike resolves before the triggering movement or main action.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "iron-grip-9-discipline",
+    "name": "Iron Grip",
+    "level": 5,
+    "resource": "Discipline",
+    "resource_value": 9,
+    "story_text": "You grab the target with supernatural force.",
+    "keywords": "Melee/Psionic/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "10 + A damage; A < WEAK, grabbed",
+        "tier2": "14 + A damage; A < AVERAGE, grabbed",
+        "tier3": "18 + A damage; A < STRONG, grabbed"
+      }
+    ],
+    "effect": "While grabbed this way, the target takes a bane on the Escape Grab maneuver. Each time they use that maneuver, they take damage equal to twice your Agility score.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "phase-leap-9-discipline",
+    "name": "Phase Leap",
+    "level": 5,
+    "resource": "Discipline",
+    "resource_value": 9,
+    "story_text": "You leap beyond reality, leaving an afterimage of yourself.",
+    "keywords": "Psionic",
+    "action_type": "move",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You jump up to your speed without provoking opportunity attacks. Until the end of your next turn, a static afterimage of you remains in the space you left, and any enemy adjacent to your afterimage takes a bane on ability rolls. You can use your abilities from your own space or from the space of your afterimage as if you were still there. Additionally, if your Null Field ability is active, your afterimage also projects the aura from that ability, which you control as if you were in the afterimage's space.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "synaptic-reset-9-discipline",
+    "name": "Synaptic Reset",
+    "level": 5,
+    "resource": "Discipline",
+    "resource_value": 9,
+    "story_text": "You expand your nullifying power to mitigate harmful effects.",
+    "keywords": "Area/Psionic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "3 burst",
+    "targets": "Self and each ally in the area",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Each target can end any conditions or effects on themself, and gains 5 temporary Stamina for each condition or effect removed.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "gravitic-charge-9-discipline",
+    "name": "Gravitic Charge",
+    "level": 6,
+    "subclass": "Metakinetic",
+    "resource": "Discipline",
+    "resource_value": 9,
+    "story_text": "You channel your discipline into momentum that defies gravity.",
+    "keywords": "Psionic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "Power Roll + Intuition",
+    "tier_effects": [
+      {
+        "tier1": "Vertical slide 5",
+        "tier2": "Vertical slide 7",
+        "tier3": "Vertical slide 9"
+      }
+    ],
+    "effect": "This movement ignores stability. If you slide into another creature, you resolve damage to both of you as if your force movement had ended, but you keep moving through that creature's space.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "ice-pillars-9-discipline",
+    "name": "Ice Pillars",
+    "level": 6,
+    "subclass": "Cryokinetic",
+    "resource": "Discipline",
+    "resource_value": 9,
+    "story_text": "Pillars of ice erupt from the ground and launch your foes into the air.",
+    "keywords": "Psionic/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Three creatures or objects",
+    "power_roll": "Power Roll + Intuition",
+    "tier_effects": [
+      {
+        "tier1": "Vertical slide 6",
+        "tier2": "Vertical slide 8",
+        "tier3": "Vertical slide 10"
+      }
+    ],
+    "effect": "The pillars vanish as soon as the effects of the forced movement are resolved.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "interphase-9-discipline",
+    "name": "Interphase",
+    "level": 6,
+    "subclass": "Chronokinetic",
+    "resource": "Discipline",
+    "resource_value": 9,
+    "story_text": "You slip into a faster timestream to act more quickly.",
+    "keywords": "Psionic",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You can use up to three signature abilities, each of which gains an edge.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "iron-body-9-discipline",
+    "name": "Iron Body",
+    "level": 6,
+    "subclass": "Metakinetic",
+    "resource": "Discipline",
+    "resource_value": 9,
+    "story_text": "You focus until your body becomes as hard as iron.",
+    "keywords": "Psionic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You gain 20 temporary Stamina. Additionally, until the end of the encounter, your stability gains a bonus equal to your Intuition score.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "phase-step-9-discipline",
+    "name": "Phase Step",
+    "level": 6,
+    "subclass": "Chronokinetic",
+    "resource": "Discipline",
+    "resource_value": 9,
+    "story_text": "You weaken your connection to this manifold, allowing you to move through and damage enemies.",
+    "keywords": "Melee/Psionic/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Self; see below",
+    "targets": "Self",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "6 damage; M < WEAK, dazed",
+        "tier2": "8 damage; M < AVERAGE, dazed",
+        "tier3": "12 damage; M < STRONG, dazed"
+      }
+    ],
+    "effect": "You can shift up to your speed, and squares occupied by enemies or objects are not difficult terrain for this shift. You make one power roll that targets each enemy you moved through during this shift.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "wall-of-ice-9-discipline",
+    "name": "Wall of Ice",
+    "level": 6,
+    "subclass": "Cryokinetic",
+    "resource": "Discipline",
+    "resource_value": 9,
+    "story_text": "You create a wall of ice.",
+    "keywords": "Area/Psionic/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "10 wall within 10",
+    "targets": "Special",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You can place this wall in occupied squares, sliding each creature in the area into the nearest unoccupied space of your choice. The wall remains until the end of the encounter or until you are dying. The wall's squares are treated as stone squares for the purpose of damage, and you and allies can move freely through the wall. Each enemy who enters a square adjacent to the wall and has M < AVERAGE is slowed (save ends). Each enemy who is force moved into the wall and has M < AVERAGE is restrained (save ends).",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "psi-boost",
+    "name": "Psi Boost",
+    "level": 7,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "",
+    "action_type": "",
+    "trigger_text": "",
+    "distance": "",
+    "targets": "",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Whenever you use an ability that is a main action or a maneuver with the Psionic keyword, you can spend additional discipline to apply a psi boost to it and enhance its effects. A psi boost's effects only last until the end of the turn which the ability is first used. You can apply multiple psi boosts to an ability, but only one instance of each specific boost. You can use the following psi boosts.\n\n##### Dynamic Power (1 Discipline)\nIf the ability force moves a target, the forced movement distance gains a bonus equal to your Intuition score.\n##### Expanded Power (3 Discipline)\nIf the ability targets an area, you increase the size of the area by 1. If the area is a line, you increase the size of one dimension, not both.\n##### Extended Power (1 Discipline)\nIf the ability is ranged, the distance gains a bonus equal to your Intuition score. If the ability is melee, the distance gains a +2 bonus.\n##### Heightened Power (1 Discipline)\nIf the ability deals rolled damage, it deals extra damage equal to your Intuition score.\n##### Magnified Power (5 Discipline)\nIf the ability has a potency, you increase that potency by an amount equal to your Intuition score.\n##### Shared Power (5 Discipline)\nIf the ability targets individual creatures or objects, you target one additional creature or object within distance.\n##### Sharpened Power (1 Discipline)\nIf the ability has any power roll, that roll gains an edge.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "arcane-purge-11-discipline",
+    "name": "Arcane Purge",
+    "level": 8,
+    "resource": "Discipline",
+    "resource_value": 11,
+    "story_text": "You focus your null field into a pressure point strike that prevents your foe from channeling sorcery.",
+    "keywords": "Melee/Psionic/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "13 + A damage; M < WEAK, the target is suppressed (save ends)",
+        "tier2": "19 + A damage; M < AVERAGE, the target is suppressed (save ends)",
+        "tier3": "24 + A damage; M < STRONG, the target is suppressed (save ends)"
+      }
+    ],
+    "effect": "While suppressed, a target takes psychic damage equal to twice your Intuition score at the start of their turns, whenever they use a supernatural ability, or whenever they use an ability that costs Malice.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "phase-hurl-11-discipline",
+    "name": "Phase Hurl",
+    "level": 8,
+    "resource": "Discipline",
+    "resource_value": 11,
+    "story_text": "You throw your foe out of phase with this manifold, causing them to harm other enemies as they return.",
+    "keywords": "Melee/Psionic/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "9 + A damage; push 5; I < WEAK, dazed (save ends)",
+        "tier2": "13 + A damage; push 7; I < AVERAGE, dazed (save ends)",
+        "tier3": "18 + A damage; push 10; I < STRONG, dazed (save ends)"
+      }
+    ],
+    "effect": "The target and each creature or object they collide with from this forced movement takes psychic damage equal to the total number of squares the target was force moved. While the target is dazed this way, they see glimpses of creatures from other parts of the timescape.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "scalar-assault-11-discipline",
+    "name": "Scalar Assault",
+    "level": 8,
+    "resource": "Discipline",
+    "resource_value": 11,
+    "story_text": "You warp reality to grow a limb for just a moment and make a single devastating attack.",
+    "keywords": "Area/Psionic",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 cube within 1",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "12 psychic damage; push 3",
+        "tier2": "17 psychic damage; push 5",
+        "tier3": "23 psychic damage; push 7"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "synaptic-anchor-11-discipline",
+    "name": "Synaptic Anchor",
+    "level": 8,
+    "resource": "Discipline",
+    "resource_value": 11,
+    "story_text": "You disrupt an enemy's strike and create a feedback loop in their mind, preventing them from focusing on future attacks.",
+    "keywords": "Psionic",
+    "action_type": "free triggered",
+    "trigger_text": "The target takes damage from another creature's ability while in the area of your Null Field ability.",
+    "distance": "Self; see below",
+    "targets": "Self or one creature",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The target takes half the damage, and if the triggering creature has I < AVERAGE, they are dazed (save ends). While the triggering creature is dazed this way, they take psychic damage equal to your Intuition score whenever they use a main action.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "absolute-zero-11-discipline",
+    "name": "Absolute Zero",
+    "level": 9,
+    "subclass": "Cryokinetic",
+    "resource": "Discipline",
+    "resource_value": 11,
+    "story_text": "You become the coldest thing in the timescape.",
+    "keywords": "Psionic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "Power Roll + Intuition",
+    "tier_effects": [
+      {
+        "tier1": "You gain 20 temporary Stamina.",
+        "tier2": "You gain 30 temporary Stamina.",
+        "tier3": "You gain 40 temporary Stamina."
+      }
+    ],
+    "effect": "Until the end of the encounter or until you are dead, you become an avatar of uttermost cold. You gain immunity to all damage equal to the cold damage immunity granted by your Entropic Adaptability trait, you ignore the negative effects of dying, and you have a +2 bonus to potencies.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "arrestor-cycle-11-discipline",
+    "name": "Arrestor Cycle",
+    "level": 9,
+    "subclass": "Chronokinetic",
+    "resource": "Discipline",
+    "resource_value": 11,
+    "story_text": "You trap your foe in a looping cycle of time, where they relive the last few seconds over and over again.",
+    "keywords": "Psionic/Ranged",
+    "action_type": "free triggered",
+    "trigger_text": "The triggering creature starts their turn.",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Intuition",
+    "tier_effects": [
+      {
+        "tier1": "I < WEAK, the target loses their turn",
+        "tier2": "I < AVERAGE, the target loses their turn",
+        "tier3": "I < STRONG, the target loses their turn"
+      }
+    ],
+    "effect": "If the target loses their turn, the round continues as if they had acted. A target who doesn't lose their turn takes psychic damage equal to twice your Intuition score for each main action they take until the end of their next turn.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "heat-drain-11-discipline",
+    "name": "Heat Drain",
+    "level": 9,
+    "subclass": "Cryokinetic",
+    "resource": "Discipline",
+    "resource_value": 11,
+    "story_text": "You drain all the heat from the target.",
+    "keywords": "Melee/Psionic/Strike",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Intuition",
+    "tier_effects": [
+      {
+        "tier1": "8 + I cold damage; M < WEAK, restrained (save ends)",
+        "tier2": "11 + I cold damage; M < AVERAGE, restrained (save ends)",
+        "tier3": "15 + I cold damage; M < STRONG, restrained (save ends)"
+      }
+    ],
+    "effect": "While restrained this way, the target takes cold damage equal to your Intuition score at the start of each of your turns. Additionally, whenever the target damages another creature while restrained this way, any potency associated with the damage is reduced by 2.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "inertial-absorption-11-discipline",
+    "name": "Inertial Absorption",
+    "level": 9,
+    "subclass": "Metakinetic",
+    "resource": "Discipline",
+    "resource_value": 11,
+    "story_text": "You absorb an attack to empower your body.",
+    "keywords": "Psionic",
+    "action_type": "free triggered",
+    "trigger_text": "Another creature damages you using an ability.",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You take half the damage, negate any effects associated with the damage for you, and gain 3 surges.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "realitas-11-discipline",
+    "name": "Realitas",
+    "level": 9,
+    "subclass": "Metakinetic",
+    "resource": "Discipline",
+    "resource_value": 11,
+    "story_text": "Your essential hyperreality disrupts your enemy's connection to existence.",
+    "keywords": "Melee/Psionic/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "7 + A psychic damage; I < WEAK, dazed",
+        "tier2": "10 + A psychic damage; I < AVERAGE, dazed",
+        "tier3": "13 + A psychic damage; I < STRONG, dazed"
+      }
+    ],
+    "effect": "While dazed this way, the target takes psychic damage equal to twice your Intuition score at the start of each of your turns. If this ability causes a creature who is not a leader or solo creature to become winded, they are instead reduced to 0 Stamina. Any creature reduced to 0 Stamina by this ability is forgotten by all creatures of your level or lower in the timescape who are not present in the encounter. Loved ones of the forgotten creature retain a faint sense of melancholy. This effect can be reversed only at the Director's discretion.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "time-loop-11-discipline",
+    "name": "Time Loop",
+    "level": 9,
+    "subclass": "Chronokinetic",
+    "resource": "Discipline",
+    "resource_value": 11,
+    "story_text": "You show shadows what true speed is.",
+    "keywords": "Psionic",
+    "action_type": "free triggered",
+    "trigger_text": "Another creature on the encounter map ends their turn.",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You take a bonus turn immediately after the triggering creature. This ability can be used only once per combat round.",
+    "special_effect": ""
+  }
+]

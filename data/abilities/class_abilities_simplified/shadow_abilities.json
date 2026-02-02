@@ -1,0 +1,1148 @@
+[
+  {
+    "type": "ability",
+    "id": "black-ash-teleport",
+    "name": "Black Ash Teleport",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "In a swirl of black ash, you step from one place to another.",
+    "keywords": "Magic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You teleport up to 5 squares. If you have concealment or cover at your destination, you can use the Hide maneuver even if you are observed. If you successfully hide using this maneuver, you gain 1 surge.\n\nYou teleport 1 additional square for each insight spent.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "clever-trick-1-insight",
+    "name": "Clever Trick",
+    "level": 1,
+    "resource": "Insight",
+    "resource_value": 1,
+    "story_text": "You sow a moment of confusion in combat, to your enemy's peril.",
+    "keywords": "Magic",
+    "action_type": "triggered action",
+    "trigger_text": "An enemy targets you with a strike.",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Choose an enemy within distance of the triggering strike, including the enemy who targeted you. The strike targets that enemy instead.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "coat-the-blade",
+    "name": "Coat the Blade",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "A little poison goes a long way.",
+    "keywords": "-",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You gain 2 surges. Additionally, whenever you use a surge before the end of the encounter, you can choose to have it deal poison damage.\n\nFor each insight you spend, you gain 1 additional surge.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "coup-de-grace-5-insight",
+    "name": "Coup de Grace",
+    "level": 1,
+    "resource": "Insight",
+    "resource_value": 5,
+    "story_text": "Your blade might be the last thing they see.",
+    "keywords": "Melee/Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1 or ranged 5",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "2d6 + 7 + A damage",
+        "tier2": "2d6 + 11 + A damage",
+        "tier3": "2d6 + 16 + A damage"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "defensive-roll",
+    "name": "Defensive Roll",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "When an enemy attacks, you roll with the impact to reduce the harm.",
+    "keywords": "-",
+    "action_type": "triggered action",
+    "trigger_text": "Another creature damages you.",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You take half the triggering damage, then can shift up to 2 squares after the triggering effect resolves. If you end this shift with concealment or cover, you can use the Hide maneuver even if you are observed.\n\nThe potency of any effects associated with the damage are reduced by 1 for you.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "disorienting-strike-3-insight",
+    "name": "Disorienting Strike",
+    "level": 1,
+    "resource": "Insight",
+    "resource_value": 3,
+    "story_text": "Your attack leaves them reeling, allowing you to follow up.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "4 + A damage; slide 2",
+        "tier2": "6 + A damage; slide 3",
+        "tier3": "10 + A damage; slide 5"
+      }
+    ],
+    "effect": "You can shift into any square the target leaves when you slide them.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "eviscerate-3-insight",
+    "name": "Eviscerate",
+    "level": 1,
+    "resource": "Insight",
+    "resource_value": 3,
+    "story_text": "You leave your foe bleeding out after a devastating attack.",
+    "keywords": "Melee/Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1 or ranged 5",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "4 + A damage; R < WEAK, bleeding (save ends)",
+        "tier2": "6 + A damage; R < AVERAGE, bleeding (save ends)",
+        "tier3": "10 + A damage; R < STRONG, bleeding (save ends)"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "gasping-in-pain",
+    "name": "Gasping in Pain",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "Your precise strikes let your allies take advantage of a target's agony.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "3 + A damage",
+        "tier2": "5 + A damage",
+        "tier3": "8 + A damage; I < STRONG, prone"
+      }
+    ],
+    "effect": "One ally within 5 squares of the target gains 1 surge.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "get-in-get-out-3-insight",
+    "name": "Get In Get Out",
+    "level": 1,
+    "resource": "Insight",
+    "resource_value": 3,
+    "story_text": "Move unexpectedly, strike fast, and be gone!",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "5 + A damage",
+        "tier2": "8 + A damage",
+        "tier3": "11 + A damage"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "hesitation-is-weakness-1-insight",
+    "name": "Hesitation Is Weakness",
+    "level": 1,
+    "resource": "Insight",
+    "resource_value": 1,
+    "story_text": "Keep up the attack. Never give them a moment's grace.",
+    "keywords": "-",
+    "action_type": "free triggered",
+    "trigger_text": "Another hero ends their turn. That hero can't have used this ability to start their turn.",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You take your turn after the triggering hero.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "i-work-better-alone",
+    "name": "I Work Better Alone",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "\"It's better, just you and me. Isn't it?\"",
+    "keywords": "Melee/Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1 or ranged 5",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "3 + A damage",
+        "tier2": "6 + A damage",
+        "tier3": "9 + A damage"
+      }
+    ],
+    "effect": "If the target has none of your allies adjacent to them, you gain 1 surge before making the power roll.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "im-no-threat",
+    "name": "I'm No Threat",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "Taking on an illusory countenance gives you an advantage on subterfuge.",
+    "keywords": "Magic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You envelop yourself in an illusion that makes you appear nonthreatening and harmless to your enemies. You might take on the appearance of a harmless animal of your size, such as a sheep or capybara, or you might appear as a less heroic and unarmed version of yourself. While this illusion lasts, your strikes gain an edge, and when you take the Disengage move action, you gain a +1 bonus to the distance you can shift.\nThe illusion ends when you harm another creature, when you physically interact with a creature, when you use this ability again, or when you end the illusion (no action required). If you end this illusion by harming another creature, you gain 1 surge.\n\nChoose a creature whose size is no more than 1 greater than yours and who is within 10 squares. This ability's illusion makes you appear as that creature. This illusion covers your entire body, including clothing and armor, and alters your voice to sound like that of the creature. You gain an edge on tests made to convince the creature's allies that you are the creature.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "in-all-this-confusion",
+    "name": "In All This Confusion",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "You vanish in a plume of black smoke to avoid danger.",
+    "keywords": "Magic",
+    "action_type": "triggered action",
+    "trigger_text": "You take damage.",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You take half the damage, then can teleport up to 4 squares after the triggering effect resolves.\n\nYou teleport 1 additional square for each insight spent.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "one-hundred-throats-5-insight",
+    "name": "One Hundred Throats",
+    "level": 1,
+    "resource": "Insight",
+    "resource_value": 5,
+    "story_text": "As you move across the battlefield, every foe within reach feels your wrath.",
+    "keywords": "Melee/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Self; see below",
+    "targets": "Self",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "3 damage",
+        "tier2": "6 damage",
+        "tier3": "9 damage"
+      }
+    ],
+    "effect": "You shift up to your speed and make one power roll that targets up to three enemies who came adjacent to you during the move.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "setup-5-insight",
+    "name": "Setup",
+    "level": 1,
+    "resource": "Insight",
+    "resource_value": 5,
+    "story_text": "Your friends will thank you.",
+    "keywords": "Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 5",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "6 + A damage; R < WEAK, the target has damage weakness 5 (save ends)",
+        "tier2": "9 + A damage; R < AVERAGE, the target has damage weakness 5 (save ends)",
+        "tier3": "13 + A damage; R < STRONG, the target has damage weakness 5 (save ends)"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "shadowstrike-5-insight",
+    "name": "Shadowstrike",
+    "level": 1,
+    "resource": "Insight",
+    "resource_value": 5,
+    "story_text": "They have no idea what the college taught you.",
+    "keywords": "Magic/Melee/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Self; see below",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You use a strike signature ability twice.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "teamwork-has-its-place",
+    "name": "Teamwork Has Its Place",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "You attack an enemy as an ally exposes their weakness.",
+    "keywords": "Melee/Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1 or ranged 5",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "3 + A damage",
+        "tier2": "6 + A damage",
+        "tier3": "9 + A damage"
+      }
+    ],
+    "effect": "If any ally is adjacent to the target, you gain 1 surge before making the power roll.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "two-throats-at-once-3-insight",
+    "name": "Two Throats at Once",
+    "level": 1,
+    "resource": "Insight",
+    "resource_value": 3,
+    "story_text": "A bargain.",
+    "keywords": "Melee/Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1 or ranged 5",
+    "targets": "Two creatures or objects",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "4 damage",
+        "tier2": "6 damage",
+        "tier3": "10 damage"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "you-were-watching-the-wrong-one",
+    "name": "You Were Watching the Wrong One",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "They can't watch both of you at once.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "3 + A damage",
+        "tier2": "5 + A damage",
+        "tier3": "8 + A damage"
+      }
+    ],
+    "effect": "As long as you have one or more allies within 5 squares of the target, you gain 1 surge. If you are flanking the target when you use this ability, choose one ally who is flanking with you. That ally also gains 1 surge.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "in-a-puff-of-ash-5-insight",
+    "name": "In a Puff of Ash",
+    "level": 2,
+    "subclass": "Black Ash",
+    "resource": "Insight",
+    "resource_value": 5,
+    "story_text": "You enchant a strike with your teleportation magic.",
+    "keywords": "Magic/Melee/Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1 or ranged 5",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "6 + A damage; you can teleport the target 1 square",
+        "tier2": "10 + A damage; you can teleport the target up to 3 squares",
+        "tier3": "14 + A damage; you can teleport the target up to 5 squares"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "machinations-of-sound-5-insight",
+    "name": "Machinations of Sound",
+    "level": 2,
+    "subclass": "Harlequin Mask",
+    "resource": "Insight",
+    "resource_value": 5,
+    "story_text": "Illusory sounds make your foes reposition themselves as they cower or investigate the disturbance.",
+    "keywords": "Area/Magic/Ranged",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "3 cube within 10",
+    "targets": "Each creature in the area",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "Slide 4",
+        "tier2": "Slide 5",
+        "tier3": "Slide 7"
+      }
+    ],
+    "effect": "This forced movement ignores stability. Instead, the forced movement is reduced by a number equal to the target's Intuition score.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "so-gullible-5-insight",
+    "name": "So Gullible",
+    "level": 2,
+    "subclass": "Harlequin Mask",
+    "resource": "Insight",
+    "resource_value": 5,
+    "story_text": "When your enemy strikes, you reveal you were in a different place all along.",
+    "keywords": "Magic",
+    "action_type": "free triggered",
+    "trigger_text": "Another creature targets you with a strike.",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You use your Clever Trick ability with no insight cost against the triggering creature and strike. You can teleport to an unoccupied space within 3 squares of that creature and can make a free strike against them. You can then spend a Recovery.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "sticky-bomb-5-insight",
+    "name": "Sticky Bomb",
+    "level": 2,
+    "subclass": "Caustic Alchemy",
+    "resource": "Insight",
+    "resource_value": 5,
+    "story_text": "Explosives are best when they're attached to an enemy.",
+    "keywords": "Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "4 + A fire damage",
+        "tier2": "7 + A fire damage",
+        "tier3": "11 + A fire damage"
+      }
+    ],
+    "effect": "You attach a small bomb to a creature. If you are hidden from the creature, they don't notice the bomb and you remain hidden. The creature otherwise notices the bomb and can disarm and remove it as a main action. If they don't, at the end of your next turn, the bomb detonates. When the bomb detonates, you make a power roll targeting each enemy within 2 squares of it.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "stink-bomb-5-insight",
+    "name": "Stink Bomb",
+    "level": 2,
+    "subclass": "Caustic Alchemy",
+    "resource": "Insight",
+    "resource_value": 5,
+    "story_text": "Putrid yellow gas explodes from a bomb you toss.",
+    "keywords": "Area/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 cube within 10",
+    "targets": "Each creature in the area",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "2 poison damage",
+        "tier2": "5 poison damage",
+        "tier3": "7 poison damage"
+      }
+    ],
+    "effect": "The gas remains in the area until the end of the encounter. Any creature who starts their turn in the area and has M < AVERAGE is weakened (save ends).",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "too-slow-5-insight",
+    "name": "Too Slow",
+    "level": 2,
+    "subclass": "Black Ash",
+    "resource": "Insight",
+    "resource_value": 5,
+    "story_text": "Your foe made a big mistake.",
+    "keywords": "-",
+    "action_type": "free triggered",
+    "trigger_text": "You use your In All This Confusion ability.",
+    "distance": "Self; see below",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You ignore any effects associated with the damage that triggered your In All This Confusion ability. Before you teleport, you can make a free strike against a creature who damaged you to trigger In All This Confusion. After you teleport, you can spend a Recovery.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "careful-observation",
+    "name": "Careful Observation",
+    "level": 3,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "A moment of focus leaves a foe firmly in your sights.",
+    "keywords": "Ranged",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 20",
+    "targets": "One creature",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "As long as you remain within distance of the target, maintain line of effect to them, and strike no other creature first, you gain an edge on the next strike you make against the assessed creature, and gain 1 surge you can use only on that strike.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "dancer-7-insight",
+    "name": "Dancer",
+    "level": 3,
+    "resource": "Insight",
+    "resource_value": 7,
+    "story_text": "You enter a flow state that makes you nearly impossible to pin down.",
+    "keywords": "-",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Until the end of the encounter, whenever an enemy moves or is force moved adjacent to you or damages you, you can take the Disengage move action as a free triggered action.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "misdirecting-strike-7-insight",
+    "name": "Misdirecting Strike",
+    "level": 3,
+    "resource": "Insight",
+    "resource_value": 7,
+    "story_text": "\"Why are you looking at ME?!\"",
+    "keywords": "Melee/Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1 or ranged 5",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "9 + A damage",
+        "tier2": "13 + A damage",
+        "tier3": "18 + A damage"
+      }
+    ],
+    "effect": "The target is taunted by a willing ally within 5 squares of you until the end of the target's next turn.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "pinning-shot-7-insight",
+    "name": "Pinning Shot",
+    "level": 3,
+    "resource": "Insight",
+    "resource_value": 7,
+    "story_text": "One missile—placed well and placed hard.",
+    "keywords": "Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 5",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "8 + A damage; A < WEAK, restrained (save ends)",
+        "tier2": "12 + A damage; A < AVERAGE, restrained (save ends)",
+        "tier3": "16 + A damage; A < STRONG, restrained (save ends)"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "staggering-blow-7-insight",
+    "name": "Staggering Blow",
+    "level": 3,
+    "resource": "Insight",
+    "resource_value": 7,
+    "story_text": "There's no recovering from this.",
+    "keywords": "Melee/Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1 or ranged 5",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "7 + A damage; M < WEAK, slowed (save ends)",
+        "tier2": "11 + A damage; M < AVERAGE, prone and can't stand (save ends)",
+        "tier3": "16 + A damage; M < STRONG, prone and can't stand (save ends)"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "night-watch",
+    "name": "Night Watch",
+    "level": 4,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "A steely dagger from out of the blue knocks another weapon off course.",
+    "keywords": "Ranged/Weapon",
+    "action_type": "triggered action",
+    "trigger_text": "The target takes damage from another creature's ability while you are hidden.",
+    "distance": "Ranged 5",
+    "targets": "One ally",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The target takes half the damage. You remain hidden.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "blackout-9-insight",
+    "name": "Blackout",
+    "level": 5,
+    "resource": "Insight",
+    "resource_value": 9,
+    "story_text": "You cause a plume of shadow to erupt from your eyes and create a cloud of darkness.",
+    "keywords": "Area/Magic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "3 burst",
+    "targets": "Special",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "A black cloud fills the area until the end of your next turn, granting you and your allies concealment against enemies. While you are in the area, whenever an enemy ends their turn in the area, you can use a free triggered action to shift to a new location within the area and make a free strike against them.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "into-the-shadows-9-insight",
+    "name": "Into the Shadows",
+    "level": 5,
+    "resource": "Insight",
+    "resource_value": 9,
+    "story_text": "You sweep your foe off their feet and plunge them into absolute darkness.",
+    "keywords": "Magic/Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "8 + A corruption damage",
+        "tier2": "13 + A corruption damage",
+        "tier3": "17 + A corruption damage"
+      }
+    ],
+    "effect": "You and the target are removed from the encounter map until the start of your next turn. You reappear in the spaces you left or the nearest unoccupied spaces. Make a power roll upon your return.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "shadowfall-9-insight",
+    "name": "Shadowfall",
+    "level": 5,
+    "resource": "Insight",
+    "resource_value": 9,
+    "story_text": "You vanish. They fall. You reappear.",
+    "keywords": "Area/Melee/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "10 x 1 line within 1",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "10 damage",
+        "tier2": "14 damage",
+        "tier3": "20 damage"
+      }
+    ],
+    "effect": "You disappear before making the power roll. After the power roll is resolved, you appear in the first unoccupied space at the far end of the line.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "you-talk-too-much-9-insight",
+    "name": "You Talk Too Much",
+    "level": 5,
+    "resource": "Insight",
+    "resource_value": 9,
+    "story_text": "Silence is a virtue. A knife pinning their mouth shut is the next best thing.",
+    "keywords": "Melee/Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1 or ranged 5",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "10 + A damage; P < WEAK, dazed (save ends)",
+        "tier2": "15 + A damage; P < AVERAGE, dazed (save ends)",
+        "tier3": "21 + A damage; P < STRONG, dazed (save ends)"
+      }
+    ],
+    "effect": "The target can't communicate with anyone until the end of the encounter.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "black-ash-eruption-9-insight",
+    "name": "Black Ash Eruption",
+    "level": 6,
+    "subclass": "Black Ash",
+    "resource": "Insight",
+    "resource_value": 9,
+    "story_text": "Your attack produces a cloud of black ash that launches an enemy into the air.",
+    "keywords": "Magic/Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "3 + A damage; vertical push 5",
+        "tier2": "6 + A damage; vertical push 10",
+        "tier3": "9 + A damage; vertical push 15"
+      }
+    ],
+    "effect": "A creature force moved by this ability must be moved straight upward.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "cinderstorm-9-insight",
+    "name": "Cinderstorm",
+    "level": 6,
+    "subclass": "Black Ash",
+    "resource": "Insight",
+    "resource_value": 9,
+    "story_text": "You teleport your friends in a burst of ash and fire.",
+    "keywords": "Magic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "4 burst",
+    "targets": "Self and each ally in the area",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Each target can teleport up to 5 squares. For each target in addition to you who teleports away from or into a space adjacent to an enemy, that enemy takes fire damage equal to your Agility score. Additionally, a target who ends this movement in concealment or cover can use the Hide maneuver even if they are observed.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "look-9-insight",
+    "name": "Look!",
+    "level": 6,
+    "subclass": "Harlequin Mask",
+    "resource": "Insight",
+    "resource_value": 9,
+    "story_text": "You distract your foes, allowing your allies to take advantage of that distraction.",
+    "keywords": "Area/Magic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "5 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Until the start of your next turn, any ability roll made against a target gains an edge.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "one-vial-makes-you-better-9-insight",
+    "name": "One Vial Makes You Better",
+    "level": 6,
+    "subclass": "Caustic Alchemy",
+    "resource": "Insight",
+    "resource_value": 9,
+    "story_text": "A well-timed throw of a potion will keep your allies in the fight.",
+    "keywords": "Ranged",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Three creatures",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You ready, hand, or lob a potion to each target, who can immediately quaff the potion (no action required). If they don't drink the potion right away, they must use the Use Consumable maneuver to consume it later. The potion loses its potency at the end of the encounter.\nA creature who drinks the potion can spend up to 2 Recoveries, and has acid immunity, fire immunity, or poison immunity (their choice) equal to your level until the end of the encounter.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "one-vial-makes-you-faster-9-insight",
+    "name": "One Vial Makes You Faster",
+    "level": 6,
+    "subclass": "Caustic Alchemy",
+    "resource": "Insight",
+    "resource_value": 9,
+    "story_text": "Each ally who catches a potion you throw can take the battle to the next level.",
+    "keywords": "Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Three creatures",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "The creature's speed is increased by 2 until the end of the encounter.",
+        "tier2": "The creature can fly until the end of the encounter.",
+        "tier3": "The creature turns invisible until the end of their next turn."
+      }
+    ],
+    "effect": "You ready, hand, or lob a potion to each target, who can immediately quaff the potion (no action required). If they don't drink the potion right away, they must use the Use Consumable maneuver to consume it later. The potion loses its potency at the end of the encounter.\nA creature who drinks the potion receives benefits based on your power roll.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "puppet-strings-9-insight",
+    "name": "Puppet Strings",
+    "level": 6,
+    "subclass": "Harlequin Mask",
+    "resource": "Insight",
+    "resource_value": 9,
+    "story_text": "You prick little needles on the tips of your fingers into the nerves of your enemies and cause them to lose control.",
+    "keywords": "Magic/Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "Two enemies",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "2 damage; if the target has R < WEAK, before the damage is resolved, they make a free strike.",
+        "tier2": "5 damage; if the target has R < AVERAGE, before the damage is resolved, they use a main action ability of your choice.",
+        "tier3": "7 damage; if the target has R < STRONG, before the damage is resolved, they can shift up to their speed and use a main action ability of your choice."
+      }
+    ],
+    "effect": "You choose the new targets for the original target's free strike or ability. Additionally, if you are hidden or disguised, using this ability doesn't cause you to be revealed.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "assassinate-11-insight",
+    "name": "Assassinate",
+    "level": 8,
+    "resource": "Insight",
+    "resource_value": 11,
+    "story_text": "A practiced attack will instantly kill an already weakened foe.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "12 + A damage",
+        "tier2": "18 + A damage",
+        "tier3": "24 + A damage"
+      }
+    ],
+    "effect": "A target who is not a minion, leader, or solo creature and who is winded after taking this damage is reduced to 0 Stamina.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "shadowgrasp-11-insight",
+    "name": "Shadowgrasp",
+    "level": 8,
+    "resource": "Insight",
+    "resource_value": 11,
+    "story_text": "The shadows around you give way, allowing the shadow creature within you to grasp at your foes.",
+    "keywords": "Area/Magic",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "2 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "11 corruption damage; A < WEAK, restrained (save ends)",
+        "tier2": "16 corruption damage; A < AVERAGE, restrained (save ends)",
+        "tier3": "21 corruption damage; A < STRONG, restrained (save ends)"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "speed-of-shadows-11-insight",
+    "name": "Speed of Shadows",
+    "level": 8,
+    "resource": "Insight",
+    "resource_value": 11,
+    "story_text": "You make multiple strikes against a foe before they even notice they're dead.",
+    "keywords": "Magic",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You can use a strike signature ability four times, use a strike signature ability that gains an edge three times, or use a strike signature ability that has a double edge twice. You can shift up to 2 squares between each use.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "they-always-line-up-11-insight",
+    "name": "They Always Line Up",
+    "level": 8,
+    "resource": "Insight",
+    "resource_value": 11,
+    "story_text": "You fire a projectile so fast that it passes through a line of foes, hamstringing them.",
+    "keywords": "Area/Ranged/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "5 x 1 line within 5",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "12 damage; M < WEAK, slowed (save ends)",
+        "tier2": "18 damage; M < AVERAGE, slowed (save ends)",
+        "tier3": "24 damage; M < STRONG, slowed (save ends)"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "time-bomb",
+    "name": "Time Bomb",
+    "level": 8,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "The longer it cooks, the bigger the boom.",
+    "keywords": "Area/Ranged",
+    "action_type": "free maneuver",
+    "trigger_text": "",
+    "distance": "2 cube within 10",
+    "targets": "Each enemy in the area",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Each target takes acid, fire, or poison damage (your choice) equal to your Agility score.\nFor each combat round that has passed since this ability was last used in the current encounter, the area increases by 1 and you gain 1 surge that must be used with this ability. After using the ability or at the end of the encounter, its area and surges are reset.\n\nFor every 2 insight spent, you increase the cube's size by 1 and gain 1 surge that can be used only with this ability.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "cacophony-of-cinders-11-insight",
+    "name": "Cacophony of Cinders",
+    "level": 9,
+    "subclass": "Black Ash",
+    "resource": "Insight",
+    "resource_value": 11,
+    "story_text": "You tumble through the battle, stabbing foes and teleporting allies.",
+    "keywords": "Magic/Melee/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Self; see below",
+    "targets": "Self",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "An enemy takes 6 damage; an ally can teleport up to 3 squares.",
+        "tier2": "An enemy takes 10 damage; an ally can teleport up to 5 squares.",
+        "tier3": "An enemy takes 14 damage; an ally can teleport up to 7 squares."
+      }
+    ],
+    "effect": "You shift up to twice your speed, making one power roll that targets each creature you come adjacent to during the shift.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "chain-reaction-11-insight",
+    "name": "Chain Reaction",
+    "level": 9,
+    "subclass": "Caustic Alchemy",
+    "resource": "Insight",
+    "resource_value": 11,
+    "story_text": "One explosion, an offense. Three explosions, an assault. Nine explosions, a celebration.",
+    "keywords": "Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "7 damage",
+        "tier2": "10 damage",
+        "tier3": "15 damage"
+      }
+    ],
+    "effect": "Each enemy within 3 squares of the target who is not currently targeted by this ability also becomes targeted by this ability. This effect continues until there are no more available targets. The ability deals acid, fire, or poison damage (your choice).",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "demon-door-11-insight",
+    "name": "Demon Door",
+    "level": 9,
+    "subclass": "Black Ash",
+    "resource": "Insight",
+    "resource_value": 11,
+    "story_text": "You create a temporary portal to allow a massive demonic hand to reach through.",
+    "keywords": "Magic/Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 3",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "13 + A corruption damage; push 3",
+        "tier2": "18 + A corruption damage; push 5",
+        "tier3": "25 + A corruption damage; push 7"
+      }
+    ],
+    "effect": "On a critical hit, the target is grabbed by the demon and pulled through the portal before it closes, never to be seen again.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "i-am-you-11-insight",
+    "name": "I Am You",
+    "level": 9,
+    "subclass": "Harlequin Mask",
+    "resource": "Insight",
+    "resource_value": 11,
+    "story_text": "Your mask reflects your foe's face. Surely they won't need it much longer.",
+    "keywords": "Magic/Ranged",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Until the end of the encounter, you gain the target's damage immunities and speed (if they are better than yours), and can use any types of movement they can use. You can also use the target's signature ability, using their bonus for the power roll.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "it-was-me-all-along-11-insight",
+    "name": "It Was Me All Along",
+    "level": 9,
+    "subclass": "Harlequin Mask",
+    "resource": "Insight",
+    "resource_value": 11,
+    "story_text": "After everything you've been through together, you twist the blade and make the pain extra personal.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "15 + A damage",
+        "tier2": "21 + A damage",
+        "tier3": "28 + A damage"
+      }
+    ],
+    "effect": "If you are disguised as a creature the target knew using your I'm No Threat ability, this ability deals extra damage equal to three times your Agility score.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "to-the-stars-11-insight",
+    "name": "To the Stars",
+    "level": 9,
+    "subclass": "Caustic Alchemy",
+    "resource": "Insight",
+    "resource_value": 11,
+    "story_text": "You attach your most potent explosive to your foe. Under less pressing circumstances, you're sure you could launch them into orbit.",
+    "keywords": "Melee/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1 or ranged 10",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "4 + A fire damage; vertical push 8",
+        "tier2": "7 + A fire damage; vertical push 10",
+        "tier3": "11 + A fire damage; vertical push 15"
+      }
+    ],
+    "effect": "The ground beneath a 3-cube area around the target's starting position is difficult terrain.",
+    "special_effect": ""
+  }
+]

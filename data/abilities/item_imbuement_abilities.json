@@ -1,0 +1,98 @@
+[
+  {
+    "type": "ability",
+    "id": "dragons_fire",
+    "name": "Dragon’s Fire",
+    "level": null,
+    "resource": "Signature",
+    "resource_value": null,
+    "story_text": "You open your maw and unleash hell.",
+    "keywords": "Area, Magic",
+    "action_type": "main action",
+    "trigger_text": null,
+    "distance": "5 x 1 line within 1",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Your Highest Characteristic Score",
+    "tier_effects": [
+      {
+        "tier1": "5 fire damage",
+        "tier2": "8 fire damage",
+        "tier3": "11 fire damage"
+      }
+    ],
+    "effect": null,
+    "special_effect": null
+  },
+  {
+    "type": "ability",
+    "id": "stop_right_there",
+    "name": "Stop Right There",
+    "level": null,
+    "resource": "Signature",
+    "resource_value": null,
+    "story_text": "Their momentum, your impact.",
+    "keywords": "Melee, Strike, Weapon",
+    "action_type": "free triggered action",
+    "trigger_text": "The target willingly moves adjacent to you.",
+    "distance": "Melee 1",
+    "targets": "One enemy",
+    "power_roll": null,
+    "tier_effects": [
+      {
+        "tier1": null,
+        "tier2": null,
+        "tier3": null
+      }
+    ],
+    "effect": "The target takes 5 damage.",
+    "special_effect": null
+  },
+  {
+    "type": "ability",
+    "id": "nova",
+    "name": "Nova",
+    "level": null,
+    "resource": "Signature",
+    "resource_value": null,
+    "story_text": "I am an eternal flame, baby!",
+    "keywords": "Area, Magic",
+    "action_type": "main action",
+    "trigger_text": null,
+    "distance": "3 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Your Highest Characteristic Score",
+    "tier_effects": [
+      {
+        "tier1": "7 fire damage",
+        "tier2": "11 fire damage",
+        "tier3": "16 fire damage"
+      }
+    ],
+    "effect": null,
+    "special_effect": null
+  },
+  {
+    "type": "ability",
+    "id": "dragon_soul",
+    "name": "Dragon Soul",
+    "level": null,
+    "resource": null,
+    "resource_value": null,
+    "story_text": null,
+    "keywords": "Magic",
+    "action_type": "free triggered action",
+    "trigger_text": "Another creature causes you to be winded or dying",
+    "distance": null,
+    "targets": "One creature",
+    "power_roll": "Power Roll + Your Highest Characteristic Score",
+    "tier_effects": [
+      {
+        "tier1": "8 damage; push 3",
+        "tier2": "12 damage; push 4",
+        "tier3": "15 damage; push 5"
+      }
+    ],
+    "effect": "You cause the soul of a dragon to emerge from this armor and hurtle toward the creature.",
+    "special_effect": null
+  }
+]

@@ -1,0 +1,179 @@
+{
+  "typical_ancestry_cultures": [
+    {
+      "ancestry": "Devil",
+      "language": "Anjali",
+      "environment": "Urban",
+      "organization": "Bureaucratic",
+      "upbringing": "Academic"
+    },
+    {
+      "ancestry": "Dragon knight",
+      "language": "Vastariax",
+      "environment": "Secluded",
+      "organization": "Bureaucratic",
+      "upbringing": "Martial"
+    },
+    {
+      "ancestry": "Dwarf",
+      "language": "Zlalac",
+      "environment": "Secluded",
+      "organization": "Bureaucratic",
+      "upbringing": "Creative"
+    },
+    {
+      "ancestry": "Wode elf",
+      "language": "Ilyric",
+      "environment": "Wilderness",
+      "organization": "Bureaucratic",
+      "upbringing": "Martial"
+    },
+    {
+      "ancestry": "High elf",
+      "language": "Hyrallic",
+      "environment": "Secluded",
+      "organization": "Bureaucratic",
+      "upbringing": "Martial"
+    },
+    {
+      "ancestry": "Hakaan",
+      "language": "Vhoric",
+      "environment": "Rural",
+      "organization": "Communal",
+      "upbringing": "Labor"
+    },
+    {
+      "ancestry": "Human",
+      "language": "Vaslorian",
+      "environment": "Urban",
+      "organization": "Communal",
+      "upbringing": "Labor"
+    },
+    {
+      "ancestry": "Memonek",
+      "language": "Axiomatic",
+      "environment": "Nomadic",
+      "organization": "Communal",
+      "upbringing": "Academic"
+    },
+    {
+      "ancestry": "Orc",
+      "language": "Kalliak",
+      "environment": "Wilderness",
+      "organization": "Communal",
+      "upbringing": "Creative"
+    },
+    {
+      "ancestry": "Polder",
+      "language": "Khoursirian",
+      "environment": "Urban",
+      "organization": "Communal",
+      "upbringing": "Creative"
+    },
+    {
+      "ancestry": "Time raider",
+      "language": "Voll",
+      "environment": "Nomadic",
+      "organization": "Communal",
+      "upbringing": "Martial"
+    }
+  ],
+  "archetypical_cultures": [
+    {
+      "community": "Artisan guild",
+      "environment": "Urban",
+      "organization": "Bureaucratic",
+      "upbringing": "Creative"
+    },
+    {
+      "community": "Borderland homestead",
+      "environment": "Wilderness",
+      "organization": "Communal",
+      "upbringing": "Labor"
+    },
+    {
+      "community": "College conclave",
+      "environment": "Urban",
+      "organization": "Bureaucratic",
+      "upbringing": "Academic"
+    },
+    {
+      "community": "Criminal gang",
+      "environment": "Urban",
+      "organization": "Communal",
+      "upbringing": "Lawless"
+    },
+    {
+      "community": "Farming village",
+      "environment": "Rural",
+      "organization": "Bureaucratic",
+      "upbringing": "Labor"
+    },
+    {
+      "community": "Herding community",
+      "environment": "Nomadic",
+      "organization": "Communal",
+      "upbringing": "Labor"
+    },
+    {
+      "community": "Knightly order",
+      "environment": "Secluded",
+      "organization": "Bureaucratic",
+      "upbringing": "Martial"
+    },
+    {
+      "community": "Laborer neighborhood",
+      "environment": "Urban",
+      "organization": "Communal",
+      "upbringing": "Labor"
+    },
+    {
+      "community": "Mercenary band",
+      "environment": "Nomadic",
+      "organization": "Communal",
+      "upbringing": "Martial"
+    },
+    {
+      "community": "Merchant caravan",
+      "environment": "Nomadic",
+      "organization": "Bureaucratic",
+      "upbringing": "Creative"
+    },
+    {
+      "community": "Monastic order",
+      "environment": "Secluded",
+      "organization": "Bureaucratic",
+      "upbringing": "Academic"
+    },
+    {
+      "community": "Noble house",
+      "environment": "Urban",
+      "organization": "Bureaucratic",
+      "upbringing": "Noble"
+    },
+    {
+      "community": "Outlaw band",
+      "environment": "Wilderness",
+      "organization": "Communal",
+      "upbringing": "Lawless"
+    },
+    {
+      "community": "Pirate crew",
+      "environment": "Nomadic",
+      "organization": "Communal",
+      "upbringing": "Lawless"
+    },
+    {
+      "community": "Telepathic hive",
+      "environment": "Secluded",
+      "organization": "Communal",
+      "upbringing": "Creative"
+    },
+    {
+      "community": "Traveling entertainers",
+      "environment": "Nomadic",
+      "organization": "Communal",
+      "upbringing": "Creative"
+    }
+  ]
+}

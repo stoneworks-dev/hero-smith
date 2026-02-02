@@ -1,0 +1,333 @@
+[
+  {
+    "id": "canine",
+    "type": "green_animal_form",
+    "name": "Canine",
+    "level": 2,
+    "temporary_stamina": 5,
+    "base_speed": 7,
+    "size": "1M",
+    "stability_bonus": 0,
+    "melee_damage_bonus": {
+      "1st_tier": 1,
+      "2nd_tier": 1,
+      "3rd_tier": 1
+    },
+    "special": "You gain an edge on tests that involve smell."
+  },
+  {
+    "id": "fish",
+    "type": "green_animal_form",
+    "name": "Fish",
+    "level": 2,
+    "temporary_stamina": 0,
+    "base_speed": 5,
+    "movement_type": "swim_only",
+    "size": "1T",
+    "stability_bonus": 0,
+    "melee_damage_bonus": {
+      "1st_tier": 0,
+      "2nd_tier": 0,
+      "3rd_tier": 0
+    },
+    "special": "You can breathe in water but can't breathe outside of it."
+  },
+  {
+    "id": "rodent",
+    "type": "green_animal_form",
+    "name": "Rodent",
+    "level": 2,
+    "temporary_stamina": 0,
+    "base_speed": 5,
+    "movement_type": "climb",
+    "size": "1T",
+    "stability_bonus": 0,
+    "melee_damage_bonus": {
+      "1st_tier": 0,
+      "2nd_tier": 0,
+      "3rd_tier": 0
+    },
+    "special": "You gain an edge on tests that involve smell."
+  },
+  {
+    "id": "bird",
+    "type": "green_animal_form",
+    "name": "Bird",
+    "level": 3,
+    "temporary_stamina": 0,
+    "base_speed": 5,
+    "movement_type": "fly",
+    "size": "1T",
+    "stability_bonus": 0,
+    "melee_damage_bonus": {
+      "1st_tier": 0,
+      "2nd_tier": 0,
+      "3rd_tier": 0
+    },
+    "special": null
+  },
+  {
+    "id": "great_cat",
+    "type": "green_animal_form",
+    "name": "Great cat",
+    "level": 3,
+    "temporary_stamina": 5,
+    "base_speed": 6,
+    "movement_type": "climb",
+    "size": "2",
+    "stability_bonus": 0,
+    "melee_damage_bonus": {
+      "1st_tier": 1,
+      "2nd_tier": 1,
+      "3rd_tier": 1
+    },
+    "special": "As a maneuver, you can jump up to 3 squares in any direction. If you land on an enemy of your size or smaller, that enemy is knocked prone, and you can make a melee free strike against them (no action required)."
+  },
+  {
+    "id": "giant_frog",
+    "type": "green_animal_form",
+    "name": "Giant frog",
+    "level": 4,
+    "temporary_stamina": 5,
+    "base_speed": 5,
+    "movement_type": "swim",
+    "size": "2",
+    "stability_bonus": 0,
+    "melee_damage_bonus": {
+      "1st_tier": 0,
+      "2nd_tier": 0,
+      "3rd_tier": 0
+    },
+    "special": "Your melee free strike has a distance of melee 3. When you take the Advance move action, you can high jump or long jump up to half your speed. This jump can allow you to move more squares than your speed."
+  },
+  {
+    "id": "horse",
+    "type": "green_animal_form",
+    "name": "Horse",
+    "level": 4,
+    "temporary_stamina": 5,
+    "base_speed": 8,
+    "size": "2",
+    "stability_bonus": 1,
+    "melee_damage_bonus": {
+      "1st_tier": 0,
+      "2nd_tier": 0,
+      "3rd_tier": 0
+    },
+    "special": "You can use the Charge main action as a maneuver. You can’t use two Charge main actions on the same turn."
+  },
+  {
+    "id": "mohler",
+    "type": "green_animal_form",
+    "name": "Mohler",
+    "level": 4,
+    "temporary_stamina": 0,
+    "base_speed": 7,
+    "movement_type": "burrow",
+    "size": "1S",
+    "stability_bonus": 1,
+    "melee_damage_bonus": {
+      "1st_tier": 0,
+      "2nd_tier": 0,
+      "3rd_tier": 0
+    },
+    "special": "Your melee distance gains a +1 bonus."
+  },
+  {
+    "id": "bear",
+    "type": "green_animal_form",
+    "name": "Bear",
+    "level": 5,
+    "temporary_stamina": 10,
+    "base_speed": 5,
+    "movement_type": "climb",
+    "size": "2",
+    "stability_bonus": 1,
+    "melee_damage_bonus": {
+      "1st_tier": 2,
+      "2nd_tier": 2,
+      "3rd_tier": 2
+    },
+    "special": "Your melee distance gains a +1 bonus."
+  },
+  {
+    "id": "giant_bird",
+    "type": "green_animal_form",
+    "name": "Giant bird",
+    "level": 5,
+    "temporary_stamina": 0,
+    "base_speed": 7,
+    "movement_type": "fly",
+    "size": "2",
+    "stability_bonus": 0,
+    "melee_damage_bonus": {
+      "1st_tier": 1,
+      "2nd_tier": 1,
+      "3rd_tier": 1
+    },
+    "special": "After making a melee free strike, you can shift up to 3 squares as a free triggered action."
+  },
+  {
+    "id": "giant_salamander",
+    "type": "green_animal_form",
+    "name": "Giant salamander",
+    "level": 6,
+    "temporary_stamina": 5,
+    "base_speed": 5,
+    "size": "1L",
+    "stability_bonus": 3,
+    "melee_damage_bonus": {
+      "1st_tier": 2,
+      "2nd_tier": 2,
+      "3rd_tier": 2
+    },
+    "special": "Your melee free strike deals fire damage. Additionally, you have fire immunity 3."
+  },
+  {
+    "id": "giant_spider",
+    "type": "green_animal_form",
+    "name": "Giant spider",
+    "level": 6,
+    "temporary_stamina": 0,
+    "base_speed": 5,
+    "movement_type": "climb",
+    "size": "2",
+    "stability_bonus": 0,
+    "melee_damage_bonus": {
+      "1st_tier": 0,
+      "2nd_tier": 1,
+      "3rd_tier": 2
+    },
+    "special": "You have a double edge on melee free strikes against creatures you are hidden from."
+  },
+  {
+    "id": "giant_snake",
+    "type": "green_animal_form",
+    "name": "Giant snake",
+    "level": 7,
+    "temporary_stamina": 5,
+    "base_speed": 5,
+    "size": "3",
+    "stability_bonus": 0,
+    "melee_damage_bonus": {
+      "1st_tier": 0,
+      "2nd_tier": 1,
+      "3rd_tier": 2
+    },
+    "special": "Whenever you obtain a tier 2 or tier 3 outcome on a melee free strike, you can automatically grab the target. While grabbed this way, the target takes 2 damage at the start of each of their turns."
+  },
+  {
+    "id": "kangaroo",
+    "type": "green_animal_form",
+    "name": "Kangaroo",
+    "level": 7,
+    "temporary_stamina": 0,
+    "base_speed": 7,
+    "size": "1L",
+    "stability_bonus": 1,
+    "melee_damage_bonus": {
+      "1st_tier": 0,
+      "2nd_tier": 0,
+      "3rd_tier": 4
+    },
+    "special": "When you score a critical hit with a melee free strike, the target is dazed (save ends). When you take the Advance move action, you can high jump or long jump up to half your speed. This jump can allow you to move more squares than your speed."
+  },
+  {
+    "id": "spiny_armadillo",
+    "type": "green_animal_form",
+    "name": "Spiny armadillo",
+    "level": 7,
+    "temporary_stamina": 10,
+    "base_speed": 5,
+    "size": "1M",
+    "stability_bonus": 2,
+    "melee_damage_bonus": {
+      "1st_tier": 0,
+      "2nd_tier": 0,
+      "3rd_tier": 0
+    },
+    "special": "Whenever you take damage from an adjacent creature’s melee ability, that creature takes 3 damage."
+  },
+  {
+    "id": "ostrich",
+    "type": "green_animal_form",
+    "name": "Ostrich",
+    "level": 8,
+    "temporary_stamina": 0,
+    "base_speed": 10,
+    "size": "2",
+    "stability_bonus": 0,
+    "melee_damage_bonus": {
+      "1st_tier": 1,
+      "2nd_tier": 1,
+      "3rd_tier": 1
+    },
+    "special": "Your movement does not provoke opportunity attacks."
+  },
+  {
+    "id": "shark",
+    "type": "green_animal_form",
+    "name": "Shark",
+    "level": 8,
+    "temporary_stamina": 0,
+    "base_speed": 8,
+    "movement_type": "swim_only",
+    "size": "2",
+    "stability_bonus": 0,
+    "melee_damage_bonus": {
+      "1st_tier": 2,
+      "2nd_tier": 2,
+      "3rd_tier": 2
+    },
+    "special": "You can breathe in water but can’t breathe outside of it. Additionally, you gain an edge on strikes against targets who are bleeding or winded."
+  },
+  {
+    "id": "giant_octopus",
+    "type": "green_animal_form",
+    "name": "Giant octopus",
+    "level": 9,
+    "temporary_stamina": 5,
+    "base_speed": 5,
+    "movement_type": "swim",
+    "size": "3",
+    "stability_bonus": 2,
+    "melee_damage_bonus": {
+      "1st_tier": null,
+      "2nd_tier": null,
+      "3rd_tier": null
+    },
+    "special": "You can breathe in water. Additionally, you can target two creatures or objects with your melee free strike. Whenever you obtain a tier 2 or tier 3 outcome on a melee free strike, you can automatically grab the target. You can have up to eight creatures grabbed."
+  },
+  {
+    "id": "rhinoceros",
+    "type": "green_animal_form",
+    "name": "Rhinoceros",
+    "level": 9,
+    "temporary_stamina": 10,
+    "base_speed": 8,
+    "size": "2",
+    "stability_bonus": 5,
+    "melee_damage_bonus": {
+      "1st_tier": 2,
+      "2nd_tier": 2,
+      "3rd_tier": 2
+    },
+    "special": "Whenever you make a melee free strike as part of the Charge action, that strike gains an edge."
+  },
+  {
+    "id": "king_terror_lizard",
+    "type": "green_animal_form",
+    "name": "King terror lizard",
+    "level": 10,
+    "temporary_stamina": 20,
+    "base_speed": 5,
+    "size": "4",
+    "stability_bonus": 3,
+    "melee_damage_bonus": {
+      "1st_tier": 2,
+      "2nd_tier": 2,
+      "3rd_tier": 2
+    },
+    "special": "Your melee free strike is a 1 burst with the Area and Strike keywords"
+  }
+]

@@ -1,0 +1,219 @@
+{
+  "classId": "class_troubadour",
+  "name": "Troubadour",
+  "type": "class",
+  "starting_characteristics": {
+    "classId": "class_troubadour",
+    "name": "Troubadour",
+    "motto": "\"History is a tale. Each of us is just a story we tell ourselves. Change the story, and you change the world.\" - Jackson Bootblack",
+    "heroicResourceName": "Drama",
+    "baseStamina": 18,
+    "stamina_per_level": 6,
+    "baseRecoveries": 8,
+    "baseSpeed": 5,
+    "baseStability": 0,
+    "baseDisengage": 1,
+
+    "potency_progression": {
+      "characteristic": "Presence",
+      "modifiers": {
+        "weak": -2,
+        "average": -1,
+        "strong": 0
+      }
+    },
+
+    "starting_skills": {
+      "granted_skills": ["Read Person"],
+      "skill_groups": ["interpersonal"],
+      "skill_count": 2,
+      "skill_groups_2": ["intrigue", "lore"],
+      "skill_count_1": 1,
+      "quick_build": ["Brag", "Read Person", "Rumors", "Society"]
+    },
+    "fixed_starting_characteristics": {
+      "agility": 2,
+      "presence": 2
+    },
+    "starting_characteristics_arrays": [
+      {
+        "values": [2, -1, -1]
+      },
+      {
+        "values": [1, 1, -1]
+      },
+      {
+        "values": [1, 0, 0]
+      }
+    ]
+  },
+  "levels": [
+    {
+      "level": 1,
+      "features": [
+        {
+          "name": "Troubadour Class Act",
+
+          "grant_type": "pick",
+          "type": "class_subclass"
+        },
+        { "name": "Drama", "grant_type": "granted" },
+        { "name": "Kit", "grant_type": "pick", "count": 1 },
+        { "name": "Scene Partner", "grant_type": "granted" },
+        { "name": "Routines", "grant_type": "granted" },
+        {
+          "name": "Class Act Features",
+          "grant_type": "granted",
+          "type": "subclass"
+        },
+        {
+          "name": "Class Act Triggered Action",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "new_abilities": {
+        "signature": 1,
+        "3_cost": 1,
+        "5_cost": 1
+      }
+    },
+    {
+      "level": 2,
+      "features": [
+        { "name": "Appeal to the Muses", "grant_type": "granted" },
+        { "name": "Invocation", "grant_type": "pick", "count": 1 }
+      ],
+      "perks": [
+        {
+          "count": 1,
+          "perk_groups": ["interpersonal", "lore", "supernatural"]
+        }
+      ],
+      "new_subclass_abilities": {
+        "5_cost": 1
+      }
+    },
+    {
+      "level": 3,
+      "features": [
+        {
+          "name": "Class Act Feature",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "new_abilities": {
+        "7_cost": 1
+      }
+    },
+    {
+      "level": 4,
+      "features": [
+        { "name": "Melodrama", "grant_type": "granted" },
+        { "name": "Zeitgeist", "grant_type": "pick", "count": 1 }
+      ],
+      "perks": [
+        {
+          "count": 1
+        }
+      ],
+      "skills": [
+        {
+          "count": 1
+        }
+      ],
+      "characteristics": [
+        { "Agility": { "setTo": 3 } },
+        { "Presence": { "setTo": 3 } }
+      ]
+    },
+    {
+      "level": 5,
+      "features": [
+        {
+          "name": "Class Act Feature",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "new_abilities": {
+        "9_cost": 1
+      }
+    },
+    {
+      "level": 6,
+      "features": [{ "name": "Spotlight", "grant_type": "ability" }],
+      "perks": [
+        {
+          "count": 1,
+          "perk_groups": ["interpersonal", "lore", "supernatural"]
+        }
+      ],
+      "new_subclass_abilities": {
+        "9_cost": 1
+      }
+    },
+    {
+      "level": 7,
+      "features": [
+        { "name": "A Muse\u0027s Muse", "grant_type": "granted" },
+        { "name": "Equal Billing", "grant_type": "granted" }
+      ],
+      "skills": [
+        {
+          "count": 1
+        }
+      ],
+      "characteristics": [{ "All": { "increaseBy": 1, "max": 4 } }]
+    },
+    {
+      "level": 8,
+      "features": [
+        {
+          "name": "Class Act Feature",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "perks": [
+        {
+          "count": 1
+        }
+      ],
+      "new_abilities": {
+        "11_cost": 1
+      }
+    },
+    {
+      "level": 9,
+      "features": [{ "name": "Roar of the Crowd", "grant_type": "granted" }],
+      "new_subclass_abilities": {
+        "11_cost": 1
+      }
+    },
+    {
+      "level": 10,
+      "features": [
+        { "name": "Applause", "grant_type": "granted" },
+        { "name": "Dramaturgy", "grant_type": "granted" },
+        { "name": "Greatest of All Time", "grant_type": "granted" }
+      ],
+      "perks": [
+        {
+          "count": 1,
+          "perk_groups": ["interpersonal", "lore", "supernatural"]
+        }
+      ],
+      "skills": [
+        {
+          "count": 1
+        }
+      ],
+      "characteristics": [
+        { "Agility": { "setTo": 5 } },
+        { "Presence": { "setTo": 5 } }
+      ]
+    }
+  ]
+}

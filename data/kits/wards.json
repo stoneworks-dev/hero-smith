@@ -1,0 +1,98 @@
+[
+  {
+    "id": "entropy_ward",
+    "type": "ward",
+    "name": "Entropy Ward",
+    "description": "Your ward slows time for your enemies. Whenever a creature deals damage to you, their speed is reduced by an amount equal to your Reason score and they can't use triggered actions until the end of their next turn.",
+    "characteristic_score": "Reason",
+    "available_to_classes": ["talent"]
+  },
+  {
+    "id": "repulsive_ward",
+    "type": "ward",
+    "name": "Repulsive Ward",
+    "description": "You surround yourself with an invisible ward of telekinetic energy. Whenever an adjacent creature deals damage to you, you can use a free triggered action to push them up to a number of squares equal to your Reason score.",
+    "characteristic_score": "Reason",
+    "available_to_classes": ["talent"]
+  },
+  {
+    "id": "steel_ward",
+    "type": "ward",
+    "name": "Steel Ward",
+    "description": "Your ward reacts to danger, protecting you from future harm. Whenever you take damage, after the damage resolves, you gain damage immunity equal to your Reason score until the end of your next turn.",
+    "characteristic_score": "Reason",
+    "available_to_classes": ["talent"]
+  },
+  {
+    "id": "vanishing_ward",
+    "type": "ward",
+    "name": "Vanishing Ward",
+    "description": "Your ward allows you to slip away from threats. Whenever you take damage, you become invisible until the end of your next turn.",
+    "available_to_classes": ["talent"]
+  },
+  {
+    "id": "bastion_ward",
+    "type": "ward",
+    "name": "Bastion Ward",
+    "description": "Your god grants you a holy countenance that protects you at all times. You gain a +1 bonus to saving throws.",
+    "decrease_total": {
+      "stat": "saving throw",
+      "value": 1
+    },
+    "available_to_classes": ["conduit"]
+  },
+  {
+    "id": "quickness_ward",
+    "type": "ward",
+    "name": "Quickness Ward",
+    "description": "The gods imbue a divine swiftness within you. Whenever an adjacent creature deals damage to you, you can shift up to a number of squares equal to your Intuition score after the damage is dealt.",
+    "characteristic_score": "Intuition",
+    "available_to_classes": ["conduit"]
+  },
+  {
+    "id": "sanctuary_ward",
+    "type": "ward",
+    "name": "Sanctuary Ward",
+    "description": "In response to a foe's aggression, your god protects you. Whenever another creature damages you, that creature can't target you with a strike until you harm them or one of their allies, or until the end of their next turn.",
+    "available_to_classes": ["conduit"]
+  },
+  {
+    "id": "spirit_ward",
+    "type": "ward",
+    "name": "Spirit Ward",
+    "description": "Invisible spirits surround you if you are harmed. Whenever an adjacent creature deals damage to you, they take corruption damage equal to your Intuition score.",
+    "characteristic_score": "Intuition",
+    "available_to_classes": ["conduit"]
+  },
+  {
+    "id": "ward_delightful_consequences",
+    "type": "ward",
+    "name": "Ward of Delightful Consequences",
+    "description": "A protective field of void magic absorbs violence aimed at you, then lets you hurl it back at your enemies. The first time each round that you take damage, you gain 1 surge.",
+    "available_to_classes": ["elementalist"]
+  },
+  {
+    "id": "ward_excellent_protection",
+    "type": "ward",
+    "name": "Ward of Excellent Protection",
+    "description": "You weave a shield of all the elements around yourself, channeling their full protective power. You have immunity to acid, cold, corruption, fire, lightning, poison, or sonic damage equal to your Reason score.",
+    "characteristic_score": "Reason",
+    "available_to_classes": ["elementalist"]
+  },
+  {
+    "id": "ward_nature_affection",
+    "type": "ward",
+    "name": "Ward of Nature's Affection",
+    "description": "The green energy writhing within your body allows you to produce powerful vines when you're in danger. Whenever a creature within a number of squares equal to your Reason score deals damage to you, you can use a free triggered action to slide that creature up to a number of squares equal to your Reason score.",
+    "characteristic_score": "Reason",
+    "available_to_classes": ["elementalist"]
+  },
+  {
+    "id": "ward_surprising_reactivity",
+    "type": "ward",
+    "name": "Ward of Surprising Reactivity",
+    "description": "You use the magic of fire to create a ward of explosive energy. Whenever an adjacent creature deals damage to you, you can use a free triggered action to push that creature up to a number of squares equal to twice your Reason score.",
+    "characteristic_score": "Reason",
+    "available_to_classes": ["elementalist"]
+  }
+]

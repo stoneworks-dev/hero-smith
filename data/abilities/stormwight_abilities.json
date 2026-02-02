@@ -1,0 +1,122 @@
+[
+  {
+    "type": "ability",
+    "id": "aspect_of_the_wild",
+    "name": "Aspect of the Wild",
+    "level": null,
+    "resource": null,
+    "resource_value": null,
+    "story_text": "You assume the form of the animal who channels your ferocity.",
+    "keywords": "Magic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "You can shapeshift into the animal defined by your storm-wight kit, into a hybrid form, or back into your true form. While in animal form or hybrid form, you can speak as you usually do, and you can also speak to animals who share your form. If you are in a negotiation with an animal while in animal form, you treat your Renown as 2 higher than usual.",
+    "special_effect": "Spend 1 Ferocity: As a free maneuver, you can shapeshift a second time, either into another animal form, into your hybrid form, or back into your true form."
+  },
+  {
+    "type": "ability",
+    "id": "bear_claws",
+    "name": "Bear Claws",
+    "level": null,
+    "resource": null,
+    "resource_value": null,
+    "story_text": "Attacks with your sharp and deadly claws grab the weak.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "2 + M damage; M < WEAK, grabbed",
+        "tier2": "5 + M damage; M < AVERAGE, grabbed",
+        "tier3": "11 + M damage; M < STRONG, grabbed"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "wing_buffet",
+    "name": "Wing Buffet",
+    "level": null,
+    "resource": null,
+    "resource_value": null,
+    "story_text": "Foes who try to close in around you do so at their peril.",
+    "keywords": "Area/Melee/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "1 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "3 damage",
+        "tier2": "6 damage",
+        "tier3": "8 damage"
+      }
+    ],
+    "effect": "You can shift up to 2 squares before or after making the power roll.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "driving_pounce",
+    "name": "Driving Pounce",
+    "level": null,
+    "resource": null,
+    "resource_value": null,
+    "story_text": "Your enemies try in vain to fall back from your pouncing attack.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Agility",
+    "tier_effects": [
+      {
+        "tier1": "4 + A damage",
+        "tier2": "7 + A damage; push 1",
+        "tier3": "9 + A damage; push 2"
+      }
+    ],
+    "effect": "You can shift up to the same number of squares that you pushed the target.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "unbalancing_attack",
+    "name": "Unbalancing Attack",
+    "level": null,
+    "resource": null,
+    "resource_value": null,
+    "story_text": "A wild assault forces your foe onto their back.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "4 + M damage; A < WEAK, prone",
+        "tier2": "7 + M damage; A < AVERAGE, prone",
+        "tier3": "9 + M damage; A < STRONG, prone"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  }
+]

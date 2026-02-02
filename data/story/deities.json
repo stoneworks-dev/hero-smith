@@ -1,0 +1,268 @@
+[
+  {
+    "id": "deity_adun",
+    "type": "deity",
+    "name": "Adûn",
+    "category": "god",
+    "domains": ["Creation", "Life", "Love", "Protection"]
+  },
+  {
+    "id": "deity_cavall",
+    "type": "deity", 
+    "name": "Cavall",
+    "category": "god",
+    "domains": ["Life", "Love", "Protection", "War"]
+  },
+  {
+    "id": "deity_cyrvis",
+    "type": "deity",
+    "name": "Cyrvis", 
+    "category": "god",
+    "domains": ["Death", "Fate", "Knowledge", "Trickery"]
+  },
+  {
+    "id": "deity_kul",
+    "type": "deity",
+    "name": "Kul",
+    "category": "god", 
+    "domains": ["Knowledge", "Life", "Sun", "Trickery", "War"]
+  },
+  {
+    "id": "deity_nebular",
+    "type": "deity",
+    "name": "Nebular the Star Mother",
+    "category": "god",
+    "domains": ["Creation", "Life", "Love", "Sun"]
+  },
+  {
+    "id": "deity_nikros",
+    "type": "deity",
+    "name": "Nikros",
+    "category": "god",
+    "domains": ["Death", "Fate", "Storm", "War"]
+  },
+  {
+    "id": "deity_ord",
+    "type": "deity", 
+    "name": "Ord",
+    "category": "god",
+    "domains": ["Creation", "Knowledge", "Protection", "Sun", "War"]
+  },
+  {
+    "id": "deity_ov",
+    "type": "deity",
+    "name": "OV the Wave Pilot",
+    "category": "god",
+    "domains": ["Fate", "Knowledge", "Storm", "Sun"]
+  },
+  {
+    "id": "deity_salorna",
+    "type": "deity",
+    "name": "Salorna",
+    "category": "god", 
+    "domains": ["Life", "Nature", "Storm", "Sun"]
+  },
+  {
+    "id": "deity_val",
+    "type": "deity",
+    "name": "Val",
+    "category": "god",
+    "domains": ["Creation", "Knowledge", "Life", "Nature", "Protection"]
+  },
+  {
+    "id": "saint_atossa",
+    "type": "deity",
+    "name": "Atossa the Shepherd",
+    "category": "saint",
+    "domains": ["Fate", "Protection", "Trickery"]
+  },
+  {
+    "id": "saint_chokassa",
+    "type": "deity",
+    "name": "Cho'kassa the Time Rider", 
+    "category": "saint",
+    "domains": ["Storm", "Sun"]
+  },
+  {
+    "id": "saint_draighen",
+    "type": "deity",
+    "name": "Draighen the Warden",
+    "category": "saint",
+    "domains": ["Nature", "Sun"]
+  },
+  {
+    "id": "saint_eriarwen",
+    "type": "deity",
+    "name": "Eriarwen the Wroth",
+    "category": "saint", 
+    "domains": ["Nature", "Storm"]
+  },
+  {
+    "id": "saint_eseld",
+    "type": "deity",
+    "name": "Eseld the Eye",
+    "category": "saint",
+    "domains": ["Knowledge", "Trickery"]
+  },
+  {
+    "id": "saint_gaed",
+    "type": "deity", 
+    "name": "Gaed the Confessor",
+    "category": "saint",
+    "domains": ["Love", "Protection"]
+  },
+  {
+    "id": "saint_grole",
+    "type": "deity",
+    "name": "Grole the One-Handed",
+    "category": "saint",
+    "domains": ["Life", "War"]
+  },
+  {
+    "id": "saint_gryffyn",
+    "type": "deity",
+    "name": "Gryffyn the Stout",
+    "category": "saint",
+    "domains": ["Creation", "Life"]
+  },
+  {
+    "id": "saint_gwenllian",
+    "type": "deity",
+    "name": "Gwenllian the Fell Handed",
+    "category": "saint",
+    "domains": ["Protection", "War"]
+  },
+  {
+    "id": "saint_illwyv",
+    "type": "deity",
+    "name": "Illwyv li Orchiax",
+    "category": "saint",
+    "domains": ["Nature", "Protection"]
+  },
+  {
+    "id": "saint_khorvath",
+    "type": "deity",
+    "name": "Khorvath Who Slew a Thousand",
+    "category": "saint",
+    "domains": ["Sun", "War"]
+  },
+  {
+    "id": "saint_khravila",
+    "type": "deity",
+    "name": "Khravila Who Ran Forty Leagues",
+    "category": "saint",
+    "domains": ["Knowledge", "Trickery"]
+  },
+  {
+    "id": "saint_kyruyalka",
+    "type": "deity",
+    "name": "Kyruyalka the False Principle",
+    "category": "saint",
+    "domains": ["Death", "Trickery"]
+  },
+  {
+    "id": "saint_magnetar",
+    "type": "deity",
+    "name": "Lady Magnetar",
+    "category": "saint",
+    "domains": ["Life", "Sun"]
+  },
+  {
+    "id": "saint_llewellyn",
+    "type": "deity",
+    "name": "Llewellyn the Valiant",
+    "category": "saint",
+    "domains": ["Life", "Protection"]
+  },
+  {
+    "id": "saint_mahsiti",
+    "type": "deity",
+    "name": "Mahsiti the Weaver",
+    "category": "saint",
+    "domains": ["Creation", "Knowledge", "Trickery"]
+  },
+  {
+    "id": "saint_pentalion",
+    "type": "deity",
+    "name": "Pentalion the Paladin",
+    "category": "saint",
+    "domains": ["Death", "War"]
+  },
+  {
+    "id": "saint_prexaspes",
+    "type": "deity",
+    "name": "Prexaspes the Stargazer",
+    "category": "saint",
+    "domains": ["Nature", "Protection", "Sun"]
+  },
+  {
+    "id": "saint_ripples",
+    "type": "deity",
+    "name": "Ripples of Honey on a Golden Shore",
+    "category": "saint",
+    "domains": ["Life", "Protection"]
+  },
+  {
+    "id": "saint_sea_of_suns",
+    "type": "deity",
+    "name": "A Sea of Suns",
+    "category": "saint",
+    "domains": ["Creation", "Life"]
+  },
+  {
+    "id": "saint_stakros",
+    "type": "deity",
+    "name": "Stakros the Engineer",
+    "category": "saint",
+    "domains": ["Creation", "Knowledge"]
+  },
+  {
+    "id": "saint_taste_morning",
+    "type": "deity",
+    "name": "The Taste of Morning",
+    "category": "saint",
+    "domains": ["Creation", "Knowledge"]
+  },
+  {
+    "id": "saint_thellasko",
+    "type": "deity",
+    "name": "Thellasko the Great Designer",
+    "category": "saint",
+    "domains": ["Knowledge", "War"]
+  },
+  {
+    "id": "saint_thyll",
+    "type": "deity",
+    "name": "Thyll Hylacae",
+    "category": "saint",
+    "domains": ["Life", "Nature"]
+  },
+  {
+    "id": "saint_uryal",
+    "type": "deity",
+    "name": "Uryal the Subtle",
+    "category": "saint",
+    "domains": ["Knowledge", "Trickery"]
+  },
+  {
+    "id": "saint_valak",
+    "type": "deity",
+    "name": "Valak-koth the Seeker",
+    "category": "saint",
+    "domains": ["Knowledge", "Sun"]
+  },
+  {
+    "id": "saint_yllin",
+    "type": "deity",
+    "name": "Yllin Dyrvis",
+    "category": "saint",
+    "domains": ["Knowledge", "Nature"]
+  },
+  {
+    "id": "saint_zarok",
+    "type": "deity",
+    "name": "Zarok the Law-Giver",
+    "category": "saint",
+    "domains": ["Protection", "War"]
+  }
+]

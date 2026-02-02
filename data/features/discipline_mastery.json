@@ -1,0 +1,101 @@
+[
+  {
+    "id": "chronokinetic_mastery",
+    "name": "Chronokinetic Mastery",
+    "progression": [
+      {
+        "discipline": 2,
+        "benefit": "Whenever you use the Knockback maneuver, you can use the Disengage move action as a free triggered action either before or after the maneuver."
+      },
+      {
+        "discipline": 4,
+        "benefit": "The first time on a turn that you willingly move 1 or more squares as part of an ability, you gain 1 surge."
+      },
+      {
+        "discipline": 6,
+        "benefit": "You gain an edge on the Grab and Knockback maneuvers."
+      },
+      {
+        "discipline": 8,
+        "level": 4,
+        "benefit": "The first time on a turn that you willingly move 1 or more squares as part of an ability, you gain 2 surges."
+      },
+      {
+        "discipline": 10,
+        "level": 7,
+        "benefit": "You have a double edge on the Grab and Knockback maneuvers."
+      },
+      {
+        "discipline": 12,
+        "level": 10,
+        "benefit": "Whenever you force move a target, the forced movement distance gains a bonus equal to your Intuition score. Additionally, whenever you use a heroic ability, you gain 10 temporary Stamina."
+      }
+    ]
+  },
+  {
+    "id": "cryokinetic_mastery",
+    "name": "Cryokinetic Mastery",
+    "progression": [
+      {
+        "discipline": 2,
+        "benefit": "Whenever you use the Knockback maneuver, you can target one additional creature. Additionally, whenever you deal untyped damage with a psionic ability, you can change it to cold damage instead."
+      },
+      {
+        "discipline": 4,
+        "benefit": "The first time on a turn that you grab a creature or an enemy moves 1 or more squares in the area of your Null Field ability, you gain 1 surge."
+      },
+      {
+        "discipline": 6,
+        "benefit": "You gain an edge on the Grab and Knockback maneuvers."
+      },
+      {
+        "discipline": 8,
+        "level": 4,
+        "benefit": "The first time on a turn that you grab a creature or an enemy moves 1 or more squares in the area of your Null Field ability, you gain 2 surges."
+      },
+      {
+        "discipline": 10,
+        "level": 7,
+        "benefit": "You have a double edge on the Grab and Knockback maneuvers."
+      },
+      {
+        "discipline": 12,
+        "level": 10,
+        "benefit": "Whenever you force move a target, the forced movement distance gains a bonus equal to your Intuition score. Additionally, whenever you use a heroic ability, you gain 10 temporary Stamina."
+      }
+    ]
+  },
+  {
+    "id": "metakinetic_mastery",
+    "name": "Metakinetic Mastery",
+    "progression": [
+      {
+        "discipline": 2,
+        "benefit": "Whenever you use the Knockback maneuver, the forced movement distance gains a bonus equal to your Intuition score."
+      },
+      {
+        "discipline": 4,
+        "benefit": "The first time in a combat round that you take damage or are force moved, you gain 1 surge, even if you resist the effect."
+      },
+      {
+        "discipline": 6,
+        "benefit": "You gain an edge on the Grab and Knockback maneuvers."
+      },
+      {
+        "discipline": 8,
+        "level": 4,
+        "benefit": "The first time in a combat round that you take damage or are force moved, you gain 2 surges, even if you resist the effect."
+      },
+      {
+        "discipline": 10,
+        "level": 7,
+        "benefit": "You have a double edge on the Grab and Knockback maneuvers."
+      },
+      {
+        "discipline": 12,
+        "level": 10,
+        "benefit": "Whenever you force move a target, the forced movement distance gains a bonus equal to your Intuition score. Additionally, whenever you use a heroic ability, you gain 10 temporary Stamina."
+      }
+    ]
+  }
+]

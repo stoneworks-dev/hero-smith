@@ -1,0 +1,507 @@
+[
+  {
+    "id": "build_airship",
+    "type": "downtime_project",
+    "name": "Build Airship",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "id": "wind_crystal_of_quintessence",
+          "name": "Wind Crystal of Quintessence"
+        }
+      ],
+      "project_source": [
+        {
+          "id": "low_rhyvian_texts",
+          "name": "Texts or lore in Low Rhyvian",
+          "language": "Low Rhyvian"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Presence"
+      }
+    ],
+    "project_goal": 3000,
+    "project_guides": [],
+    "description": "When you start this project, you hire a crew of carpenters, mages, and shipwrights who work in the area where the project is undertaken, with these artisans building the ship for you. You can make a project roll whenever you are overseeing the project, which you might be able to do remotely through the use of magic or psionics.\n\nWhen the project is completed, you have an airship. You and any creatures you designate can operate the ship by touching the ship's wheel. During combat, a creature touching the wheel can maneuver to make the ship move up to 10 squares. The ship can be moved only once per round. Out of combat, the ship has a speed of 130 miles per day.\n\nAn airship is an object (giving it damage immunity all to poison and psychic damage) and can take 200 damage before it is destroyed. If the damage the ship takes is not too severe (as the Director determines), as long as you have access to materials that can repair the ship, you can restore it back to its original condition as a respite activity."
+  },
+  {
+    "id": "build_or_repair_road",
+    "type": "downtime_project",
+    "name": "Build or Repair Road",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "id": "engineers_guild_approval",
+          "name": "Three writs of approval, from an engineers' guild, a masons' guild, and a guards' guild"
+        }
+      ],
+      "project_source": [
+        {
+          "id": "caelian_texts",
+          "name": "Texts or lore in Caelian",
+          "language": "Caelian"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Presence"
+      }
+    ],
+    "project_goal": "Varies",
+    "project_guides": [],
+    "description": "When you start this project, you hire a crew of masons, engineers, and guards who start work at a location where the project begins and build or repair the road for you. You can make a project roll whenever you are overseeing the project, whether you do so in person or remotely through the use of magic or psionics.\n\nThe number of project points required to complete work on the road equals 10 × the road's length in miles. The goal is cut in half if you are repairing an existing road, or if someone else starts work on a second road project that connects to your project.\n\nWhen you complete the project, you earn Renown among people in the area where the road is built, depending on the length of the road.\n\nTime spent traveling between locations on the road is cut in half. Access to resources and knowledge is improved in locations along the road, giving you and your allies are Edge on project rolls to discover lore while you are in those areas.\n\n**Build or Repair Road Renown:**\n- 50 miles or less: 1 Renown\n- 51-100 miles: 2 Renown\n- More than 100 miles: 3 Renown"
+  },
+  {
+    "id": "craft_teleportation_platform",
+    "type": "downtime_project",
+    "name": "Craft Teleportation Platform",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "id": "spatial_navigator",
+          "name": "One spatial navigator"
+        }
+      ],
+      "project_source": [
+        {
+          "id": "voll_texts",
+          "name": "Texts or lore in Voll",
+          "language": "Voll"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Reason"
+      }
+    ],
+    "project_goal": 1500,
+    "project_guides": [],
+    "description": "When you complete this project, you end up with a 3-square-by-3-square teleportation platform activated by a supernatural password. The platform is permanently affixed to the ground in the location where you created it. Any creature with the teleportation platform on the platform to instantly teleport any creatures or objects on the platform to a location they know, including another teleportation platform whose supernatural password they know. You and any creature you designate upon completion of the activity can change the password as a respite activity.\n\nEach time the teleportation platform is used, the chance of it malfunctioning and teleporting creatures or objects on it to a random platform increases by 1 percent (to a maximum of 50 percent). You can restore the platform back to its original condition and reset this chance of malfunction as a respite activity."
+  },
+  {
+    "id": "craft_treasure",
+    "type": "downtime_project",
+    "name": "Craft Treasure",
+    "prerequisites": {
+      "item_prerequisite": [],
+      "project_source": []
+    },
+    "project_roll_characteristic": [],
+    "project_goal": "Varies",
+    "project_guides": [],
+    "description": "You can craft the items found in Treasures in Chapter 13: Rewards. Each treasure notes its item prerequisite, project source, project roll characteristic, and project goal."
+  },
+  {
+    "id": "find_a_cure",
+    "type": "downtime_project",
+    "name": "Find a Cure",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Varies (see description)"
+        }
+      ],
+      "project_source": []
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": "Varies",
+    "project_guides": [],
+    "description": "You research a cure for a disease, curse, or supernatural affliction whose text states that it can be ended by the Find a Cure downtime project. If the affliction was caused by the innate feature of a creature, you need the remains of that creature or another creature of the same kind as an item prerequisite for crafting the cure. For example, you can research the cure for the lycanthropy. Accursed feat by studying the corpse of any werwolf, not just the one who did the biting.\n\nThe number of project points it takes to complete this project is equal to 50 times the level of the creature who caused the affliction. If the affliction was created by an environmental or supernatural effect, that effect notes the item prerequisite and project points required to complete this project.\n\nWhen you complete this project, you craft one dose of an alchemical cure for the affliction. Once the project is completed, you can craft subsequent doses for the same affliction for half the number of project points required for the initial project."
+  },
+  {
+    "id": "discover_lore_common",
+    "type": "downtime_project",
+    "name": "Discover Lore: Common Knowledge",
+    "prerequisites": {
+      "item_prerequisite": [],
+      "project_source": [
+        {
+          "name": "Texts or knowledge related to the subject you wish to research"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Reason"
+      }
+    ],
+    "project_goal": 15,
+    "project_guides": [],
+    "description": "If you want to track the location of a lost treasure, decipher a ritual, or trace the lineage of a royal family to find the next heir to the throne, you can start a downtime project to find out whatever mysteries you seek to unravel. You might start a project to discover lore because the information can't be discovered through a single test, or you could do so because you failed a test to recall information and now want to learn it through research.\n\nWhen you start a downtime project to discover lore, you choose the lore you want investigated and the questions you want answered. The Director tells you if the lore you seek amounts to common, obscure, lost, or forbidden knowledge. The more esoteric the knowledge, the more project points are required to find the answers you seek.\n\nCommon knowledge is generally easy to discover with a day or so of research. It's not known by every passerby and takes time to uncover, but with plenty of sources, it's easy to find. For example, it might take a lot of time searching it could be that you need to question several members of a rumor mill to figure out who a noble is not-so-secretly courting, or you might need to spend a few hours in a temple to find the particular religious text that carries a seldom-used alternative name for a deity."
+  },
+  {
+    "id": "discover_lore_obscure",
+    "type": "downtime_project",
+    "name": "Discover Lore: Obscure Knowledge",
+    "prerequisites": {
+      "item_prerequisite": [],
+      "project_source": [
+        {
+          "name": "Texts or knowledge related to the subject you wish to research"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Reason"
+      }
+    ],
+    "project_goal": 45,
+    "project_guides": [],
+    "description": "If you want to track the location of a lost treasure, decipher a ritual, or trace the lineage of a royal family to find the next heir to the throne, you can start a downtime project to find out whatever mysteries you seek to unravel. You might start a project to discover lore because the information can't be discovered through a single test, or you could do so because you failed a test to recall information and now want to learn it through research.\n\nWhen you start a downtime project to discover lore, you choose the lore you want investigated and the questions you want answered. The Director tells you if the lore you seek amounts to common, obscure, lost, or forbidden knowledge. The more esoteric the knowledge, the more project points are required to find the answers you seek.\n\nObscure knowledge is known only to specialized sages and is typically of interest only to those scholars. As such, precious few tomes are written on obscure subjects. Finding the right expert or expert text, or the best book to read typically requires several days of research. Uncovering the details of a ritual used to open and close a portal to the Sea of Stars is easy information to come by, but there are people out there who know how to do it—and who wrote the instructions down."
+  },
+  {
+    "id": "discover_lore_lost",
+    "type": "downtime_project",
+    "name": "Discover Lore: Lost Knowledge",
+    "prerequisites": {
+      "item_prerequisite": [],
+      "project_source": [
+        {
+          "name": "Texts or knowledge related to the subject you wish to research"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Reason"
+      }
+    ],
+    "project_goal": 120,
+    "project_guides": [],
+    "description": "If you want to track the location of a lost treasure, decipher a ritual, or trace the lineage of a royal family to find the next heir to the throne, you can start a downtime project to find out whatever mysteries you seek to unravel. You might start a project to discover lore because the information can't be discovered through a single test, or you could do so because you failed a test to recall information and now want to learn it through research.\n\nWhen you start a downtime project to discover lore, you choose the lore you want investigated and the questions you want answered. The Director tells you if the lore you seek amounts to common, obscure, lost, or forbidden knowledge. The more esoteric the knowledge, the more project points are required to find the answers you seek.\n\nLost knowledge is so esoteric that even among a field's most dedicated scholars, there might be only one or two individuals who have dug deep enough to learn it. Lost knowledge could also be from a time so long ago that only a single text in a dead language now holds the lore you seek. Such lore often takes more than a week to hunt down. The location of a legendary steel dwarf's workshop is mostly lost—except for one map hidden in a private collection."
+  },
+  {
+    "id": "discover_lore_forbidden",
+    "type": "downtime_project",
+    "name": "Discover Lore: Forbidden Knowledge",
+    "prerequisites": {
+      "item_prerequisite": [],
+      "project_source": [
+        {
+          "name": "Texts or knowledge related to the subject you wish to research"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Reason"
+      }
+    ],
+    "project_goal": 240,
+    "project_guides": [],
+    "description": "If you want to track the location of a lost treasure, decipher a ritual, or trace the lineage of a royal family to find the next heir to the throne, you can start a downtime project to find out whatever mysteries you seek to unravel. You might start a project to discover lore because the information can't be discovered through a single test, or you could do so because you failed a test to recall information and now want to learn it through research.\n\nWhen you start a downtime project to discover lore, you choose the lore you want investigated and the questions you want answered. The Director tells you if the lore you seek amounts to common, obscure, lost, or forbidden knowledge. The more esoteric the knowledge, the more project points are required to find the answers you seek.\n\nForbidden knowledge is lore that a powerful individual or organization is attempting to keep secret. Those who know the secrets speak of them in whispered codes after passwords are exchanged, and texts are written only with ciphers. Hunting down leads and making sense of them typically takes weeks. The location of the dagger that lit the throat of the god of death is hidden behind layers of encoded text and written in a dead language known only to that god's most devout followers."
+  },
+  {
+    "id": "study_lore",
+    "type": "downtime_project",
+    "name": "Study Lore",
+    "prerequisites": {
+      "item_prerequisite": [],
+      "project_source": [
+        {
+          "name": "A significant source of information on the topic of your obsession, such as a major library or a world-renowned sage."
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Reason"
+      }
+    ],
+    "project_goal": [120, 150, 180],
+    "project_guides": [],
+    "description": "Each time you complete this project, your knowledge of your chosen field expands, and the bonus to tests provided by your chosen skill increases by 1."
+  },
+  {
+    "id": "hone_career_skills",
+    "type": "downtime_project",
+    "name": "Hone Career Skills",
+    "prerequisites": {
+      "item_prerequisite": [],
+      "project_source": []
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": "Varies",
+    "project_guides": [],
+    "description": "You revisit your previous life to freshen up on the experience it provided you. When this project is complete, you gain an edge on tests made using the skills provided by your career.\n\nThe project goal is 240 if your career granted you two skills, or 360 if your career granted you three skills."
+  },
+  {
+    "id": "learn_from_master_hone_ability",
+    "type": "downtime_project",
+    "name": "Learn From a Master: Hone Ability",
+    "prerequisites": {
+      "item_prerequisite": [],
+      "project_source": [
+        {
+          "name": "An NPC of a higher level, or records of such an NPC's teachings in a language you know"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Your highest characteristic"
+      }
+    ],
+    "project_goal": 120,
+    "project_guides": [],
+    "description": "When you seek to learn from a master, you choose the goal you wish to work on as well as the benefit you would gain from it. The Director tells you whether the master or the materials they've left behind are able to teach you what you want to learn.\n\nHone Ability: You sharpen the effectiveness of one of your abilities of your choice. Choose between adding a +1/+1/+1 damage bonus to the ability, or improving the distance of a ranged ability by 2. An ability can be honed only once this way."
+  },
+  {
+    "id": "learn_from_master_improve_control",
+    "type": "downtime_project",
+    "name": "Learn From a Master: Improve Control",
+    "prerequisites": {
+      "item_prerequisite": [],
+      "project_source": [
+        {
+          "name": "An NPC of a higher level, or records of such an NPC's teachings in a language you know"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Your highest characteristic"
+      }
+    ],
+    "project_goal": 500,
+    "project_guides": [],
+    "description": "When you seek to learn from a master, you choose the goal you wish to work on as well as the benefit you would gain from it. The Director tells you whether the master or the materials they've left behind are able to teach you what you want to learn.\n\nImprove Control: You learn to use one of your heroic abilities more efficiently, reducing its baseline Heroic Resource cost by 1 (to a minimum of 1). You can gain this benefit only once for any ability."
+  },
+  {
+    "id": "learn_from_master_acquire_ability",
+    "type": "downtime_project",
+    "name": "Learn From a Master: Acquire Ability",
+    "prerequisites": {
+      "item_prerequisite": [],
+      "project_source": [
+        {
+          "name": "An NPC of a higher level, or records of such an NPC's teachings in a language you know"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Your highest characteristic"
+      }
+    ],
+    "project_goal": 1000,
+    "project_guides": [],
+    "description": "When you seek to learn from a master, you choose the goal you wish to work on as well as the benefit you would gain from it. The Director tells you whether the master or the materials they've left behind are able to teach you what you want to learn.\n\nAcquire Ability: You gain one signature ability of your choice from the master's class (gaining a second signature ability if the master is of the same class as you). If the master is a tactician, you can gain the Strike Now ability instead. You can't gain this benefit again for the same class."
+  },
+  {
+    "id": "learn_new_language",
+    "type": "downtime_project",
+    "name": "Learn New Language",
+    "prerequisites": {
+      "item_prerequisite": [],
+      "project_source": [
+        {
+          "name": "Texts or instruction that teaches the language you want to learn"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 120,
+    "project_guides": [],
+    "description": "When you start this project, choose a language taught by the project source. When the project is complete, you understand the language."
+  },
+  {
+    "id": "learn_new_skill",
+    "type": "downtime_project",
+    "name": "Learn New Skill",
+    "prerequisites": {
+      "item_prerequisite": [],
+      "project_source": [
+        {
+          "name": "Texts or instruction that teaches the skill you want to learn"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 120,
+    "project_guides": [],
+    "description": "When you start this project, choose a skill taught by the project source. When the project is complete, you have that skill."
+  },
+  {
+    "id": "perfect_new_recipe_modern",
+    "type": "downtime_project",
+    "name": "Perfect New Recipe: Modern",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Common ingredients (flour, carrots, beef, and so forth)"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "A recipe in a language you know, or someone who can tutor you in that recipe"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 100,
+    "project_guides": [],
+    "description": "When you start this project, you choose a recipe for a specific type of dish. The item prerequisite for the project is the ingredients required, which depend on the recipe and which might be difficult to acquire depending on the recipe and its place of origin. You gain a +3 bonus to the project roll if the recipe is one from your culture.\n\nWhen you complete the project, you can make five servings of food from the recipe as a respite activity (whenever you have access to the ingredients. You and other creatures taking a respite with you can eat a serving of the food and gain its benefits (see below).\n\nA creature who eats a serving of food from a particular type of recipe gains one of the following benefits, which lasts until another respite:\n\nHearty: The creature increases their Recoveries by 1 at the end of the respite in which the food is consumed.\n\nA creature can benefit from the food of only one recipe at a time, and can't benefit from more than one serving of a recipe at a time."
+  },
+  {
+    "id": "perfect_new_recipe_vintage_or_home",
+    "type": "downtime_project",
+    "name": "Perfect New Recipe: Vintage or Home",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Key ingredients (starfruit, kindleseeds, oarfish, and so forth)"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "A recipe in a language you know, or someone who can tutor you in that recipe"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 100,
+    "project_guides": [],
+    "description": "When you start this project, you choose a recipe for a specific type of dish. The item prerequisite for the project is the ingredients required, which depend on the recipe and which might be difficult to acquire depending on the recipe and its place of origin. You gain a +3 bonus to the project roll if the recipe is one from your culture.\n\nWhen you complete the project, you can make five servings of food from the recipe as a respite activity (whenever you have access to the ingredients. You and other creatures taking a respite with you can eat a serving of the food and gain its benefits (see below).\n\nA creature who eats a serving of food from a particular type of recipe gains one of the following benefits, which lasts until another respite:\n\nComforting: When the creature fails a saving throw, they can choose to succeed instead. This benefit then ends.\n\nA creature can benefit from the food of only one recipe at a time, and can't benefit from more than one serving of a recipe at a time."
+  },
+  {
+    "id": "perfect_new_recipe_ancient_or_lost",
+    "type": "downtime_project",
+    "name": "Perfect New Recipe: Ancient or Lost",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Rare or extinct ingredients (honeylilies, steel apples, and so forth)"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "A recipe in a language you know, or someone who can tutor you in that recipe"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 100,
+    "project_guides": [],
+    "description": "When you start this project, you choose a recipe for a specific type of dish. The item prerequisite for the project is the ingredients required, which depend on the recipe and which might be difficult to acquire depending on the recipe and its place of origin. You gain a +3 bonus to the project roll if the recipe is one from your culture.\n\nWhen you complete the project, you can make five servings of food from the recipe as a respite activity (whenever you have access to the ingredients. You and other creatures taking a respite with you can eat a serving of the food and gain its benefits (see below).\n\nA creature who eats a serving of food from a particular type of recipe gains one of the following benefits, which lasts until another respite:\n\nSupernatural Power: The creature temporarily increases one of their characteristic scores by 1 (to a maximum of 6).\n\nA creature can benefit from the food of only one recipe at a time, and can't benefit from more than one serving of a recipe at a time."
+  },
+  {
+    "id": "community_service",
+    "type": "downtime_project",
+    "name": "Community Service",
+    "prerequisites": {
+      "item_prerequisite": [],
+      "project_source": []
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Varies"
+      }
+    ],
+    "project_goal": 75,
+    "project_guides": [],
+    "description": "When you start this project, you must be in a settlement or other location where people gather, and you must be in that same place each time you make a project roll for the project. You can undertake several Community Service projects at the same time, but each one must be in a different community.\n\nWhile undertaking this project, you provide help to people in need, doing odd jobs, tutoring life skills, cleaning streets or public spaces, finding lost valuables, and the like. The Director determines the characteristic that applies to the project roll based on the activities you undertake. When you complete this project, you receive a random consumable treasure of the Director's choice from someone in the community as thanks for your hard work."
+  },
+  {
+    "id": "spend_time_with_loved_ones",
+    "type": "downtime_project",
+    "name": "Spend Time With Loved Ones",
+    "prerequisites": {
+      "item_prerequisite": [],
+      "project_source": []
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Presence"
+      }
+    ],
+    "project_goal": 60,
+    "project_guides": [],
+    "description": "You revitalize your spirit by spending time with people you love who you haven't seen in a long while. You must be able to communicate with those people to undertake this project or make project rolls for it. When you complete this project, your Stamina increases by 12 + your level until the end of your next respite, and you can't start another Spend Time With Loved Ones project for a month."
+  },
+  {
+    "id": "fishing",
+    "type": "downtime_project",
+    "name": "Fishing",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Fishing tackle (varies by type - see tackle table)"
+        }
+      ],
+      "project_source": []
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": "Varies",
+    "project_guides": [],
+    "description": "You spend time fishing in a body of water, using different types of tackle to catch various fish. The type of tackle you use determines the project goal and potential catch.\n\nWhen you start this project, choose the type of fishing tackle you're using from the tackle table below. The project goal varies based on the tackle type:\n\n**Tackle Table:**\n- **Simple tackle** (string, hook, worm): Project goal 30, catches common freshwater fish\n- **Professional tackle** (rod, reel, lures): Project goal 45, catches sport fish and larger specimens\n- **Specialized tackle** (nets, traps, deep-water gear): Project goal 60, catches rare or exotic fish\n- **Magical tackle** (enchanted lures, divination rods): Project goal 90, catches supernatural fish with special properties\n\nWhen you complete this project, you catch fish appropriate to your tackle type and the body of water you're fishing in. The Director determines the specific catch, which might include food, alchemical ingredients, or even small treasures found in the fish."
+  }
+]

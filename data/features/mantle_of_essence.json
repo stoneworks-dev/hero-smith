@@ -1,0 +1,67 @@
+[
+  {
+    "id": "earth_mantle_of_essence",
+    "name": "Earth Mantle of Essence",
+    "progression": [
+      {
+        "essence": 3,
+        "benefit": "At the end of each of your turns, you can push each enemy in the area up to a number of squares equal to your Reason score."
+      },
+      {
+        "essence": 0,
+        "level": 7,
+        "benefit": " Your Mantle of Essence feature no longer requires essence. \n\nAdditionally, your Mantle of Essence now radiates magic that creates a calming air. Creatures in the area of the mantle’s aura have their starting patience increased by 1 (to a maximum of 5) during any negotiation. While in the area, you and any ally gain an edge on tests that use the Handle Animals skill. If you have 5 or more Victories, the bonus to patience increases to 2 and tests that use the Handle Animals skill have a double edge."
+      },
+      {
+        "essence": 0,
+        "level": 8,
+        "benefit": " While in the area of the aura, enemies and objects have their stability reduced by an amount equal to your level."
+      }
+    ]
+  },
+  {
+    "id": "fire_mantle_of_essence",
+    "name": "Fire Mantle of Essence",
+    "progression": [
+      {
+        "essence": 3,
+        "benefit": "At the end of each of your turns, each enemy in the area takes fire damage equal to your Reason score."
+      },
+      {
+        "essence": 0,
+        "level": 7,
+        "benefit": " Your Mantle of Essence feature no longer requires essence. \n\nAdditionally, your Mantle of Essence now radiates magic that creates a calming air. Creatures in the area of the mantle’s aura have their starting patience increased by 1 (to a maximum of 5) during any negotiation. While in the area, you and any ally gain an edge on tests that use the Handle Animals skill. If you have 5 or more Victories, the bonus to patience increases to 2 and tests that use the Handle Animals skill have a double edge."
+      }
+    ]
+  },
+  {
+    "id": "green_mantle_of_essence",
+    "name": "Green Mantle of Essence",
+    "progression": [
+      {
+        "essence": 3,
+        "benefit": "At the end of each of your turns, each ally in the area gains temporary Stamina equal to your Reason score"
+      },
+      {
+        "essence": 0,
+        "level": 7,
+        "benefit": " Your Mantle of Essence feature no longer requires essence. \n\nAdditionally, your Mantle of Essence now radiates magic that creates a calming air. Creatures in the area of the mantle’s aura have their starting patience increased by 1 (to a maximum of 5) during any negotiation. While in the area, you and any ally gain an edge on tests that use the Handle Animals skill. If you have 5 or more Victories, the bonus to patience increases to 2 and tests that use the Handle Animals skill have a double edge."
+      }
+    ]
+  },
+  {
+    "id": "void_mantle_of_essence",
+    "name": "Void Mantle of Essence",
+    "progression": [
+      {
+        "essence": 3,
+        "benefit": " The area provides concealment for you and your allies."
+      },
+      {
+        "essence": 0,
+        "level": 7,
+        "benefit": " Your Mantle of Essence feature no longer requires essence. \n\nAdditionally, your Mantle of Essence now radiates magic that creates a calming air. Creatures in the area of the mantle’s aura have their starting patience increased by 1 (to a maximum of 5) during any negotiation. While in the area, you and any ally gain an edge on tests that use the Handle Animals skill. If you have 5 or more Victories, the bonus to patience increases to 2 and tests that use the Handle Animals skill have a double edge."
+      }
+    ]
+  }
+]

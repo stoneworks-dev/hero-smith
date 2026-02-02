@@ -1,0 +1,360 @@
+[
+  {
+    "id": "feature_fury_primordial_aspect",
+    "type": "subclass",
+    "name": "Primordial Aspect",
+    "is_subclass_feature": true,
+    "class": "fury",
+    "level": 1,
+    "description": "You are a product of customs older than warfare, older than civilization, older than most of the world. You have undergone a rite of passage that revealed the building blocks of the timescape—the Primordial Chaos—and that left an aspect of that chaos inside you. You choose a primordial aspect from the following options, each of which grants you a skill. (Quick Build: Berserker.",
+    "options": [
+      {
+        "subclass_name": "Berserker",
+        "skill": "Lift",
+        "description": " You channel your ferocity into physical might, acting as a living version of the forces that shape the world. You have the Lift skill."
+      },
+      {
+        "subclass_name": "Reaver",
+        "skill": "Hide",
+        "description": "You channel your ferocity into instinct and cunning, challenging the order of civilization. You have the Hide skill."
+      },
+      {
+        "subclass_name": "Stormwight",
+        "skill": "Track",
+        "description": "You channel your ferocity into primordial storms and can take on the form of an animal or an animal hybrid form. You have the Track skill"
+      }
+    ]
+  },
+  {
+    "id": "feature_fury_primordial_aspect_features",
+    "type": "feature",
+    "name": "Aspect Features",
+    "class": "fury",
+    "is_subclass_feature": true,
+    "level": 1,
+    "description": "You are a product of customs older than warfare, older than civilization, older than most of the world. You have undergone a rite of passage that revealed the building blocks of the timescape\u00e2\u20ac\u201dthe Primordial Chaos\u00e2\u20ac\u201dand that left an aspect of that chaos inside you. You choose a primordial aspect from the following options, each of which grants you a skill. (*Quick Build:* Berserker.)\n\nYour primordial aspect is your subclass, and your choice of aspect determines many of the features you'll gain as you gain new levels.",
+    "grants": [
+      {
+        "subclass_name": "Berserker",
+        "name": "Primordial Strength",
+        "description": "Whenever you damage an object with a weapon strike, the strike deals extra damage equal to your Might score. Additionally, whenever you push another creature into an object, the creature takes extra damage equal to your Might score.\n\nAs your ferocity grows, you gain benefits as noted on the Berserker Growing Ferocity table. Benefits are cumulative except where an improved benefit replaces a lesser benefit."
+      },
+      {
+        "subclass_name": "Reaver",
+        "name": "Primordial Cunning",
+        "description": "You are never surprised. Additionally, whenever you would push a target with forced movement, you can slide them instead.\n\nAs your ferocity grows, you gain benefits as noted on the Reaver Growing Ferocity table. Benefits are cumulative except where an improved benefit replaces a lesser benefit."
+      },
+      {
+        "subclass_name": "Stormwight",
+        "name": "Relentless Hunter",
+        "description": "You gain an edge on tests made using the Track skill."
+      }
+    ]
+  },
+  {
+    "id": "feature_fury_ferocity",
+    "type": "heroic resource",
+    "name": "Ferocity",
+    "class": "fury",
+    "level": 1,
+    "description": "You channel primordial rage through a Heroic Resource called ferocity, gaining more as the battle intensifies.",
+    "in_combat": {
+      "name": "Ferocity in Combat",
+      "description": "At the start of a combat encounter or some other stressful situation tracked in combat rounds (as determined by the Director), you gain ferocity equal to your Victories. At the start of each of your turns during combat, you gain 1d3 ferocity.\n\nAdditionally, the first time each combat round that you take damage, you gain 1 ferocity. The first time you become winded or are dying in an encounter, you gain 1d3 ferocity.\nYou lose any remaining ferocity at the end of the encounter."
+    },
+    "out_of_combat": {
+      "name": "Ferocity Outside of Combat",
+      "description": "Though you can't gain ferocity outside of combat, you can use your heroic abilities and effects that cost ferocity without spending it. Whenever you use an ability or effect outside of combat that costs ferocity, you can't use that same ability or effect outside of combat again until you earn 1 or more Victories or finish a respite.\n\nWhen you use an ability outside of combat that lets you spend unlimited ferocity on its effect, such as To the Uttermost End, you can use it as if you had spent an amount of ferocity equal to your Victories."
+    }
+  },
+  {
+    "id": "feature_fury_growing_ferocity",
+    "type": "feature",
+    "name": "Growing Ferocity",
+    "class": "fury",
+    "is_subclass_feature": true,
+    "level": 1,
+    "description": "Track how your ferocity empowers you. Each aspect lists escalating benefits as your ferocity reaches higher thresholds.",
+    "grants": [
+      {
+        "aspect": "Berserker",
+        "table": "Consult the Berserker Growing Ferocity table for bonuses linked to Primordial Strength.",
+        "load_additional_features": {
+          "type": "table",
+          "name": "growing_ferocity.json"
+        }
+      },
+      {
+        "aspect": "Reaver",
+        "table": "Consult the Reaver Growing Ferocity table for effects tied to Primordial Cunning.",
+        "load_additional_features": {
+          "type": "table",
+          "name": "growing_ferocity.json"
+        }
+      },
+      {
+        "aspect": "Stormwight",
+        "table": "Consult your stormwight kit for Growing Ferocity benefits granted by Beast Shape.",
+        "load_additional_features": {
+          "type": "table",
+          "name": "growing_ferocity.json"
+        }
+      }
+    ]
+  },
+  {
+    "id": "feature_fury_mighty_leaps",
+    "type": "feature",
+    "name": "Mighty Leaps",
+    "class": "fury",
+    "level": 1,
+    "description": "You can't obtain lower than a tier 2 outcome on any Might test made to jump (see Movement Types in Chapter 10: Combat)."
+  },
+  {
+    "id": "feature_fury_aspect_triggered_action",
+    "type": "feature",
+    "name": "Aspect Triggered Action",
+    "class": "fury",
+    "is_subclass_feature": true,
+    "level": 1,
+    "description": "Choose the triggered action tied to your primordial aspect.",
+    "grants": [
+      {
+        "subclass_name": "Berserker",
+        "name": "Lines of Force",
+        "ability": "Lines of Force"
+      },
+      {
+        "subclass_name": "Reaver",
+        "name": "Unearthly Reflexes",
+        "ability": "Unearthly Reflexes"
+      },
+      {
+        "subclass_name": "Stormwight",
+        "name": "Furious Change",
+        "ability": "Furious Change"
+      }
+    ]
+  },
+  {
+    "id": "feature_fury_specialization_feature_2",
+    "type": "feature",
+    "name": "Aspect Feature",
+    "class": "fury",
+    "is_subclass_feature": true,
+    "level": 2,
+    "description": "You gain the 2th-level feature associated with your primordial aspect.",
+    "grants": [
+      {
+        "subclass_name": "Berserker",
+        "name": "Unstoppable Force",
+        "description": "Whenever you use the Charge main action, you can use a strike signature ability or a strike heroic ability instead of a free strike. Additionally, you can jump as part of your charge."
+      },
+      {
+        "subclass_name": "Reaver",
+        "name": "Inescapable Wrath",
+        "description": "You have a bonus to speed equal to your Agility score, and you ignore difficult terrain."
+      },
+      {
+        "subclass_name": "Stormwight",
+        "name": "Tooth and Claw",
+        "description": "At the end of each of your turns, each enemy adjacent to you takes damage equal to your Might score."
+      }
+    ]
+  },
+  {
+    "id": "feature_fury_specialization_feature_3",
+    "type": "feature",
+    "name": "Aspect Feature",
+    "class": "fury",
+    "is_subclass_feature": true,
+    "level": 3,
+    "description": "You gain the 3th-level feature associated with your primordial aspect.",
+    "grants": [
+      {
+        "subclass_name": "Berserker",
+        "name": "Immovable Object",
+        "description": "You add your level to your effective size for the purpose of interacting with creatures and objects, including determining whether you can lift an object, are affected by forced movement, and so forth. This has no effect on whether you can be grabbed.\n\nAdditionally, you have a bonus to stability equal to your Might score."
+      },
+      {
+        "subclass_name": "Reaver",
+        "name": "See Through Their Tricks",
+        "description": "You have a double edge on tests made to search for hidden creatures, discern hidden motives, or detect lies. You also have a double edge on tests made to gamble!"
+      },
+      {
+        "subclass_name": "Stormwight",
+        "name": "Nature's Knight",
+        "description": "You can speak with animals and elementals. Additionally, you automatically sense the presence of animals and elementals within 10 squares of you, even if they are hidden.\n\nWhen you are in a negotiation with an animal or elemental, you treat your Renown as 1 higher than usual. This stacks with the increase to your effective Renown in a negotiation with an animal of your type while in animal form (see Stormwight Kits)."
+      }
+    ]
+  },
+  {
+    "id": "feature_fury_damaging_ferocity",
+    "type": "feature",
+    "name": "Damaging Ferocity",
+    "class": "fury",
+    "level": 4,
+    "description": "The first time you take damage each combat round, you gain 2 ferocity instead of 1."
+  },
+  {
+    "id": "feature_fury_growing_ferocity_improvement_2",
+    "type": "feature",
+    "name": "Growing Ferocity Improvement",
+    "class": "fury",
+    "level": 4,
+    "description": "Your Growing Ferocity feature provides additional benefits when you have 8 or more ferocity."
+  },
+  {
+    "id": "feature_fury_primordial_attunement",
+    "type": "feature",
+    "name": "Primordial Attunement",
+    "class": "fury",
+    "level": 4,
+    "description": "As your ferocity manifests elemental forces created by the Primordial Chaos, you are aware of how elemental power interacts with those around you. You automatically sense whether any creature within 10 squares has damage immunity or damage weakness to acid, cold, corruption, fire, lightning, poison, or sonic damage, learning whether they have immunity or weakness, the value of that immunity or weakness, and the specific damage type. Additionally, you automatically sense any source of one of those damage types within 10 squares, such as a fire or a source of elemental power."
+  },
+  {
+    "id": "feature_fury_primordial_strike",
+    "type": "feature",
+    "name": "Primordial Strike",
+    "class": "fury",
+    "level": 4,
+    "description": "You can manifest your ferocity directly as an elemental force created by the Primordial Chaos. As part of any strike, you can spend 1 ferocity to gain 1 surge that must be used for that strike. The extra damage dealt by the surge can be acid, cold, corruption, fire, lightning, poison, or sonic (your choice)."
+  },
+  {
+    "id": "feature_fury_specialization_feature_5",
+    "type": "feature",
+    "name": "Aspect Feature",
+    "class": "fury",
+    "is_subclass_feature": true,
+    "level": 5,
+    "description": "You gain the 5th-level feature associated with your primordial aspect.",
+    "grants": [
+      {
+        "subclass_name": "Berserker",
+        "name": "Bounder",
+        "description": "Your jump distance and height double (see Movement Types in Chapter 10: Combat). Additionally, when you fall, you reduce the effective height of your fall by a number of squares equal to your jump distance for the purpose of determining damage and whether you land prone (see Falling in Chapter 10). You are not prone after falling and landing on another creature."
+      },
+      {
+        "subclass_name": "Reaver",
+        "name": "Unfettered",
+        "description": "At the start of your turn, you can end any restrained condition on you. Additionally, you have a double edge on tests made to escape being confined or imprisoned."
+      },
+      {
+        "subclass_name": "Stormwight",
+        "name": "Stormborn",
+        "description": "You and each ally within 5 squares of you ignore negative effects from inclement weather, such as banes or environmental damage. Additionally, you can use the Blessing of Fortunate Weather feature as if you were a 1st-level conduit (see 1st-Level Domain Feature in the Conduit section)."
+      }
+    ]
+  },
+  {
+    "id": "feature_fury_marauder_of_the_primordial_chaos",
+    "type": "feature",
+    "name": "Marauder of the Primordial Chaos",
+    "class": "fury",
+    "level": 6,
+    "description": "As your connection to the power of the Primordial Chaos grows ever stronger, you automatically sense any elemental creatures or magic sources of elemental power, such as a lava pool or a lake overlapping with Quintessence, within 1 mile of you.\n\nAdditionally, you can speak with elemental creatures, and when you are in a negotiation with an elemental, you treat your Renown as 1 higher than usual. This stacks with the increase to your effective Renown provided by the Nature's Knight aspect feature (see 3rd-Level Features). When any elemental first becomes aware of you in combat, if they have P < AVERAGE, they are frightened of you (save ends)."
+  },
+  {
+    "id": "feature_fury_primordial_portal",
+    "type": "feature",
+    "name": "Primordial Portal",
+    "class": "fury",
+    "level": 6,
+    "description": "As a main action, you can touch a magic source of elemental power and use it to create a portal to Quintessence. You can then use a main action to teleport yourself and any willing creatures within 10 squares of you through the portal and onto a safe island in Quintessence, or to teleport back again. You can maintain a number of portals equal to your Might score, each leading to the same safe island in Quintessence. If a portal in your network is destroyed, it is no longer part of the network. You can remove a portal from your network no matter your distance from it, including across different worlds (no action required).\n\n(Exploring Quintessence is possible from your island, but continued safety is not guaranteed.)"
+  },
+  {
+    "id": "feature_fury_elemental_form",
+    "type": "feature",
+    "name": "Elemental Form",
+    "class": "fury",
+    "level": 7,
+    "description": "You exhibit ever-stronger signs of how the force of the Primordial Chaos flows within you. Whenever you show strong emotion or increase your ferocity, elemental motes attuned to your mood flit around you, and your skin changes in appearance to reflect an element of your choice.\n\nAdditionally, if you are a berserker or reaver, you have immunity to acid, cold, corruption, fire, lightning, poison, and sonic damage equal to your Might score. If you are a stormwight, you have immunity to the damage type of your Primordial Storm feature equal to twice your Might score."
+  },
+  {
+    "id": "feature_fury_greater_ferocity",
+    "type": "feature",
+    "name": "Greater Ferocity",
+    "class": "fury",
+    "level": 7,
+    "description": "When you gain ferocity at the start of each of your turns during combat, you gain 1d3 + 1 ferocity instead of 1d3."
+  },
+  {
+    "id": "feature_fury_growing_ferocity_improvement_3",
+    "type": "feature",
+    "name": "Growing Ferocity Improvement",
+    "class": "fury",
+    "level": 7,
+    "description": "Your Growing Ferocity feature provides additional benefits when you have 10 or more ferocity."
+  },
+  {
+    "id": "feature_fury_specialization_feature_8",
+    "type": "feature",
+    "name": "Aspect Feature",
+    "class": "fury",
+    "is_subclass_feature": true,
+    "level": 8,
+    "description": "You gain the 8th-level feature associated with your primordial aspect.",
+    "grants": [
+      {
+        "subclass_name": "Berserker",
+        "name": "Strongest There Is",
+        "description": "Your strength is unmatched. Whenever you make a Might test, you can roll three dice and choose which two to use. Additionally, whenever you use the Knockback maneuver, the forced movement distance gains a bonus equal to your Might score."
+      },
+      {
+        "subclass_name": "Reaver",
+        "name": "A Step Ahead",
+        "description": "You move with legendary grace. Whenever you make an Agility test, you can roll three dice and choose which two to use. Additionally, whenever you use the Disengage move action, the distance you can shift gains a bonus equal to your Agility score."
+      },
+      {
+        "subclass_name": "Stormwight",
+        "name": "Menagerie",
+        "description": "You can use all stormwight kits. During a respite, you can choose to swap your stormwight kit and still take another respite activity. Your Nature's Knight feature now lets you automatically sense the presence of animals within 1 mile of you. Additionally, whenever you make a test to track another creature, you can roll three dice and choose which two to use."
+      }
+    ]
+  },
+  {
+    "id": "feature_fury_harbinger_of_the_primordial_chaos",
+    "type": "feature",
+    "name": "Harbinger of the Primordial Chaos",
+    "class": "fury",
+    "is_subclass_feature": false,
+    "level": 9,
+    "description": "You can create a temporary source of elemental power as a respite activity. This source of elemental power lasts 24 hours after creation, and can be used to create a portal to Quintessence with your Primordial Portal feature. If you do so, the source of elemental power lasts as long as the portal is maintained in your network."
+  },
+  {
+    "id": "feature_fury_chaos_incarnate",
+    "type": "feature",
+    "name": "Chaos Incarnate",
+    "class": "fury",
+    "is_subclass_feature": false,
+    "level": 10,
+    "description": "Your mastery of elemental forces protects and emboldens you. If you are a berserker or reaver, you have immunity to acid, cold, corruption, fire, lightning, poison, and sonic damage equal to twice your Might score. If you are a stormwight, your damage immunity from your Primordial Storm feature (see Stormwight Kits) increases to three times your Might score.\n\nWhen any elemental or any other creature whose abilities deal acid, cold, corruption, fire, lightning, poison, or sonic damage first becomes aware of you in combat, if they have P < STRONG, they are frightened of you (save ends).\nAdditionally, when you use Primordial Strike, you can spend up to 3 ferocity, gaining 1 surge per ferocity spent to use for that strike."
+  },
+  {
+    "id": "feature_fury_growing_ferocity_improvement",
+    "type": "feature",
+    "name": "Growing Ferocity Improvement",
+    "class": "fury",
+    "is_subclass_feature": false,
+    "level": 10,
+    "description": "Your Growing Ferocity feature provides additional benefits when you have 12 or more ferocity."
+  },
+  {
+    "id": "feature_fury_primordial_ferocity",
+    "type": "feature",
+    "name": "Primordial Ferocity",
+    "class": "fury",
+    "is_subclass_feature": false,
+    "level": 10,
+    "description": "The first time you take damage each combat round, you gain 3 ferocity instead of 2."
+  },
+  {
+    "id": "feature_fury_primordial_power",
+    "type": "feature",
+    "name": "Primordial Power",
+    "class": "fury",
+    "is_subclass_feature": false,
+    "level": 10,
+    "description": "You have an epic resource called primordial power. Each time you finish a respite, you gain primordial power equal to the XP you gain. You can spend primordial power on your abilities as if it were ferocity.\n\nAdditionally, you can spend any amount of primordial power as a free maneuver, ending one effect on you for each primordial power spent.\nYou can also spend 3 primordial power to create a portal to Quintessence without needing a source of elemental power.\nPrimordial power remains until you spend it."
+  }
+]

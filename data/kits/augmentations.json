@@ -1,0 +1,94 @@
+[
+  {
+    "id": "battle_augmentation",
+    "type": "psionic_augmentation",
+    "name": "Battle Augmentation",
+    "description": "You can wear light armor and wield light weapons effectively, even though you don't have a kit. While you wear light armor, you gain a +3 bonus to Stamina, and that bonus increases by 3 at 4th, 7th, and 10th levels. While you wield a light weapon, you gain a +1 damage bonus with weapon abilities, including free strikes. You can use light armor treasures and light weapon treasures. If you have a kit, you can't take this augmentation.",
+    "equipment_description": "You can wear light armor and wield light weapons effectively, even though you don’t have a kit.",
+    "equipment": {
+      "armor": {
+        "none": false,
+        "light": true,
+        "medium": false,
+        "heavy": false,
+        "shield": false
+      },
+      "weapons": {
+        "bow": false,
+        "ensnaring_weapon": false,
+        "light": true,
+        "medium": false,
+        "heavy": false,
+        "polearm": false,
+        "unarmed_strikes": false,
+        "whip": false
+      }
+    },
+    "stamina_bonus": 3,
+    "speed_bonus": null,
+    "stability_bonus": null,
+    "melee_damage_bonus": {
+      "1st_tier": 1,
+      "2nd_tier": 1,
+      "3rd_tier": 1
+    },
+    "ranged_damage_bonus": {
+      "1st_tier": null,
+      "2nd_tier": null,
+      "3rd_tier": null
+    },
+    "melee_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "ranged_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "disengage_bonus": null,
+    "incompatible_with_kit": true,
+    "available_to_classes": ["talent"]
+  },
+  {
+    "id": "distance_augmentation",
+    "type": "psionic_augmentation",
+    "name": "Distance Augmentation",
+    "description": "Your ranged psionic abilities gain a +2 bonus to distance.",
+    "ranged_distance_bonus": {
+      "1st_echelon": 2,
+      "2nd_echelon": 2,
+      "3rd_echelon": 2
+    },
+    "keywords": ["Ranged", "Psionic"],
+    "available_to_classes": ["talent"]
+  },
+  {
+    "id": "density_augmentation",
+    "type": "psionic_augmentation",
+    "name": "Density Augmentation",
+    "description": "You gain a +6 bonus to Stamina, and this bonus increases by 6 at 4th, 7th, and 10th levels. Additionally, you gain a +1 bonus to stability.",
+    "stamina_bonus": 6,
+    "stability_bonus": 1,
+    "available_to_classes": ["null", "talent"]
+  },
+  {
+    "id": "force_augmentation",
+    "type": "psionic_augmentation",
+    "name": "Force Augmentation",
+    "description": "Your damage-dealing psionic abilities gain a +1 bonus to rolled damage.",
+    "damage_bonus": 1,
+    "keywords": ["Psionic"],
+    "available_to_classes": ["null", "talent"]
+  },
+  {
+    "id": "speed_augmentation",
+    "type": "psionic_augmentation",
+    "name": "Speed Augmentation",
+    "description": "You gain a +1 bonus to speed and to the distance you can shift when you take the Disengage move action.",
+    "speed_bonus": 1,
+    "disengage_bonus": 1,
+    "available_to_classes": ["null", "talent"]
+  }
+]

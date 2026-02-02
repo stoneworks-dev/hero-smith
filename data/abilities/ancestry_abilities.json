@@ -1,0 +1,530 @@
+[
+  {
+    "type": "ability",
+    "id": "barbed_tail",
+    "name": "Barbed Tail",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "Melee, Strike, Weapon",
+    "action_type": "free triggered action",
+    "trigger_text": "Once per round when you make a melee strike.",
+    "distance": "Melee",
+    "targets": "Enemy",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "You deal extra damage with the strike equal to your highest characteristic score.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "glowing_eyes",
+    "name": "Glowing Eyes",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "Psionic, Ranged",
+    "action_type": "triggered action",
+    "trigger_text": "When you take damage from a creature.",
+    "distance": "Ranged 5",
+    "targets": "Enemy",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "Deal that creature psychic damage equal to 1d10 + your level.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "draconian_guard",
+    "name": "Draconian Guard",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "",
+    "action_type": "triggered action",
+    "trigger_text": "When you or an adjacent creature takes damage from a strike.",
+    "distance": "Self",
+    "targets": "Self or Adjacent Ally",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "Reduce the damage from the strike by an amount equal to your level.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "draconian_pride",
+    "name": "Draconian Pride",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "You let loose a mighty roar to shake your foes’ spirits.",
+    "keywords": "Area, Magic",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "1 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Might or Presence",
+    "tier_effects": [
+      {
+        "tier1": "2 damage",
+        "tier2": "5 damage; push 1",
+        "tier3": "7 damage; push 2"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "dragon_breath",
+    "name": "Dragon Breath",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "A furious exhalation of energy washes over your foes.",
+    "keywords": "Area, Magic",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 cube within 1",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Might or Presence",
+    "tier_effects": [
+      {
+        "tier1": "2 damage",
+        "tier2": "4 damage",
+        "tier3": "6 damage"
+      }
+    ],
+    "effect": "",
+    "special_effect": "You choose the damage type: acid, cold, corruption, fire, lightning, or poison."
+  },
+  {
+    "type": "ability",
+    "id": "remember_your_oath",
+    "name": "Remember Your Oath",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "Even should the sun stop in the sky\nEven should the night last a thousand years\nI will stand forever\nI shall not yield\nThose who suffer and yearn for justice\nI am your sword and shield\nI will yield no ground\nI will speak no lies\nI will stand against all tyrants\nUntil the last villain dies",
+    "keywords": "",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "Until the start of your next turn, your saving throws succeed on a 4 or higher.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "the_wode_defends",
+    "name": "The Wode Defends",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "Thorny vines erupt from every surface and attempt to bind your foe.",
+    "keywords": "Magic, Ranged, Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Might or Agility",
+    "tier_effects": [
+      {
+        "tier1": "2 + M or A damage; A < WEAK, slowed (save ends)",
+        "tier2": "3 + M or A damage; A < AVERAGE, slowed (save ends)",
+        "tier3": "5 + M or A damage; A < STRONG, slowed (save ends)"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "glamor_of_terror",
+    "name": "Glamor of Terror",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "",
+    "action_type": "triggered action",
+    "trigger_text": "When you take damage from a creature.",
+    "distance": "",
+    "targets": "One creature",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "That creature becomes frightened of you until the end of their next turn.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "detect_the_supernatural",
+    "name": "Detect the Supernatural",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Aura 5 squares",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "Until the end of your next turn, you know the location and nature of any supernatural object, undead, construct, or extraplanar creature within 5 squares, even without line of effect.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "resist_the_unnatural",
+    "name": "Resist the Unnatural",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "",
+    "action_type": "triggered action",
+    "trigger_text": "When you take damage that isn’t untyped.",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "You take half the damage.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "determination",
+    "name": "Determination",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "End one of the following conditions on yourself: frightened, slowed, or weakened.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "keeper_of_order",
+    "name": "Keeper of Order",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "",
+    "action_type": "free triggered action",
+    "trigger_text": "Once per round when you or an adjacent creature makes a power roll.",
+    "distance": "Self or Adjacent Creature",
+    "targets": "Self or Adjacent Creature",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "Remove an edge or a bane on the roll, or turn a double edge into an edge, or a double bane into a bane.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "relentless",
+    "name": "Relentless",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "Strike",
+    "action_type": "free triggered action",
+    "trigger_text": "Damage from a creature that leaves you dying.",
+    "distance": "Melee or Ranged",
+    "targets": "One creature",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "Make a free strike against any creature. If that creature is reduced to 0 Stamina by your strike, you can spend a Recovery.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "shadowmeld",
+    "name": "Shadowmeld",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "You become an actual shadow.",
+    "keywords": "Magic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": " You flatten yourself into a shadow against a wall or floor you are touching, and become hidden from any creature you have cover or concealment from or who isn’t observing you. While in shadow form, you have full awareness of your surroundings, and strikes made against you and tests made to search for you take a bane. You can’t move or be force moved, and you can’t take main actions or maneuvers except to exit this form or to direct creatures under your control, such as one you summon using an ability. Any ability or effect that targets more than 1 square affects you in this form only if it explicitly affects the surface you are flattened against. You can exit this form as a maneuver. \nIf the surface you are flattened against is destroyed, this ability ends and you take 1d6 damage that can’t be reduced in any way.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "reactive_tumble",
+    "name": "Reactive Tumble",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "",
+    "action_type": "free triggered action",
+    "trigger_text": "When you are force moved.",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "Shift 1 square after the forced movement is resolved.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "vengeance_mark",
+    "name": "Vengeance Mark",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "Magic, Ranged",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "Place a magical sigil on a creature within 10 squares. You choose where it appears and whether it's visible to only you or to all. You always know the direction to any creature bearing your sigil on the same world. You can have a number of active sigils equal to your level. You may remove a sigil at will (no action). Placing a new sigil beyond the limit removes the oldest.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "detonate_sigil",
+    "name": "Detonate Sigil",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "A magic sigil you placed on a creature explodes with energy.",
+    "keywords": "Magic, Ranged, Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature bearing your sigil",
+    "power_roll": "Power Roll + Reason, Intuition, or Presence",
+    "tier_effects": [
+      {
+        "tier1": "3 + R, I, or P damage; slide 1",
+        "tier2": "5 + R, I, or P damage; slide 2",
+        "tier3": "7 + R, I, or P damage; slide 3"
+      }
+    ],
+    "effect": "The sigil disappears from the creature.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "beyondsight",
+    "name": "Beyondsight",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "Adjust your vision to allow you to see through mundane obstructions that are 1 square thick or less. While your vision is adjusted this way, you can’t see the area within 1 square of you and you don’t have line of effect to any creature or object in that area. You can restore your usual vision as a maneuver.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "foresight",
+    "name": "Foresight",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "",
+    "action_type": "triggered action",
+    "trigger_text": "Targeted by a strike.",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "Impose a bane on the power roll.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "concussive_slam",
+    "name": "Concussive Slam",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "You slam an invisible force down upon the target.",
+    "keywords": "Psionic, Ranged, Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Reason, Intuition, or Presence",
+    "tier_effects": [
+      {
+        "tier1": "2 + R, I, or P damage",
+        "tier2": "5 + R, I, or P damage; push 1",
+        "tier3": "7 + R, I, or P damage; push 2; M < STRONG; prone"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "psionic_bolt",
+    "name": "Psionic Bolt",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "You shoot forth a purple beam of psychic force that moves your target.",
+    "keywords": "Psionic, Ranged, Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Reason, Intuition, or Presence",
+    "tier_effects": [
+      {
+        "tier1": "2 + R, I, or P psychic damage; slide 1",
+        "tier2": "5 + R, I, or P psychic damage; slide 2",
+        "tier3": "7 + R, I, or P psychic damage; slide 3"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "minor_acceleration",
+    "name": "Minor Acceleration",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "You fill yourself or an ally with a burst of speed.",
+    "keywords": "Psionic, Melee",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "Target gains a bonus to speed equal to your Reason, Intuition, or Presence score (your choice) until the start of your next turn.",
+    "special_effect": ""
+  }
+]

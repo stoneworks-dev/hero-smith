@@ -1,0 +1,176 @@
+{
+  "classId": "class_talent",
+  "name": "Talent",
+  "type": "class",
+  "starting_characteristics": {
+    "motto": null,
+    "heroicResourceName": "Clarity",
+    "baseStamina": 18,
+    "stamina_per_level": 6,
+    "baseRecoveries": 8,
+    "baseSpeed": 5,
+    "baseStability": 0,
+    "baseDisengage": 1,
+
+    "potency_progression": {
+      "characteristic": "Reason",
+      "modifiers": {
+        "weak": -2,
+        "average": -1,
+        "strong": 0
+      }
+    },
+    "starting_skills": {
+      "granted_skills": ["Psionics", "Read Person"],
+      "skill_groups": ["interpersonal", "lore"],
+      "skill_count": 2,
+      "quick_build": ["Empathize", "Psionics", "Read Person", "Timescape"]
+    },
+    "fixed_starting_characteristics": {
+      "reason": 2,
+      "presence": 2
+    },
+    "starting_characteristics_arrays": [
+      {
+        "values": [2, -1, -1]
+      },
+      { "values": [1, 1, -1] },
+      { "values": [1, 0, 0] }
+    ]
+  },
+  "levels": [
+    {
+      "level": 1,
+      "features": [
+        {
+          "name": "Talent Tradition",
+
+          "grant_type": "pick",
+          "type": "class_subclass"
+        },
+        { "name": "Clarity and Strain", "grant_type": "granted" },
+        { "name": "Mind Spike", "grant_type": "ability" },
+        { "name": "Psionic Augmentation", "grant_type": "pick", "count": 1 },
+        { "name": "Talent Ward", "grant_type": "granted" },
+        { "name": "Telepathic Speech", "grant_type": "granted" },
+        {
+          "name": "Tradition Features",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "new_abilities": {
+        "signature": 2,
+        "3_cost": 1,
+        "5_cost": 1
+      }
+    },
+    {
+      "level": 2,
+      "features": [
+        {
+          "name": "Tradition Features",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "perks": [
+        {
+          "count": 1,
+          "perk_groups": ["interpersonal", "lore", "supernatural"]
+        }
+      ],
+      "new_subclass_abilities": { "5_cost": 1 }
+    },
+    {
+      "level": 3,
+      "features": [{ "name": "Scan", "grant_type": "granted" }],
+      "new_abilities": { "7_cost": 1 }
+    },
+    {
+      "level": 4,
+      "features": [
+        { "name": "Mind Projection", "grant_type": "granted" },
+        { "name": "Mind Recovery", "grant_type": "granted" },
+        { "name": "Suspensor Field", "grant_type": "granted" }
+      ],
+      "perks": [{ "count": 1 }],
+      "skills": [{ "count": 1 }],
+      "characteristics": [
+        { "Reason": { "setTo": 3 } },
+        { "Presence": { "setTo": 3 } }
+      ]
+    },
+    {
+      "level": 5,
+      "features": [
+        {
+          "name": "Tradition Features",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "new_abilities": { "9_cost": 1 }
+    },
+    {
+      "level": 6,
+      "features": [{ "name": "Psi Boost", "grant_type": "granted" }],
+      "perks": [
+        {
+          "count": 1,
+          "perk_groups": ["interpersonal", "lore", "supernatural"]
+        }
+      ],
+      "new_subclass_abilities": { "9_cost": 1 }
+    },
+    {
+      "level": 7,
+      "features": [
+        { "name": "Ancestral Memory", "grant_type": "granted" },
+        { "name": "Cascading Strain", "grant_type": "granted" },
+        { "name": "Lucid Mind", "grant_type": "granted" }
+      ],
+      "skills": [{ "count": 1 }],
+      "characteristics": [{ "All": { "increaseBy": 1, "max": 4 } }]
+    },
+    {
+      "level": 8,
+      "features": [
+        {
+          "name": "Tradition Features",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "perks": [{ "count": 1 }],
+      "new_abilities": { "11_cost": 1 }
+    },
+    {
+      "level": 9,
+      "features": [
+        { "name": "Fortress of Perfect Thought", "grant_type": "granted" }
+      ],
+      "new_subclass_abilities": { "11_cost": 1 }
+    },
+    {
+      "level": 10,
+      "features": [
+        { "name": "Clear Mind", "grant_type": "granted" },
+        { "name": "Omnisensory", "grant_type": "granted" },
+        { "name": "Psion", "grant_type": "granted" },
+        { "name": "Vision", "grant_type": "granted" }
+      ],
+      "perks": [
+        {
+          "count": 1,
+          "restrictions": ["interpersonal", "lore", "supernatural"]
+        }
+      ],
+      "skills": [{ "count": 1 }],
+      "characteristics": [
+        { "Reason": { "setTo": 5 } },
+        { "Presence": { "setTo": 5 } }
+      ]
+    }
+  ]
+}

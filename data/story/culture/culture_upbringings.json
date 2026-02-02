@@ -1,0 +1,52 @@
+[
+  {
+    "id": "culture_upbringing_noble",
+    "type": "culture_upbringing",
+    "name": "Noble",
+    "description": "Your hero grew up among leaders who rule over others and play the games of politics to maintain power.",
+    "skillGroups": ["interpersonal"],
+    "skillDescription": "One skill from the interpersonal skill group"
+  },
+  {
+    "id": "culture_upbringing_martial",
+    "type": "culture_upbringing",
+    "name": "Martial",
+    "description": "A hero with a martial upbringing was raised by warriors.",
+    "specificSkills": ["Blacksmithing", "Fletching", "Climb", "Endurance", "Ride", "Intimidate", "Alertness", "Track", "Monsters", "Strategy"],
+    "skillDescription": "Blacksmithing or Fletching from crafting; Climb, Endurance, or Ride from exploration; Intimidate from interpersonal; Alertness or Track from intrigue; or Monsters or Strategy from lore"
+  },
+  {
+    "id": "culture_upbringing_lawless",
+    "type": "culture_upbringing",
+    "name": "Lawless",
+    "description": "Your hero grew up among folk who performed activities that other people—whether within or outside their culture—considered unlawful.",
+    "skillGroups": ["intrigue"],
+    "skillDescription": "One skill from the intrigue skill group"
+  },
+  {
+    "id": "culture_upbringing_labor",
+    "type": "culture_upbringing",
+    "name": "Labor",
+    "description": "Your hero came of age in a culture where people labored for a living.",
+    "skillGroups": ["exploration"],
+    "specificSkills": ["Blacksmithing", "Handle Animals"],
+    "skillDescription": "The Blacksmithing skill (from the crafting skill group), the Handle Animals skill (from the interpersonal group), or a skill from the exploration group"
+  },
+  {
+    "id": "culture_upbringing_creative",
+    "type": "culture_upbringing",
+    "name": "Creative",
+    "description": "A hero with a creative upbringing was raised among folk who create art or other works valuable enough to trade.",
+    "skillGroups": ["crafting"],
+    "specificSkills": ["Music", "Perform"],
+    "skillDescription": "The Music or Perform skill (from the interpersonal skill group), or one skill from the crafting group"
+  },
+  {
+    "id": "culture_upbringing_academic",
+    "type": "culture_upbringing",
+    "name": "Academic",
+    "description": "Your hero was raised by people who collect, study, and share books and other records.",
+    "skillGroups": ["lore"],
+    "skillDescription": "One skill from the lore skill group"
+  }
+]

@@ -1,0 +1,506 @@
+[
+  {
+    "type": "ability",
+    "id": "exploding-arrow",
+    "name": "Exploding Arrow",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "Your ammunition explodes with magical energy.",
+    "keywords": "Magic/Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 15",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Agility, Reason, Intuition, or Presence",
+    "tier_effects": [
+      {
+        "tier1": "5 + A, R, I, or P fire damage",
+        "tier2": "7 + A, R, I, or P fire damage",
+        "tier3": "10 + A, R, I, or P fire damage"
+      }
+    ],
+    "effect": "One creature or object of your choice within 2 squares of the target takes fire damage equal to the characteristic score used for this ability's power roll.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "unmooring",
+    "name": "Unmooring",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "Your weapon unleashes psionic energy that reduces your target's weight.",
+    "keywords": "Melee/Psionic/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Might, Reason, Intuition, or Presence",
+    "tier_effects": [
+      {
+        "tier1": "5 + M, R, I, or P damage",
+        "tier2": "8 + M, R, I, or P damage",
+        "tier3": "11 + M, R, I, or P damage"
+      }
+    ],
+    "effect": "Until the end of the target's next turn, any forced movement that affects the target has its distance increased by 2.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "fade",
+    "name": "Fade",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "A stab, and a few quick, careful steps back.",
+    "keywords": "Melee/Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1 or ranged 10",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Might or Agility",
+    "tier_effects": [
+      {
+        "tier1": "3 + M or A damage; you can shift 1 square",
+        "tier2": "6 + M or A damage; you can shift up to 2 squares",
+        "tier3": "8 + M or A damage; you can shift up to 3 squares"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "double-strike",
+    "name": "Double Strike",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "Why strike once when you could do it twice?",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "Two creatures or objects",
+    "power_roll": "Power Roll + Might or Agility",
+    "tier_effects": [
+      {
+        "tier1": "4 damage",
+        "tier2": "6 damage",
+        "tier3": "8 damage"
+      }
+    ],
+    "effect": "If you use this ability on your turn, you can use it against one target, then use your maneuver and your move action for that turn before using the ability against a second target. You still use the same power roll for both targets.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "forward-thrust-backward-smash",
+    "name": "Forward Thrust, Backward Smash",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "In your hands, the haft is as good as the head.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 2",
+    "targets": "Two creatures or objects",
+    "power_roll": "Power Roll + Might or Agility",
+    "tier_effects": [
+      {
+        "tier1": "4 damage",
+        "tier2": "7 damage",
+        "tier3": "9 damage"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "battle-grace",
+    "name": "Battle Grace",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "You feint to move your enemies into perfect position.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Might or Agility",
+    "tier_effects": [
+      {
+        "tier1": "5 + M or A damage",
+        "tier2": "8 + M or A damage; you can swap places with the target",
+        "tier3": "11 + M or A damage; you can swap places with the target"
+      }
+    ],
+    "effect": "If you obtain a tier 2 or tier 3 outcome and can't swap places with the target because one or both of you is too big to fit into the swapped space, you both remain in your original spaces and the target takes 1 extra damage.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "pain-for-pain",
+    "name": "Pain for Pain",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "An enemy who tagged you will pay for that.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Might or Agility",
+    "tier_effects": [
+      {
+        "tier1": "3 + M or A damage",
+        "tier2": "5 + M or A damage",
+        "tier3": "13 + M or A damage"
+      }
+    ],
+    "effect": "If the target dealt damage to you since the end of your last turn, this strike deals additional damage equal to your Might or Agility score (your choice).",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "devastating-rush",
+    "name": "Devastating Rush",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "The faster you move, the harder you hit.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Might or Agility",
+    "tier_effects": [
+      {
+        "tier1": "3 + M or A damage",
+        "tier2": "6 + M or A damage",
+        "tier3": "13 + M or A damage"
+      }
+    ],
+    "effect": "You can move up to 3 squares straight toward the target before this strike, which deals extra damage equal to the number of squares you move this way.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "lets-dance",
+    "name": "Let's Dance",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "Keeping your enemies stumbling around the battlefield is second nature to you.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Might or Agility",
+    "tier_effects": [
+      {
+        "tier1": "3 + M or A damage",
+        "tier2": "6 + M or A damage; slide 1",
+        "tier3": "8 + M or A damage; slide 2"
+      }
+    ],
+    "effect": "You can shift into any square the target leaves after you slide them.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "raiders-awe",
+    "name": "Raider's Awe",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "You execute a brutal strike that leaves your foe reeling. (Previously known as \"Shock and Awe\")",
+    "keywords": "Melee/Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1 or ranged 10",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Might or Agility",
+    "tier_effects": [
+      {
+        "tier1": "3 + M or A damage",
+        "tier2": "6 + M or A damage",
+        "tier3": "8 + M or A damage"
+      }
+    ],
+    "effect": "The target takes a bane on their next power roll made before the end of their next turn.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "hamstring-shot",
+    "name": "Hamstring Shot",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "A well-placed shot leaves your enemy struggling to move.",
+    "keywords": "Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Might or Agility",
+    "tier_effects": [
+      {
+        "tier1": "3 + M or A damage; A < WEAK, slowed (save ends)",
+        "tier2": "5 + M or A damage; A < AVERAGE, slowed (save ends)",
+        "tier3": "7 + M or A damage; A < STRONG, slowed (save ends)"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "two-shot",
+    "name": "Two Shot",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "When you fire two arrows back-to-back, both hit their mark.",
+    "keywords": "Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 12",
+    "targets": "Two creatures or objects",
+    "power_roll": "Power Roll + Might or Agility",
+    "tier_effects": [
+      {
+        "tier1": "4 damage",
+        "tier2": "6 damage",
+        "tier3": "8 damage"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "net-and-stab",
+    "name": "Net and Stab",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "The well-thrown net that follows your main attack leaves your foes right where you want them.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 2",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Might or Agility",
+    "tier_effects": [
+      {
+        "tier1": "4 + M or A damage; A < WEAK, slowed (EoT)",
+        "tier2": "6 + M or A damage; A < AVERAGE, slowed (EoT)",
+        "tier3": "8 + M or A damage; A < STRONG, restrained (EoT)"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "protective-attack",
+    "name": "Protective Attack",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "The strength of your assault makes it impossible for your foe to ignore you.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Might or Agility",
+    "tier_effects": [
+      {
+        "tier1": "5 + M or A damage",
+        "tier2": "8 + M or A damage",
+        "tier3": "11 + M or A damage"
+      }
+    ],
+    "effect": "The target is taunted until the end of their next turn.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "patient-shot",
+    "name": "Patient Shot",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "Breathe... aim... wait... then strike!",
+    "keywords": "Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 15",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Might or Agility",
+    "tier_effects": [
+      {
+        "tier1": "3 + M or A damage",
+        "tier2": "6 + M or A damage",
+        "tier3": "13 + M or A damage"
+      }
+    ],
+    "effect": "If you don't take a move action this turn, this strike deals extra damage equal to your Might or Agility score (your choice).",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "leaping-lightning",
+    "name": "Leaping Lightning",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "Lightning jumps from your weapon as you strike to harm a nearby foe.",
+    "keywords": "Magic/Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Might, Reason, Intuition, or Presence",
+    "tier_effects": [
+      {
+        "tier1": "5 + M, R, I, or P lightning damage",
+        "tier2": "8 + M, R, I, or P lightning damage",
+        "tier3": "11 + M, R, I, or P lightning damage"
+      }
+    ],
+    "effect": "A creature or object of your choice within 2 squares of the target takes lightning damage equal to the characteristic score used for this ability's power roll.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "where-i-want-you",
+    "name": "Where I Want You",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "When your stick speaks, your enemy moves.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 2",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Might or Agility",
+    "tier_effects": [
+      {
+        "tier1": "4 + M or A damage",
+        "tier2": "7 + M or A damage; slide 1",
+        "tier3": "10 + M or A damage; slide 3"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "fancy-footwork",
+    "name": "Fancy Footwork",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "All combat is a dance—and you'll be the one leading.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Might or Agility",
+    "tier_effects": [
+      {
+        "tier1": "5 + M or A damage",
+        "tier2": "7 + M or A damage; push 1",
+        "tier3": "10 + M or A damage; push 2"
+      }
+    ],
+    "effect": "You can shift into any square the target leaves after you push them.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "shield-bash",
+    "name": "Shield Bash",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "In your hands, a shield isn't just for protection.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Might or Agility",
+    "tier_effects": [
+      {
+        "tier1": "4 + M or A damage; push 1",
+        "tier2": "7 + M or A damage; push 2",
+        "tier3": "9 + M or A damage; push 3; M < STRONG, prone"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "weakening-brand",
+    "name": "Weakening Brand",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "The impact of your weapon brands your target for destruction.",
+    "keywords": "Magic/Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Might, Reason, Intuition, or Presence",
+    "tier_effects": [
+      {
+        "tier1": "3 + M, R, I, or P holy damage",
+        "tier2": "5 + M, R, I, or P holy damage",
+        "tier3": "8 + M, R, I, or P holy damage"
+      }
+    ],
+    "effect": "Until the end of the target's next turn, they have damage weakness equal to the characteristic score used for this ability's power roll.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "extension-of-my-arm",
+    "name": "Extension of My Arm",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "When you draw your whip back after an attack, your enemy is drawn ever closer.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 3",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Might or Agility",
+    "tier_effects": [
+      {
+        "tier1": "4 + M or A damage; vertical pull 1",
+        "tier2": "7 + M or A damage; vertical pull 2",
+        "tier3": "10 + M or A damage; vertical pull 3"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  }
+]
