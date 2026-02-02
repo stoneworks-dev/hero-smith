@@ -1,0 +1,32 @@
+﻿class ChooseEquipmentWidgetText {
+  static const String sectionTitle = 'Equipment & Modifications';
+  static const String sectionSubtitle = 'Select the loadout required by your class';
+  static const String equipmentTypeTitleKit = 'Standard Kits';
+  static const String equipmentTypeTitlePsionic = 'Psionic Augmentations';
+  static const String equipmentTypeTitleEnchantment = 'Enchantments';
+  static const String equipmentTypeTitlePrayer = 'Prayers';
+  static const String equipmentTypeTitleWard = 'Wards';
+  static const String equipmentTypeTitleStormwight = 'Stormwight Kits';
+  static const String equipmentTypeChipTitleKit = 'Standard Kit';
+  static const String equipmentTypeChipTitlePsionic = 'Augmentation';
+  static const String equipmentTypeChipTitleEnchantment = 'Enchantment';
+  static const String equipmentTypeChipTitlePrayer = 'Prayer';
+  static const String equipmentTypeChipTitleWard = 'Ward';
+  static const String equipmentTypeChipTitleStormwight = 'Stormwight Kit';
+  static const String buttonLoadingLabel = 'Loading...';
+  static const String buttonSelectPrefix = 'Select ';
+  static const String buttonChangePrefix = 'Change ';
+  static const String selectionDialogTitlePrefix = 'Select ';
+  static const String noItemsAvailable = 'No items available';
+  static const String removeLabel = 'Remove';
+  static const String searchHint = 'Search equipment...';
+  static const String noItemsPrefix = 'No ';
+  static const String noItemsSuffix = ' available';
+  static const String noResultsPrefix = 'No results for "';
+  static const String noResultsSuffix = '"';
+  static const String errorLoadingPrefix = 'Error loading ';
+  static const String errorLoadingSuffix = ': ';
+  static const String categoryCountPrefix = ' (';
+  static const String categoryCountSuffix = ')';
+  static const String unableToLoadSelectedItem = 'Unable to load selected item';
+}
