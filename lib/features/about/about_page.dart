@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/theme/navigation_theme.dart';
 
@@ -56,7 +57,8 @@ class AboutPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   InkWell(
-                    onTap: () => _launchUrl(_sourceUrl),
+                    onTap: () => _launchUrlOrCopy(context, Uri.parse(_sourceUrl)),
+                    onLongPress: () => _copyToClipboard(context, _sourceUrl),
                     child: Text(
                       _sourceUrl,
                       style: TextStyle(
@@ -111,7 +113,12 @@ class AboutPage extends StatelessWidget {
                     style: TextStyle(fontSize: 15, height: 1.5),
                   ),
                   InkWell(
-                    onTap: () => _launchEmail(_supportEmail),
+                    onTap: () => _launchUrlOrCopy(
+                      context,
+                      Uri(scheme: 'mailto', path: _supportEmail),
+                      fallbackCopyText: _supportEmail,
+                    ),
+                    onLongPress: () => _copyToClipboard(context, _supportEmail),
                     child: Text(
                       _supportEmail,
                       style: TextStyle(
@@ -234,18 +241,27 @@ class AboutPage extends StatelessWidget {
     );
   }
 
-  Future<void> _launchUrl(String url) async {
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
+  Future<void> _launchUrlOrCopy(
+    BuildContext context,
+    Uri uri, {
+    String? fallbackCopyText,
+  }) async {
+    try {
+      final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+      if (!launched) {
+        await _copyToClipboard(context, fallbackCopyText ?? uri.toString());
+      }
+    } catch (_) {
+      await _copyToClipboard(context, fallbackCopyText ?? uri.toString());
     }
   }
 
-  Future<void> _launchEmail(String email) async {
-    final uri = Uri(scheme: 'mailto', path: email);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    }
+  Future<void> _copyToClipboard(BuildContext context, String text) async {
+    await Clipboard.setData(ClipboardData(text: text));
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Copied to clipboard')),
+    );
   }
 
   void _showLicensePage(BuildContext context) {
