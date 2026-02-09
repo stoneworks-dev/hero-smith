@@ -15,24 +15,24 @@ A Flutter app for creating and managing heroes for the **Draw Steel** tabletop r
 
 ## Screenshots
 
-<div style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center;">
-  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/heroes.jpg" style="max-width:160px; width:100%; height:auto;" />
-  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/main-page.jpg" style="max-width:160px; width:100%; height:auto;" />
-  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/main-page-2.jpg" style="max-width:160px; width:100%; height:auto;" />
-  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/abilties.jpg" style="max-width:160px; width:100%; height:auto;" />
-  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/wealth.jpg" style="max-width:160px; width:100%; height:auto;" />
-  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/respites.jpg" style="max-width:160px; width:100%; height:auto;" />
-  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/downtime.jpg" style="max-width:160px; width:100%; height:auto;" />
-  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/treasures.jpg" style="max-width:160px; width:100%; height:auto;" />
-  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/kits.jpg" style="max-width:160px; width:100%; height:auto;" />
-  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/inventory.jpg" style="max-width:160px; width:100%; height:auto;" />
-  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/languages.jpg" style="max-width:160px; width:100%; height:auto;" />
-  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/skills.jpg" style="max-width:160px; width:100%; height:auto;" />
-  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/hero-creator-story.jpg" style="max-width:160px; width:100%; height:auto;" />
-  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/hero-creator-story-2.jpg" style="max-width:160px; width:100%; height:auto;" />
-  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/hero-creator-strife.jpg" style="max-width:160px; width:100%; height:auto;" />
-  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/hero-creator-strife-2.jpg" style="max-width:160px; width:100%; height:auto;" />
-</div>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/heroes.jpg" width="150" />
+  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/main-page.jpg" width="150" />
+  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/main-page-2.jpg" width="150" />
+  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/abilties.jpg" width="150" />
+  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/wealth.jpg" width="150" />
+  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/respites.jpg" width="150" />
+  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/downtime.jpg" width="150" />
+  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/treasures.jpg" width="150" />
+  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/kits.jpg" width="150" />
+  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/inventory.jpg" width="150" />
+  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/languages.jpg" width="150" />
+  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/skills.jpg" width="150" />
+  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/hero-creator-story.jpg" width="150" />
+  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/hero-creator-story-2.jpg" width="150" />
+  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/hero-creator-strife.jpg" width="150" />
+  <img src="https://raw.githubusercontent.com/stoneworks-dev/hero-smith-assets/main/images/hero-creator-strife-2.jpg" width="150" />
+</p>
 
 
 ## License
