@@ -4,7 +4,7 @@
 
 ## Overview
 
-Hero Smith ("the App") is a mobile application for creating and managing heroes for the Draw Steel tabletop role-playing game system. This privacy policy explains how we handle your information.
+Hero Smith ("the App") is a Cross-platform application for creating and managing heroes for the Draw Steel tabletop role-playing game system. This privacy policy explains how we handle your information.
 
 ## Data Collection
 
@@ -47,4 +47,4 @@ If you have questions about this privacy policy, please open an issue on our Git
 
 ---
 
-*This privacy policy applies to the Hero Smith application available on Google Play and other platforms.*
+*This privacy policy applies to the Hero Smith application available GitHUb and other platforms.*
