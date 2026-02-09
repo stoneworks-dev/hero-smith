@@ -2,6 +2,9 @@
 
 A Flutter app for creating and managing heroes for the **Draw Steel** tabletop role-playing game system.
 
+[Known Issues](KNOWN_ISSUES.md)
+[Roadmap](ROADMAP.md)
+
 ## Features
 
 -  **Hero Creation Wizard** - Step-by-step hero building
