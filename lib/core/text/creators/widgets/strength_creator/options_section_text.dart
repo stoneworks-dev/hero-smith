@@ -1,0 +1,31 @@
+class OptionsSectionText {
+  static const String grantedFeaturesTitle = 'Granted Features';
+  static const String chooseOneHeading = 'Choose One';
+  static const String chooseTwoHeading = 'Choose Two';
+  static const String selectUpToPrefix = 'Select up to ';
+  static const String selectOptionsHeading = 'Select Options';
+  static const String selectionRequiredTitle = 'Selection Required';
+  static const String promptChooseOne = 'Choose one option below';
+  static const String promptChooseTwo = 'Choose two options below';
+  static const String promptChooseUpToTwo = 'Choose up to two options below';
+  static const String promptChooseCountPrefix = 'Choose ';
+  static const String promptChooseCountSuffix = ' options below';
+  static const String promptChooseUpToPrefix = 'Choose up to ';
+  static const String promptChooseUpToSuffix = ' options below';
+  static const String promptChooseOneOrMore = 'Choose one or more options below';
+  static const String autoAppliedLabel = 'Automatically Applied';
+  static const String skillFromGroupPrefix = 'Skill from ';
+  static const String chooseSkillLabel = 'Choose skill';
+  static const String selectSkillPlaceholder = 'Select a skill';
+  static const String noSkillSelected = 'No skill selected';
+  static const String chooseSkillOption = 'Choose skill';
+  static const String selectSkillTitle = 'Select Skill';
+  static const String searchHint = 'Search...';
+  static const String noMatchesFound = 'No matches found';
+  static const String cancelLabel = 'Cancel';
+  static const String pietyTitle = 'Piety';
+  static const String prayerEffectTitle = 'Prayer Effect';
+  static const String matchesSubclassLabel = 'Matches your subclass';
+  static const String collapseTooltip = 'Collapse';
+  static const String expandTooltip = 'Expand';
+}

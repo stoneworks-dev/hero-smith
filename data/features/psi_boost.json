@@ -1,0 +1,50 @@
+{
+  "id": "psi_boost",
+  "name": "Psi Boost",
+  "type": "feature",
+  "description": "Whenever you use an ability that is a main action or a maneuver with the Psionic keyword, you can spend additional heroic resource to apply a psi boost to it and enhance its effects. A psi boost’s effects only last until the end of the turn which the ability is first used. You can apply multiple psi boosts to an ability, but only one instance of each specific boost. You can use the following psi boosts.",
+  "boosts": [
+    {
+      "id": "dynamic_power",
+      "name": "Dynamic Power",
+      "cost": 1,
+      "effect": "If the ability force moves a target, the forced movement distance gains a bonus equal to your Intuition score."
+    },
+    {
+      "id": "extended_power",
+      "name": "Extended Power",
+      "cost": 1,
+      "effect": "If the ability is ranged, the distance gains a bonus equal to your Intuition score. If the ability is melee, the distance gains a +2 bonus."
+    },
+    {
+      "id": "heightened_power",
+      "name": "Heightened Power",
+      "cost": 1,
+      "effect": "If the ability deals rolled damage, it deals extra damage equal to your Intuition score."
+    },
+    {
+      "id": "sharpened_power",
+      "name": "Sharpened Power",
+      "cost": 1,
+      "effect": "If the ability has any roll, that roll gains an edge."
+    },
+    {
+      "id": "expanded_power",
+      "name": "Expanded Power",
+      "cost": 3,
+      "effect": "If the ability targets an area, you increase the size of the area by 1. If the area is a line, you increase the size of one dimension, not both."
+    },
+    {
+      "id": "magnified_power",
+      "name": "Magnified Power",
+      "cost": 5,
+      "effect": "If the ability has a potency, you increase that potency by an amount equal to your Intuition score."
+    },
+    {
+      "id": "shared_power",
+      "name": "Shared Power",
+      "cost": 5,
+      "effect": "If the ability targets individual creatures or objects, you target one additional creature or object within distance."
+    }
+  ]
+}

@@ -1,0 +1,1249 @@
+[
+  {
+    "type": "ability",
+    "id": "accelerate",
+    "name": "Accelerate",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "To your ally, it seems as though the world has slowed down.",
+    "keywords": "Psionic/Ranged",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Self or one creature",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The target shifts up to a number of squares equal to your Reason score.\n\nThe target can use a maneuver.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "again",
+    "name": "Again",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "You step back a split second to see if things play out a little differently.",
+    "keywords": "Psionic/Ranged",
+    "action_type": "triggered action",
+    "trigger_text": "The target makes an ability roll.",
+    "distance": "Ranged 10",
+    "targets": "Self or one creature",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You can use this ability after seeing the result of the triggering roll. The target must reroll the power roll and use the new roll.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "awe-3-clarity",
+    "name": "Awe",
+    "level": 1,
+    "resource": "Clarity",
+    "resource_value": 3,
+    "story_text": "You project psionic energy out to a creature and take on a new visage in their mind.",
+    "keywords": "Psionic/Ranged/Strike/Telepathy",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Presence",
+    "tier_effects": [
+      {
+        "tier1": "3 + P psychic damage; I < WEAK, frightened (save ends)",
+        "tier2": "6 + P psychic damage; I < AVERAGE, frightened (save ends)",
+        "tier3": "9 + P psychic damage; I < STRONG, frightened (save ends)"
+      }
+    ],
+    "effect": "If you target an ally, they gain temporary Stamina equal to three times your Presence score, and they can end one effect on them that is ended by a saving throw or that ends at the end of their turn. If you target an enemy, you make a power roll.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "choke-3-clarity",
+    "name": "Choke",
+    "level": 1,
+    "resource": "Clarity",
+    "resource_value": 3,
+    "story_text": "You crush a foe in a telekinetic grip.",
+    "keywords": "Psionic/Ranged/Strike/Telekinesis",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "3 + R damage; M < WEAK, slowed (save ends)",
+        "tier2": "5 + R damage; M < AVERAGE, slowed (save ends)",
+        "tier3": "8 + R damage; M < STRONG, restrained (save ends)"
+      }
+    ],
+    "effect": "You can vertical pull the target up to 2 squares. If the target is made restrained by this ability, this forced movement ignores their stability.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "entropic-bolt",
+    "name": "Entropic Bolt",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "You advance an enemy's age for a moment.",
+    "keywords": "Chronopathy/Psionic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Presence",
+    "tier_effects": [
+      {
+        "tier1": "2 + P corruption damage; P < WEAK, slowed (save ends)",
+        "tier2": "3 + P corruption damage; P < AVERAGE, slowed (save ends)",
+        "tier3": "5 + P corruption damage; P < STRONG, slowed (save ends)"
+      }
+    ],
+    "effect": "The target takes an extra 1 corruption damage for each additional time they are targeted by this ability during the encounter.\n\nYou gain 1 clarity when you obtain a tier 2 or tier 3 outcome on the power roll.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "feedback-loop",
+    "name": "Feedback Loop",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "Creating a brief psychic link between an enemy and their target gives that foe a taste of their own medicine.",
+    "keywords": "Psionic/Ranged",
+    "action_type": "triggered action",
+    "trigger_text": "The target deals damage to an ally.",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The target takes psychic damage equal to half the triggering damage.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "flashback-5-clarity",
+    "name": "Flashback",
+    "level": 1,
+    "resource": "Clarity",
+    "resource_value": 5,
+    "story_text": "The target is thrown several seconds back through time and gets to do it all again.",
+    "keywords": "Chronopathy/Psionic/Ranged",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Self or one ally",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The target uses an ability with a base Heroic Resource cost of 7 or lower that they've previously used this round, without needing to spend the base cost. Augmentations to the ability can be paid for as usual.\n\nYou take 1d6 damage and are slowed (save ends).",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "hoarfrost",
+    "name": "Hoarfrost",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "You blast a foe with a pulse of cold energy.",
+    "keywords": "Cryokinesis/Psionic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "2 + R cold damage; M < WEAK, slowed (EoT)",
+        "tier2": "4 + R cold damage; M < AVERAGE, slowed (EoT)",
+        "tier3": "6 + R cold damage; M < STRONG, slowed (EoT)"
+      }
+    ],
+    "effect": "You are slowed until the end of your next turn. Additionally, a target slowed by this ability is restrained instead.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "incinerate",
+    "name": "Incinerate",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "The air erupts into a column of smokeless flame.",
+    "keywords": "Area/Fire/Psionic/Pyrokinesis/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 cube within 10",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "2 fire damage",
+        "tier2": "4 fire damage",
+        "tier3": "6 fire damage"
+      }
+    ],
+    "effect": "A column of fire remains in the area until the start of your next turn. Each enemy who enters the area for the first time in a combat round or starts their turn there takes 2 fire damage.\n\nThe size of the cube increases by 2, but the fire disappears at the end of your turn.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "inertia-soak-5-clarity",
+    "name": "Inertia Soak",
+    "level": 1,
+    "resource": "Clarity",
+    "resource_value": 5,
+    "story_text": "Your psionic energy surrounds the target and pushes everything else away from them.",
+    "keywords": "Psionic/Ranged/Telekinesis",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Self or one ally",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The target ignores difficult terrain and takes no damage from forced movement until the start of your next turn. Whenever the target enters a square while under this effect, they can push one adjacent creature up to a number of squares equal to your Reason score. When pushing an ally, the target can ignore that ally's stability. A creature can only be force moved this way once a turn.\n\nYou are weakened (save ends). While you are weakened this way, whenever you are force moved, the forced movement distance gains a +5 bonus.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "iron-5-clarity",
+    "name": "Iron",
+    "level": 1,
+    "resource": "Clarity",
+    "resource_value": 5,
+    "story_text": "The target's skin turns to hard, dark metal, impenetrable and dense.",
+    "keywords": "Metamorphosis/Psionic/Ranged",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Self or one ally",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The target's stability increases by an amount equal to your Reason score, and they gain 10 temporary Stamina and 2 surges. This stability increase lasts until the target no longer has temporary Stamina from this ability.\n\nYou can't use maneuvers (save ends).",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "kinetic-grip",
+    "name": "Kinetic Grip",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "You lift and hurl your foe away from you.",
+    "keywords": "Psionic/Ranged/Telekinesis",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "Slide 2 + R",
+        "tier2": "Slide 4 + R",
+        "tier3": "Slide 6 + R; prone"
+      }
+    ],
+    "effect": "You must vertical push the target instead of sliding them.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "kinetic-pulse",
+    "name": "Kinetic Pulse",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "The force of your mind hurls enemies backward.",
+    "keywords": "Area/Psionic/Telepathy",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "1 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "2 psychic damage",
+        "tier2": "5 psychic damage; push 1",
+        "tier3": "7 psychic damage; push 2"
+      }
+    ],
+    "effect": "The size of the burst increases by 2, and you are bleeding until the start of your next turn.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "materialize",
+    "name": "Materialize",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "You picture an object in your mind and give it form—directly above your opponent's head.",
+    "keywords": "Psionic/Ranged/Resopathy/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "3 + R damage",
+        "tier2": "5 + R damage",
+        "tier3": "8 + R damage"
+      }
+    ],
+    "effect": "A worthless size 1M object drops onto the target to deal the damage, then rolls into an adjacent unoccupied space of your choice. The object is made of wood, stone, or metal (your choice).\n\nThe object explodes after the damage is dealt, and each creature adjacent to the target takes damage equal to your Reason score. You also take damage equal to your Reason score that can't be reduced in any way.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "mind-spike",
+    "name": "Mind Spike",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "A telepathic bolt instantly zaps a creature's brain.",
+    "keywords": "Psionic/Ranged/Strike/Telepathy",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "2 + R psychic damage",
+        "tier2": "4 + R psychic damage",
+        "tier3": "6 + R psychic damage"
+      }
+    ],
+    "effect": "The target takes an extra 2 psychic damage. You also take 2 psychic damage that can't be reduced in any way.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "minor-telekinesis",
+    "name": "Minor Telekinesis",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "Wisps of psychic energy ripple visibly from your brain as you force the target to move using only your mind.",
+    "keywords": "Psionic/Ranged",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Self or one size 1 creature or object",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You slide the target up to a number of squares equal to your Reason score.\n\nThe size of the creature or object you can target increases by 1 for every 2 clarity spent.\n\nYou can vertical slide the target.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "optic-blast",
+    "name": "Optic Blast",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "Your eyes emit rays of powerful enervating force.",
+    "keywords": "Metamorphosis/Psionic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "2 + R damage; M < WEAK, prone",
+        "tier2": "4 + R damage; M < AVERAGE, prone",
+        "tier3": "6 + R damage; M < STRONG, prone"
+      }
+    ],
+    "effect": "When targeting an object with a solid reflective surface or a creature carrying or wearing such an object (such as a mirror, an unpainted metal shield, or shiny metal plate armor), you can target one additional creature or object within 3 squares of the first target.\n\nYou gain 1 surge that you can use immediately, and you take damage equal to your Reason score that can't be reduced in any way.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "perfect-clarity-5-clarity",
+    "name": "Perfect Clarity",
+    "level": 1,
+    "resource": "Clarity",
+    "resource_value": 5,
+    "story_text": "You clear the mind of nothing but the goal.",
+    "keywords": "Psionic/Ranged/Telepathy",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Self or one ally",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Until the start of your next turn, the target gains a +3 bonus to speed, and they have a double edge on the next power roll they make. If the target obtains a tier 3 outcome on that roll, you gain 1 clarity.\n\nYou take 1d6 damage, and you can't use triggered actions (save ends).",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "precognition-3-clarity",
+    "name": "Precognition",
+    "level": 1,
+    "resource": "Clarity",
+    "resource_value": 3,
+    "story_text": "You give a target a glimpse into the future so that they're ready for what comes next.",
+    "keywords": "Chronopathy/Melee/Psionic",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 2",
+    "targets": "Self or one ally",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Ability rolls made against the target take a bane until the start of your next turn. Whenever the target takes damage while under this effect, they can use a triggered action to make a free strike against the source of the damage.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "remote-assistance",
+    "name": "Remote Assistance",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "An ally gains the benefit of your intellect.",
+    "keywords": "Psionic/Ranged",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature or object",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The next ability roll an ally makes against the target before the start of your next turn gains an edge.\n\nYou target one additional creature or object.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "repel",
+    "name": "Repel",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "They aren't going anywhere, but you might!",
+    "keywords": "Psionic/Ranged",
+    "action_type": "triggered action",
+    "trigger_text": "The target takes damage or is force moved.",
+    "distance": "Ranged 10",
+    "targets": "Self or one ally",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The target takes half the triggering damage, or the distance of the triggering forced movement is reduced by a number of squares equal to your Reason score. If the target took damage and was force moved, you choose the effect. If the forced movement is reduced to 0 squares, the target can push the source of the forced movement a number of squares equal to your Reason score.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "smolder-3-clarity",
+    "name": "Smolder",
+    "level": 1,
+    "resource": "Clarity",
+    "resource_value": 3,
+    "story_text": "Smoke flows from your enemy like tears as their skin begins to blacken and flake.",
+    "keywords": "Psionic/Pyrokinesis/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "3 + R damage; R < WEAK, the target has weakness 5 (save ends)",
+        "tier2": "6 + R damage; R < AVERAGE, the target has weakness 5 (save ends)",
+        "tier3": "9 + R damage; R < STRONG, the target has weakness equal to 5 + your Reason score (save ends)"
+      }
+    ],
+    "effect": "Choose the damage type and the weakness for this ability from one of the following: acid, corruption, or fire. The target takes damage before this ability imposes any weakness.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "spirit-sword",
+    "name": "Spirit Sword",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "You form a blade of mind energy and stab your target, invigorating yourself.",
+    "keywords": "Animapathy/Melee/Psionic/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 2",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Presence",
+    "tier_effects": [
+      {
+        "tier1": "3 + P damage",
+        "tier2": "6 + P damage",
+        "tier3": "9 + P damage"
+      }
+    ],
+    "effect": "You gain 1 surge.\n\nThe target takes an extra 3 damage. You also take 3 damage that can't be reduced in any way.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "applied-chronometrics-5-clarity",
+    "name": "Applied Chronometrics",
+    "level": 2,
+    "subclass": "Chronopathy",
+    "resource": "Clarity",
+    "resource_value": 5,
+    "story_text": "Time slows down around you. Your heartbeat is the only gauge of the extra moments you've gained.",
+    "keywords": "Chronopathy/Psionic/Ranged",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Special",
+    "power_roll": "Power Roll + Presence",
+    "tier_effects": [
+      {
+        "tier1": "You target two creatures, one of which can be you.",
+        "tier2": "You target three creatures, one of which can be you.",
+        "tier3": "You target four creatures, one of which can be you."
+      }
+    ],
+    "effect": "Until the start of your next turn, each target gains a +5 bonus to speed, they can't be made dazed, and they can use an additional maneuver on their turn. If a target is already dazed, that condition ends for them.\n\nYour speed is halved until the end of the encounter.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "gravitic-burst-5-clarity",
+    "name": "Gravitic Burst",
+    "level": 2,
+    "subclass": "Telekinesis",
+    "resource": "Clarity",
+    "resource_value": 5,
+    "story_text": "Everyone get away from me!",
+    "keywords": "Area/Psionic/Telekinesis",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "1 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "3 damage; vertical push 2",
+        "tier2": "6 damage; vertical push 4",
+        "tier3": "9 damage; vertical push 6"
+      }
+    ],
+    "effect": "The size of the burst increases by 1, and you are weakened until the end of your turn.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "levity-and-gravity-5-clarity",
+    "name": "Levity and Gravity",
+    "level": 2,
+    "subclass": "Telekinesis",
+    "resource": "Clarity",
+    "resource_value": 5,
+    "story_text": "You raise the target slightly into the air, then smother them against the ground.",
+    "keywords": "Psionic/Ranged/Strike/Telekinesis",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "6 + R damage; M < WEAK, prone",
+        "tier2": "10 + R damage; M < AVERAGE, prone",
+        "tier3": "14 + R damage; M < STRONG, prone and can't stand (save ends)"
+      }
+    ],
+    "effect": "You take half the damage the target takes.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "overwhelm-5-clarity",
+    "name": "Overwhelm",
+    "level": 2,
+    "subclass": "Telepathy",
+    "resource": "Clarity",
+    "resource_value": 5,
+    "story_text": "You overload their senses, turning all their subconscious thoughts into conscious ones.",
+    "keywords": "Psionic/Ranged/Strike/Telepathy",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "6 + R psychic damage; I < WEAK, slowed (save ends)",
+        "tier2": "10 + R psychic damage; I < AVERAGE, weakened (save ends)",
+        "tier3": "14 + R psychic damage; I < STRONG, dazed (save ends)"
+      }
+    ],
+    "effect": "You start crying, and you can't use triggered actions or make free strikes until the end of the target's next turn.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "slow-5-clarity",
+    "name": "Slow",
+    "level": 2,
+    "subclass": "Chronopathy",
+    "resource": "Clarity",
+    "resource_value": 5,
+    "story_text": "Perhaps they wonder why everyone else is moving so quickly?",
+    "keywords": "Chronopathy/Psionic/Ranged",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Three creatures or objects",
+    "power_roll": "Power Roll + Presence",
+    "tier_effects": [
+      {
+        "tier1": "The target's speed is halved (save ends), or if P < WEAK, the target is slowed (save ends).",
+        "tier2": "The target is slowed (save ends), or if P < AVERAGE, the target's speed is 0 (save ends).",
+        "tier3": "The target is slowed (save ends), or if P < STRONG, the target's speed is 0 (save ends)."
+      }
+    ],
+    "effect": "A target can't use triggered actions while their speed is reduced this way.\n\nThe potency of this ability increases by 1 and you take 1d6 damage. At the start of each combat round while any target is affected by this ability, you take 1d6 damage. You can end the effect on all affected targets at any time (no action required).",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "synaptic-override-5-clarity",
+    "name": "Synaptic Override",
+    "level": 2,
+    "subclass": "Telepathy",
+    "resource": "Clarity",
+    "resource_value": 5,
+    "story_text": "You control an enemy's nervous system. How pleasant for them.",
+    "keywords": "Psionic/Ranged/Telepathy",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One enemy",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "The target makes a free strike against one enemy of your choice.",
+        "tier2": "The target shifts up to their speed and uses their signature ability against any enemies of your choice.",
+        "tier3": "The target moves up to their speed and uses their signature ability against any enemies of your choice."
+      }
+    ],
+    "effect": "You control the target's movement. The target can't be moved in a way that would harm them (such as over a cliff), leave them dying, or result in them suffering a condition or other negative effect. However, you can move them to provoke opportunity attacks.\n\nYou take 1d6 damage and are weakened until the end of your turn.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "fling-through-time-7-clarity",
+    "name": "Fling Through Time",
+    "level": 3,
+    "resource": "Clarity",
+    "resource_value": 7,
+    "story_text": "You hurl the target through the annals of time, forcing them to witness every moment of their existence all at once.",
+    "keywords": "Chronopathy/Psionic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Presence",
+    "tier_effects": [
+      {
+        "tier1": "3 + P corruption damage; P < WEAK, weakened (save ends)",
+        "tier2": "5 + P corruption damage; the target is flung through time, and if P < AVERAGE, they are weakened (save ends)",
+        "tier3": "8 + P corruption damage; the target is flung through time, and if P < STRONG, they are weakened (save ends)"
+      }
+    ],
+    "effect": "A target who is flung through time is removed from the encounter map until the end of their next turn, reappearing in their original space or the nearest unoccupied space.\n\nYou take 2d6 damage and permanently grow visibly older (the equivalent of 10 years for a human). If you obtain a tier 3 outcome on the power roll, you gain 2 clarity.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "force-orbs-7-clarity",
+    "name": "Force Orbs",
+    "level": 3,
+    "resource": "Clarity",
+    "resource_value": 7,
+    "story_text": "Spheres of solid psionic energy float around you.",
+    "keywords": "Psionic/Ranged/Strike/Telekinesis",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Self; see below",
+    "targets": "Self",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "2 damage",
+        "tier2": "3 damage",
+        "tier3": "5 damage"
+      }
+    ],
+    "effect": "You create three size 1T orbs that orbit your body. Each orb gives you a cumulative damage immunity 1. Each time you take damage, you lose 1 orb.\nOnce on each of your turns, you can use a free maneuver to fire an orb at a creature or object within 5 squares as a ranged strike, losing the orb after the strike.\n\nYou create five orbs, and you are weakened while you have any orbs active.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "reflector-field-7-clarity",
+    "name": "Reflector Field",
+    "level": 3,
+    "resource": "Clarity",
+    "resource_value": 7,
+    "story_text": "A protective field reverses the momentum of incoming attacks.",
+    "keywords": "Area/Psionic/Telepathy",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 aura",
+    "targets": "Special",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The aura lasts until the start of your next turn. Whenever an enemy targets an ally in the area with a ranged ability, the ability is negated on the ally and reflected back at the enemy. The ability deals half the damage to the enemy that it would have dealt to the ally and loses any additional effects.\n\nThe size of the aura increases by 1. Whenever your aura reflects an ability, you take 2d6 damage and forget a memory, as determined by you and the Director.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "soul-burn-7-clarity",
+    "name": "Soul Burn",
+    "level": 3,
+    "resource": "Clarity",
+    "resource_value": 7,
+    "story_text": "You blast their soul out of their body, leaving it to helplessly float back to a weakened husk.",
+    "keywords": "Animapathy/Psionic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Presence",
+    "tier_effects": [
+      {
+        "tier1": "6 + P damage; P < WEAK, dazed (save ends)",
+        "tier2": "10 + P damage; P < AVERAGE, dazed (save ends)",
+        "tier3": "14 + P damage; P < STRONG, dazed (save ends)"
+      }
+    ],
+    "effect": "The target takes a bane on Presence tests until the end of the encounter.\n\nThe potency of this ability increases by 1. You take 2d6 damage and gain 3 surges that you can use immediately.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "exothermic-shield-9-clarity",
+    "name": "Exothermic Shield",
+    "level": 5,
+    "resource": "Clarity",
+    "resource_value": 9,
+    "story_text": "You encase the target in psionic flame and allow them to flicker without fear of burning out.",
+    "keywords": "Pyrokinesis/Psionic/Ranged",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Self or one ally",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Until the start of your next turn, the target has cold immunity 10 and fire immunity 10, and their strikes deal extra fire damage equal to twice your Reason score. Additionally, whenever an enemy uses a melee ability against the target while they are under this effect, the enemy takes 5 fire damage.\n\nThe target gains 2 surges. You are weakened and slowed (save ends).",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "hypersonic-9-clarity",
+    "name": "Hypersonic",
+    "level": 5,
+    "resource": "Clarity",
+    "resource_value": 9,
+    "story_text": "You move fast enough to turn around and watch your foes feel the aftermath.",
+    "keywords": "Area/Charge/Psionic/Telekinesis",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "5 x 2 line within 1",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "12 sonic damage",
+        "tier2": "18 sonic damage",
+        "tier3": "24 sonic damage"
+      }
+    ],
+    "effect": "You teleport to a square on the opposite side of the area before making the power roll.\n\nIf you obtain a tier 2 outcome or better, you are slowed until the end of your turn and each target is slowed until the end of their turn.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "mind-snare-9-clarity",
+    "name": "Mind Snare",
+    "level": 5,
+    "resource": "Clarity",
+    "resource_value": 9,
+    "story_text": "You latch onto your prey's brain and don't let go, like a song they can't get out of their head.",
+    "keywords": "Psionic/Ranged/Strike/Telepathy",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "10 + R psychic damage; R < WEAK, slowed (save ends)",
+        "tier2": "14 + R psychic damage; R < AVERAGE, slowed (save ends)",
+        "tier3": "20 + R psychic damage; R < STRONG, slowed (save ends)"
+      }
+    ],
+    "effect": "While slowed this way, the target takes 3 psychic damage for each square they willingly leave.\n\nWhile slowed this way, the target instead takes 5 psychic damage for each square they willingly leave. You have a double bane on ability rolls made against the target while they are slowed this way.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "soulbound-9-clarity",
+    "name": "Soulbound",
+    "level": 5,
+    "resource": "Clarity",
+    "resource_value": 9,
+    "story_text": "You fire a piercing bolt of psychic energy that lances through two foes and leaves a faint intangible thread between them.",
+    "keywords": "Animapathy/Psionic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Two enemies",
+    "power_roll": "Power Roll + Presence",
+    "tier_effects": [
+      {
+        "tier1": "8 damage; A < WEAK, the target is stitched to the other target (save ends)",
+        "tier2": "13 damage; A < AVERAGE, the target is stitched to the other target (save ends)",
+        "tier3": "17 damage; A < STRONG, the target is stitched to the other target (save ends)"
+      }
+    ],
+    "effect": "If any target becomes stitched to the other, both targets are stitched together. While stitched together, a target takes a bane on power rolls while not adjacent to a creature they're stitched to. Whenever a stitched target takes damage that wasn't dealt by or also taken by another stitched target, each other stitched target takes half the damage the initial target took.\n\nYou target yourself and three enemies instead.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "fate-9-clarity",
+    "name": "Fate",
+    "level": 6,
+    "subclass": "Chronopathy",
+    "resource": "Clarity",
+    "resource_value": 9,
+    "story_text": "Your foe gets a glimpse of how it will end for them.",
+    "keywords": "Chronopathy/Psionic/Melee",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 2",
+    "targets": "One enemy",
+    "power_roll": "Power Roll + Presence",
+    "tier_effects": [
+      {
+        "tier1": "8 + P psychic damage",
+        "tier2": "13 + P psychic damage",
+        "tier3": "17 + P psychic damage"
+      }
+    ],
+    "effect": "The target has damage weakness 5 until the end of your next turn. Whenever the target takes damage while they have this weakness, they are knocked prone.\n\nThis ability gains the Strike keyword as the vision hurts the target's psyche. You make a power roll, then are weakened (save ends).",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "gravitic-well-9-clarity",
+    "name": "Gravitic Well",
+    "level": 6,
+    "subclass": "Telekinesis",
+    "resource": "Clarity",
+    "resource_value": 9,
+    "story_text": "You bend gravity into a fine point and pull your foes toward it.",
+    "keywords": "Area/Psionic/Ranged/Telekinesis",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "4 cube within 10",
+    "targets": "Each creature and object in the area",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "6 damage; vertical pull 5 toward the center of the area",
+        "tier2": "9 damage; vertical pull 7 toward the center of the area",
+        "tier3": "13 damage; vertical pull 10 toward the center of the area"
+      }
+    ],
+    "effect": "Targets closest to the center of the area are pulled first.\n\nThe size of the area increases by 2. You also target yourself and each ally within distance.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "greater-kinetic-grip-9-clarity",
+    "name": "Greater Kinetic Grip",
+    "level": 6,
+    "subclass": "Telekinesis",
+    "resource": "Clarity",
+    "resource_value": 9,
+    "story_text": "You raise the target into the air without breaking a sweat.",
+    "keywords": "Psionic/Ranged/Strike/Telekinesis",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "Slide 4 + R; M < WEAK, the forced movement is vertical",
+        "tier2": "Slide 8 + R; M < AVERAGE, the forced movement is vertical",
+        "tier3": "Slide 12 + R; prone; M < STRONG, the forced movement is vertical"
+      }
+    ],
+    "effect": "The forced movement ignores stability. You take 2d6 damage and are weakened (save ends).",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "psi-boost",
+    "name": "Psi Boost",
+    "level": 6,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "",
+    "action_type": "",
+    "trigger_text": "",
+    "distance": "",
+    "targets": "",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Whenever you use an ability that is a main action or a maneuver with the Psionic keyword, you can spend additional discipline to apply a psi boost to it and enhance its effects. A psi boost's effects only last until the end of the turn which the ability is first used. You can apply multiple psi boosts to an ability, but only one instance of each specific boost. You can use the following psi boosts.\n\n##### Dynamic Power (1 Clarity)\nIf the ability force moves a target, the forced movement distance gains a bonus equal to your Reason score.\n##### Expanded Power (3 Clarity)\nIf the ability targets an area, you increase the size of the area by 1. If the area is a line, you increase the size of one dimension, not both.\n##### Extended Power (1 Clarity)\nIf the ability is ranged, the distance gains a bonus equal to your Reason score. If the ability is melee, the distance gains a +2 bonus.\n##### Heightened Power (1 Clarity)\nIf the ability deals rolled damage, it deals extra damage equal to your Reason score.\n##### Magnified Power (5 Clarity)\nIf the ability has a potency, you increase that potency by an amount equal to your Reason score.\n##### Shared Power (5 Clarity)\nIf the ability targets individual creatures or objects, you target one additional creature or object within distance.\n##### Sharpened Power (1 Clarity)\nIf the ability has any power roll, that roll gains an edge.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "stasis-field-9-clarity",
+    "name": "Stasis Field",
+    "level": 6,
+    "resource": "Clarity",
+    "resource_value": 9,
+    "story_text": "Keep everything as it was. Ignore everything that will be.",
+    "keywords": "Area/Chronopathy/Psionic/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "4 cube within 10",
+    "targets": "Each creature and object in the area",
+    "power_roll": "Power Roll + Presence",
+    "tier_effects": [
+      {
+        "tier1": "P < WEAK, the target is slowed until the effect ends",
+        "tier2": "P < AVERAGE, the target's speed is 0 until the effect ends",
+        "tier3": "P < STRONG, the target is restrained until the effect ends"
+      }
+    ],
+    "effect": "The area is frozen in time until the start of your next turn. Each object in the area is restrained and can't fall until the effect ends. Until the effect ends, creatures in the area who are reduced to 0 Stamina or would die stay alive, and objects in the area that are reduced to 0 Stamina remain undestroyed.\nMake a power roll that targets each enemy in the area.\n\nAny creature or object force moved in the area takes 2 corruption damage for each square of the area they enter. Creatures and objects restrained in the area can be force moved. You are restrained until the effect ends.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "synaptic-conditioning-9-clarity",
+    "name": "Synaptic Conditioning",
+    "level": 6,
+    "subclass": "Telepathy",
+    "resource": "Clarity",
+    "resource_value": 9,
+    "story_text": "It's a subtle mindset shift. It's not that they're your enemy—you just don't like them!",
+    "keywords": "Psionic/Melee/Strike/Telepathy",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 2",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "10 psychic damage; the target takes a bane on ability rolls made to harm you or your allies (save ends)",
+        "tier2": "14 psychic damage; the target has a double bane on ability rolls made to harm you or your allies (save ends)",
+        "tier3": "20 psychic damage; the target considers you and your allies to be their allies when using abilities and features (save ends)"
+      }
+    ],
+    "effect": "While the target is under this effect, you no longer consider your enemies to be your enemies when using your abilities and features.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "synaptic-dissipation-9-clarity",
+    "name": "Synaptic Dissipation",
+    "level": 6,
+    "subclass": "Telepathy",
+    "resource": "Clarity",
+    "resource_value": 9,
+    "story_text": "You manipulate your enemies' minds and make them wonder if you were ever really there in the first place.",
+    "keywords": "Psionic/Ranged/Strike/Telepathy",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Special",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "Two creatures",
+        "tier2": "Three creatures",
+        "tier3": "Five creatures"
+      }
+    ],
+    "effect": "You target a number of creatures with this ability determined by the outcome of your power roll. You and your allies are invisible to each target until the start of your next turn.\n\nThe effect ends early if you take damage from an enemy's ability.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "doubt-11-clarity",
+    "name": "Doubt",
+    "level": 8,
+    "resource": "Clarity",
+    "resource_value": 11,
+    "story_text": "You tug at the strings of the foe's anima and unravel them, allowing someone else to take advantage of their drive.",
+    "keywords": "Animapathy/Psionic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Presence",
+    "tier_effects": [
+      {
+        "tier1": "10 + P damage; P < WEAK, weakened (save ends)",
+        "tier2": "14 + P damage; P < AVERAGE, weakened (save ends)",
+        "tier3": "20 + P damage; P < STRONG, weakened and slowed (save ends)"
+      }
+    ],
+    "effect": "This ability gains an edge against a target with a soul (see *[Draw Steel: Monsters](https://mcdm.gg/DS-Monsters)*). After you make the power roll, you or one ally within distance have a double edge on the next power roll you make before the end of the encounter.\n\nYou feel dispirited until you finish a respite. If you obtain a tier 3 outcome on the power roll, you and the target each have damage weakness 5 (save ends).",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "levitation-field",
+    "name": "Levitation Field",
+    "level": 8,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "You manipulate the air around your allies so they can move as freely through the sky as you can.",
+    "keywords": "Area/Psionic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "3 burst",
+    "targets": "Each ally in the area",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Each target can fly until the start of your next turn, and can immediately shift up to their speed. You can also shift up to your speed. While flying, a target's stability is reduced to 0 and can't be increased.\n\nThe effects last for 1 hour instead.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "mindwipe-11-clarity",
+    "name": "Mindwipe",
+    "level": 8,
+    "resource": "Clarity",
+    "resource_value": 11,
+    "story_text": "You attempt to make them forget all their training.",
+    "keywords": "Melee/Psionic/Strike/Telepathy",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 2",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "12 + R damage; R < WEAK, the target takes a bane on their next power roll",
+        "tier2": "17 + R damage; R < AVERAGE, the target takes a bane on power rolls (save ends)",
+        "tier3": "23 + R damage; R < STRONG, the target has a double bane on power rolls (save ends)"
+      }
+    ],
+    "effect": "The target can't communicate with anyone until the end of the encounter.\n\nYou take 3d6 damage.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "rejuvenate-11-clarity",
+    "name": "Rejuvenate",
+    "level": 8,
+    "resource": "Clarity",
+    "resource_value": 11,
+    "story_text": "You reshape the flow of time in the target's body to return it to an earlier state.",
+    "keywords": "Chronopathy/Psionic/Ranged",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Self or one ally",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Choose two of the following effects:\n- The target can spend any number of Recoveries.\n- The target gains 1 of their Heroic Resource, and can end any effects on them that are ended by a saving throw or that end at the end of their turn.\n- The target gains 2 surges, and gains a +3 bonus to speed until the end of the encounter.\n\nYou and the target both permanently grow visibly younger (the equivalent of 20 human years, to the minimum of an 18-year-old). Additionally, you are weakened and slowed (save ends).",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "stasis-shield-3-clarity",
+    "name": "Stasis Shield",
+    "level": 8,
+    "resource": "Clarity",
+    "resource_value": 3,
+    "story_text": "You freeze time just long enough to bring the victim to safety!",
+    "keywords": "Psionic/Ranged",
+    "action_type": "triggered action",
+    "trigger_text": "The target takes damage.",
+    "distance": "Ranged 10",
+    "targets": "Self, or one creature or object",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The target is teleported to an unoccupied space adjacent to you, taking no damage and suffering no additional effects if this movement would get them out of harm's way.\n\nYou can't target yourself, and you take the damage and any additional effects instead of the target.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "steel-11-clarity",
+    "name": "Steel",
+    "level": 8,
+    "resource": "Clarity",
+    "resource_value": 11,
+    "story_text": "The target's skin becomes covered in tough metal.",
+    "keywords": "Metamorphosis/Psionic/Ranged",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Self or one ally",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The target has damage immunity 5 and can't be made slowed or weakened until the start of your next turn. Whenever the target force moves a creature or object while under this effect, the forced movement distance gains a +5 bonus.\n\nYou can't use maneuvers (save ends).",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "acceleration-field-11-clarity",
+    "name": "Acceleration Field",
+    "level": 9,
+    "subclass": "Chronopathy",
+    "resource": "Clarity",
+    "resource_value": 11,
+    "story_text": "You forcibly stuff more moments into a critical point in time, knowing full well you might need to steal some of your own.",
+    "keywords": "Chronopathy/Psionic/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 5",
+    "targets": "Three allies",
+    "power_roll": "Power Roll + Presence",
+    "tier_effects": [
+      {
+        "tier1": "4 corruption damage; slowed (save ends)",
+        "tier2": "6 corruption damage; slowed (save ends)",
+        "tier3": "10 corruption damage; slowed (save ends)"
+      }
+    ],
+    "effect": "Each target can use any main action available to them as a free triggered action, but they lose their main action on their next turn.\n\nMake a power roll that targets you and each enemy within distance.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "borrow-from-the-future-11-clarity",
+    "name": "Borrow From the Future",
+    "level": 9,
+    "subclass": "Chronopathy",
+    "resource": "Clarity",
+    "resource_value": 11,
+    "story_text": "You lean on future heroism to assist you in the now.",
+    "keywords": "Area/Chronopathy/Psionic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "2 burst",
+    "targets": "Each ally in the area",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The targets share 6 of their Heroic Resource among themselves, as you determine. A target can't gain more than 3 of their Heroic Resource this way. After using this ability, you can't gain any clarity until the end of the next combat round.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "fulcrum-11-clarity",
+    "name": "Fulcrum",
+    "level": 9,
+    "subclass": "Telekinesis",
+    "resource": "Clarity",
+    "resource_value": 11,
+    "story_text": "You precisely manipulate the creatures around you.",
+    "keywords": "Area/Psionic/Telekinesis",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Special",
+    "targets": "Each enemy and object in the area",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "2 burst",
+        "tier2": "3 burst",
+        "tier3": "4 burst"
+      }
+    ],
+    "effect": "Make a power roll to determine the area of this ability. Each target is vertical pushed 6 squares. You can target only objects of size 1L or smaller.\n\nYou can choose to reduce the size of the burst by 2 (to a minimum of 1 burst) to give the forced movement distance a +2 bonus. You take half the total damage all targets take from forced movement.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "gravitic-nova-11-clarity",
+    "name": "Gravitic Nova",
+    "level": 9,
+    "subclass": "Telekinesis",
+    "resource": "Clarity",
+    "resource_value": 11,
+    "story_text": "Unbridled psionic energy erupts from your body and flashes outward, hurling your foes back.",
+    "keywords": "Area/Psionic/Telekinesis",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 burst",
+    "targets": "Each enemy and object in the area",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "6 damage; push 7",
+        "tier2": "9 damage; push 10",
+        "tier3": "13 damage; push 15"
+      }
+    ],
+    "effect": "On a critical hit, the size of the area increases by 3, and this ability deals an extra 10 damage.\n\nYou are weakened (save ends). If you scored a critical hit with this ability, you die.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "resonant-mind-spike-11-clarity",
+    "name": "Resonant Mind Spike",
+    "level": 9,
+    "subclass": "Telepathy",
+    "resource": "Clarity",
+    "resource_value": 11,
+    "story_text": "You fire a telepathic bolt empowered by every consciousness within reach directly into your foe's mind.",
+    "keywords": "Psionic/Ranged/Strike/Telepathy",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "15 + R psychic damage",
+        "tier2": "24 + R psychic damage",
+        "tier3": "28 + R psychic damage"
+      }
+    ],
+    "effect": "This ability ignores cover and concealment.\n\nThe ability roll scores a critical hit on a natural 17 or higher. You take half the damage the target takes, and you can't reduce this damage in any way.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "synaptic-terror-11-clarity",
+    "name": "Synaptic Terror",
+    "level": 9,
+    "subclass": "Telepathy",
+    "resource": "Clarity",
+    "resource_value": 11,
+    "story_text": "You project a terrifying image into the brains of your foes, and their fear psionically invigorates your allies.",
+    "keywords": "Area/Psionic/Telepathy",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 burst",
+    "targets": "Each ally and enemy in the area",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "R < WEAK, frightened (save ends)",
+        "tier2": "R < AVERAGE, frightened (save ends)",
+        "tier3": "R < STRONG, frightened (save ends)"
+      }
+    ],
+    "effect": "You and each target ally can't obtain lower than a tier 2 outcome on power rolls until the start of your next turn. Each target enemy is affected by the ability's power roll.\n\nYou can't use this ability if doing so would cause you to have negative clarity.",
+    "special_effect": ""
+  }
+]

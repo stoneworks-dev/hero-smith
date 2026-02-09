@@ -1,0 +1,1022 @@
+[
+  {
+    "type": "ability",
+    "id": "back-3-ferocity",
+    "name": "Back!",
+    "level": 1,
+    "resource": "Ferocity",
+    "resource_value": 3,
+    "story_text": "You hew about you with your mighty weapon, hurling enemies backward.",
+    "keywords": "Area/Melee/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "1 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "5 damage",
+        "tier2": "8 damage; push 1",
+        "tier3": "11 damage; push 3"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "blood-for-blood-5-ferocity",
+    "name": "Blood for Blood!",
+    "level": 1,
+    "resource": "Ferocity",
+    "resource_value": 5,
+    "story_text": "See how well they fight after you've bled them dry.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "4 + M damage; M < WEAK, bleeding and weakened (save ends)",
+        "tier2": "6 + M damage; M < AVERAGE, bleeding and weakened (save ends)",
+        "tier3": "10 + M damage; M < STRONG, bleeding and weakened (save ends)"
+      }
+    ],
+    "effect": "You can deal 1d6 damage to yourself to deal an extra 1d6 damage to the target.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "brutal-slam",
+    "name": "Brutal Slam",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "The heavy impact of your weapon attacks drives your foes ever back.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "3 + M damage; push 1",
+        "tier2": "6 + M damage; push 2",
+        "tier3": "9 + M damage; push 4"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "furious-change",
+    "name": "Furious Change",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "In your anger, you revert to a more bestial form.",
+    "keywords": "-",
+    "action_type": "triggered action",
+    "trigger_text": "You lose Stamina and are not dying.",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You gain temporary Stamina equal to your Might score and can enter your animal form or hybrid form.\n\nIf you are not dying, you can spend a Recovery.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "hit-and-run",
+    "name": "Hit and Run",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "Staying in constant motion helps you slip out of reach after a brutal assault.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "2 + M damage",
+        "tier2": "5 + M damage",
+        "tier3": "7 + M damage; A < STRONG, slowed (save ends)"
+      }
+    ],
+    "effect": "You can shift 1 square.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "impaled",
+    "name": "Impaled!",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "You skewer your enemy like a boar upon a spit.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature of your size or smaller",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "2 + M damage; M < WEAK, grabbed",
+        "tier2": "5 + M damage; M < AVERAGE, grabbed",
+        "tier3": "7 + M damage; M < STRONG, grabbed"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "lines-of-force",
+    "name": "Lines of Force",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "You redirect the energy of motion.",
+    "keywords": "Magic/Melee",
+    "action_type": "triggered action",
+    "trigger_text": "The target would be force moved.",
+    "distance": "Melee 1",
+    "targets": "Self or one creature",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You can select a new target of the same size or smaller within distance to be force moved instead. You become the source of the forced movement, determine the new target's destination, and can push the target instead of using the original forced movement type. Additionally, the forced movement distance gains a bonus equal to your Might score.\n\nThe forced movement distance gains a bonus equal to twice your Might score instead.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "make-peace-with-your-god-5-ferocity",
+    "name": "Make Peace With Your God!",
+    "level": 1,
+    "resource": "Ferocity",
+    "resource_value": 5,
+    "story_text": "Anger is your energy.",
+    "keywords": "-",
+    "action_type": "free maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You gain 1 surge, and the next ability roll you make this turn automatically obtains a tier 3 outcome.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "out-of-the-way-3-ferocity",
+    "name": "Out of the Way!",
+    "level": 1,
+    "resource": "Ferocity",
+    "resource_value": 3,
+    "story_text": "Your enemies will clear your path—whether they want to or not.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "3 + M damage; slide 2",
+        "tier2": "5 + M damage; slide 3",
+        "tier3": "8 + M damage; slide 5"
+      }
+    ],
+    "effect": "When you slide the target, you can move into any square they leave. If you take damage from an opportunity attack by moving this way, the target takes the same damage.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "thunder-roar-5-ferocity",
+    "name": "Thunder Roar",
+    "level": 1,
+    "resource": "Ferocity",
+    "resource_value": 5,
+    "story_text": "You unleash a howl that hurls your enemies back.",
+    "keywords": "Area/Melee/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "5 x 1 line within 1",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "6 damage; push 2",
+        "tier2": "9 damage; push 4",
+        "tier3": "13 damage; push 6"
+      }
+    ],
+    "effect": "The targets are force moved one at a time, starting with the target nearest to you, and can be pushed into other targets in the same line.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "tide-of-death-3-ferocity",
+    "name": "Tide of Death",
+    "level": 1,
+    "resource": "Ferocity",
+    "resource_value": 3,
+    "story_text": "Teach them the folly of lining up for you.",
+    "keywords": "Melee/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Self; see below",
+    "targets": "Self",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "2 damage",
+        "tier2": "3 damage",
+        "tier3": "5 damage"
+      }
+    ],
+    "effect": "You move up to your speed in a straight line, and enemy squares are not difficult terrain for this movement. You can end this movement in a creature's space and move them to an adjacent unoccupied space. You make one power roll that targets each enemy whose space you move through.\n\nThe last target you damage takes extra damage equal to your Might score for each opportunity attack you trigger during your move.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "to-the-death",
+    "name": "To the Death!",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "Your reckless assault leaves you tactically vulnerable.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "3 + M damage",
+        "tier2": "6 + M damage",
+        "tier3": "9 + M damage"
+      }
+    ],
+    "effect": "You gain 2 surges, and the target can make an opportunity attack against you as a free triggered action.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "to-the-uttermost-end-5-ferocity",
+    "name": "To the Uttermost End",
+    "level": 1,
+    "resource": "Ferocity",
+    "resource_value": 5,
+    "story_text": "You gut your life force to ensure a foe's demise.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "7 + M damage",
+        "tier2": "11 + M damage",
+        "tier3": "16 + M damage"
+      }
+    ],
+    "effect": "While you are winded, this ability deals an extra 1d6 damage for each ferocity spent. While you are dying, it deals an extra 1d10 damage for each ferocity spent. In either case, you lose 1d6 Stamina after making this strike.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "unearthly-reflexes",
+    "name": "Unearthly Reflexes",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "You are as elusive as a hummingbird.",
+    "keywords": "-",
+    "action_type": "triggered action",
+    "trigger_text": "You take damage.",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You take half the damage from the triggering effect and can shift up to a number of squares equal to your Agility score.\n\nIf the damage has any potency effects associated with it, the potency is reduced by 1 for you.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "your-entrails-are-your-extrails-3-ferocity",
+    "name": "Your Entrails Are Your Extrails!",
+    "level": 1,
+    "resource": "Ferocity",
+    "resource_value": 3,
+    "story_text": "Hard for them to fight when they're busy holding in their giblets.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "3 + M damage; M < WEAK, bleeding (save ends)",
+        "tier2": "5 + M damage; M < AVERAGE, bleeding (save ends)",
+        "tier3": "8 + M damage; M < STRONG, bleeding (save ends)"
+      }
+    ],
+    "effect": "While bleeding this way, the target takes damage equal to your Might score at the end of each of your turns.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "special_delivery",
+    "name": "Special Delivery",
+    "level": 2,
+    "subclass": "Berserker",
+    "resource": "Ferocity",
+    "resource_value": 5,
+    "story_text": "You ready?",
+    "keywords": "Melee, Weapon",
+    "action_type": "maneuver",
+    "trigger_text": null,
+    "distance": "Melee 1",
+    "targets": "One willing ally",
+    "power_roll": null,
+    "tier_effects": [],
+    "effect": "You vertically push the target up to 4 squares. This forced movement ignores the target's stability, and the target takes no damage from colliding with creatures or objects. At the end of this movement, the target can make a free strike that deals extra damage equal to your Might score.",
+    "special_effect": null
+  },
+  {
+    "type": "ability",
+    "id": "wrecking_ball",
+    "name": "Wrecking Ball",
+    "level": 2,
+    "subclass": "Berserker",
+    "resource": "Ferocity",
+    "resource_value": 5,
+    "story_text": "It's easier to destroy than to create. Much easier, in fact!",
+    "keywords": "Melee, Weapon",
+    "action_type": "maneuver",
+    "trigger_text": null,
+    "distance": "Self",
+    "targets": "Self; each enemy you move adjacent to",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "Push 1",
+        "tier2": "Push 2",
+        "tier3": "Push 3"
+      }
+    ],
+    "effect": "You move up to your speed in a straight line. During this movement, you can move through mundane structures, including walls, which are difficult terrain for you. You automatically destroy each square of structure you move through and leave behind a square of difficult terrain. \n\nAdditionally, you make one power roll that targets each enemy you move adjacent to during this movement.",
+    "special_effect": null
+  },
+  {
+    "type": "ability",
+    "id": "death_death",
+    "name": "Death ... Death!",
+    "level": 2,
+    "subclass": "Reaver",
+    "resource": "Ferocity",
+    "resource_value": 5,
+    "story_text": "Your unbridled rage strikes terror in their hearts.",
+    "keywords": "Melee, Strike, Weapon",
+    "action_type": "main action",
+    "trigger_text": null,
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "3 + M damage; P < WEAK, dazed and frightened (save ends)",
+        "tier2": "5 + M damage; P < AVERAGE, dazed and frightened (save ends)",
+        "tier3": "8 + M damage; P < STRONG, dazed and frightened (save ends)"
+      }
+    ],
+    "effect": null,
+    "special_effect": null
+  },
+  {
+    "type": "ability",
+    "id": "phalanx_breaker",
+    "name": "Phalanx-Breaker",
+    "level": 2,
+    "subclass": "Reaver",
+    "resource": "Ferocity",
+    "resource_value": 5,
+    "story_text": "Organizing your forces like feckless creatures of Law. Pitiful.",
+    "keywords": "Melee, Weapon",
+    "action_type": "main action",
+    "trigger_text": null,
+    "distance": "Self",
+    "targets": "Self; up to three enemies you move adjacent to",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "2 damage; A < WEAK, dazed (save ends)",
+        "tier2": "4 damage; A < AVERAGE, dazed (save ends)",
+        "tier3": "6 damage; A < STRONG, dazed (save ends)"
+      }
+    ],
+    "effect": "You shift up to your speed and make one power roll that targets up to three enemies you move adjacent to during this shift.",
+    "special_effect": null
+  },
+  {
+    "type": "ability",
+    "id": "apex_predator",
+    "name": "Apex Predator",
+    "level": 2,
+    "subclass": "Stormwight",
+    "resource": "Ferocity",
+    "resource_value": 5,
+    "story_text": "I will hunt you down.",
+    "keywords": "Melee, Strike, Weapon",
+    "action_type": "main action",
+    "trigger_text": null,
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "4 + M damage; I < WEAK, slowed (save ends)",
+        "tier2": "6 + M damage; I < AVERAGE, slowed (save ends)",
+        "tier3": "10 + M damage; I < STRONG, slowed (save ends)"
+      }
+    ],
+    "effect": "The target can’t be hidden from you for 24 hours. Until the end of the encounter, whenever the target willingly moves, you can use a free triggered action to move.",
+    "special_effect": null
+  },
+  {
+    "type": "ability",
+    "id": "visceral_roar",
+    "name": "Visceral Roar",
+    "level": 2,
+    "subclass": "Stormwight",
+    "resource": "Ferocity",
+    "resource_value": 5,
+    "story_text": "The sound of the storm within you staggers your opponents.",
+    "keywords": "Area, Magic",
+    "action_type": "main action",
+    "trigger_text": null,
+    "distance": "2 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Might(M)",
+    "tier_effects": [
+      {
+        "tier1": "2 damage; push 1; M < WEAK, dazed (save ends)",
+        "tier2": "5 damage; push 2; M < AVERAGE, dazed (save ends)",
+        "tier3": "7 damage; push 3; M < STRONG, dazed (save ends)"
+      }
+    ],
+    "effect": "This ability deals your primordial damage type (see Stormwight Kits).",
+    "special_effect": null
+  },
+  {
+    "type": "ability",
+    "id": "demon-unleashed-7-ferocity",
+    "name": "Demon Unleashed",
+    "level": 3,
+    "resource": "Ferocity",
+    "resource_value": 7,
+    "story_text": "Foes tremble at the sight of you.",
+    "keywords": "Magic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Until the end of the encounter or until you are dying, each enemy who starts their turn adjacent to you and has P < STRONG is frightened until the end of their turn.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "face-the-storm-7-ferocity",
+    "name": "Face the Storm!",
+    "level": 3,
+    "resource": "Ferocity",
+    "resource_value": 7,
+    "story_text": "Shocked in the face of your naked brutality, your enemy's instincts take over.",
+    "keywords": "Magic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Until the end of the encounter or until you are dying, each creature you make a melee strike against who has P < AVERAGE is taunted until the end of their next turn. Additionally, when you use an ability that deals rolled damage against any enemy taunted by you, the ability deals extra damage equal to twice your Might score and increases its potency by 1.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "steelbreaker-7-ferocity",
+    "name": "Steelbreaker",
+    "level": 3,
+    "resource": "Ferocity",
+    "resource_value": 7,
+    "story_text": "See how useless their weapons are!",
+    "keywords": "Magic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You gain 20 temporary Stamina.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "you-are-already-dead-7-ferocity",
+    "name": "You Are Already Dead",
+    "level": 3,
+    "resource": "Ferocity",
+    "resource_value": 7,
+    "story_text": "Slash. Walk away.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "If the target is not a leader or solo creature, they are reduced to 0 Stamina at the end of their next turn. If the target is a leader or solo creature, you gain 3 surges and can make a melee free strike against them.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "debilitating-strike-9-ferocity",
+    "name": "Debilitating Strike",
+    "level": 5,
+    "resource": "Ferocity",
+    "resource_value": 9,
+    "story_text": "You need just one blow to sabotage your target.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "10 + M damage; M < WEAK, slowed (save ends)",
+        "tier2": "14 + M damage; M < AVERAGE, slowed (save ends)",
+        "tier3": "20 + M damage; M < STRONG, slowed (save ends)"
+      }
+    ],
+    "effect": "While slowed this way, the target takes 1 damage for every square they move, including from forced movement.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "my-turn-9-ferocity",
+    "name": "My Turn!",
+    "level": 5,
+    "resource": "Ferocity",
+    "resource_value": 9,
+    "story_text": "You quickly strike back at a foe.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "free triggered",
+    "trigger_text": "A creature causes you to be winded or dying, or damages you while you are winded or dying.",
+    "distance": "Melee 1",
+    "targets": "The triggering creature",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "6 + M damage",
+        "tier2": "9 + M damage",
+        "tier3": "13 + M damage"
+      }
+    ],
+    "effect": "You can spend a Recovery.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "rebounding-storm-9-ferocity",
+    "name": "Rebounding Storm",
+    "level": 5,
+    "resource": "Ferocity",
+    "resource_value": 9,
+    "story_text": "You knock around enemies like playthings.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "Two creatures or objects",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "9 damage; push 3",
+        "tier2": "14 damage; push 5",
+        "tier3": "19 damage; push 7"
+      }
+    ],
+    "effect": "When a target would end this forced movement by colliding with a creature or object, they take damage as usual, then are pushed the remaining distance away from the creature or object in the direction they came from. As long as forced movement remains, this effect continues if the target collides with another creature or object.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "to-stone-9-ferocity",
+    "name": "To Stone!",
+    "level": 5,
+    "resource": "Ferocity",
+    "resource_value": 9,
+    "story_text": "You channel the Primordial Chaos into blows that petrify your foe... literally.",
+    "keywords": "Magic/Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "9 + M damage; M < WEAK, slowed (save ends)",
+        "tier2": "13 + M damage; M < AVERAGE, slowed (save ends)",
+        "tier3": "18 + M damage; M < STRONG, restrained (save ends)"
+      }
+    ],
+    "effect": "While the target is slowed this way, any other effect that would make the target slowed instead makes them restrained by this ability. Additionally, a creature who fails the saving throw while restrained this way is petrified until they are given a supernatural cure or you choose to reverse the effect (no action required).",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "avalanche-impact-9-ferocity",
+    "name": "Avalanche Impact",
+    "level": 6,
+    "subclass": "Berserker",
+    "resource": "Ferocity",
+    "resource_value": 9,
+    "story_text": "You leap and crash down, causing a shockwave that devastates foes.",
+    "keywords": "Magic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "4 damage; push 1",
+        "tier2": "7 damage; push 2",
+        "tier3": "11 damage; push 3"
+      }
+    ],
+    "effect": "You jump up to your maximum jump distance and make one power roll that targets each creature adjacent to the space where you land.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "death-strike-9-ferocity",
+    "name": "Death Strike",
+    "level": 6,
+    "subclass": "Reaver",
+    "resource": "Ferocity",
+    "resource_value": 9,
+    "story_text": "Once you taste your foe's blood, you become more efficient and turn every killing blow into an opportunity.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "free triggered",
+    "trigger_text": "You reduce a creature to 0 Stamina with a strike.",
+    "distance": "Melee 1",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You target a creature adjacent to you with the same strike, using the same power roll as the triggering strike.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "force-of-storms-9-ferocity",
+    "name": "Force of Storms",
+    "level": 6,
+    "subclass": "Berserker",
+    "resource": "Ferocity",
+    "resource_value": 9,
+    "story_text": "You strike an enemy hard enough to be a projectile that knocks a crowd of creatures around.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "7 + M damage; push 3",
+        "tier2": "11 + M damage; push 5",
+        "tier3": "16 + M damage; push 7"
+      }
+    ],
+    "effect": "When the target ends this forced movement, each creature within 2 squares of the target is pushed 3 squares.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "pounce-9-ferocity",
+    "name": "Pounce",
+    "level": 6,
+    "subclass": "Stormwight",
+    "resource": "Ferocity",
+    "resource_value": 9,
+    "story_text": "You strike at the target like the ultimate predator you are.",
+    "keywords": "Magic/Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "8 damage; M < WEAK, grabbed",
+        "tier2": "13 damage; M < AVERAGE, grabbed",
+        "tier3": "17 damage; M < STRONG, grabbed"
+      }
+    ],
+    "effect": "You can shift up to 4 squares, bringing the target with you. While grabbed this way, the target takes damage equal to twice your Might score at the start of each of your turns.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "riders-on-the-storm-9-ferocity",
+    "name": "Riders on the Storm",
+    "level": 6,
+    "subclass": "Stormwight",
+    "resource": "Ferocity",
+    "resource_value": 9,
+    "story_text": "You focus your connection to the Primordial Chaos into a seething storm.",
+    "keywords": "Area/Magic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "3 aura",
+    "targets": "Each creature in the area",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Until the end of the encounter or until you are dying, each enemy target takes damage of your primordial damage type equal to twice your Might score at the end of each of your turns. Additionally, you can fly while the aura is active. Each ally target who starts or ends their turn in the area can also fly until the start of their next turn or until the effect ends.\n\nWhen you use this ability outside of combat without spending ferocity, you must spend 1 uninterrupted minute summoning a primordial storm that fills the area, and you take 1d6 damage before the ability takes effect. The storm lasts for 1 hour or until a combat encounter begins.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "seek-and-destroy-9-ferocity",
+    "name": "Seek and Destroy",
+    "level": 6,
+    "subclass": "Reaver",
+    "resource": "Ferocity",
+    "resource_value": 9,
+    "story_text": "You break through the enemy lines to make an example.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "4 + M damage; P < WEAK, frightened (save ends)",
+        "tier2": "6 + M damage; P < AVERAGE, frightened (save ends)",
+        "tier3": "10 + M damage; P < STRONG, frightened (save ends)"
+      }
+    ],
+    "effect": "You shift up to your speed.\n\nIf a target who is not a leader or solo creature is winded by this strike, they are reduced to 0 Stamina and you choose an enemy within 5 squares of you. If that enemy has P < AVERAGE, they are frightened of you (save ends).",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "elemental-ferocity-11-ferocity",
+    "name": "Elemental Ferocity",
+    "level": 8,
+    "resource": "Ferocity",
+    "resource_value": 11,
+    "story_text": "Your primordial energy makes for instant retribution.",
+    "keywords": "Magic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You gain 10 temporary Stamina. Additionally, choose acid, cold, corruption, fire, lightning, poison, or sonic damage. Until the end of the encounter or until you are dying, whenever an enemy damages you, they take 10 damage of the chosen type. If this damage reduces the enemy to 0 Stamina, you gain 10 temporary Stamina.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "overkill-11-ferocity",
+    "name": "Overkill",
+    "level": 8,
+    "resource": "Ferocity",
+    "resource_value": 11,
+    "story_text": "You strike so no damage is wasted.",
+    "keywords": "Magic/Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "6 + M damage",
+        "tier2": "10 + M damage",
+        "tier3": "14 + M damage"
+      }
+    ],
+    "effect": "If the target is a minion or is winded but isn't a leader or solo creature, they are reduced to 0 Stamina before this ability's damage is dealt. If the target is killed by this damage, you can deal any damage over what was required to kill them to another creature within 5 squares of the target.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "primordial-rage-11-ferocity",
+    "name": "Primordial Rage",
+    "level": 8,
+    "resource": "Ferocity",
+    "resource_value": 11,
+    "story_text": "Your ferocity manifests into primordial power.",
+    "keywords": "Magic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Choose acid, cold, corruption, fire, lightning, poison, or sonic damage. Until the end of the encounter or until you are dying, you can choose one target of any ability you use, with that target taking an extra 15 damage of the chosen type. Additionally, whenever you gain ferocity from taking damage, the source of the damage takes 5 damage of the chosen type.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "relentless-death-11-ferocity",
+    "name": "Relentless Death",
+    "level": 8,
+    "resource": "Ferocity",
+    "resource_value": 11,
+    "story_text": "You won't escape your fate.",
+    "keywords": "Magic/Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Self; see below",
+    "targets": "Self",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "Any target whose Stamina is equal to or less than 8 dies.",
+        "tier2": "Any target whose Stamina is equal to or less than 11 dies.",
+        "tier3": "Any target whose Stamina is equal to or less than 17 dies."
+      }
+    ],
+    "effect": "You shift up to your speed. Each enemy you move adjacent to during this movement takes damage equal to twice your Might score. Then make one power roll that targets each enemy you move adjacent to during this shift. You gain 1 ferocity for each target who dies as a result of this ability (maximum 11 ferocity).",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "death-comes-for-you-all-11-ferocity",
+    "name": "Death Comes for You All!",
+    "level": 9,
+    "subclass": "Berserker",
+    "resource": "Ferocity",
+    "resource_value": 11,
+    "story_text": "You use your weapon to create a destructive shockwave.",
+    "keywords": "Area/Magic/Melee/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "7 damage; push 3",
+        "tier2": "10 damage; push 5",
+        "tier3": "15 damage; push 7"
+      }
+    ],
+    "effect": "If this forced movement causes a target to be hurled through an object, that target takes an extra 10 damage.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "death-rattle-11-ferocity",
+    "name": "Death Rattle",
+    "level": 9,
+    "subclass": "Stormwight",
+    "resource": "Ferocity",
+    "resource_value": 11,
+    "story_text": "You unleash an otherworldly cry that rips through your enemies, killing the weakest of them.",
+    "keywords": "Area/Magic",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "4 psychic damage; any target who is a minion is reduced to 0 Stamina",
+        "tier2": "6 psychic damage; any target who is a minion is reduced to 0 Stamina, as does one winded target who is not a leader or solo creature",
+        "tier3": "10 psychic damage; each target who is not a leader or solo creature is winded; any target who is a minion is reduced to 0 Stamina, as does one winded target who is not a leader or solo creature"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "deluge-11-ferocity",
+    "name": "Deluge",
+    "level": 9,
+    "subclass": "Stormwight",
+    "resource": "Ferocity",
+    "resource_value": 11,
+    "story_text": "You summon your primordial storm.",
+    "keywords": "Area/Magic/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "5 cube within 10",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "7 damage",
+        "tier2": "10 damage",
+        "tier3": "15 damage"
+      }
+    ],
+    "effect": "This ability deals your primordial damage type and ignores damage immunity.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "primordial-bane-11-ferocity",
+    "name": "Primordial Bane",
+    "level": 9,
+    "subclass": "Reaver",
+    "resource": "Ferocity",
+    "resource_value": 11,
+    "story_text": "You attune the target to be weaker to a specific element.",
+    "keywords": "Magic/Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "11 + M damage",
+        "tier2": "16 + M damage",
+        "tier3": "21 + M damage"
+      }
+    ],
+    "effect": "Choose acid, cold, corruption, fire, lightning, poison, or sonic damage. The target loses any damage immunity to the chosen type and gains weakness 10 to the chosen type (save ends).",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "primordial-vortex-11-ferocity",
+    "name": "Primordial Vortex",
+    "level": 9,
+    "subclass": "Berserker",
+    "resource": "Ferocity",
+    "resource_value": 11,
+    "story_text": "You channel the power of the Primordial Chaos to pull foes to you.",
+    "keywords": "Area/Magic/Melee/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "3 damage; vertical pull 3",
+        "tier2": "5 damage; vertical pull 5",
+        "tier3": "8 damage; vertical pull 7"
+      }
+    ],
+    "effect": "If this forced movement causes a target to slam into you, you take no damage from the collision and the target takes the damage you would have taken.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "shower-of-blood-11-ferocity",
+    "name": "Shower of Blood",
+    "level": 9,
+    "subclass": "Reaver",
+    "resource": "Ferocity",
+    "resource_value": 11,
+    "story_text": "You shock your foes with the brutality of your strike, resetting the balance of combat.",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Might",
+    "tier_effects": [
+      {
+        "tier1": "12 + M damage",
+        "tier2": "18 + M damage",
+        "tier3": "24 + M damage"
+      }
+    ],
+    "effect": "Each enemy within 5 squares of you is distracted until the end of the round. While a creature is distracted this way, they can't take triggered actions or free triggered actions, ability rolls made against them gain an edge, and their characteristic scores are considered 1 lower for the purpose of resisting potencies.",
+    "special_effect": ""
+  }
+]

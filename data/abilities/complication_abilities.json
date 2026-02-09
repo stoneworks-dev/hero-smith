@@ -1,0 +1,404 @@
+[
+  {
+    "type": "ability",
+    "id": "animal_form",
+    "name": "Animal Form",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "You take the form of a specific animal of size 1T. You retain all your other statistics aside from your size, but you can’t talk or use actions, and the only maneuvers you can use are Escape Grab, Hide, and Stand Up. Based on the animal you can turn into, you might be able to burrow or fly, or automatically climb or swim at full speed while moving. If your animal form doesn’t provide such additional movement, you have a +2 bonus to speed. \nUnless you use this benefit again, you return to your true form at the start of your next turn. ",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "corrupt_spirit",
+    "name": "Corrupt Spirit",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "You unlock the sinister secrets of pain.",
+    "keywords": "Magic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "Until the end of your turn, whenever you use a damage-dealing heroic ability against a single target, you can weaken that target’s life force. The ability deals extra corruption damage equal to your highest characteristic score.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "crash_landed_power_pack",
+    "name": "Crash Landed: Power Pack",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "Activate or deactivate a power pack. When activated, choose cold, fire, lightning, or sonic. Your damage-dealing abilities deal that damage type until you deactivate the power pack.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "gnoll_mauled",
+    "name": "Gnoll-Mauled",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "Melee, Strike",
+    "action_type": "triggered action",
+    "trigger_text": "When an ally within 5 squares is reduced to 0 Stamina.",
+    "distance": "Self (move up to speed)",
+    "targets": "One creature",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "Move up to your speed and make a free strike.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "motivate-earth",
+    "name": "Motivate Earth",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "The earth rises, falls, or opens up at your command.",
+    "keywords": "Earth/Magic/Melee",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "Special",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You touch a square containing mundane dirt, stone, or metal and create a 5 wall of the same material, which rises up out of the ground and must include the square you touched.\nAlternatively, you touch a structure made of mundane dirt, stone, or metal that occupies 2 or more squares. You can open a 1-square opening in the structure where you touched it. You can instead touch an existing doorway or other opening that is 1 square or smaller in a mundane dirt, stone, or metal surface. The opening is sealed by the same material that makes up the surface.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "curse_of_stone",
+    "name": "Curse of Stone",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "",
+    "action_type": "free maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "Cause your body, gear, and any held items to take on the appearance of stone, making you appear to be a mundane statue while you remain unmoving.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "famous_relative",
+    "name": "Famous Relative",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "Magic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "Use a piece of magic jewelry to summon a relative to your aid. The relative starts with Renown 10 and otherwise has your statistics. They make power rolls with an edge but gain no benefit from your treasures. They assist until the current peril is resolved or 1 hour passes, then disappear. You cannot summon your relative again until you gain a level.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "guilty_conscience",
+    "name": "Guilty Conscience",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "",
+    "action_type": "free triggered action",
+    "trigger_text": "When your Stamina reaches the negative of your winded value.",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "Spend a Recovery.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "host_body",
+    "name": "Host Body",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "Magic",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One dead humanoid of a playable ancestry",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "As a sapient fungus inhabiting a humanoid host body, you may move to a dead humanoid within 10 squares and take it as your new host body, provided it belongs to a playable ancestry. Your previous host body dies if it was alive. The new host body gains all your statistics except size, ancestry traits, and any statistics tied to the former body's ancestry, which are replaced by those of the new body. When you inhabit a new host body, you start at 1 Stamina and may immediately spend a Recovery.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "share_head",
+    "name": "Share Head",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "You don't have a head, but you can psionically borrow another.",
+    "keywords": "Psionic, Ranged",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One willing creature",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "You can see, hear, and smell as if you were in the target's space. You may also borrow their mouth to speak using your own voice. The effect ends when you use Share Head on a different target, when the target moves more than 10 squares away from you, or when the target is no longer willing to share their head with you.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "contact_spirits",
+    "name": "Contact Spirits",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "The restless dead speak to you.",
+    "keywords": "Magic",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "Power Roll + Intuition(I/i) or Presence(P/p)",
+    "tier_effects": [
+      {
+        "tier1": "You take corruption damage equal to 5 + your level.",
+        "tier2": "The spirit of anyone you know of who has died speaks to you (if on the same world). You learn how they died and may ask them one question, which they can answer truthfully or untruthfully. The spirit knows everything they knew in life and any events that took place in their surroundings since death.",
+        "tier3": "As tier 2, but you can ask three questions."
+      }
+    ],
+    "effect": "If any sapient creatures have died nearby within the last 24 hours, you gain a double bane on the power roll if any were hostile to you, or a double edge if any were friendly. After using this ability, you can't use it again until you earn one or more Victories.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "stone_eyes",
+    "name": "Stone Eyes",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "Your looks don’t kill—they petrify.",
+    "keywords": "Magic, Ranged, Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Might(M/m) or Presence(P/p)",
+    "tier_effects": [
+      {
+        "tier1": "2 damage; weaken; slowed (save ends)",
+        "tier2": "4 damage; vulnerable; slowed (save ends)",
+        "tier3": "6 damage; strong; slowed (save ends)"
+      }
+    ],
+    "effect": "This ability has no effect on a creature who can't see you or who purposely avoids looking at your eyes. A creature reduced to 0 Stamina by this ability is turned to inanimate stone.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "psychic_blast",
+    "name": "Psychic Blast",
+    "level": "",
+    "resource": "Heroic Resource",
+    "resource_value": "Special",
+    "story_text": "Psionic energy bursts from your body in an iridescent shimmer.",
+    "keywords": "Area, Psionic",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 burst",
+    "targets": "Each creature in the area",
+    "power_roll": "Power Roll + Highest Characteristic Score",
+    "tier_effects": [
+      {
+        "tier1": "1 psychic damage for each Heroic Resource spent, up to a maximum equal to your level.",
+        "tier2": "1 psychic damage for each Heroic Resource spent, up to a maximum equal to your level + your highest characteristic score.",
+        "tier3": "1 psychic damage for each Heroic Resource spent."
+      }
+    ],
+    "effect": "Using this ability costs all your Heroic Resource.",
+    "special_effect": "Drawback: Whenever you become bleeding, frightened, or weakened, you must use Psychic Blast as a free triggered action."
+  },
+  {
+    "type": "ability",
+    "id": "telekinetic_grasp",
+    "name": "Telekinetic Grasp",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "You reach out with your mind to move a creature or object.",
+    "keywords": "Psionic, Ranged, Strike",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Might(M/m), Intuition(I/i), or Presence(P/p)",
+    "tier_effects": [
+      {
+        "tier1": "Push or pull 1",
+        "tier2": "Push or pull 2",
+        "tier3": "Push or pull 3"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "issue_order",
+    "name": "Issue Order",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "\"Move or die, folks.\"",
+    "keywords": "Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One ally",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "The target can use a triggered action to take a main action, a maneuver, or a move action.",
+    "special_effect": "If you have the Strike Now tactician ability, the target can use a free triggered action instead of a triggered action to gain this benefit."
+  },
+  {
+    "type": "ability",
+    "id": "posthumous_retirement",
+    "name": "Posthumous Retirement",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "You make your modified collar explode.",
+    "keywords": "Area, Magic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "1 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "Your loyalty collar detonates, dealing fire damage equal to 5 plus your level to each target. Once you use this ability, you can’t use it again until you spend 1 uninterrupted minute out of combat resetting the collar.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "rogue_wave",
+    "name": "Rogue Wave",
+    "level": "",
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "You summon a wave of water to batter your foe.",
+    "keywords": "Magic, Ranged, Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Highest Characteristic Score",
+    "tier_effects": [
+      {
+        "tier1": "2 damage; push or pull 1",
+        "tier2": "5 damage; push or pull 2",
+        "tier3": "7 damage; push or pull 3"
+      }
+    ],
+    "effect": "You can forgo dealing damage with this ability.",
+    "special_effect": ""
+  }
+]

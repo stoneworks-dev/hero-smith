@@ -1,0 +1,77 @@
+class GearDialogsText {
+  static const String addTreasureOrImbuementTitle = 'Add Treasure or Imbuement';
+  static const String treasuresTabLabel = 'Treasures';
+  static const String imbuementsTabLabel = 'Imbuements';
+  static const String addTreasureSearchLabel = 'Search';
+  static const String addTreasureCancelAction = 'Cancel';
+  static const String treasureFilterLabel = 'Filter by type';
+  static const String treasureFilterAllTypesLabel = 'All Types';
+  static const String treasureFilterConsumablesLabel = 'Consumables';
+  static const String treasureFilterTrinketsLabel = 'Trinkets';
+  static const String treasureFilterArtifactsLabel = 'Artifacts';
+  static const String treasureFilterLeveledEquipmentLabel = 'Leveled Equipment';
+  static const String treasuresEmptyMessage = 'No treasures found';
+  static const String treasureEchelonPrefix = 'Echelon ';
+  static const String imbuementFilterLabel = 'Filter by type';
+  static const String imbuementFilterAllTypesLabel = 'All Types';
+  static const String imbuementFilterArmorLabel = 'Armor';
+  static const String imbuementFilterWeaponLabel = 'Weapon';
+  static const String imbuementFilterImplementLabel = 'Implement';
+  static const String imbuementsEmptyMessage = 'No imbuements found';
+  static const String imbuementLevelPrefix = 'Level ';
+  static const String imbuementTypeArmorDisplay = 'Armor';
+  static const String imbuementTypeWeaponDisplay = 'Weapon';
+  static const String imbuementTypeImplementDisplay = 'Implement';
+  static const String createContainerTitle = 'New Container';
+  static const String createContainerNameLabel = 'Container name';
+  static const String createContainerNameHint = 'e.g., Backpack, Belt Pouch...';
+  static const String createContainerCancelAction = 'Cancel';
+  static const String createContainerCreateAction = 'Create';
+  static const String createItemTitle = 'Add Item';
+  static const String createItemNameLabel = 'Item name';
+  static const String createItemNameHint = 'e.g., Rope, Torch...';
+  static const String createItemDescriptionLabel = 'Description (optional)';
+  static const String createItemDescriptionHint = 'e.g., 50ft hemp rope';
+  static const String createItemQuantityLabel = 'Quantity:';
+  static const String createItemCancelAction = 'Cancel';
+  static const String createItemAddAction = 'Add';
+  static const String editItemTitle = 'Edit Item';
+  static const String editItemNameLabel = 'Item name';
+  static const String editItemNameHint = 'e.g., Rope, Torch...';
+  static const String editItemDescriptionLabel = 'Description (optional)';
+  static const String editItemDescriptionHint = 'e.g., 50ft hemp rope';
+  static const String editItemQuantityLabel = 'Quantity:';
+  static const String editItemCancelAction = 'Cancel';
+  static const String editItemSaveAction = 'Save';
+  static const String editContainerTitle = 'Edit Container';
+  static const String editContainerNameLabel = 'Container name';
+  static const String editContainerNameHint = 'e.g., Backpack, Belt Pouch...';
+  static const String editContainerCancelAction = 'Cancel';
+  static const String editContainerSaveAction = 'Save';
+  static const String addFavoriteNoClassError =
+      'Hero has no class selected. Please set a class first.';
+  static const String addFavoriteClassDataNotFoundPrefix =
+      'Could not find class data for "';
+  static const String addFavoriteClassDataNotFoundSuffix = '".';
+  static const String addFavoriteNoOptionsError =
+      'This class has no available kit/ward/prayer/enchantment/augmentation options.';
+  static const String addFavoriteLoadKitsFailedPrefix = 'Failed to load kits: ';
+  static const String addFavoriteLoadingTitle = 'Add Favorite';
+  static const String addFavoriteLoadingCancelAction = 'Cancel';
+  static const String addFavoriteErrorTitle = 'Add Favorite';
+  static const String addFavoriteErrorCloseAction = 'Close';
+  static const String addFavoriteMainTitle = 'Add Favorite';
+  static const String addFavoriteMainTitleClassPrefix = ' (';
+  static const String addFavoriteMainTitleClassSuffix = ')';
+  static const String addFavoriteSearchLabel = 'Search';
+  static const String addFavoriteFilterLabel = 'Filter by type';
+  static const String addFavoriteFilterAllTypesLabel = 'All Types';
+  static const String addFavoriteAllItemsAlreadyFavoritedMessage =
+      'All available items are already in favorites.';
+  static const String addFavoriteNoItemsMatchMessage = 'No items match your search.';
+  static const String addFavoriteMainCancelAction = 'Cancel';
+  static const String quantityDialogTitle = 'Set Quantity';
+  static const String quantityDialogLabel = 'Quantity (1-999)';
+  static const String quantityDialogCancelAction = 'Cancel';
+  static const String quantityDialogSetAction = 'Set';
+}

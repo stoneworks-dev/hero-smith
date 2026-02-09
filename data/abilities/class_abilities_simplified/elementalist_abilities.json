@@ -1,0 +1,1496 @@
+[
+  {
+    "type": "ability",
+    "id": "afflict-a-bountiful-decay",
+    "name": "Afflict a Bountiful Decay",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "Your curse causes your foe's flesh to rot off as spores that aid your allies.",
+    "keywords": "Green/Magic/Ranged/Rot/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "2 + R corruption damage",
+        "tier2": "4 + R corruption damage",
+        "tier3": "6 + R corruption damage"
+      }
+    ],
+    "effect": "Choose yourself or one ally within distance. That character can end one effect on them that is ended by a saving throw or that ends at the end of their turn.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "behold-the-mystery-3-essence",
+    "name": "Behold the Mystery",
+    "level": 1,
+    "resource": "Essence",
+    "resource_value": 3,
+    "story_text": "You open a rift into the void to harry your foes.",
+    "keywords": "Area/Magic/Ranged/Void",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 cube within 10",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "2 psychic damage",
+        "tier2": "4 psychic damage",
+        "tier3": "6 psychic damage"
+      }
+    ],
+    "effect": "At the start of your turn, you can use a maneuver to use this ability again without spending essence.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "bifurcated-incineration",
+    "name": "Bifurcated Incineration",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "Two jets of flame lance out at your command.",
+    "keywords": "Fire/Magic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Two creatures or objects",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "2 fire damage",
+        "tier2": "4 fire damage",
+        "tier3": "6 fire damage"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "breath-of-dawn-remembered",
+    "name": "Breath of Dawn Remembered",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "The power you channel grants the ability to get back in the fight.",
+    "keywords": "Green/Magic/Ranged",
+    "action_type": "triggered action",
+    "trigger_text": "The target starts their turn or takes damage.",
+    "distance": "Ranged 10",
+    "targets": "Self or one ally",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The target can spend a Recovery.\n\nThe target can spend an additional Recovery for each essence spent.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "conflagration-5-essence",
+    "name": "Conflagration",
+    "level": 1,
+    "resource": "Essence",
+    "resource_value": 5,
+    "story_text": "A storm of fire descends upon your enemies.",
+    "keywords": "Area/Fire/Magic/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 cube within 10",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "4 fire damage",
+        "tier2": "6 fire damage",
+        "tier3": "10 fire damage"
+      }
+    ],
+    "effect": "At the start of your turn, you can use a maneuver to use this ability again without spending essence.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "explosive-assistance",
+    "name": "Explosive Assistance",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "You add a little magic to an ally's aggression at just the right time.",
+    "keywords": "Fire/Magic/Ranged",
+    "action_type": "triggered action",
+    "trigger_text": "The target force moves a creature or object.",
+    "distance": "Ranged 10",
+    "targets": "Self or one ally",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The forced movement distance gains a bonus equal to your Reason score.\n\nThe forced movement distance gains a bonus equal to twice your Reason score instead.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "grasp-of-beyond",
+    "name": "Grasp of Beyond",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "You absorb the life energy of another creature and use it to teleport.",
+    "keywords": "Magic/Melee/Strike/Void",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "3 + R corruption damage",
+        "tier2": "6 + R corruption damage",
+        "tier3": "9 + R corruption damage"
+      }
+    ],
+    "effect": "You can teleport up to a number of squares equal to your Reason score.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "hurl-element",
+    "name": "Hurl Element",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "You cast a ball of elemental energy at a foe.",
+    "keywords": "Magic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "2 + R damage",
+        "tier2": "4 + R damage",
+        "tier3": "6 + R damage"
+      }
+    ],
+    "effect": "When you make this strike, choose the damage type from one of the following options: acid, cold, corruption, fire, lightning, poison, or sonic.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "instantaneous-excavation-5-essence",
+    "name": "Instantaneous Excavation",
+    "level": 1,
+    "resource": "Essence",
+    "resource_value": 5,
+    "story_text": "The surface of the world around you opens up to swallow foes.",
+    "keywords": "Earth/Magic/Ranged",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Special",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "The target can shift 1 square from the edge of the hole to the nearest unoccupied space of their choice.",
+        "tier2": "The target falls into the hole.",
+        "tier3": "The target falls into the hole and can't reduce the height of the fall."
+      }
+    ],
+    "effect": "You open up two holes with 1-square openings that are 4 squares deep, which can be placed on any mundane surface within distance. You can place these holes next to each other to create fewer holes with wider openings. When the holes open, make a separate power roll for each creature on the ground above a hole and small enough to fall in. (You can't score a critical hit with this ability because it uses a maneuver.)\n\nAt the start of your turn, you open another hole, making a power roll against each creature who could fall into the hole when it opens without spending essence.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "invigorating-growth-3-essence",
+    "name": "Invigorating Growth",
+    "level": 1,
+    "resource": "Essence",
+    "resource_value": 3,
+    "story_text": "Mushrooms erupt from a foe, sapping their vitality to spread strengthening spores.",
+    "keywords": "Green/Magic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "4 + R poison damage",
+        "tier2": "7 + R poison damage",
+        "tier3": "11 + R poison damage"
+      }
+    ],
+    "effect": "Mushrooms cover the target's body. While the mushrooms are on the target, you and any ally adjacent to the target gain 1 surge whenever the target takes damage. The mushrooms can be removed by the target or an adjacent creature as a main action.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "meteoric-introduction",
+    "name": "Meteoric Introduction",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "You give your enemy a gentle tap-like an asteroid impact.",
+    "keywords": "Earth/Magic/Melee/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "3 + R damage; push 2",
+        "tier2": "5 + R damage; push 3",
+        "tier3": "8 + R damage; push 4"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "motivate-earth",
+    "name": "Motivate Earth",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "The earth rises, falls, or opens up at your command.",
+    "keywords": "Earth/Magic/Melee",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "Special",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You touch a square containing mundane dirt, stone, or metal and create a 5 wall of the same material, which rises up out of the ground and must include the square you touched.\nAlternatively, you touch a structure made of mundane dirt, stone, or metal that occupies 2 or more squares. You can open a 1-square opening in the structure where you touched it. You can instead touch an existing doorway or other opening that is 1 square or smaller in a mundane dirt, stone, or metal surface. The opening is sealed by the same material that makes up the surface.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "no-more-than-a-breeze-5-essence",
+    "name": "No More Than a Breeze",
+    "level": 1,
+    "resource": "Essence",
+    "resource_value": 5,
+    "story_text": "The material substance of a creature shreds away at your command.",
+    "keywords": "Magic/Ranged/Void",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Self or one ally",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Until the start of your next turn, the target can move through solid matter, they ignore difficult terrain, and their movement can't provoke opportunity attacks. If the target ends their turn inside solid matter, they are forced out into the space where they entered it and this effect ends.\n\nThe effect lasts until the start of your next turn.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "practical-magic",
+    "name": "Practical Magic",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "Your mastery of elemental power lets you customize your conjurations.",
+    "keywords": "Magic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self; see below",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Choose one of the following effects:\n- You use the Knockback maneuver (see Chapter 10: Combat), but its distance becomes the range of your Hurl Element ability, and you use Reason instead of Might for the power roll.\n- You choose a creature within the distance of your Hurl Element ability and one of the following damage types: acid, cold, corruption, fire, lightning, poison, or sonic. That creature takes damage of the chosen type equal to your Reason score.\n- You teleport up to a number of squares equal to your Reason score. If you choose this option, you can spend essence to teleport 1 additional square for each essence spent.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "ray-of-agonizing-self-reflection",
+    "name": "Ray of Agonizing Self-Reflection",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "You inflict pain and doubt in equal measure.",
+    "keywords": "Magic/Ranged/Strike/Void",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "2 + R corruption damage; R < WEAK, slowed (save ends)",
+        "tier2": "4 + R corruption damage; R < AVERAGE, slowed (save ends)",
+        "tier3": "6 + R corruption damage; R < STRONG, slowed (save ends)"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "return-to-formlessness",
+    "name": "Return to Formlessness",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "With the merest touch, you cause an object to turn to slag or ash.",
+    "keywords": "Fire/Magic/Melee",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One mundane object",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You heat the target and cause it to melt or combust, destroying it. If the object is larger than 1 square, then only the square of the object you touch is destroyed.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "ripples-in-the-earth-3-essence",
+    "name": "Ripples in the Earth",
+    "level": 1,
+    "resource": "Essence",
+    "resource_value": 3,
+    "story_text": "Like a stone was dropped into a pond, waves in the earth radiate from you.",
+    "keywords": "Area/Earth/Magic",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "2 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "3 damage",
+        "tier2": "5 damage",
+        "tier3": "8 damage; M < STRONG, prone"
+      }
+    ],
+    "effect": "You must be touching the ground to use this ability. Additionally, you can choose a square of ground in the area that is unoccupied or is occupied by you or any ally. A pillar of earth rises out of the ground in that square, with a height in squares up to your Reason score. The pillar can't collide with any creatures or objects, nor can it force creatures raised by it to collide with other creatures or objects.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "shared-void-sense",
+    "name": "Shared Void Sense",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "You grant allies a taste of your unearthly vision.",
+    "keywords": "Magic/Ranged/Void",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Special",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "For each Victory you have, you can target one creature. Each target gains the benefit of your A Beyonding of Vision feature until the end of your next turn, but doesn't gain the use of the Shared Void Sense ability.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "skin-like-castle-walls",
+    "name": "Skin Like Castle Walls",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "You cover yourself or an ally in protective stone.",
+    "keywords": "Earth/Magic/Ranged",
+    "action_type": "triggered action",
+    "trigger_text": "The target takes damage.",
+    "distance": "Ranged 10",
+    "targets": "Self or one ally",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The target takes half the damage.\n\nIf the damage has any potency effects associated with it, the potency is reduced by 1 for the target.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "subtle-relocation",
+    "name": "Subtle Relocation",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "You call on the void to swallow and spit out an ally.",
+    "keywords": "Magic/Ranged/Void",
+    "action_type": "triggered action",
+    "trigger_text": "The target starts their turn, moves, or is force moved.",
+    "distance": "Ranged 10",
+    "targets": "Self or one ally",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You teleport the target up to a number of squares equal to your Reason score. If the target moves to trigger this ability, you can teleport them at any point during the move.\n\nYou teleport the target up to a number of squares equal to twice your Reason score instead.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "test-of-rain-5-essence",
+    "name": "Test of Rain",
+    "level": 1,
+    "resource": "Essence",
+    "resource_value": 5,
+    "story_text": "You call down a rain that burns your enemies and restores your allies.",
+    "keywords": "Area/Green/Magic/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 cube within 10",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "4 acid damage",
+        "tier2": "6 acid damage",
+        "tier3": "10 acid damage"
+      }
+    ],
+    "effect": "You can end one effect on yourself that is ended by a saving throw or that ends at the end of your turn. Each ally in the area also gains this benefit.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "the-flesh-a-crucible-3-essence",
+    "name": "The Flesh, a Crucible",
+    "level": 1,
+    "resource": "Essence",
+    "resource_value": 3,
+    "story_text": "Fire engulfs your target and continues to churn.",
+    "keywords": "Fire/Magic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "5 + R fire damage",
+        "tier2": "8 + R fire damage",
+        "tier3": "11 + R fire damage"
+      }
+    ],
+    "effect": "If the target is within distance at the start of your turn, you can make the power roll again without spending essence (no action required).",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "the-green-within-the-green-without",
+    "name": "The Green Within, the Green Without",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "Whipping vines erupt from a foe's body to grasp at another close by.",
+    "keywords": "Green/Magic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "2 + R damage",
+        "tier2": "5 + R damage",
+        "tier3": "7 + R damage"
+      }
+    ],
+    "effect": "You slide one creature within 10 squares of the target up to 2 squares.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "unquiet-ground",
+    "name": "Unquiet Ground",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "A sudden storm of detritus assaults your foes and leaves them struggling to move.",
+    "keywords": "Area/Earth/Magic/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "2 cube within 10",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "2 damage",
+        "tier2": "5 damage",
+        "tier3": "7 damage"
+      }
+    ],
+    "effect": "The ground beneath the area is difficult terrain for enemies.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "viscous-fire",
+    "name": "Viscous Fire",
+    "level": 1,
+    "resource": "Signature",
+    "resource_value": 0,
+    "story_text": "A jet of heavy fire erupts where you strike.",
+    "keywords": "Fire/Magic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "2 + R fire damage; push 2",
+        "tier2": "5 + R fire damage; push 3",
+        "tier3": "7 + R fire damage; push 4"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "o-flower-aid-o-earth-defend-5-essence",
+    "name": "O Flower Aid, O Earth Defend",
+    "level": 2,
+    "resource": "Essence",
+    "resource_value": 5,
+    "story_text": "Revitalizing plants and jagged stones grow, helping allies and hindering foes.",
+    "keywords": "Area/Earth/Green/Magic/Ranged",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "3 cube within 10",
+    "targets": "Special",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Until the start of your next turn, the area gains the following effects:\n- Once as a free maneuver at the start of your turn, you allow yourself and each ally in the area to spend any number of Recoveries.\n- The area is difficult terrain for enemies.\n- Each enemy who enters the area for the first time in a combat round or starts their turn there takes damage equal to your Reason score.\n\nThe area remains until the start of your next turn. As a maneuver, you can move the area up to 5 squares. This ability ends if the area is ever not within your line of effect.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "subvert-the-green-within-5-essence",
+    "name": "Subvert the Green Within",
+    "level": 2,
+    "resource": "Essence",
+    "resource_value": 5,
+    "story_text": "Fungal spores sprout inside your enemy's brain, allowing you to control their actions.",
+    "keywords": "Green/Magic/Ranged/Strike/Void",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "5 + R poison damage",
+        "tier2": "9 + R poison damage",
+        "tier3": "12 + R poison damage"
+      }
+    ],
+    "effect": "The target uses their signature ability against a creature of your choice. This signature ability can target the creature even if it usually wouldn't. You then make a power roll against the target of this ability.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "there-is-no-space-between",
+    "name": "There Is No Space Between",
+    "level": 2,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "Knowledge of the mystery reveals that two spaces are the same space.",
+    "keywords": "Magic/Ranged/Void",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Special",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You open two size 1 portals in unoccupied spaces within distance, which last until you move beyond distance from any portal, end the effect as a maneuver, or are dying. Each portal must be placed at a height of no more than 1 square above the ground. When you or any ally touch a portal, that creature can choose to be instantly teleported to an unoccupied space of their choice adjacent to the other portal. If an enemy is force moved into a portal, their forced movement ends and they emerge from the other portal in an unoccupied space chosen by the creature who force moved them.\nAt the start of each of your turns while the portals are active, you can open a new portal connected to the others. If three or more portals are present, you and your allies choose which portal to emerge from when entering a portal, and a creature who force moves an enemy into a portal chooses that enemy's destination portal.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "translated-through-flame-5-essence",
+    "name": "Translated Through Flame",
+    "level": 2,
+    "resource": "Essence",
+    "resource_value": 5,
+    "story_text": "Your ally disappears, then reappears in a burst of fire.",
+    "keywords": "Fire/Magic/Ranged/Void",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Self or one ally",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "3 fire damage",
+        "tier2": "5 fire damage",
+        "tier3": "8 fire damage"
+      }
+    ],
+    "effect": "The target is teleported to another space within distance. Make a power roll that affects each enemy adjacent to the target's new space.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "volcanos-embrace-5-essence",
+    "name": "Volcano's Embrace",
+    "level": 2,
+    "resource": "Essence",
+    "resource_value": 5,
+    "story_text": "Wrap them up in fire and melting stone.",
+    "keywords": "Earth/Fire/Magic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "5 + R fire damage; A < WEAK, restrained (save ends)",
+        "tier2": "9 + R fire damage; A < AVERAGE, restrained (save ends)",
+        "tier3": "12 + R fire damage; A < STRONG, restrained (save ends)"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "disciple_of_the_green",
+    "name": "Disciple of the Green",
+    "level": 2,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "Magic, Shapeshift",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "You shapeshift into a creature from the Green Animal Forms table. In animal form you can speak, and you use your Reason score for melee free strikes. Your statistics stay the same except as noted by the chosen form. Some forms grant temporary Stamina that is lost when reverting. You choose a specific animal appearance for each form. Your gear either melds into your new form or falls to the ground (your choice). You revert to your true form as a maneuver. You cannot enter an animal form unless already in true form. If you are dying, you revert to your true form and cannot shapeshift again until no longer dying.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "earth-accepts-me",
+    "name": "Earth Accepts Me",
+    "level": 3,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "You can slip into the stone.",
+    "keywords": "Earth/Magic",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You step into a mundane dirt, metal, or stone object (including a wall) that is as large as you or larger. You can remain inside the object for as long as you like. While inside the object, you can observe events and speak to creatures outside it, but you don't have line of effect to anything outside the object and vice versa. You can travel through the object freely until you exit it. If the object you meld with is destroyed, you take 10 damage and exit the object.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "erase-7-essence",
+    "name": "Erase",
+    "level": 3,
+    "resource": "Essence",
+    "resource_value": 7,
+    "story_text": "With a flick of the wrist, you phase creatures out of existence.",
+    "keywords": "Magic/Ranged/Strike/Void",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Special",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "One creature",
+        "tier2": "Two creatures",
+        "tier3": "Three creatures"
+      }
+    ],
+    "effect": "The number of creatures you target with this ability is determined by your power roll.\n\nEach target begins to fade from existence (save ends). On their first turn while fading from existence, a target takes a bane on power rolls. At the end of their first turn, they have a double bane on power rolls. At the end of their second turn, they fade from existence for 1 hour, after which they reappear in their original space or the nearest unoccupied space.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "maw-of-earth-7-essence",
+    "name": "Maw of Earth",
+    "level": 3,
+    "resource": "Essence",
+    "resource_value": 7,
+    "story_text": "You open up the ground, spewing out shrapnel of stone and debris.",
+    "keywords": "Area/Earth/Magic/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 cube within 10",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "5 damage",
+        "tier2": "9 damage",
+        "tier3": "12 damage"
+      }
+    ],
+    "effect": "The ground in or directly beneath the area drops 3 squares.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "remember-growth-and-sun-and-rain",
+    "name": "Remember Growth and Sun and Rain",
+    "level": 3,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "You stir any wood's memory and learn what it has seen.",
+    "keywords": "Green/Magic/Melee",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One mundane wooden object",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You see and hear any events that have occurred within 10 squares of the object within the last 12 hours, perceiving those events from the object's location as if you were there.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "swarm-of-spirits-7-essence",
+    "name": "Swarm of Spirits",
+    "level": 3,
+    "resource": "Essence",
+    "resource_value": 7,
+    "story_text": "Guardian animal spirits surround you to harry your foes and bolster your allies.",
+    "keywords": "Area/Green/Magic",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 aura",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "3 damage",
+        "tier2": "6 damage",
+        "tier3": "9 damage"
+      }
+    ],
+    "effect": "Until the end of your next turn, each ally in the area has each of their characteristic scores treated as 1 higher for the purpose of resisting potencies, and has a +1 bonus to saving throws.\n\nYou make the power roll again to target each enemy in the area without spending essence, and the effect lasts until the start of your next turn.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "wall-of-fire-7-essence",
+    "name": "Wall of Fire",
+    "level": 3,
+    "resource": "Essence",
+    "resource_value": 7,
+    "story_text": "A blazing, beautifully organized inferno erupts at your command.",
+    "keywords": "Area/Fire/Magic/Ranged",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "10 wall within 10",
+    "targets": "Special",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The wall lasts until the start of your next turn, and can be placed in occupied squares. Creatures can enter and pass through the wall. Each enemy who enters the area for the first time in a combat round or starts their turn there takes fire damage equal to your Reason score for each square of the area they start their turn in or enter.\n\nThe wall lasts until the start of your next turn, and you can add a number of squares to the wall equal to your Reason score.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "muse-of-fire-11-essence",
+    "name": "Muse of Fire",
+    "level": 4,
+    "resource": "Essence",
+    "resource_value": 11,
+    "story_text": "The fire burns hot enough to sear the face of any god watching.",
+    "keywords": "Area/Fire/Magic/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "5 cube within 10",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "7 fire damage; the Director loses 2 Malice (see *[Draw Steel: Monsters](https://mcdm.gg/DS-Monsters)*)",
+        "tier2": "10 fire damage; the Director loses 3 Malice",
+        "tier3": "15 fire damage; the Director loses 4 Malice"
+      }
+    ],
+    "effect": "The Director's Malice can become negative as a result of this ability.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "return-to-oblivion-11-essence",
+    "name": "Return to Oblivion",
+    "level": 4,
+    "resource": "Essence",
+    "resource_value": 11,
+    "story_text": "You create a tear in reality that could consume everything.",
+    "keywords": "Area/Magic/Ranged/Void",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Special",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You create a size 1L vortex that lasts until the end of the encounter. At the start of each combat round while the vortex is unoccupied, the vortex vertical pulls 3 each enemy within 5 squares of it. Each enemy who enters the vortex or starts their turn there is knocked prone. At the end of the round, if a winded enemy who is not a leader or solo creature is in the vortex, they are instantly destroyed.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "summon-source-of-earth",
+    "name": "Summon Source of Earth",
+    "level": 4,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "The ground rumbles as an elemental bursts forth, ready to serve.",
+    "keywords": "Earth/Magic/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Special",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "A **source of earth** emerges from an unoccupied space within distance. The source takes their turn immediately after you, moving up to their speed and either taking a main action or a maneuver. The source is dismissed at the start of your next turn.\nThe source starts an encounter at full Stamina, but maintains their current Stamina throughout the encounter, even if they are dismissed and you use this ability again. They can't regain Stamina during the encounter. When the source's Stamina is reduced to 0, you can't use this ability again until you earn 1 or more Victories.\n\nThe source takes another turn. They are dismissed at the start of your next turn.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "world-torn-asunder-11-essence",
+    "name": "World Torn Asunder",
+    "level": 4,
+    "resource": "Essence",
+    "resource_value": 11,
+    "story_text": "You stomp your foot and quake the whole world over.",
+    "keywords": "Area/Earth/Magic",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "5 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "M < WEAK, prone",
+        "tier2": "M < AVERAGE, prone",
+        "tier3": "M < STRONG, prone"
+      }
+    ],
+    "effect": "You create a fissure in the ground adjacent to you that is a 10 x 2 line and 6 squares deep. Each creature in the area who is prone and size 2 or smaller falls in. Other creatures can enter the fissure or can shift to the nearest unoccupied space of their choice outside it.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "combustion-deferred-9-essence",
+    "name": "Combustion Deferred",
+    "level": 5,
+    "resource": "Essence",
+    "resource_value": 9,
+    "story_text": "Your flames dance from kindling to kindling to kindling.",
+    "keywords": "Fire/Magic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "8 + R fire damage",
+        "tier2": "13 + R fire damage",
+        "tier3": "17 + R fire damage"
+      }
+    ],
+    "effect": "When the target ends their next turn, or if they drop to 0 Stamina before then, each enemy adjacent to them takes fire damage equal to twice your Reason score. Each affected enemy then gains this same effect.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "luminous-champion-aloft-9-essence",
+    "name": "Luminous Champion Aloft",
+    "level": 5,
+    "resource": "Essence",
+    "resource_value": 9,
+    "story_text": "They shine vibrantly, a beautiful diamond in the night sky.",
+    "keywords": "Fire/Green/Magic/Ranged/Void",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Self or one ally",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The target has a +3 bonus to speed, they can fly, and their abilities ignore concealment. Additionally, whenever the target gains their Heroic Resource, they gain 1 additional Heroic Resource. This effect lasts until the start of your next turn.\n\nThe effect lasts until the start of your next turn.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "magma-titan-9-essence",
+    "name": "Magma Titan",
+    "level": 5,
+    "resource": "Essence",
+    "resource_value": 9,
+    "story_text": "Their body swells with lava, mud, and might, towering over their enemies.",
+    "keywords": "Earth/Fire/Green/Magic/Ranged",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Self or one ally",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Until the start of your next turn, the target has the following benefits:\n- Their size and stability increase by 2, with any size 1 target becoming size 3. Each creature who is within the target's new space slides to the nearest unoccupied space, ignoring stability. If the target doesn't have space to grow, they grow as much as they can and become restrained until the effect ends.\n- They have fire immunity 10.\n- Their strikes deal extra fire damage equal to twice your Reason score.\n- When the target force moves a creature or object, the forced movement distance gains a +2 bonus.\n- They can use their highest characteristic instead of Might for Might power rolls.\n\nThe effect lasts until the start of your next turn. Additionally, at the start of your turn, the target can spend 2 Recoveries.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "meteor-9-essence",
+    "name": "Meteor",
+    "level": 5,
+    "resource": "Essence",
+    "resource_value": 9,
+    "story_text": "You teleport the target into the air and let the ground and the elemental force of fire do the rest.",
+    "keywords": "Earth/Fire/Magic/Ranged/Void",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "You teleport the target up to 4 squares.",
+        "tier2": "You teleport the target up to 6 squares.",
+        "tier3": "You teleport the target up to 8 squares."
+      }
+    ],
+    "effect": "If the target is teleported to a space where they would fall, they immediately do so, treating the fall as if their Agility score were 0. The target takes fire damage from the fall, and each enemy within 3 squares of where they land takes the same amount of fire damage. The ground within 3 squares of where the target lands is difficult terrain.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "muse-of-fire-11-essence",
+    "name": "Muse of Fire",
+    "level": 5,
+    "resource": "Essence",
+    "resource_value": 11,
+    "story_text": "The fire burns hot enough to sear the face of any god watching.",
+    "keywords": "Area/Fire/Magic/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "5 cube within 10",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "7 fire damage; the Director loses 2 Malice (see *[Draw Steel: Monsters](https://mcdm.gg/DS-Monsters)*)",
+        "tier2": "10 fire damage; the Director loses 3 Malice",
+        "tier3": "15 fire damage; the Director loses 4 Malice"
+      }
+    ],
+    "effect": "The Director's Malice can become negative as a result of this ability.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "return-to-oblivion-11-essence",
+    "name": "Return to Oblivion",
+    "level": 5,
+    "resource": "Essence",
+    "resource_value": 11,
+    "story_text": "You create a tear in reality that could consume everything.",
+    "keywords": "Area/Magic/Ranged/Void",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Special",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You create a size 1L vortex that lasts until the end of the encounter. At the start of each combat round while the vortex is unoccupied, the vortex vertical pulls 3 each enemy within 5 squares of it. Each enemy who enters the vortex or starts their turn there is knocked prone. At the end of the round, if a winded enemy who is not a leader or solo creature is in the vortex, they are instantly destroyed.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "storm-of-sands-9-essence",
+    "name": "Storm of Sands",
+    "level": 5,
+    "resource": "Essence",
+    "resource_value": 9,
+    "story_text": "Dirt and debris swirl into a dark, pulsing hurricane.",
+    "keywords": "Area/Earth/Magic/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "4 cube within 10",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "2 damage",
+        "tier2": "5 damage",
+        "tier3": "7 damage"
+      }
+    ],
+    "effect": "The area lasts until the start of your next turn. It is difficult terrain for enemies, and you and your allies have concealment while in the area.\n\nThe area remains until the start of your next turn, and you can move it up to 5 squares (no action required). As a maneuver, you can make the power roll again without spending essence.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "subverted-perception-of-space-9-essence",
+    "name": "Subverted Perception of Space",
+    "level": 5,
+    "resource": "Essence",
+    "resource_value": 9,
+    "story_text": "You rip an enemy's world in twain.",
+    "keywords": "Magic/Ranged/Strike/Void",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "9 + R corruption damage",
+        "tier2": "10 + R corruption damage; the target has line of effect only to creatures and objects within 4 squares of them until the start of your next turn",
+        "tier3": "15 + R corruption damage; the target has line of effect only to adjacent creatures and objects until the start of your next turn"
+      }
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "summon-source-of-earth",
+    "name": "Summon Source of Earth",
+    "level": 5,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "The ground rumbles as an elemental bursts forth, ready to serve.",
+    "keywords": "Earth/Magic/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Special",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "A **source of earth** emerges from an unoccupied space within distance. The source takes their turn immediately after you, moving up to their speed and either taking a main action or a maneuver. The source is dismissed at the start of your next turn.\nThe source starts an encounter at full Stamina, but maintains their current Stamina throughout the encounter, even if they are dismissed and you use this ability again. They can't regain Stamina during the encounter. When the source's Stamina is reduced to 0, you can't use this ability again until you earn 1 or more Victories.\n\nThe source takes another turn. They are dismissed at the start of your next turn.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "the-wode-remembers-and-returns-9-essence",
+    "name": "The Wode Remembers and Returns",
+    "level": 5,
+    "resource": "Essence",
+    "resource_value": 9,
+    "story_text": "You create a terrarium that spans from canopy above to underbrush below.",
+    "keywords": "Area/Earth/Green/Magic/Void",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "4 burst",
+    "targets": "Special",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The area becomes dark and verdant, with trees and plant life appearing in unoccupied spaces within it until the start of your next turn. The area is difficult terrain for enemies, and any ally who ends their turn in the area has cover.\n\nThe area remains until the start of your next turn. Additionally, at the start of your turn, each ally in the area can spend a Recovery.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "web-of-all-thats-come-before-9-essence",
+    "name": "Web of All That's Come Before",
+    "level": 5,
+    "resource": "Essence",
+    "resource_value": 9,
+    "story_text": "Threads you've been weaving through your adventures create a vibrant, pearlescent web.",
+    "keywords": "Area/Green/Magic/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "4 cube within 10",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "2 corruption damage; A < WEAK, restrained (save ends)",
+        "tier2": "3 corruption damage; A < AVERAGE, restrained (save ends)",
+        "tier3": "5 corruption damage; A < STRONG, restrained (save ends)"
+      }
+    ],
+    "effect": "The area is difficult terrain until the start of your next turn. Each enemy who ends their turn in the area is restrained (save ends).\n\nThe area remains until the start of your next turn.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "world-torn-asunder-11-essence",
+    "name": "World Torn Asunder",
+    "level": 5,
+    "resource": "Essence",
+    "resource_value": 11,
+    "story_text": "You stomp your foot and quake the whole world over.",
+    "keywords": "Area/Earth/Magic",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "5 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "M < WEAK, prone",
+        "tier2": "M < AVERAGE, prone",
+        "tier3": "M < STRONG, prone"
+      }
+    ],
+    "effect": "You create a fissure in the ground adjacent to you that is a 10 x 2 line and 6 squares deep. Each creature in the area who is prone and size 2 or smaller falls in. Other creatures can enter the fissure or can shift to the nearest unoccupied space of their choice outside it.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "luminous-champion-aloft-9-essence",
+    "name": "Luminous Champion Aloft",
+    "level": 6,
+    "resource": "Essence",
+    "resource_value": 9,
+    "story_text": "They shine vibrantly, a beautiful diamond in the night sky.",
+    "keywords": "Fire/Green/Magic/Ranged/Void",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Self or one ally",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The target has a +3 bonus to speed, they can fly, and their abilities ignore concealment. Additionally, whenever the target gains their Heroic Resource, they gain 1 additional Heroic Resource. This effect lasts until the start of your next turn.\n\nThe effect lasts until the start of your next turn.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "magma-titan-9-essence",
+    "name": "Magma Titan",
+    "level": 6,
+    "resource": "Essence",
+    "resource_value": 9,
+    "story_text": "Their body swells with lava, mud, and might, towering over their enemies.",
+    "keywords": "Earth/Fire/Green/Magic/Ranged",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Self or one ally",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Until the start of your next turn, the target has the following benefits:\n- Their size and stability increase by 2, with any size 1 target becoming size 3. Each creature who is within the target's new space slides to the nearest unoccupied space, ignoring stability. If the target doesn't have space to grow, they grow as much as they can and become restrained until the effect ends.\n- They have fire immunity 10.\n- Their strikes deal extra fire damage equal to twice your Reason score.\n- When the target force moves a creature or object, the forced movement distance gains a +2 bonus.\n- They can use their highest characteristic instead of Might for Might power rolls.\n\nThe effect lasts until the start of your next turn. Additionally, at the start of your turn, the target can spend 2 Recoveries.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "meteor-9-essence",
+    "name": "Meteor",
+    "level": 6,
+    "resource": "Essence",
+    "resource_value": 9,
+    "story_text": "You teleport the target into the air and let the ground and the elemental force of fire do the rest.",
+    "keywords": "Earth/Fire/Magic/Ranged/Void",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "You teleport the target up to 4 squares.",
+        "tier2": "You teleport the target up to 6 squares.",
+        "tier3": "You teleport the target up to 8 squares."
+      }
+    ],
+    "effect": "If the target is teleported to a space where they would fall, they immediately do so, treating the fall as if their Agility score were 0. The target takes fire damage from the fall, and each enemy within 3 squares of where they land takes the same amount of fire damage. The ground within 3 squares of where the target lands is difficult terrain.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "the-wode-remembers-and-returns-9-essence",
+    "name": "The Wode Remembers and Returns",
+    "level": 6,
+    "resource": "Essence",
+    "resource_value": 9,
+    "story_text": "You create a terrarium that spans from canopy above to underbrush below.",
+    "keywords": "Area/Earth/Green/Magic/Void",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "4 burst",
+    "targets": "Special",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The area becomes dark and verdant, with trees and plant life appearing in unoccupied spaces within it until the start of your next turn. The area is difficult terrain for enemies, and any ally who ends their turn in the area has cover.\n\nThe area remains until the start of your next turn. Additionally, at the start of your turn, each ally in the area can spend a Recovery.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "earth-rejects-you-11-essence",
+    "name": "Earth Rejects You",
+    "level": 8,
+    "resource": "Essence",
+    "resource_value": 11,
+    "story_text": "Everyone and everything gets blown away in an eruption of rocks and debris.",
+    "keywords": "Area/Earth/Magic/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "5 cube within 10",
+    "targets": "Each enemy and object in the area",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "6 damage",
+        "tier2": "9 damage",
+        "tier3": "13 damage"
+      }
+    ],
+    "effect": "At the start of your turn, you can use a maneuver to use this ability again without spending essence.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "heart-of-the-wode-11-essence",
+    "name": "Heart of the Wode",
+    "level": 8,
+    "resource": "Essence",
+    "resource_value": 11,
+    "story_text": "You call forth one of the Great Tree's many splinters to provide for your every need.",
+    "keywords": "Green/Magic/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Special",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "A size 5 tree appears in an unoccupied space within distance. The tree has 100 Stamina and can't be force moved. You and any ally can touch the tree to use the Catch Breath maneuver as a free maneuver. Additionally, when you start your turn with line of effect to the tree, you can end one effect on yourself that is ended by a saving throw or that ends at the end of your turn, or you can stand up if you are prone. Each ally within distance also gains this benefit.\nEach enemy who ends their turn within 3 squares of the tree is restrained until the end of their next turn. A creature restrained this way can use a main action to end the effect early.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "muse-of-fire-11-essence",
+    "name": "Muse of Fire",
+    "level": 8,
+    "resource": "Essence",
+    "resource_value": 11,
+    "story_text": "The fire burns hot enough to sear the face of any god watching.",
+    "keywords": "Area/Fire/Magic/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "5 cube within 10",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "7 fire damage; the Director loses 2 Malice (see *[Draw Steel: Monsters](https://mcdm.gg/DS-Monsters)*)",
+        "tier2": "10 fire damage; the Director loses 3 Malice",
+        "tier3": "15 fire damage; the Director loses 4 Malice"
+      }
+    ],
+    "effect": "The Director's Malice can become negative as a result of this ability.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "prism-11-essence",
+    "name": "Prism",
+    "level": 8,
+    "resource": "Essence",
+    "resource_value": 11,
+    "story_text": "You split your essence, allowing you to cast multiple effects at once.",
+    "keywords": "Magic/Void",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You use up to three heroic abilities whose essence costs total 11 or less, spending no additional essence beyond the cost of this ability. You can shift up to 2 squares between your use of each ability.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "return-to-oblivion-11-essence",
+    "name": "Return to Oblivion",
+    "level": 8,
+    "resource": "Essence",
+    "resource_value": 11,
+    "story_text": "You create a tear in reality that could consume everything.",
+    "keywords": "Area/Magic/Ranged/Void",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Special",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You create a size 1L vortex that lasts until the end of the encounter. At the start of each combat round while the vortex is unoccupied, the vortex vertical pulls 3 each enemy within 5 squares of it. Each enemy who enters the vortex or starts their turn there is knocked prone. At the end of the round, if a winded enemy who is not a leader or solo creature is in the vortex, they are instantly destroyed.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "summon-source-of-earth",
+    "name": "Summon Source of Earth",
+    "level": 8,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "The ground rumbles as an elemental bursts forth, ready to serve.",
+    "keywords": "Earth/Magic/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Special",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "A **source of earth** emerges from an unoccupied space within distance. The source takes their turn immediately after you, moving up to their speed and either taking a main action or a maneuver. The source is dismissed at the start of your next turn.\nThe source starts an encounter at full Stamina, but maintains their current Stamina throughout the encounter, even if they are dismissed and you use this ability again. They can't regain Stamina during the encounter. When the source's Stamina is reduced to 0, you can't use this ability again until you earn 1 or more Victories.\n\nThe source takes another turn. They are dismissed at the start of your next turn.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "the-green-defends-its-servants-11-essence",
+    "name": "The Green Defends Its Servants",
+    "level": 8,
+    "resource": "Essence",
+    "resource_value": 11,
+    "story_text": "A luminous green shield shows its true beauty the more it cracks.",
+    "keywords": "Green/Magic/Ranged",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Self or one ally",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You conjure an elemental shield that protects the target until the end of your next turn. While the shield is active, the target can take the Defend main action as a maneuver on each of their turns. The target gains 30 temporary Stamina that lasts until depleted or until the effect ends. If this temporary Stamina disappears, the effect ends and the shield explodes, dealing 10 damage to each enemy within 5 squares of the target.\n\nThe effect lasts until the start of your next turn.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "unquenchable-fire-11-essence",
+    "name": "Unquenchable Fire",
+    "level": 8,
+    "resource": "Essence",
+    "resource_value": 11,
+    "story_text": "You let fly a fiery missile braided with pure primal energy.",
+    "keywords": "Fire/Magic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One enemy or object",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "13 + R fire damage; I < WEAK, dazed (save ends)",
+        "tier2": "18 + R fire damage; I < AVERAGE, dazed (save ends)",
+        "tier3": "25 + R fire damage; I < STRONG, dazed (save ends)"
+      }
+    ],
+    "effect": "This damage ignores immunity.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "world-torn-asunder-11-essence",
+    "name": "World Torn Asunder",
+    "level": 8,
+    "resource": "Essence",
+    "resource_value": 11,
+    "story_text": "You stomp your foot and quake the whole world over.",
+    "keywords": "Area/Earth/Magic",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "5 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "M < WEAK, prone",
+        "tier2": "M < AVERAGE, prone",
+        "tier3": "M < STRONG, prone"
+      }
+    ],
+    "effect": "You create a fissure in the ground adjacent to you that is a 10 x 2 line and 6 squares deep. Each creature in the area who is prone and size 2 or smaller falls in. Other creatures can enter the fissure or can shift to the nearest unoccupied space of their choice outside it.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "earth-rejects-you-11-essence",
+    "name": "Earth Rejects You",
+    "level": 9,
+    "resource": "Essence",
+    "resource_value": 11,
+    "story_text": "Everyone and everything gets blown away in an eruption of rocks and debris.",
+    "keywords": "Area/Earth/Magic/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "5 cube within 10",
+    "targets": "Each enemy and object in the area",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "6 damage",
+        "tier2": "9 damage",
+        "tier3": "13 damage"
+      }
+    ],
+    "effect": "At the start of your turn, you can use a maneuver to use this ability again without spending essence.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "prism-11-essence",
+    "name": "Prism",
+    "level": 9,
+    "resource": "Essence",
+    "resource_value": 11,
+    "story_text": "You split your essence, allowing you to cast multiple effects at once.",
+    "keywords": "Magic/Void",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You use up to three heroic abilities whose essence costs total 11 or less, spending no additional essence beyond the cost of this ability. You can shift up to 2 squares between your use of each ability.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "the-green-defends-its-servants-11-essence",
+    "name": "The Green Defends Its Servants",
+    "level": 9,
+    "resource": "Essence",
+    "resource_value": 11,
+    "story_text": "A luminous green shield shows its true beauty the more it cracks.",
+    "keywords": "Green/Magic/Ranged",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Self or one ally",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "You conjure an elemental shield that protects the target until the end of your next turn. While the shield is active, the target can take the Defend main action as a maneuver on each of their turns. The target gains 30 temporary Stamina that lasts until depleted or until the effect ends. If this temporary Stamina disappears, the effect ends and the shield explodes, dealing 10 damage to each enemy within 5 squares of the target.\n\nThe effect lasts until the start of your next turn.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "unquenchable-fire-11-essence",
+    "name": "Unquenchable Fire",
+    "level": 9,
+    "resource": "Essence",
+    "resource_value": 11,
+    "story_text": "You let fly a fiery missile braided with pure primal energy.",
+    "keywords": "Fire/Magic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One enemy or object",
+    "power_roll": "Power Roll + Reason",
+    "tier_effects": [
+      {
+        "tier1": "13 + R fire damage; I < WEAK, dazed (save ends)",
+        "tier2": "18 + R fire damage; I < AVERAGE, dazed (save ends)",
+        "tier3": "25 + R fire damage; I < STRONG, dazed (save ends)"
+      }
+    ],
+    "effect": "This damage ignores immunity.",
+    "special_effect": ""
+  }
+]

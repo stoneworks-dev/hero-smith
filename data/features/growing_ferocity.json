@@ -1,0 +1,200 @@
+[
+  {
+    "id": "berserker_growing_ferocity",
+    "name": "Berserker Growing Ferocity",
+    "progression": [
+      {
+        "ferocity": 2,
+        "benefit": "Whenever you use the Knockback maneuver, the forced movement distance gains a bonus equal to your Might score."
+      },
+      {
+        "ferocity": 4,
+        "benefit": "The first time you push a creature on a turn, you gain 1 surge."
+      },
+      {
+        "ferocity": 6,
+        "benefit": "You gain an edge on Might tests and the Knockback maneuver."
+      },
+      {
+        "ferocity": 8,
+        "level": 4,
+        "benefit": "The first time you push a creature on a turn, you gain 2 surges."
+      },
+      {
+        "ferocity": 10,
+        "level": 7,
+        "benefit": "You have a double edge on Might tests and the Knockback maneuver."
+      },
+      {
+        "ferocity": 12,
+        "level": 10,
+        "benefit": "Whenever you use a heroic ability, you gain 10 temporary Stamina. Additionally, whenever you make a power roll that imposes forced movement on a target, the forced movement distance gains a bonus equal to your Might score."
+      }
+    ]
+  },
+  {
+    "id": "reaver_growing_ferocity",
+    "name": "Reaver Growing Ferocity",
+    "progression": [
+      {
+        "ferocity": 2,
+        "benefit": "Whenever you use the Knockback maneuver, the forced movement distance gains a bonus equal to your Agility score."
+      },
+      {
+        "ferocity": 4,
+        "benefit": "The first time you slide a creature on a turn, you gain 1 surge."
+      },
+      {
+        "ferocity": 6,
+        "benefit": "You gain an edge on Agility tests and the Knockback maneuver."
+      },
+      {
+        "ferocity": 8,
+        "level": 4,
+        "benefit": "The first time you slide a creature on a turn, you gain 2 surges."
+      },
+      {
+        "ferocity": 10,
+        "level": 7,
+        "benefit": "You have a double edge on Agility tests and the Knockback maneuver."
+      },
+      {
+        "ferocity": 12,
+        "level": 10,
+        "benefit": "Whenever you use a heroic ability, you gain 10 temporary Stamina. Additionally, whenever you make a power roll that imposes forced movement on a target, the forced movement distance gains a bonus equal to your Agility score."
+      }
+    ]
+  },
+  {
+    "id": "boren_growing_ferocity",
+    "name": "Boren Growing Ferocity",
+    "progression": [
+      {
+        "ferocity": 2,
+        "benefit": "You can have up to two creatures grabbed at a time. Additionally, whenever you make a strike against a creature you have grabbed, you gain 1 surge."
+      },
+      {
+        "ferocity": 4,
+        "benefit": "The first time you grab a creature on a turn, you gain 1 surge."
+      },
+      {
+        "ferocity": 6,
+        "benefit": "You gain an edge on the Grab and Knockback maneuvers."
+      },
+      {
+        "ferocity": 8,
+        "level": 4,
+        "benefit": "The first time you grab a creature on a turn, you gain 2 surges instead of 1."
+      },
+      {
+        "ferocity": 10,
+        "level": 7,
+        "benefit": "You have a double edge on the Grab and Knockback maneuvers."
+      },
+      {
+        "ferocity": 12,
+        "level": 10,
+        "benefit": "Whenever you use a heroic ability, you gain 10 temporary Stamina. Additionally, whenever you have a creature grabbed, any ability roll made against that creature gains a bonus to its potency equal to your Might score."
+      }
+    ]
+  },
+  {
+    "id": "corven_growing_ferocity",
+    "name": "Corven Growing Ferocity",
+    "progression": [
+      {
+        "ferocity": 2,
+        "benefit": "Whenever you use the Disengage move action, the distance you can shift gains a bonus equal to your Agility score."
+      },
+      {
+        "ferocity": 4,
+        "benefit": "The first time you shift on a turn, you gain 1 surge."
+      },
+      {
+        "ferocity": 6,
+        "benefit": "You gain an edge on Agility tests, the Escape Grab maneuver, and the Knockback maneuver."
+      },
+      {
+        "ferocity": 8,
+        "level": 4,
+        "benefit": "The first time you shift on a turn, you gain 2 surges instead of 1."
+      },
+      {
+        "ferocity": 10,
+        "level": 7,
+        "benefit": "You have a double edge on Agility tests, the Escape Grab maneuver, and the Knockback maneuver."
+      },
+      {
+        "ferocity": 12,
+        "level": 10,
+        "benefit": "Whenever you use a heroic ability, you gain 10 temporary Stamina. Additionally, the potency of any effects targeting you is reduced by 2 for you."
+      }
+    ]
+  },
+  {
+    "id": "raden_growing_ferocity",
+    "name": "Raden Growing Ferocity",
+    "progression": [
+      {
+        "ferocity": 2,
+        "benefit": "Whenever you use the Disengage move action, the distance you can shift gains a bonus equal to your Agility score."
+      },
+      {
+        "ferocity": 4,
+        "benefit": "The first time you shift on a turn, you gain 1 surge."
+      },
+      {
+        "ferocity": 6,
+        "benefit": "You gain an edge on Agility tests, the Escape Grab maneuver, and the Knockback maneuver."
+      },
+      {
+        "ferocity": 8,
+        "level": 4,
+        "benefit": "The first time you shift on a turn, you gain 2 surges instead of 1."
+      },
+      {
+        "ferocity": 10,
+        "level": 7,
+        "benefit": "You have a double edge on Agility tests, the Escape Grab maneuver, and the Knockback maneuver."
+      },
+      {
+        "ferocity": 12,
+        "level": 10,
+        "benefit": "Whenever you use a heroic ability, you gain 10 temporary Stamina. Additionally, the potency of any effects targeting you is reduced by 2 for you."
+      }
+    ]
+  },
+  {
+    "id": "vuken_growing_ferocity",
+    "name": "Vuken Growing Ferocity",
+    "progression": [
+      {
+        "ferocity": 2,
+        "benefit": "Whenever you use the Knockback maneuver, you can target one additional creature."
+      },
+      {
+        "ferocity": 4,
+        "benefit": "The first time on a turn that you push a creature or knock a creature prone, you gain 1 surge."
+      },
+      {
+        "ferocity": 6,
+        "benefit": "You gain an edge on Agility tests and the Knockback maneuver."
+      },
+      {
+        "ferocity": 8,
+        "level": 4,
+        "benefit": "The first time on a turn that you push a creature or knock a creature prone, you gain 2 surges."
+      },
+      {
+        "ferocity": 10,
+        "level": 7,
+        "benefit": "You have a double edge on Agility tests and the Knockback maneuver."
+      },
+      {
+        "ferocity": 12,
+        "level": 10,
+        "benefit": "Whenever you use a heroic ability, you gain 10 temporary Stamina. Additionally, whenever you make a power roll that imposes forced movement on a target, the forced movement distance gains a bonus equal to your Agility score."
+      }
+    ]
+  }
+]

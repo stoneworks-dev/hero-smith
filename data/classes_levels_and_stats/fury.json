@@ -1,0 +1,200 @@
+{
+  "classId": "class_fury",
+  "name": "Fury",
+  "type": "class",
+  "starting_characteristics": {
+    "motto": "“DEATH!” — Khorva",
+    "heroicResourceName": "Ferocity",
+    "baseStamina": 21,
+    "stamina_per_level": 9,
+    "baseRecoveries": 10,
+    "baseSpeed": 5,
+    "baseStability": 0,
+    "baseDisengage": 1,
+
+    "potency_progression": {
+      "characteristic": "Might",
+      "modifiers": {
+        "weak": -2,
+        "average": -1,
+        "strong": 0
+      }
+    },
+
+    "starting_skills": {
+      "granted_skills": ["Nature"],
+      "skill_groups": ["exploration", "intrigue"],
+      "skill_count": 2,
+      "quick_build": ["Alertness", "Jump", "Nature"]
+    },
+
+    "starting_characteristics_arrays": [
+      {
+        "values": [2, -1, -1]
+      },
+      {
+        "values": [1, 1, -1]
+      },
+      {
+        "values": [1, 0, 0]
+      }
+    ],
+
+    "fixed_starting_characteristics": {
+      "might": 2,
+      "agility": 2
+    }
+  },
+
+  "levels": [
+    {
+      "level": 1,
+      "features": [
+        {
+          "name": "Primordial Aspect",
+          "grant_type": "pick",
+          "type": "class_subclass"
+        },
+        { "name": "Kit", "grant_type": "pick", "count": 1 },
+        { "name": "Ferocity", "grant_type": "granted" },
+        { "name": "Growing Ferocity", "grant_type": "granted" },
+        {
+          "name": "Aspect Features",
+          "grant_type": "granted",
+          "type": "subclass"
+        },
+        {
+          "name": "Aspect Triggered Action",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "new_abilities": {
+        "signature": 1,
+        "3_cost": 1,
+        "5_cost": 1
+      }
+    },
+    {
+      "level": 2,
+      "features": [
+        {
+          "name": "Aspect Features",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "perks": [
+        {
+          "count": 1,
+          "perk_groups": ["crafting", "exploration", "intrigue"]
+        }
+      ],
+      "new_subclass_abilities": {
+        "5_cost": 1
+      }
+    },
+    {
+      "level": 3,
+      "features": [
+        {
+          "name": "Aspect Features",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "new_abilities": {
+        "7_cost": 1
+      }
+    },
+    {
+      "level": 4,
+      "features": [
+        { "name": "Damaging Ferocity", "grant_type": "granted" },
+        { "name": "Growing Ferocity Improvement", "grant_type": "granted" },
+        { "name": "Primordial Attunement", "grant_type": "granted" },
+        { "name": "Primordial Strike", "grant_type": "granted" }
+      ],
+      "perks": [{ "count": 1 }],
+      "skills": [{ "count": 1 }],
+      "characteristics": [
+        { "Might": { "setTo": 3 } },
+        { "Agility": { "setTo": 3 } }
+      ]
+    },
+    {
+      "level": 5,
+      "features": [
+        {
+          "name": "Aspect Features",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "new_abilities": {
+        "9_cost": 1
+      }
+    },
+    {
+      "level": 6,
+      "features": [
+        { "name": "Marauder of the Primordial Chaos", "grant_type": "granted" },
+        { "name": "Primordial Portal", "grant_type": "granted" }
+      ],
+      "perks": [
+        { "count": 1, "perk_groups": ["crafting", "exploration", "intrigue"] }
+      ],
+      "new_subclass_abilities": {
+        "9_cost": 1
+      }
+    },
+    {
+      "level": 7,
+      "features": [
+        { "name": "Elemental Form", "grant_type": "granted" },
+        { "name": "Greater Ferocity", "grant_type": "granted" },
+        { "name": "Growing Ferocity Improvement", "grant_type": "granted" }
+      ],
+      "skills": [{ "count": 1 }],
+      "characteristics": [{ "All": { "increaseBy": 1, "max": 4 } }]
+    },
+    {
+      "level": 8,
+      "features": [
+        {
+          "name": "Aspect Feature",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "perks": [{ "count": 1 }],
+      "new_abilities": {
+        "11_cost": 1
+      }
+    },
+    {
+      "level": 9,
+      "features": ["Harbinger of the Primordial Chaos"],
+      "new_subclass_abilities": {
+        "11_cost": 1
+      }
+    },
+    {
+      "level": 10,
+      "features": [
+        { "name": "Chaos Incarnate", "grant_type": "granted" },
+        { "name": "Growing Ferocity Improvement", "grant_type": "granted" },
+        { "name": "Primordial Ferocity", "grant_type": "granted" },
+        { "name": "Primordial Power", "grant_type": "granted" }
+      ],
+      "perks": [
+        { "count": 1, "perk_groups": ["crafting", "exploration", "intrigue"] }
+      ],
+      "skills": [{ "count": 1 }],
+      "characteristics": [
+        { "Might": { "setTo": 5 } },
+        { "Agility": { "setTo": 5 } }
+      ]
+    }
+  ]
+}

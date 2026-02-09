@@ -1,0 +1,1073 @@
+[
+  {
+    "id": "kit_arcane_archer",
+    "type": "kit",
+    "name": "Arcane Archer",
+    "description": "The Arcane Archer kit allows you to combine magic and ranged weapon strikes. Your lack of armor keeps you mobile, and your magic makes your arrows explode to devastate your foes.",
+    "equipment_description": "You wear no armor and wield a bow.",
+    "equipment": {
+      "armor": {
+        "none": true,
+        "light": false,
+        "medium": false,
+        "heavy": false,
+        "shield": false
+      },
+      "weapons": {
+        "bow": true,
+        "ensnaring_weapon": true,
+        "light": true,
+        "medium": false,
+        "heavy": false,
+        "polearm": false,
+        "unarmed_strikes": false,
+        "whip": false
+      }
+    },
+    "stamina_bonus": null,
+    "speed_bonus": 1,
+    "stability_bonus": null,
+    "melee_damage_bonus": {
+      "1st_tier": null,
+      "2nd_tier": null,
+      "3rd_tier": null
+    },
+    "ranged_damage_bonus": {
+      "1st_tier": 2,
+      "2nd_tier": 2,
+      "3rd_tier": 2
+    },
+    "melee_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "ranged_distance_bonus": {
+      "1st_echelon": 10,
+      "2nd_echelon": 10,
+      "3rd_echelon": 10
+    },
+    "disengage_bonus": 1,
+    "signature_ability": "Exploding Arrow"
+  },
+  {
+    "id": "kit_battlemind",
+    "type": "kit",
+    "name": "Battlemind",
+    "description": "Who says lightly armored heroes can't also be hard to move? You just need to employ some psionics! The Battlemind kit harnesses the power of your mind to make you harder to move—and to make your foes easier to push around.",
+    "equipment_description": "You wear light armor and wield a medium weapon.",
+    "equipment": {
+      "armor": {
+        "none": false,
+        "light": true,
+        "medium": false,
+        "heavy": false,
+        "shield": false
+      },
+      "weapons": {
+        "bow": false,
+        "ensnaring_weapon": false,
+        "light": false,
+        "medium": true,
+        "heavy": false,
+        "polearm": false,
+        "unarmed_strikes": false,
+        "whip": false
+      }
+    },
+    "stamina_bonus": 3,
+    "speed_bonus": 2,
+    "stability_bonus": 1,
+    "melee_damage_bonus": {
+      "1st_tier": 2,
+      "2nd_tier": 2,
+      "3rd_tier": 2
+    },
+    "ranged_damage_bonus": {
+      "1st_tier": null,
+      "2nd_tier": null,
+      "3rd_tier": null
+    },
+    "melee_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "ranged_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "disengage_bonus": null,
+    "signature_ability": "Unmooring"
+  },
+  {
+    "id": "kit_cloak_and_dagger",
+    "type": "kit",
+    "name": "Cloak and Dagger",
+    "description": "Providing throwable light weapons and light armor easily concealed by a cloak to confuse your enemies, the Cloak and Dagger kit makes you more mobile while increasing the effectiveness of your short-range strikes.",
+    "equipment_description": "You wear light armor and wield one or two light weapons.",
+    "equipment": {
+      "armor": {
+        "none": false,
+        "light": true,
+        "medium": false,
+        "heavy": false,
+        "shield": false
+      },
+      "weapons": {
+        "bow": false,
+        "ensnaring_weapon": false,
+        "light": true,
+        "medium": false,
+        "heavy": false,
+        "polearm": false,
+        "unarmed_strikes": false,
+        "whip": false
+      }
+    },
+    "stamina_bonus": 3,
+    "speed_bonus": 2,
+    "stability_bonus": null,
+    "melee_damage_bonus": {
+      "1st_tier": 1,
+      "2nd_tier": 1,
+      "3rd_tier": 1
+    },
+    "ranged_damage_bonus": {
+      "1st_tier": 1,
+      "2nd_tier": 1,
+      "3rd_tier": 1
+    },
+    "melee_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "ranged_distance_bonus": {
+      "1st_echelon": 5,
+      "2nd_echelon": 5,
+      "3rd_echelon": 5
+    },
+    "disengage_bonus": 1,
+    "signature_ability": "Fade"
+  },
+  {
+    "id": "kit_dual_wielder",
+    "type": "kit",
+    "name": "Dual Wielder",
+    "description": "The Dual Wielder kit is for folks who want to excel at using two weapons at the same time. Your fighting style maximizes the power of each weapon you have in hand, making you a whirling dealer of death.",
+    "equipment_description": "You wear medium armor and wield a light weapon and a medium weapon.",
+    "equipment": {
+      "armor": {
+        "none": false,
+        "light": false,
+        "medium": true,
+        "heavy": false,
+        "shield": false
+      },
+      "weapons": {
+        "bow": false,
+        "ensnaring_weapon": false,
+        "light": true,
+        "medium": true,
+        "heavy": false,
+        "polearm": false,
+        "unarmed_strikes": false,
+        "whip": false
+      }
+    },
+    "stamina_bonus": 6,
+    "speed_bonus": 2,
+    "stability_bonus": null,
+    "melee_damage_bonus": {
+      "1st_tier": 2,
+      "2nd_tier": 2,
+      "3rd_tier": 2
+    },
+    "ranged_damage_bonus": {
+      "1st_tier": null,
+      "2nd_tier": null,
+      "3rd_tier": null
+    },
+    "melee_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "ranged_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "disengage_bonus": 1,
+    "signature_ability": "Double Strike"
+  },
+  {
+    "id": "kit_guisarmier",
+    "type": "kit",
+    "name": "Guisarmier",
+    "description": "The Guisarmier kit is for those who want to use a polearm for extended reach while remaining protected by sturdy armor. This is the kit that allows you to become the ultimate halberd, longspear, or glaive fighter.",
+    "equipment_description": "You wear medium armor and wield a polearm.",
+    "equipment": {
+      "armor": {
+        "none": false,
+        "light": false,
+        "medium": true,
+        "heavy": false,
+        "shield": false
+      },
+      "weapons": {
+        "bow": false,
+        "ensnaring_weapon": false,
+        "light": false,
+        "medium": false,
+        "heavy": false,
+        "polearm": true,
+        "unarmed_strikes": false,
+        "whip": false
+      }
+    },
+    "stamina_bonus": 6,
+    "speed_bonus": null,
+    "stability_bonus": 1,
+    "melee_damage_bonus": {
+      "1st_tier": 2,
+      "2nd_tier": 2,
+      "3rd_tier": 2
+    },
+    "ranged_damage_bonus": {
+      "1st_tier": null,
+      "2nd_tier": null,
+      "3rd_tier": null
+    },
+    "melee_distance_bonus": {
+      "1st_echelon": 1,
+      "2nd_echelon": 1,
+      "3rd_echelon": 1
+    },
+    "ranged_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "disengage_bonus": null,
+    "signature_ability": "Forward Thrust, Backward Smash"
+  },
+  {
+    "id": "kit_martial_artist",
+    "type": "kit",
+    "name": "Martial Artist",
+    "description": "If you want to be fast in a fight, then Martial Artist is the kit for you. Unencumbered by weapons or armor, this fighting style rewards quick, focused unarmed strikes against opponents, and allows you to be the ultimate skirmisher.",
+    "equipment_description": "You wear no armor and wield only your unarmed strikes.",
+    "equipment": {
+      "armor": {
+        "none": true,
+        "light": false,
+        "medium": false,
+        "heavy": false,
+        "shield": false
+      },
+      "weapons": {
+        "bow": false,
+        "ensnaring_weapon": false,
+        "light": false,
+        "medium": false,
+        "heavy": false,
+        "polearm": false,
+        "unarmed_strikes": true,
+        "whip": false
+      }
+    },
+    "stamina_bonus": 3,
+    "speed_bonus": 3,
+    "stability_bonus": null,
+    "melee_damage_bonus": {
+      "1st_tier": 2,
+      "2nd_tier": 2,
+      "3rd_tier": 2
+    },
+    "ranged_damage_bonus": {
+      "1st_tier": null,
+      "2nd_tier": null,
+      "3rd_tier": null
+    },
+    "melee_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "ranged_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "disengage_bonus": 1,
+    "signature_ability": "Battle Grace"
+  },
+  {
+    "id": "kit_mountain",
+    "type": "kit",
+    "name": "Mountain",
+    "description": "The Mountain kit does exactly what it says on the tin. You don heavy armor and raise a heavy weapon to stand strong against your foes, quickly demolishing them when it's your turn to strike.",
+    "equipment_description": "You wear heavy armor and wield a heavy weapon.",
+    "equipment": {
+      "armor": {
+        "none": false,
+        "light": false,
+        "medium": false,
+        "heavy": true,
+        "shield": false
+      },
+      "weapons": {
+        "bow": false,
+        "ensnaring_weapon": false,
+        "light": false,
+        "medium": false,
+        "heavy": true,
+        "polearm": false,
+        "unarmed_strikes": false,
+        "whip": false
+      }
+    },
+    "stamina_bonus": 9,
+    "speed_bonus": null,
+    "stability_bonus": 2,
+    "melee_damage_bonus": {
+      "1st_tier": 0,
+      "2nd_tier": 0,
+      "3rd_tier": 4
+    },
+    "ranged_damage_bonus": {
+      "1st_tier": null,
+      "2nd_tier": null,
+      "3rd_tier": null
+    },
+    "melee_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "ranged_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "disengage_bonus": null,
+    "signature_ability": "Pain for Pain"
+  },
+  {
+    "id": "kit_panther",
+    "type": "kit",
+    "name": "Panther",
+    "description": "If you want a good balance of protection, speed, and damage, the Panther kit is for you. This kit increases your Stamina not by wearing armor, but through the focused battle preparation of body and mind, letting you be fast and mobile while swinging a heavy weapon at your foes.",
+    "equipment_description": "You wear no armor and wield a heavy weapon.",
+    "equipment": {
+      "armor": {
+        "none": true,
+        "light": false,
+        "medium": false,
+        "heavy": false,
+        "shield": false
+      },
+      "weapons": {
+        "bow": false,
+        "ensnaring_weapon": false,
+        "light": false,
+        "medium": false,
+        "heavy": true,
+        "polearm": false,
+        "unarmed_strikes": false,
+        "whip": false
+      }
+    },
+    "stamina_bonus": 6,
+    "speed_bonus": 1,
+    "stability_bonus": 1,
+    "melee_damage_bonus": {
+      "1st_tier": 0,
+      "2nd_tier": 0,
+      "3rd_tier": 4
+    },
+    "ranged_damage_bonus": {
+      "1st_tier": null,
+      "2nd_tier": null,
+      "3rd_tier": null
+    },
+    "melee_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "ranged_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "disengage_bonus": null,
+    "signature_ability": "Devastating Rush"
+  },
+  {
+    "id": "kit_pugilist",
+    "type": "kit",
+    "name": "Pugilist",
+    "description": "Meant for brawlers and boxers, the Pugilist kit gives you access to a melee fighting style that grants a boost to Stamina and damage while allowing you to float like a butterfly. If you want to be a tough, strong hero who doles out punishment with your fists, then this kit is for you.",
+    "equipment_description": "You wear no armor and wield only your unarmed strikes.",
+    "equipment": {
+      "armor": {
+        "none": true,
+        "light": false,
+        "medium": false,
+        "heavy": false,
+        "shield": false
+      },
+      "weapons": {
+        "bow": false,
+        "ensnaring_weapon": false,
+        "light": false,
+        "medium": false,
+        "heavy": false,
+        "polearm": false,
+        "unarmed_strikes": true,
+        "whip": false
+      }
+    },
+    "stamina_bonus": 6,
+    "speed_bonus": 2,
+    "stability_bonus": 1,
+    "melee_damage_bonus": {
+      "1st_tier": 1,
+      "2nd_tier": 1,
+      "3rd_tier": 1
+    },
+    "ranged_damage_bonus": {
+      "1st_tier": null,
+      "2nd_tier": null,
+      "3rd_tier": null
+    },
+    "melee_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "ranged_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "disengage_bonus": null,
+    "signature_ability": "Let's Dance"
+  },
+  {
+    "id": "kit_raider",
+    "type": "kit",
+    "name": "Raider",
+    "description": "The Raider kit keeps you protected while granting you full mobility, providing a boost to speed and distance that lets you run around the battlefield like a Viking warrior.",
+    "equipment_description": "You wear light armor and wield a shield and a light weapon.",
+    "equipment": {
+      "armor": {
+        "none": false,
+        "light": true,
+        "medium": false,
+        "heavy": false,
+        "shield": true
+      },
+      "weapons": {
+        "bow": false,
+        "ensnaring_weapon": false,
+        "light": true,
+        "medium": false,
+        "heavy": false,
+        "polearm": false,
+        "unarmed_strikes": false,
+        "whip": false
+      }
+    },
+    "stamina_bonus": 6,
+    "speed_bonus": 1,
+    "stability_bonus": null,
+    "melee_damage_bonus": {
+      "1st_tier": 1,
+      "2nd_tier": 1,
+      "3rd_tier": 1
+    },
+    "ranged_damage_bonus": {
+      "1st_tier": 1,
+      "2nd_tier": 1,
+      "3rd_tier": 1
+    },
+    "melee_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "ranged_distance_bonus": {
+      "1st_echelon": 5,
+      "2nd_echelon": 5,
+      "3rd_echelon": 5
+    },
+    "disengage_bonus": 1,
+    "signature_ability": "Shock and Awe"
+  },
+  {
+    "id": "kit_ranger",
+    "type": "kit",
+    "name": "Ranger",
+    "description": "The Ranger kit outfits you with light armor and weapons for every challenge, letting you easily switch between melee and ranged combat. This kit provides a good balance of bonuses to defense and offense to create a hero who is a jack-of-all-trades.",
+    "equipment_description": "You wear medium armor and wield a bow and a medium weapon.",
+    "equipment": {
+      "armor": {
+        "none": false,
+        "light": false,
+        "medium": true,
+        "heavy": false,
+        "shield": false
+      },
+      "weapons": {
+        "bow": true,
+        "ensnaring_weapon": false,
+        "light": false,
+        "medium": true,
+        "heavy": false,
+        "polearm": false,
+        "unarmed_strikes": false,
+        "whip": false
+      }
+    },
+    "stamina_bonus": 6,
+    "speed_bonus": 1,
+    "stability_bonus": null,
+    "melee_damage_bonus": {
+      "1st_tier": 1,
+      "2nd_tier": 1,
+      "3rd_tier": 1
+    },
+    "ranged_damage_bonus": {
+      "1st_tier": 1,
+      "2nd_tier": 1,
+      "3rd_tier": 1
+    },
+    "melee_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "ranged_distance_bonus": {
+      "1st_echelon": 5,
+      "2nd_echelon": 5,
+      "3rd_echelon": 5
+    },
+    "disengage_bonus": 1,
+    "signature_ability": "Hamstring Shot"
+  },
+  {
+    "id": "kit_rapid_fire",
+    "type": "kit",
+    "name": "Rapid-Fire",
+    "description": "The Rapid-Fire kit is for archers who want to deal maximum damage by shooting as many arrows as possible into nearby enemies. With this kit, your fighting technique focuses on peppering foes before they can get close enough to counterattack.",
+    "equipment_description": "You wear light armor and wield a bow.",
+    "equipment": {
+      "armor": {
+        "none": false,
+        "light": true,
+        "medium": false,
+        "heavy": false,
+        "shield": false
+      },
+      "weapons": {
+        "bow": true,
+        "ensnaring_weapon": false,
+        "light": false,
+        "medium": false,
+        "heavy": false,
+        "polearm": false,
+        "unarmed_strikes": false,
+        "whip": false
+      }
+    },
+    "stamina_bonus": 3,
+    "speed_bonus": 1,
+    "stability_bonus": null,
+    "melee_damage_bonus": {
+      "1st_tier": null,
+      "2nd_tier": null,
+      "3rd_tier": null
+    },
+    "ranged_damage_bonus": {
+      "1st_tier": 2,
+      "2nd_tier": 2,
+      "3rd_tier": 2
+    },
+    "melee_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "ranged_distance_bonus": {
+      "1st_echelon": 7,
+      "2nd_echelon": 7,
+      "3rd_echelon": 7
+    },
+    "disengage_bonus": 1,
+    "signature_ability": "Two Shot"
+  },
+  {
+    "id": "kit_retiarius",
+    "type": "kit",
+    "name": "Retiarius",
+    "description": "The retiarius is often depicted as a lightly armored warrior with a net in one hand and a trident in the other, and this kit gives you the equipment and fighting technique to make that happen. Tie up your foe with a net and then poke them to death!",
+    "equipment_description": "You wear light armor and wield several ensnaring weapons and a polearm.",
+    "equipment": {
+      "armor": {
+        "none": false,
+        "light": true,
+        "medium": false,
+        "heavy": false,
+        "shield": false
+      },
+      "weapons": {
+        "bow": false,
+        "ensnaring_weapon": true,
+        "light": false,
+        "medium": false,
+        "heavy": false,
+        "polearm": true,
+        "unarmed_strikes": false,
+        "whip": false
+      }
+    },
+    "stamina_bonus": 3,
+    "speed_bonus": 1,
+    "stability_bonus": null,
+    "melee_damage_bonus": {
+      "1st_tier": 2,
+      "2nd_tier": 2,
+      "3rd_tier": 2
+    },
+    "ranged_damage_bonus": {
+      "1st_tier": null,
+      "2nd_tier": null,
+      "3rd_tier": null
+    },
+    "melee_distance_bonus": {
+      "1st_echelon": 1,
+      "2nd_echelon": 1,
+      "3rd_echelon": 1
+    },
+    "ranged_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "disengage_bonus": 1,
+    "signature_ability": "Net and Stab"
+  },
+  {
+    "id": "kit_shining_armor",
+    "type": "kit",
+    "name": "Shining Armor",
+    "description": "The Shining Armor kit provides the most protection a kit can afford, providing you with the sword, shield, and armor necessary to play the prototypical knight.",
+    "equipment_description": "You wear heavy armor and wield a shield and a medium weapon.",
+    "equipment": {
+      "armor": {
+        "none": false,
+        "light": false,
+        "medium": false,
+        "heavy": true,
+        "shield": true
+      },
+      "weapons": {
+        "bow": false,
+        "ensnaring_weapon": false,
+        "light": false,
+        "medium": true,
+        "heavy": false,
+        "polearm": false,
+        "unarmed_strikes": false,
+        "whip": false
+      }
+    },
+    "stamina_bonus": 12,
+    "speed_bonus": null,
+    "stability_bonus": 1,
+    "melee_damage_bonus": {
+      "1st_tier": 2,
+      "2nd_tier": 2,
+      "3rd_tier": 2
+    },
+    "ranged_damage_bonus": {
+      "1st_tier": null,
+      "2nd_tier": null,
+      "3rd_tier": null
+    },
+    "melee_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "ranged_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "disengage_bonus": null,
+    "signature_ability": "Protective Attack"
+  },
+  {
+    "id": "kit_sniper",
+    "type": "kit",
+    "name": "Sniper",
+    "description": "The Sniper kit gives you the tools and techniques to take down enemies from afar. This kit can help you become the archer who lurks behind trees or down tunnels, picking off enemies with a bow or crossbow as they approach.",
+    "equipment_description": "You wear no armor and wield a bow.",
+    "equipment": {
+      "armor": {
+        "none": true,
+        "light": false,
+        "medium": false,
+        "heavy": false,
+        "shield": false
+      },
+      "weapons": {
+        "bow": true,
+        "ensnaring_weapon": false,
+        "light": false,
+        "medium": false,
+        "heavy": false,
+        "polearm": false,
+        "unarmed_strikes": false,
+        "whip": false
+      }
+    },
+    "stamina_bonus": null,
+    "speed_bonus": 1,
+    "stability_bonus": null,
+    "melee_damage_bonus": {
+      "1st_tier": null,
+      "2nd_tier": null,
+      "3rd_tier": null
+    },
+    "ranged_damage_bonus": {
+      "1st_tier": 0,
+      "2nd_tier": 0,
+      "3rd_tier": 4
+    },
+    "melee_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "ranged_distance_bonus": {
+      "1st_echelon": 10,
+      "2nd_echelon": 10,
+      "3rd_echelon": 10
+    },
+    "disengage_bonus": 1,
+    "signature_ability": "Patient Shot"
+  },
+  {
+    "id": "kit_spellsword",
+    "type": "kit",
+    "name": "Spellsword",
+    "description": "The Spellsword kit combines melee strikes and a little bit of magic, letting you create a warrior who doesn't have to choose between the incantation and the blade.",
+    "equipment_description": "You wear light armor and wield a shield and a medium weapon.",
+    "equipment": {
+      "armor": {
+        "none": false,
+        "light": true,
+        "medium": false,
+        "heavy": false,
+        "shield": true
+      },
+      "weapons": {
+        "bow": false,
+        "ensnaring_weapon": false,
+        "light": false,
+        "medium": true,
+        "heavy": false,
+        "polearm": false,
+        "unarmed_strikes": false,
+        "whip": false
+      }
+    },
+    "stamina_bonus": 6,
+    "speed_bonus": 1,
+    "stability_bonus": 1,
+    "melee_damage_bonus": {
+      "1st_tier": 2,
+      "2nd_tier": 2,
+      "3rd_tier": 2
+    },
+    "ranged_damage_bonus": {
+      "1st_tier": null,
+      "2nd_tier": null,
+      "3rd_tier": null
+    },
+    "melee_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "ranged_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "disengage_bonus": null,
+    "signature_ability": "Leaping Lightning"
+  },
+  {
+    "id": "kit_stick_and_robe",
+    "type": "kit",
+    "name": "Stick and Robe",
+    "description": "Armed with a simple reach weapon, often a quarterstaff, a character using the Stick and Robe kit is highly mobile thanks to their light armor. This allows your hero to make maximum use of their weapon's length.",
+    "equipment_description": "You wear light armor and wield a polearm.",
+    "equipment": {
+      "armor": {
+        "none": false,
+        "light": true,
+        "medium": false,
+        "heavy": false,
+        "shield": false
+      },
+      "weapons": {
+        "bow": false,
+        "ensnaring_weapon": false,
+        "light": false,
+        "medium": false,
+        "heavy": false,
+        "polearm": true,
+        "unarmed_strikes": false,
+        "whip": false
+      }
+    },
+    "stamina_bonus": 3,
+    "speed_bonus": 2,
+    "stability_bonus": null,
+    "melee_damage_bonus": {
+      "1st_tier": 1,
+      "2nd_tier": 1,
+      "3rd_tier": 1
+    },
+    "ranged_damage_bonus": {
+      "1st_tier": null,
+      "2nd_tier": null,
+      "3rd_tier": null
+    },
+    "melee_distance_bonus": {
+      "1st_echelon": 1,
+      "2nd_echelon": 1,
+      "3rd_echelon": 1
+    },
+    "ranged_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "disengage_bonus": 1,
+    "signature_ability": "Where I Want You"
+  },
+  {
+    "id": "kit_swashbuckler",
+    "type": "kit",
+    "name": "Swashbuckler",
+    "description": "If you want to be mobile and deal a lot of damage with melee strikes, then you should reach for the Swashbuckler kit. This is a great kit for heroes who want to be master duelists.",
+    "equipment_description": "You wear light armor and wield a medium weapon.",
+    "equipment": {
+      "armor": {
+        "none": false,
+        "light": true,
+        "medium": false,
+        "heavy": false,
+        "shield": false
+      },
+      "weapons": {
+        "bow": false,
+        "ensnaring_weapon": false,
+        "light": false,
+        "medium": true,
+        "heavy": false,
+        "polearm": false,
+        "unarmed_strikes": false,
+        "whip": false
+      }
+    },
+    "stamina_bonus": 3,
+    "speed_bonus": 3,
+    "stability_bonus": null,
+    "melee_damage_bonus": {
+      "1st_tier": 2,
+      "2nd_tier": 2,
+      "3rd_tier": 2
+    },
+    "ranged_damage_bonus": {
+      "1st_tier": null,
+      "2nd_tier": null,
+      "3rd_tier": null
+    },
+    "melee_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "ranged_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "disengage_bonus": 1,
+    "signature_ability": "Fancy Footwork"
+  },
+  {
+    "id": "kit_sword_and_board",
+    "type": "kit",
+    "name": "Sword and Board",
+    "description": "The Sword and Board kit doesn't just give you a shield—it makes the shield part of your offensive arsenal. With a medium weapon in one hand and a block of steel or solid oak in the other, you protect yourself while you control the battlefield.",
+    "equipment_description": "You wear medium armor and wield a shield and a medium weapon.",
+    "equipment": {
+      "armor": {
+        "none": false,
+        "light": false,
+        "medium": true,
+        "heavy": false,
+        "shield": true
+      },
+      "weapons": {
+        "bow": false,
+        "ensnaring_weapon": false,
+        "light": false,
+        "medium": true,
+        "heavy": false,
+        "polearm": false,
+        "unarmed_strikes": false,
+        "whip": false
+      }
+    },
+    "stamina_bonus": 9,
+    "speed_bonus": null,
+    "stability_bonus": 1,
+    "melee_damage_bonus": {
+      "1st_tier": 2,
+      "2nd_tier": 2,
+      "3rd_tier": 2
+    },
+    "ranged_damage_bonus": {
+      "1st_tier": null,
+      "2nd_tier": null,
+      "3rd_tier": null
+    },
+    "melee_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "ranged_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "disengage_bonus": 1,
+    "signature_ability": "Shield Bash"
+  },
+  {
+    "id": "kit_warrior_priest",
+    "type": "kit",
+    "name": "Warrior Priest",
+    "description": "The Warrior Priest kit imbues the power of the gods into your weapon, making it a smiting instrument. You wade into the fray without fear, thanks to the power of the divine … and the heavy armor you wear.",
+    "equipment_description": "You wear heavy armor and wield a light weapon.",
+    "equipment": {
+      "armor": {
+        "none": false,
+        "light": false,
+        "medium": false,
+        "heavy": true,
+        "shield": false
+      },
+      "weapons": {
+        "bow": false,
+        "ensnaring_weapon": false,
+        "light": true,
+        "medium": false,
+        "heavy": false,
+        "polearm": false,
+        "unarmed_strikes": false,
+        "whip": false
+      }
+    },
+    "stamina_bonus": 9,
+    "speed_bonus": 1,
+    "stability_bonus": 1,
+    "melee_damage_bonus": {
+      "1st_tier": 1,
+      "2nd_tier": 1,
+      "3rd_tier": 1
+    },
+    "ranged_damage_bonus": {
+      "1st_tier": null,
+      "2nd_tier": null,
+      "3rd_tier": null
+    },
+    "melee_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "ranged_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "disengage_bonus": null,
+    "signature_ability": "Weakening Brand"
+  },
+  {
+    "id": "kit_whirlwind",
+    "type": "kit",
+    "name": "Whirlwind",
+    "description": "The Whirlwind kit makes effective use of whips, granting you mobility, damage, and reach. If you want to be a fast-moving warrior who lashes foes with a chain or whip, then this is the kit for you.",
+    "equipment_description": "You wear no armor and wield a whip.",
+    "equipment": {
+      "armor": {
+        "none": true,
+        "light": false,
+        "medium": false,
+        "heavy": false,
+        "shield": false
+      },
+      "weapons": {
+        "bow": false,
+        "ensnaring_weapon": false,
+        "light": false,
+        "medium": false,
+        "heavy": false,
+        "polearm": false,
+        "unarmed_strikes": false,
+        "whip": true
+      }
+    },
+    "stamina_bonus": null,
+    "speed_bonus": 3,
+    "stability_bonus": null,
+    "melee_damage_bonus": {
+      "1st_tier": 1,
+      "2nd_tier": 1,
+      "3rd_tier": 1
+    },
+    "ranged_damage_bonus": {
+      "1st_tier": null,
+      "2nd_tier": null,
+      "3rd_tier": null
+    },
+    "melee_distance_bonus": {
+      "1st_echelon": 1,
+      "2nd_echelon": 1,
+      "3rd_echelon": 1
+    },
+    "ranged_distance_bonus": {
+      "1st_echelon": null,
+      "2nd_echelon": null,
+      "3rd_echelon": null
+    },
+    "disengage_bonus": 1,
+    "signature_ability": "Extension of My Arm"
+  }
+]

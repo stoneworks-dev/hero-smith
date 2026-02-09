@@ -1,0 +1,1363 @@
+[
+  {
+    "id": "adaptive_second_skin_of_toxins",
+    "type": "leveled_treasure",
+    "name": "Adaptive Second Skin of Toxins",
+    "echelon": null,
+    "description": "This suit is shaped of tough leather and set with thousands of tiny barbs on the inside, all thankfully pain-free to the touch.",
+    "keywords": ["Light Armor", "Magic"],
+    "item_prerequisite": "Five rabid honey badger pelts, the quills of a hedgehog",
+    "project_source": "Texts or lore in Yllryc",
+    "project_roll_characteristics": ["Agility", "Intuition"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "armor",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "+6 Stamina while worn, and immunity to acid and poison damage equal to your highest characteristic score.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "Stamina bonus increases to +12. Additionally, whenever an adjacent creature deals damage to you, they take 3 acid or poison damage (your choice).",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "Stamina bonus increases to +21. Additionally, when an adjacent creature deals damage to you, they take 6 acid or poison damage. You can also use a maneuver to transmute a 2‑cube area of liquid adjacent to you into liquid acid or poison until the end of your next turn. Any creature who enters the area for the first time in a combat round or starts their turn there takes 6 acid or poison damage.",
+      "feature": null
+    },
+    "stat_bonuses": {
+      "stamina": {
+        "stacks_with_other_treasures": false,
+        "level_1": 6,
+        "level_5": 12,
+        "level_9": 21
+      },
+      "immunities": {
+        "acid": {
+          "type": "highest_characteristic",
+          "level_1": true,
+          "level_5": true,
+          "level_9": true
+        },
+        "poison": {
+          "type": "highest_characteristic",
+          "level_1": true,
+          "level_5": true,
+          "level_9": true
+        }
+      }
+    },
+    "enchanted": false,
+    "enchants": []
+  },
+  {
+    "id": "chain_of_the_sea_and_sky",
+    "type": "leveled_treasure",
+    "name": "Chain of the Sea and Sky",
+    "echelon": null,
+    "description": "This set of heavy chain mail is created to allow free movement in extreme environments without sacrificing protection.",
+    "keywords": ["Heavy Armor", "Magic"],
+    "item_prerequisite": "A set of wings from a flying carp, a set of chain mail rusted by seawater",
+    "project_source": "Texts or lore in Zaliac",
+    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "armor",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "+6 Stamina while worn; you automatically swim at full speed while moving, and you can breathe underwater for up to 1 hour. Returning to the surface to breathe air again for any length of time resets this benefit.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "Stamina bonus increases to +12 and you have cold immunity 5. Additionally, while you fall, you can extend your arms (no action) to unfurl a thick membrane between your arms and your body, slowing your fall and allowing you to glide. While gliding, move downward at 1 square per round, and glide up to 6 squares horizontally as a free maneuver once during each of your turns.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "Stamina bonus increases to +21 and you have cold immunity 10. Additionally, whenever your feet are not touching the ground (including floating in water or being in midair), you gain an edge on ability rolls, and any ability targeting you takes a bane.",
+      "feature": null
+    },
+    "stat_bonuses": {
+      "stamina": {
+        "stacks_with_other_treasures": false,
+        "level_1": 6,
+        "level_5": 12,
+        "level_9": 21
+      },
+      "immunities": {
+        "cold": {
+          "type": "flat",
+          "level_1": 0,
+          "level_5": 5,
+          "level_9": 10
+        }
+      }
+    },
+    "enchanted": false,
+    "enchants": []
+  },
+  {
+    "id": "grand_scarab",
+    "type": "leveled_treasure",
+    "name": "Grand Scarab",
+    "echelon": null,
+    "description": "The blue‑purple carapace and wings of a gigantic scarab beetle have been formed into an ornate breastplate.",
+    "keywords": ["Magic", "Medium Armor"],
+    "item_prerequisite": "A giant scarab beetle carapace",
+    "project_source": "Texts or lore in Phaedran",
+    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "armor",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "+6 Stamina while worn and you can fly. If you don’t end your turn on the ground, you fall.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "Stamina bonus increases to +12. You no longer need to end your turn on the ground to avoid falling.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "Stamina bonus increases to +21. Additionally, if you fly any distance before making a strike, that strike gains an edge.",
+      "feature": null
+    },
+    "stat_bonuses": {
+      "stamina": {
+        "stacks_with_other_treasures": false,
+        "level_1": 6,
+        "level_5": 12,
+        "level_9": 21
+      }
+    },
+    "enchanted": false,
+    "enchants": []
+  },
+  {
+    "id": "kings_roar",
+    "type": "leveled_treasure",
+    "name": "King’s Roar",
+    "echelon": null,
+    "description": "A sunmetal kite shield bears the face of a lion on its front, its mouth opening wider over the course of battle.",
+    "keywords": ["Magic", "Shield"],
+    "item_prerequisite": "A ballad of heroism, two ingots of sunmetal",
+    "project_source": "Songs in High Rhyvian",
+    "project_roll_characteristics": ["Reason", "Intuition", "Presence"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "shield",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "+3 Stamina while you wield or carry this shield (stacks with other treasures). Maneuver: cause the shield’s lion face to roar, choosing one adjacent creature or object and pushing the target up to 3 squares.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "Shield’s Stamina bonus increases to +6. When you cause the shield to roar, target one creature or object within 3 squares and push the target up to 4 squares.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "Shield’s Stamina bonus increases to +9. When you cause the shield to roar, target one creature or object within 6 squares; push the target up to 5 squares and the target is slowed until the end of their next turn.",
+      "feature": null
+    },
+    "stat_bonuses": {
+      "stamina": {
+        "stacks_with_other_treasures": true,
+        "level_1": 3,
+        "level_5": 6,
+        "level_9": 9
+      }
+    },
+    "enchanted": false,
+    "enchants": []
+  },
+  {
+    "id": "kuranzoi_prismscale",
+    "type": "leveled_treasure",
+    "name": "Kuran’zoi Prismscale",
+    "echelon": null,
+    "description": "Each scale of this iridescent armor shimmers with the faint image of a frozen moment of time.",
+    "keywords": ["Medium Armor", "Psionic"],
+    "item_prerequisite": "The eyes of a time raider who died valiantly in battle",
+    "project_source": "Texts or lore in Voll",
+    "project_roll_characteristics": ["Intuition", "Presence"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "armor",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "+6 Stamina while worn. Additionally, whenever a creature within 5 squares deals damage to you, you can use a triggered action to capture a moment of time in the armor, making that creature slowed until the end of their next turn.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "Stamina bonus increases to +12. Additionally, whenever you capture a moment of time in the armor, the triggering creature also takes corruption damage equal to twice your highest characteristic score.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "Stamina bonus increases to +21. Additionally, whenever you capture a moment of time in the armor, you can immediately release it to gain a +3 bonus to speed that lasts until the end of your next turn.",
+      "feature": null
+    },
+    "stat_bonuses": {
+      "stamina": {
+        "stacks_with_other_treasures": false,
+        "level_1": 6,
+        "level_5": 12,
+        "level_9": 21
+      }
+    },
+    "enchanted": false,
+    "enchants": []
+  },
+  {
+    "id": "paper_trappings",
+    "type": "leveled_treasure",
+    "name": "Paper Trappings",
+    "echelon": null,
+    "description": "This delicate robe is made from thousands of pages torn from books, intricately folded together without a single thread to bind them.",
+    "keywords": ["Light Armor", "Magic"],
+    "item_prerequisite": "Ten pages from each of a hundred different books",
+    "project_source": "Texts or lore in Anjali",
+    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "armor",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "+6 Stamina while worn. Additionally, use a main action to fold into a paper‑thin form, including your gear. This lasts 1 minute, letting you slip through any opening at least 1 inch wide. When you return to your three‑dimensional form, you are dazed for 1 minute. If you return to true form in a space too small for you, you are violently expelled into the nearest open space of your choice and take 3d6 damage.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "Stamina bonus increases to +12. When you return to true form, you are dazed only until the end of your next turn. Additionally, while you are paper thin, you can use a maneuver to wrap yourself around an adjacent target of the same size or smaller than you, automatically grabbing them.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "Stamina bonus increases to +21; you are no longer dazed when you return to true form. Additionally, while you have a target grabbed when you are paper thin, you can use a maneuver to constrict the target, dealing 10 damage. A creature damaged this way takes a bane when using the Escape Grab maneuver against you and when making strikes against you.",
+      "feature": null
+    },
+    "stat_bonuses": {
+      "stamina": {
+        "stacks_with_other_treasures": false,
+        "level_1": 6,
+        "level_5": 12,
+        "level_9": 21
+      }
+    },
+    "enchanted": false,
+    "enchants": []
+  },
+  {
+    "id": "shrouded_memory",
+    "type": "leveled_treasure",
+    "name": "Shrouded Memory",
+    "echelon": null,
+    "description": "This midnight‑dark leather coat is embossed with fractal patterns that appear different each time they are observed.",
+    "keywords": ["Light Armor", "Psionic"],
+    "item_prerequisite": "The will of a deceased person with no heirs",
+    "project_source": "Texts or lore in Khelt",
+    "project_roll_characteristics": ["Agility", "Presence"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "armor",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "+6 Stamina while worn. Additionally, you gain an edge on tests made to lie about or conceal your identity.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "Stamina bonus increases to +12. Additionally, whenever you take damage, you can use a triggered action to teleport up to 5 squares. If you do, create an illusion of you dying in your previous space, which fades at the end of your next turn.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "Stamina bonus increases to +21. Whenever you use the armor’s triggered action to teleport, you can teleport up to a number of squares equal to the damage taken (minimum 5). Additionally, if a creature dealt you the triggering damage, you become invisible to that creature until the end of your next turn.",
+      "feature": null
+    },
+    "stat_bonuses": {
+      "stamina": {
+        "stacks_with_other_treasures": false,
+        "level_1": 6,
+        "level_5": 12,
+        "level_9": 21
+      }
+    },
+    "enchanted": false,
+    "enchants": []
+  },
+  {
+    "id": "spiny_turtle",
+    "type": "leveled_treasure",
+    "name": "Spiny Turtle",
+    "echelon": null,
+    "description": "This heavy mechanized plate armor of gnomish make is designed to create its own cover on the battlefield.",
+    "keywords": ["Heavy Armor", "Magic"],
+    "item_prerequisite": "Ten steel gears from an ancient construct",
+    "project_source": "Texts or lore in Variac",
+    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "armor",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "+6 Stamina while worn. Additionally, as a main action you can expand the armor on your back to create a 4‑square wall of metal behind you. The wall is an object that retracts if you move or if it takes 15 damage. It then requires a main action to recalibrate before it can be deployed again.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "Stamina bonus increases to +12, and the wall’s damage threshold increases to 25. Additionally, while the wall is expanded, spikes extrude from it, and any creature who deals damage to the wall while adjacent to it takes 3 damage.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "Stamina bonus increases to +21. Additionally, spikes cover the armor, and any adjacent creature who deals damage to you takes 6 damage.",
+      "feature": null
+    },
+    "stat_bonuses": {
+      "stamina": {
+        "stacks_with_other_treasures": false,
+        "level_1": 6,
+        "level_5": 12,
+        "level_9": 21
+      }
+    },
+    "enchanted": false,
+    "enchants": []
+  },
+  {
+    "id": "star_hunter",
+    "type": "leveled_treasure",
+    "name": "Star‑Hunter",
+    "echelon": null,
+    "description": "Shimmering light flows like liquid along this suit of crystalline armor.",
+    "keywords": ["Heavy Armor", "Psionic"],
+    "item_prerequisite": "A large vessel of astral ice, a pint of supercooled mercury",
+    "project_source": "Texts or lore in Voll",
+    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "armor",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "While worn, you gain +6 Stamina, but any magic ability gains an edge when targeting you. You instinctively know the location of any creature with concealment within 2 squares. You can also turn invisible as a maneuver. Your invisibility ends if you take damage or use an ability, or at the end of your next turn.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "Stamina bonus increases to +12; you instinctively know the location of any creature with concealment within 5 squares; your invisibility no longer ends at the end of your next turn; and you have psychic immunity 5.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "Stamina bonus increases to +21; you instinctively know the location of any creature with concealment within 10 squares; your invisibility no longer ends when you use an ability; and you have psychic immunity 10.",
+      "feature": null
+    },
+    "stat_bonuses": {
+      "stamina": {
+        "stacks_with_other_treasures": false,
+        "level_1": 6,
+        "level_5": 12,
+        "level_9": 21
+      },
+      "immunities": {
+        "psychic": {
+          "type": "flat",
+          "level_1": 0,
+          "level_5": 5,
+          "level_9": 10
+        }
+      }
+    },
+    "enchanted": false,
+    "enchants": []
+  },
+  {
+    "id": "telekinetic_bulwark",
+    "type": "leveled_treasure",
+    "name": "Telekinetic Bulwark",
+    "echelon": null,
+    "description": "An unseen force seems to draw this steel shield toward nearby creatures.",
+    "keywords": ["Psionic", "Shield"],
+    "item_prerequisite": "Three ingots of steel, six crystals that resonate with psionic power",
+    "project_source": "Texts or lore in Variac",
+    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "armor",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "+2 Stamina while you wield or carry this shield (stacks with other treasures). Once per turn when an adjacent enemy uses an ability, you can use a free triggered action to use the Grab maneuver against that enemy. You can have any number of enemies grabbed in this way.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "Shield’s Stamina bonus increases to +5. You can use the shield’s free triggered action against any enemy within 10 squares who uses an ability. Additionally, any enemy who uses the Escape Grab maneuver while grabbed this way takes a bane on the test.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "Shield’s Stamina bonus increases to +9. Additionally, you can use a maneuver to pull any number of targets the shield has grabbed up to 5 squares.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": [],
+    "stat_bonuses": {
+      "stamina": {
+        "stacks_with_other_treasures": true,
+        "level_1": 2,
+        "level_5": 5,
+        "level_9": 9
+      }
+    }
+  },
+  {
+    "id": "abjurers_bastion",
+    "type": "leveled_treasure",
+    "name": "Abjurer’s Bastion",
+    "echelon": null,
+    "description": "An ornate ring is set with a large diamond that swirls with blue light, and whose inner surface is etched with protective runes.",
+    "keywords": ["Implement", "Magic"],
+    "item_prerequisite": "A diamond ring",
+    "project_source": "Texts or lore in Caelian",
+    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "implement",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "While you wield this implement, your magic or psionic abilities that deal rolled damage gain a +1 damage bonus. Additionally, whenever you deal rolled damage to a creature using a magic or psionic ability, you gain temporary Stamina equal to your highest characteristic score.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The implement’s damage bonus increases to +2. Additionally, whenever you deal rolled damage using a magic or psionic ability, you can use a maneuver to create an immobile field of protection that is a 1 cube, around yourself or around an ally within 5 squares. While in the area, you or the chosen ally has damage immunity 5. The field disappears at the start of your next turn.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The implement’s damage bonus increases to +3. Whenever you deal rolled damage to a creature using a magic or psionic ability, you and each ally within 5 squares of you gains temporary Stamina equal to your highest characteristic score. Additionally, the size of your field of protection increases to a 3 cube, and it can be placed anywhere within 10 squares of you. You and each ally in the area gains its benefits.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": []
+  },
+  {
+    "id": "brittlebreaker",
+    "type": "leveled_treasure",
+    "name": "Brittlebreaker",
+    "echelon": null,
+    "description": "This crystal wand thrums with power, yet is so thin and brittle that it feels as if even a slight squeeze will shatter it.",
+    "keywords": ["Implement", "Psionic", "Wand"],
+    "item_prerequisite": "A handful of shattered quartz",
+    "project_source": "Texts or lore in Caelian",
+    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "implement",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "While you wield this implement, your magic or psionic abilities that deal rolled damage deal an extra 2 psychic damage. Additionally, you have damage weakness 3, and you gain an edge on magic or psionic abilities if you aren’t at full Stamina, or a double edge if you are winded.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The implement’s extra psychic damage increases to 3. Additionally, once per round when you take more than 20 damage from a single source, the implement’s extra damage is doubled until the end of your next turn.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The implement’s extra psychic damage increases to 4. Additionally, whenever you use a damage‑dealing magic or psionic ability, you can take half as much total damage as is dealt to all targets to immediately use the same ability again. The damage you take can’t be reduced in any way. You can’t use this benefit more than once a turn.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": []
+  },
+  {
+    "id": "ether_fueled_vessel",
+    "type": "leveled_treasure",
+    "name": "Ether‑Fueled Vessel",
+    "echelon": null,
+    "description": "This bronze bottle has been shaped into the form of a ghostly figure.",
+    "keywords": ["Implement", "Psionic"],
+    "item_prerequisite": "Incense distilled from the essence of ether",
+    "project_source": "Texts or lore in Caelian",
+    "project_roll_characteristics": ["Reason", "Intuition"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "implement",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "While you wield this implement, your magic or psionic abilities that deal rolled damage gain a +1 damage bonus. Additionally, whenever you deal rolled damage to a creature using a magic or psionic ability, they become insubstantial to you until the end of their next turn, allowing you to pass through them freely. While insubstantial, a creature can’t make opportunity attacks against you.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The implement’s damage bonus increases to +2. Additionally, when you move through a creature who is insubstantial to you, you can use a free triggered action to deal damage to them equal to your highest characteristic score. If you do, the insubstantial effect ends immediately after you pass through the creature and into an adjacent space outside them.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The implement’s damage bonus increases to +3. Additionally, any creature who is insubstantial to you and isn’t a leader or solo creature also can’t make opportunity attacks against your allies while they remain insubstantial.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": []
+  },
+  {
+    "id": "chaldorb",
+    "type": "leveled_treasure",
+    "name": "Chaldorb",
+    "echelon": null,
+    "description": "A perfectly clear sphere is embossed with fine ivory and crystal that is frigid to the touch.",
+    "keywords": ["Implement", "Magic"],
+    "item_prerequisite": "An ounce of primordial ice, an ounce of mammoth‑ivory shards",
+    "project_source": "Texts or lore in Zaliac",
+    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "implement",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "While you wield this implement, your magic or psionic abilities that deal rolled damage gain a +1 damage bonus. Additionally, if you make a magic strike, the strike must deal cold damage instead of its usual damage.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The implement’s damage bonus increases to +2. Additionally, whenever you use a magic or psionic ability, a whirlwind of sleet and ice whips around you, dealing 3 cold damage to each adjacent enemy.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The implement’s damage bonus increases to +3, and the whirlwind you create when you use a magic or psionic ability deals 6 cold damage to each enemy within 2 squares of you. Additionally, the whirlwind creates a 2‑square aura around you that lasts until the end of your next turn. Each enemy who enters the area for the first time in a combat round or starts their turn there takes 6 cold damage.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": []
+  },
+  {
+    "id": "foesense_lenses",
+    "type": "leveled_treasure",
+    "name": "Foesense Lenses",
+    "echelon": null,
+    "description": "These spectacles feature pink‑tinted glass lenses held in a silver frame.",
+    "keywords": ["Implement", "Psionic"],
+    "item_prerequisite": "Two clear lenses carved from volcanic glass",
+    "project_source": "Texts or lore in Caelian",
+    "project_roll_characteristics": ["Reason", "Intuition"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "implement",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "While you wield this implement, your magic or psionic abilities that deal rolled damage gain a +1 damage bonus. Additionally, whenever you deal rolled damage to a creature using a magic or psionic ability, you can use that creature’s senses until the end of your next turn, allowing you to experience all they observe and to use your abilities as if you were in their space. You also benefit from your own senses at the same time.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The implement’s damage bonus increases to +2. Additionally, whenever you deal 20 or more rolled damage with a magic or psionic ability to a creature whose senses you are using, that creature is weakened until the end of their next turn.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The implement’s damage bonus increases to +3. Additionally, whenever you deal 30 or more rolled damage with a magic or psionic ability to a creature whose senses you are using, that creature is dazed until the end of their next turn.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": []
+  },
+  {
+    "id": "words_become_wonders_at_next_breath",
+    "type": "leveled_treasure",
+    "name": "Words Become Wonders at Next Breath",
+    "echelon": null,
+    "description": "This ornate high elf tome seems to sigh each time it is opened.",
+    "keywords": ["Implement", "Magic"],
+    "item_prerequisite": "Written permission from a high elf magistrate",
+    "project_source": "Texts or lore in Hyrallic",
+    "project_roll_characteristics": ["Reason"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "implement",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "You can open or close the tome as a maneuver while speaking or thinking its full name. While the tome is open, it floats in an adjacent space and flips to specific pages at your command, you gain an edge on Reason tests made to recall lore, and you gain a +3 bonus to distance for your ranged magic or psionic abilities.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "While the tome is open, the bonus to distance for your ranged magic or psionic abilities increases to +5. Additionally, when you or a creature you have line of effect to uses a magic or psionic ability, you can use a triggered action to grant a +3 bonus to the power roll.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "While the tome is open, you automatically obtain a tier 3 outcome on Reason tests made to recall lore, and when you use a heroic ability, its Heroic Resource cost is reduced by 1 (to a minimum of 1).",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": []
+  },
+  {
+    "id": "authoritys_end",
+    "type": "leveled_treasure",
+    "name": "Authority’s End",
+    "echelon": null,
+    "description": "This long, sinuous chain is composed entirely of broken links held together by unseen power.",
+    "keywords": ["Psionic", "Whip"],
+    "item_prerequisite": "A lash used to punish a mutineer",
+    "project_source": "Texts or lore in Khelt",
+    "project_roll_characteristics": ["Reason", "Intuition", "Presence"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "weapon",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "Any weapon ability that deals rolled damage using this weapon gains a +1 damage bonus. Whenever you damage a creature with the weapon, you can immediately use a maneuver to end one effect imposed by that creature on you or another creature within 5 squares of you.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The weapon’s damage bonus increases to +2. Additionally, you and each ally within 2 squares of you gains a +1 bonus to saving throws.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The weapon’s damage bonus increases to +3. Additionally, you no longer need to use a maneuver to end one effect when you damage a creature with the weapon. The weapon also refuses to vie for control of your psyche, and no longer counts against the limit of leveled treasures you can carry safely.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": []
+  },
+  {
+    "id": "blade_of_quintessence",
+    "type": "leveled_treasure",
+    "name": "Blade of Quintessence",
+    "echelon": null,
+    "description": "This crystal blade houses a stormy vortex of fire, ice, and lightning.",
+    "keywords": ["Magic", "Medium Weapon"],
+    "item_prerequisite": "A ruby hardened in the fires of the City of Brass, a sapphire that has been struck by lightning",
+    "project_source": "Texts or lore in Zaliac",
+    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "weapon",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "Any weapon ability that deals rolled damage using this weapon gains a +1 damage bonus. Additionally, you can change the damage type of such abilities to cold, fire, lightning, or sonic.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The weapon’s damage bonus increases to +2. Additionally, the weapon can be used with ranged weapon abilities, and returns to you when a ranged ability is resolved. Ranged abilities used with the weapon increase their distance by 3, and must deal cold, fire, lightning, or sonic damage (chosen when you use the ability).",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The weapon’s damage bonus increases to +3. Additionally, while you wield or carry the weapon, you have immunity 10 to cold, fire, lightning, and sonic damage.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": [],
+    "stat_bonuses": {
+      "immunities": {
+        "cold": {
+          "type": "flat",
+          "level_1": 0,
+          "level_5": 0,
+          "level_9": 10
+        },
+        "fire": {
+          "type": "flat",
+          "level_1": 0,
+          "level_5": 0,
+          "level_9": 10
+        },
+        "lightning": {
+          "type": "flat",
+          "level_1": 0,
+          "level_5": 0,
+          "level_9": 10
+        },
+        "sonic": {
+          "type": "flat",
+          "level_1": 0,
+          "level_5": 0,
+          "level_9": 10
+        }
+      }
+    }
+  },
+  {
+    "id": "blade_of_the_luxurious_fop",
+    "type": "leveled_treasure",
+    "name": "Blade of the Luxurious Fop",
+    "echelon": null,
+    "description": "Despite sporting an outrageously ornate hilt adorned with far too many jewels, this blade remains perfectly balanced.",
+    "keywords": ["Light Weapon", "Magic"],
+    "item_prerequisite": "A personal blessing from the greatest duelist in the land, six fake and extremely shiny gemstones",
+    "project_source": "Texts or lore in Caelian",
+    "project_roll_characteristics": ["Agility", "Reason", "Intuition"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "weapon",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "Any weapon ability that deals rolled damage using this weapon gains a +1 damage bonus. Additionally, whenever you deal rolled damage with this weapon, you can immediately shift 1 square. As well, while you wield or carry the weapon and are present in a negotiation, if an NPC in the negotiation has the greed, legacy, power, or revelry motivation, their starting interest increases by 1 (to a maximum of 5).",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The weapon’s damage bonus increases to +2. Additionally, when you make an opportunity attack against an enemy of your size or smaller, you can use fancy footwork to knock them prone. You also earn 1 Renown.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The weapon’s damage bonus increases to +3. Additionally, you have a double edge on any test you make using a skill you have from the interpersonal skill group.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": []
+  },
+  {
+    "id": "displacer",
+    "type": "leveled_treasure",
+    "name": "Displacer",
+    "echelon": null,
+    "description": "This crystal battleaxe seems to pull at the hands that wield it, as if anxious to leap across the battlefield.",
+    "keywords": ["Medium Weapon", "Psionic"],
+    "item_prerequisite": "An ancient bronze gear covered in indecipherable runes",
+    "project_source": "Texts in Zaliac",
+    "project_roll_characteristics": ["Might", "Intuition"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "weapon",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "Any weapon ability that deals rolled damage using this weapon deals an extra 1 psychic damage. Additionally, whenever you deal rolled damage to a creature, you can use a maneuver to teleport you and that creature, letting you trade places provided you both fit into each other’s spaces.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The weapon’s extra psychic damage increases to 2. Additionally, whenever you deal rolled damage to a creature, you can use a maneuver to trade places with that creature or any creature within 4 squares of them, provided you both fit into each other’s spaces.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The weapon’s extra psychic damage increases to 3. Additionally, whenever you deal rolled damage to a creature, you can use a maneuver to trade places with that creature or any creature within 8 squares of them, provided you both fit into each other’s spaces. Additionally, you can cause the creature you traded places with to be weakened until the end of their next turn, or you can spend a Recovery.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": []
+  },
+  {
+    "id": "executioners_blade",
+    "type": "leveled_treasure",
+    "name": "Executioner’s Blade",
+    "echelon": null,
+    "description": "This blade exudes a faint hum that grows louder as its quarry weakens.",
+    "keywords": ["Heavy Weapon", "Psionic"],
+    "item_prerequisite": "The skull of a convicted criminal",
+    "project_source": "Texts or lore in Caelian",
+    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "weapon",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "Any weapon ability that deals rolled damage using this weapon deals an extra 1 psychic damage, or an extra 2 psychic damage if the target is winded. Additionally, the first time in an encounter that you cause an enemy to become winded with an ability using the weapon, you gain 10 temporary Stamina.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The weapon’s extra psychic damage increases to 2, or to 4 if the target is winded. Additionally, whenever you cause an enemy to become winded with an ability using the weapon, you gain 2 surges that you can immediately spend.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The weapon’s extra psychic damage increases to 3, or to 6 if the target is winded. Additionally, you gain an edge on any ability using the weapon against a winded target.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": []
+  },
+  {
+    "id": "icemaker_maul",
+    "type": "leveled_treasure",
+    "name": "Icemaker Maul",
+    "echelon": null,
+    "description": "The head of this iron hammer is cold to the touch and encases whatever it strikes in a thin layer of ice.",
+    "keywords": ["Heavy Weapon", "Magic"],
+    "item_prerequisite": "Eight iron bars cooled in a glacier, the branch of an ancient evergreen",
+    "project_source": "Texts in Zaliac",
+    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "weapon",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "Any weapon ability that deals rolled damage using this weapon deals an extra 1 cold damage. Additionally, you can use a maneuver to create an ice field in a 3 burst. The ground in this area is difficult terrain for enemies, and lasts until the end of the encounter or when you use this ability again.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The weapon’s extra cold damage increases to 2, and the ice field becomes a 4 burst. Additionally, whenever you use a weapon ability using this weapon against one or more enemies in the ice field, you gain 1 surge that you can use immediately.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The weapon’s extra cold damage increases to 3, and the ice field becomes a 5 burst. Additionally, any enemy in the ice field who is reduced to 0 Stamina by an ability using the weapon can be shattered, killing them and dealing 15 cold damage to each enemy within 3 squares of them.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": []
+  },
+  {
+    "id": "knife_of_nine",
+    "type": "leveled_treasure",
+    "name": "Knife of Nine",
+    "echelon": null,
+    "description": "This ivory dagger features nine faintly glowing indentations along the blade.",
+    "keywords": ["Light Weapon", "Psionic"],
+    "item_prerequisite": "Eighteen daggers—nine taken from personal enemies and nine gifted by friends",
+    "project_source": "Texts or lore in Variac",
+    "project_roll_characteristics": ["Reason", "Intuition"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "weapon",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "Any weapon ability that deals rolled damage using this weapon deals an extra 1 psychic damage. This extra damage increases by 1 each time you deal rolled damage using the weapon to the same target during the same encounter (to a maximum of 3).",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "Whenever you reduce a creature to 0 Stamina with an ability using this weapon, one of its indentations glows brighter. When you use a signature ability using the weapon, you can use a triggered action to expend any number of bright‑glowing indentations, with the ability dealing extra psychic damage equal to the number of indentations. The expended indentations then return to a dim glow.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "If you make a weapon strike using this weapon against a target after dropping down on them from a height of 2 squares or more, the attack deals an extra 10 psychic damage. You can distribute all extra psychic damage dealt by the attack between the target and any enemies adjacent to them.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": []
+  },
+  {
+    "id": "lance_of_the_sundered_star",
+    "type": "leveled_treasure",
+    "name": "Lance of the Sundered Star",
+    "echelon": null,
+    "description": "This needlelike lance is cast of shimmering metal and induces a yearning for the skies in those who handle it.",
+    "keywords": ["Magic", "Polearm"],
+    "item_prerequisite": "Night‑blooming flower petals, a starmetal meteorite",
+    "project_source": "Texts or lore in Hyrallic",
+    "project_roll_characteristics": ["Agility", "Presence"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "weapon",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "Any weapon ability that deals rolled damage using this weapon deals an extra 1 holy damage. Additionally, when the weapon is used with a weapon ability that allows you to push a target, you can shift to any square adjacent to the target after the push.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The weapon’s extra holy damage increases to 2. Additionally, whenever you use the Charge main action and use an ability with the Charge keyword, or whenever you use an ability that allows you to shift, you can fly as part of the charge movement or the shift. If you don’t end your flying movement on the ground, you fall.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The weapon’s extra holy damage increases to 3. Additionally, whenever the weapon is used with a weapon ability that allows you to push or slide a target, that forced movement can be vertical.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": []
+  },
+  {
+    "id": "molten_constrictor",
+    "type": "leveled_treasure",
+    "name": "Molten Constrictor",
+    "echelon": null,
+    "description": "This flexible black‑iron net burns with the heat of a volcano.",
+    "keywords": ["Magic", "Net"],
+    "item_prerequisite": "Four iron bars coated in magma slag",
+    "project_source": "Texts or lore in Caelian",
+    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "weapon",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "Any weapon ability that deals rolled damage using this weapon deals an extra 1 fire damage. Additionally, whenever you make a strike using the net and obtain a tier 3 outcome, you can automatically grab the target. A target grabbed in this way takes a bane when using the Escape Grab maneuver.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The weapon’s extra fire damage increases to 2. Additionally, a target grabbed by a strike using the net takes 8 fire damage each time they attempt to escape using the Escape Grab maneuver.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The weapon’s extra fire damage increases to 3, and the damage taken by a grabbed creature attempting to escape increases to 15. Additionally, you can use a maneuver to make a free strike with another weapon against a target grabbed using the net.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": []
+  },
+  {
+    "id": "onerous_bow",
+    "type": "leveled_treasure",
+    "name": "Onerous Bow",
+    "echelon": null,
+    "description": "This mechanized bow is set with magical reservoirs that carry the faint tang of toxins.",
+    "keywords": ["Bow", "Magic"],
+    "item_prerequisite": "A venom sac from a giant spider, one valok gyroscope",
+    "project_source": "Texts or lore in Caelian and Variac",
+    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "weapon",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "Any weapon ability that deals rolled damage using this weapon deals an extra 1 poison damage. Additionally, any signature ability using the weapon that obtains a tier 3 outcome also makes the target weakened until the end of their next turn.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The weapon’s extra poison damage increases to 2. A signature ability made using the weapon that obtains a tier 3 outcome also makes the target weakened and slowed until the end of their next turn.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The weapon’s extra poison damage increases to 3. Additionally, if you use an ability using the weapon that targets one creature and you don’t have a bane or double bane on the ability, you can take a bane. Doing so lets you target another creature adjacent to the original target. Alternatively, you can have a double bane to target two creatures adjacent to the original target.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": []
+  },
+  {
+    "id": "steeltongue",
+    "type": "leveled_treasure",
+    "name": "Steeltongue",
+    "echelon": null,
+    "description": "This sinuous whip reflects all light off its plated steel surfaces.",
+    "keywords": ["Magic", "Whip"],
+    "item_prerequisite": "One hundred steel arrowheads stained with blood",
+    "project_source": "Texts or lore in Caelian and Kaliak",
+    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "weapon",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "You gain a +1 bonus to melee distance with weapon abilities using this weapon. Additionally, any damage‑dealing weapon ability using the weapon against a target who has a <AVERAGE> also leaves that target bleeding (save ends).",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The weapon’s bonus to melee distance increases to +2. Additionally, any weapon ability that deals rolled damage using the weapon gains a +3 damage bonus against any target who is bleeding.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The weapon’s bonus to melee distance increases to +3. Additionally, if you use a signature ability using the weapon that targets one or more bleeding creatures, you can use the same ability again immediately as a maneuver.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": []
+  },
+  {
+    "id": "third_eye_seeker",
+    "type": "leveled_treasure",
+    "name": "Third Eye Seeker",
+    "echelon": null,
+    "description": "The shifting patterns on this bow’s crystalline grip resemble dozens of blinking eyes.",
+    "keywords": ["Bow", "Psionic"],
+    "item_prerequisite": "Heart strings of a tapir, a pound of tiger’s eye gemstones",
+    "project_source": "Texts or lore in Variac",
+    "project_roll_characteristics": ["Reason", "Intuition"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "weapon",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "Any weapon ability that deals rolled damage using this weapon deals an extra 1 psychic damage. Additionally, any damage‑dealing weapon ability using the weapon that achieves a tier 3 outcome also leaves the target dazed until the end of their next turn.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The weapon’s extra psychic damage increases to 2. Additionally, whenever a creature within distance of your ranged weapon free strike uses a triggered action, you can use a triggered action after their triggered action resolves to make a ranged weapon free strike using this weapon against the creature.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The weapon’s extra psychic damage increases to 3. Additionally, you have a double edge on weapon abilities that use the weapon against creatures who have used a psionic ability since the end of your last turn.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": []
+  },
+  {
+    "id": "thunderhead_bident",
+    "type": "leveled_treasure",
+    "name": "Thunderhead Bident",
+    "echelon": null,
+    "description": "This bident is made from two pieces of moon metal twisted together, and hums like a tuning fork.",
+    "keywords": ["Magic", "Medium Weapon"],
+    "item_prerequisite": "A jar of captured thunder, two ingots of moon metal",
+    "project_source": "Texts or lore in Zaliac",
+    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "weapon",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "Any weapon ability that deals rolled damage using this weapon deals an extra 1 sonic damage. Additionally, when the weapon is used with any ability that pushes a target, you gain a +1 bonus to the forced movement distance. If the weapon is used with a damage‑dealing ability that doesn’t impose forced movement, you can push the target 1 square.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The weapon’s extra sonic damage increases to 2, and the additional distance or distance of a push for abilities using the weapon increases to 2 squares. Additionally, the weapon can be used with ranged weapon abilities, and gains power the farther it is hurled. For each 2 squares the weapon travels to the target of a ranged strike, the strike deals an extra 1 sonic damage.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The weapon’s extra sonic damage increases to 3, and it deals an extra 1 sonic damage for each square it travels as part of a ranged strike. Additionally, whenever you make a weapon strike using this weapon, each enemy adjacent to the target takes 6 sonic damage.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": []
+  },
+  {
+    "id": "wetwork",
+    "type": "leveled_treasure",
+    "name": "Wetwork",
+    "echelon": null,
+    "description": "When first held, this naginata whispers the names of its past victims.",
+    "keywords": ["Polearm", "Psionic"],
+    "item_prerequisite": "A folded metal blade infused with blood",
+    "project_source": "Texts or lore in Higaran",
+    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "weapon",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "Any weapon ability that deals rolled damage using this weapon deals an extra 1 psychic damage. Additionally, if you reduce a creature to 0 Stamina using the weapon, you can immediately use a maneuver to make a melee free strike.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The weapon’s extra psychic damage increases to 2. Additionally, if you reduce a creature to 0 Stamina using the weapon, you can use a maneuver to make a melee free strike and can move up to 2 squares before or after the strike.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The weapon’s extra psychic damage increases to 3. Additionally, if you reduce a creature to 0 Stamina using the weapon, you can use a maneuver to move up to your speed and make either a signature ability strike or a melee free strike.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": []
+  },
+  {
+    "id": "thief_of_joy",
+    "type": "leveled_treasure",
+    "name": "Thief of Joy",
+    "echelon": null,
+    "description": "This burnished copper torque thrums with a sense of judgment.",
+    "keywords": ["Neck", "Psionic"],
+    "item_prerequisite": "A pound of feathers, a pound of bricks from the Seven Cities of Hell",
+    "project_source": "Texts or lore in Anjali",
+    "project_roll_characteristics": ["Might", "Reason", "Presence"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "other",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "While you wear this torque, you gain a bonus to Stamina equal to twice your highest characteristic score. Additionally, you can use a maneuver to choose a creature in your line of effect and learn their level. If their level is higher than yours, the torque grants you envy. If their level is equal to or lower than yours, the torque grants you disdain. You can have both envy and disdain from different creatures, but not more than one instance of either. Whenever a creature within 10 squares of you deals damage to another creature, you can use a triggered action to expend your envy or disdain. If you expend envy, you deal damage equal to the triggering damage to a creature adjacent to you. If you expend disdain, you reduce the triggering damage by half. At the end of the encounter, you lose any envy or disdain granted by the torque.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The torque’s bonus to Stamina increases to three times your highest characteristic score. Additionally, when you use the torque’s maneuver and the target creature is the same level as you, you gain your choice of envy or disdain.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The torque’s bonus to Stamina increases to five times your highest characteristic score. Additionally, you can have multiple instances of envy and of disdain, with no limit on either.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": [],
+    "stat_bonuses": {
+      "stamina": {
+        "stacks_with_other_treasures": false,
+        "type": "highest_characteristic_multiplier",
+        "level_1": 2,
+        "level_5": 3,
+        "level_9": 5
+      }
+    }
+  },
+  {
+    "id": "bloodbound_band",
+    "type": "leveled_treasure",
+    "name": "Bloodbound Band",
+    "echelon": null,
+    "description": "This ring appears to be traced by dried blood, which returns each time it is rubbed away.",
+    "keywords": ["Magic", "Ring"],
+    "item_prerequisite": "A pair of obituaries that each mention the subject of the other",
+    "project_source": "Texts or lore in Caelian",
+    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "other",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "While you wear this ring, you gain a +6 bonus to Stamina. Additionally, during a respite, you can touch the ring to any number of other Bloodbound Bands worn by willing creatures to form a bond among all of you. Creatures related by blood can’t form bonds in this way. Bonded creatures can each use the highest recovery value of any bonded creature in place of their own, and can spend each other’s Recoveries as if they were their own. Whenever any other bonded creature takes damage, each bonded creature takes 1 damage that can’t be reduced in any way. Your bond ends if you remove the ring, use it to bond with one or more other creatures, or die, but other rings continue to be bonded to each other.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The ring’s bonus to Stamina increases to +12. Additionally, you have damage immunity 2.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The ring’s bonus to Stamina increases to +21. Additionally, if a creature bonded with you dies, you can choose to die in their place. Your sacrifice twists fate to remove the creature from danger, and they regain Stamina equal to their winded value. Your ring then teleports into their possession and ceases to be magic.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": [],
+    "stat_bonuses": {
+      "stamina": {
+        "stacks_with_other_treasures": false,
+        "level_1": 6,
+        "level_5": 12,
+        "level_9": 21
+      },
+      "immunities": {
+        "damage": {
+          "type": "flat",
+          "level_1": 0,
+          "level_5": 2,
+          "level_9": 2
+        }
+      }
+    }
+  },
+  {
+    "id": "bloody_hand_wraps",
+    "type": "leveled_treasure",
+    "name": "Bloody Hand Wraps",
+    "echelon": null,
+    "description": "These rough hand wraps are stained with blood that never comes clean.",
+    "keywords": ["Hands", "Psionic"],
+    "item_prerequisite": "One cotton bolt soaked in the blood of six adventurers",
+    "project_source": "Texts or lore in Caelian",
+    "project_roll_characteristics": ["Might", "Agility", "Intuition"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "other",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "While you wear these hand wraps, any weapon ability that deals rolled damage using your unarmed strikes gains a +1 damage bonus. Additionally, once per turn, you can take 5 damage that can’t be reduced in any way to make a melee free strike (no action required).",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The damage bonus granted by the hand wraps increases to +2. Additionally, once per turn, you can take 10 damage that can’t be reduced in any way to use a signature ability (no action required). On your turn, you can use the wraps’ melee free strike option or Grab maneuver option, but only one.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The damage bonus granted by the hand wraps increases to +3. Additionally, once per turn, you can take 15 damage that can’t be reduced in any way to use a signature ability (no action required). On your turn, you can use the wraps’ signature ability option, melee free strike option, or Grab maneuver option, but only one.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": []
+  },
+  {
+    "id": "lightning_treads",
+    "type": "leveled_treasure",
+    "name": "Lightning Treads",
+    "echelon": null,
+    "description": "Sparks strike from these boots whenever they touch the ground, increasing in number as the wearer gathers speed.",
+    "keywords": ["Feet", "Magic"],
+    "item_prerequisite": "One jar of lightning",
+    "project_source": "Texts or lore in Yllryc",
+    "project_roll_characteristics": ["Agility", "Reason", "Intuition"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "other",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "While you wear these boots, any weapon ability that deals rolled damage using your unarmed strikes deals an extra 1 lightning damage. Additionally, you gain a +2 bonus to speed.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The extra lightning damage granted by the treads increases to 2. Additionally, for each square you move on your turn before you use a weapon ability that deals rolled damage using your unarmed strikes, this extra damage increases by 1 (to a maximum of 4).",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The extra lightning damage granted by the treads increases to 3, and your movement can increase that extra damage to a maximum of 6. Additionally, you can use a maneuver to perform a flying lightning kick on one adjacent creature. That target is pushed up to 5 squares, and you can move to any square adjacent to the target after the push.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": [],
+    "stat_bonuses": {
+      "speed": {
+        "stacks_with_other_treasures": true,
+        "level_1": 2,
+        "level_5": 2,
+        "level_9": 2
+      }
+    }
+  },
+  {
+    "id": "revengers_wrap",
+    "type": "leveled_treasure",
+    "name": "Revenger’s Wrap",
+    "echelon": null,
+    "description": "When first handled, this tattered cloak fills the mind with thoughts of revenge.",
+    "keywords": ["Neck", "Magic"],
+    "item_prerequisite": "A cloak worn by a murdered monarch",
+    "project_source": "Texts or lore in Caelian",
+    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "leveled_type": "other",
+    "effect": {
+      "effect_description": "See level benefits.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "While you wear this cloak, any creature who damages you is marked for revenge until the end of your next turn or until another creature damages you. Any strike you make against a creature marked for revenge deals extra damage equal to your highest characteristic score, and whenever you damage a creature marked for revenge, they are also bleeding until the end of their next turn.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "Each creature who damages you is marked for revenge until the end of your next turn. Whenever you damage a creature marked for revenge, they are also bleeding (save ends).",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "When you have three or more creatures marked for revenge and you use an ability that targets only one creature, you target all creatures marked for revenge, regardless of their distance from you and even if you don’t have line of effect to them.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": []
+  }
+]

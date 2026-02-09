@@ -1,0 +1,18 @@
+[
+  {
+    "id": "culture_organisation_communal",
+    "type": "culture_organisation",
+    "name": "Communal",
+    "description": "A communal culture is a place where all members of the culture are considered equal.",
+    "skillGroups": ["crafting", "exploration"],
+    "skillDescription": "One skill from the crafting or exploration skill groups"
+  },
+  {
+    "id": "culture_organisation_bureaucratic",
+    "type": "culture_organisation",
+    "name": "Bureaucratic",
+    "description": "Bureaucratic cultures are steeped in official leadership and formally recorded laws.",
+    "skillGroups": ["interpersonal", "intrigue"],
+    "skillDescription": "One skill from the interpersonal or intrigue skill groups"
+  }
+]

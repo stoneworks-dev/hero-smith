@@ -1,0 +1,109 @@
+{
+  "amount_presets": [
+    { "key": "victories", "label": "+X" },
+    { "key": "plus_1", "label": "+1" },
+    { "key": "plus_2", "label": "+2" },
+    { "key": "plus_3", "label": "+3" },
+    { "key": "plus_4", "label": "+4" },
+    { "key": "plus_5", "label": "+5" },
+    { "key": "plus_1d3", "label": "+1d3" },
+    { "key": "plus_1d3+1", "label": "+1d3+1" },
+    { "key": "plus_1d3+2", "label": "+1d3+2" },
+    { "key": "pray_1d3", "label": "pray", "values": [1, 1, 2] }
+  ],
+
+  "heroic_resources": [
+    {
+      "class_key": "censor",
+      "resource_key": "wrath",
+      "generation_options": ["victories", "plus_1", "plus_2"],
+      "generation_increase_at_levels": [
+        { "level": 7, "increase": "plus_3" },
+        { "level": 10, "increase": "plus_4", "remove": "plus_3" }
+      ]
+    },
+    {
+      "class_key": "conduit",
+      "resource_key": "piety",
+      "generation_options": [
+        "victories",
+        "plus_1",
+        "plus_2",
+        "plus_1d3",
+        "pray_1d3"
+      ],
+      "generation_increase_at_levels": [
+        { "level": 4, "increase": "plus_3" },
+        { "level": 7, "increase": "plus_1d3+1" },
+        { "level": 10, "increase": "plus_1d3+2" }
+      ]
+    },
+    {
+      "class_key": "elementalist",
+      "resource_key": "essence",
+      "generation_options": ["victories", "plus_1", "plus_2"],
+      "generation_increase_at_levels": [
+        { "level": 7, "increase": "plus_3" },
+        { "level": 10, "increase": "plus_4" }
+      ]
+    },
+    {
+      "class_key": "fury",
+      "resource_key": "ferocity",
+      "generation_options": ["victories", "plus_1", "plus_1d3"],
+      "generation_increase_at_levels": [
+        { "level": 4, "increase": "plus_2" },
+        { "level": 7, "increase": "plus_1d3+1" },
+        { "level": 10, "increase": "plus_3", "remove": "plus_2" }
+      ]
+    },
+    {
+      "class_key": "null",
+      "resource_key": "discipline",
+      "generation_options": ["victories", "plus_1", "plus_2"],
+      "generation_increase_at_levels": [
+        { "level": 7, "increase": "plus_3" },
+        { "level": 10, "increase": "plus_4", "remove": "plus_3" }
+      ]
+    },
+    {
+      "class_key": "shadow",
+      "resource_key": "insight",
+      "generation_options": ["victories", "plus_1", "plus_1d3"],
+      "generation_increase_at_levels": [
+        { "level": 4, "increase": "plus_2" },
+        { "level": 7, "increase": "plus_1d3+1", "remove": "plus_1d3" },
+        { "level": 10, "increase": "plus_3", "remove": "plus_2" }
+      ]
+    },
+    {
+      "class_key": "tactician",
+      "resource_key": "focus",
+      "generation_options": ["victories", "plus_1", "plus_2"],
+      "generation_increase_at_levels": [
+        { "level": 7, "increase": "plus_3" },
+        { "level": 10, "increase": "plus_4", "remove": "plus_3" }
+      ]
+    },
+    {
+      "class_key": "talent",
+      "resource_key": "clarity",
+      "generation_options": ["victories", "plus_1", "plus_1d3"],
+      "generation_increase_at_levels": [
+        { "level": 4, "increase": "plus_2" },
+        { "level": 7, "increase": "plus_1d3+1", "remove": "plus_1d3" },
+        { "level": 10, "increase": "plus_3", "remove": "plus_2" },
+        { "level": 10, "increase": "plus_1d3+2", "remove": "plus_1d3+1" }
+      ]
+    },
+    {
+      "class_key": "troubadour",
+      "resource_key": "drama",
+      "generation_options": ["victories", "plus_1", "plus_1d3", "plus_2", "plus_3"],
+      "generation_increase_at_levels": [
+        { "level": 7, "increase": "plus_1d3+1", "remove": "plus_1d3" },
+        { "level": 10, "increase": "plus_3", "remove": "plus_2" }
+      ]
+    }
+  ]
+}

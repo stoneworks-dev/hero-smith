@@ -1,0 +1,3032 @@
+[
+  {
+    "id": "awe_armor_imbuement_1st",
+    "type": "armor_imbuement",
+    "level": 1,
+    "name": "Awe - 1st-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "A lock of hair from a fey, taken in amicable bargain for Charming or in violence for Threatening"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Khelt",
+          "language": "Khelt"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Awe: When you start this project, choose either Charming or Threatening. If you choose Charming, you gain an edge on Presence tests made to win over creatures over or make a good impression. If you choose Threatening, you gain an edge on Presence tests made to intimidate, coerce, or bully."
+  },
+  {
+    "id": "damage_immunity_armor_imbuement_1st",
+    "type": "armor_imbuement",
+    "level": 1,
+    "name": "Damage Immunity I - 1st-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Elemental sand left behind when an elemental enters Orden from Quintessence"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Zaliac",
+          "language": "Zaliac"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Damage Immunity I: When you start this project, select three damage types. You have immunity 5 to those damage types."
+  },
+  {
+    "id": "disguise_armor_imbuement_1st",
+    "type": "armor_imbuement",
+    "level": 1,
+    "name": "Disguise - 1st-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "The blood of a lycanthrope"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Khelt",
+          "language": "Khelt"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Disguise: You can use a maneuver to cause this armor to take the form of any type of clothing that you have been in the presence of—a noble's dress, a guard's uniform, a cutpurse's robes, and so forth. The armor loses none of its protective qualities while transformed into other clothing."
+  },
+  {
+    "id": "iridescent_armor_imbuement_1st",
+    "type": "armor_imbuement",
+    "level": 1,
+    "name": "Iridescent - 1st-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Fur from a lightbender"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Hyrallic",
+          "language": "Hyrallic"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Iridescent: When you are the sole target of an ability, you can use a free triggered action to reveal that the ability was targeting an afterimage of you in the same space as you. The power roll for the ability is made on an 11. You can't use this imbuement again until you earn 1 or more Victories."
+  },
+  {
+    "id": "magic_resistance_armor_imbuement_1st",
+    "type": "armor_imbuement",
+    "level": 1,
+    "name": "Magic Resistance I - 1st-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "A scale from a dragon"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in The First Language",
+          "language": "The First Language"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Magic Resistance I: Your characteristic scores are treated as 1 higher (to a maximum of 2) for the purpose of resisting the potencies of magic abilities."
+  },
+  {
+    "id": "nettlebloom_armor_imbuement_1st",
+    "type": "armor_imbuement",
+    "level": 1,
+    "name": "Nettlebloom - 1st-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "A rose from the magical hedge of a hag"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Khelt",
+          "language": "Khelt"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Nettlebloom: Whenever you are grabbed by an adjacent creature, your armor sprouts toxic nettles. While that creature has you grabbed, they are weakened."
+  },
+  {
+    "id": "phasing_armor_imbuement_1st",
+    "type": "armor_imbuement",
+    "level": 1,
+    "name": "Phasing I - 1st-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Ichor from a destroyed wraith"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Szetch",
+          "language": "Szetch"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Phasing I: Once per turn, you can move through 1 square of solid matter. If you end your turn inside solid matter, you are forced out into the space from which you entered it and you take 5 damage that can't be reduced in any way."
+  },
+  {
+    "id": "psionic_resistance_armor_imbuement_1st",
+    "type": "armor_imbuement",
+    "level": 1,
+    "name": "Psionic Resistance I - 1st-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Rare crystals that resonate with psionic energy, often found at sites of psionic experimentation"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Voll",
+          "language": "Voll"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Psionic Resistance I: Your characteristic scores are treated as 1 higher (to a maximum of 2) for the purpose of resisting the potencies of psionic abilities."
+  },
+  {
+    "id": "swift_armor_imbuement_1st",
+    "type": "armor_imbuement",
+    "level": 1,
+    "name": "Swift - 1st-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "The feather of a falcon slain as it was diving"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Yllyric",
+          "language": "Yllyric"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Swift: You gain a +1 bonus to speed."
+  },
+  {
+    "id": "tempest_armor_imbuement_1st",
+    "type": "armor_imbuement",
+    "level": 1,
+    "name": "Tempest I - 1st-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "A strip of starmetel struck by lightning"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Ullorvic",
+          "language": "Ullorvic"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Tempest I: As a maneuver, you infuse this armor with the essence of a storm. The first creature to deal damage to you before the end of your next turn, they take lightning damage equal to your highest characteristic score and you can push them 1 square."
+  },
+  {
+    "id": "absorption_armor_imbuement_5th",
+    "type": "armor_imbuement",
+    "level": 5,
+    "name": "Absorption - 5th-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Armor with a 1st-level imbuement; varies"
+        },
+        {
+          "name": "A mirror blessed by a priest of a god of magic"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in The First Language",
+          "language": "The First Language"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Absorption: Whenever you are targeted by a magic or psionic ability that targets only one creature, you can use a free triggered action to cause this armor to absorb the ability after the ability's effects resolve. While the armor has an ability absorbed, you can't absorb another.\n\nYou can use an absorbed ability as if you knew it, making power rolls for the ability using your choice of Reason, Intuition, or Presence. You don't need to spend any Heroic Resource to activate the ability. Once you use the ability, the armor loses it, and you can absorb another."
+  },
+  {
+    "id": "damage_immunity_ii_armor_imbuement_5th",
+    "type": "armor_imbuement",
+    "level": 5,
+    "name": "Damage Immunity II - 5th-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Armor with a 1st-level imbuement; varies"
+        },
+        {
+          "name": "The essence of an elemental who is still alive"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Zaliac",
+          "language": "Zaliac"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Damage Immunity II: The damage immunity conveyed by the armor increases to 10."
+  },
+  {
+    "id": "dragon_soul_armor_imbuement_5th",
+    "type": "armor_imbuement",
+    "level": 5,
+    "name": "Dragon Soul - 5th-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Armor with a 1st-level imbuement; varies"
+        },
+        {
+          "name": "A scale from a dead dragon"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Vastariax",
+          "language": "Vastariax"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Dragon Soul: When another creature causes you to be winded or dying, you can use a free triggered action to cause the soul of a dragon to emerge from this armor and hurtle toward the creature. Make the following power roll against the creature.\n\n**Power Roll + Your Highest Characteristic Score:**\n• 11 or lower: 8 damage; push 3\n• 12-16: 12 damage; push 4\n• 17+: 15 damage; push 5"
+  },
+  {
+    "id": "levitating_armor_imbuement_5th",
+    "type": "armor_imbuement",
+    "level": 5,
+    "name": "Levitating - 5th-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Armor with a 1st-level imbuement; varies"
+        },
+        {
+          "name": "A palm-sized crystal grown in the subterranean lair of an overmind"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Zaliac",
+          "language": "Zaliac"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Levitating: On your turn, you can treat up to 5 consecutive squares of movement as flying movement. If you are still in midair at the end of your turn, you fall prone."
+  },
+  {
+    "id": "magic_resistance_ii_armor_imbuement_5th",
+    "type": "armor_imbuement",
+    "level": 5,
+    "name": "Magic Resistance II - 5th-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Armor with a 1st-level imbuement; varies"
+        },
+        {
+          "name": "A scale from a mature dragon"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in The First Language",
+          "language": "The First Language"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Magic Resistance II: Your characteristic scores are treated as 2 higher (to a maximum of 3) for the purpose of resisting the potencies of magic abilities. This benefit replaces Magic Resistance I."
+  },
+  {
+    "id": "phasing_ii_armor_imbuement_5th",
+    "type": "armor_imbuement",
+    "level": 5,
+    "name": "Phasing II - 5th-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Armor with a 1st-level imbuement; varies"
+        },
+        {
+          "name": "The remnants of a slain ooze"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Szetch",
+          "language": "Szetch"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Phasing II: When you use the armor's Phasing I imbuement, you can move through 3 squares of solid matter per turn."
+  },
+  {
+    "id": "psionic_resistance_ii_armor_imbuement_5th",
+    "type": "armor_imbuement",
+    "level": 5,
+    "name": "Psionic Resistance II - 5th-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Armor with a 1st-level imbuement; varies"
+        },
+        {
+          "name": "A fresh crystalline scale from a gemstone dragon"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Voll",
+          "language": "Voll"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Psionic Resistance II: Your characteristic scores are treated as 2 higher (to a maximum of 3) for the purpose of resisting the potencies of psionic abilities. This benefit replaces Psionic Resistance I."
+  },
+  {
+    "id": "reactive_armor_imbuement_5th",
+    "type": "armor_imbuement",
+    "level": 5,
+    "name": "Reactive - 5th-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Armor with a 1st-level imbuement; varies"
+        },
+        {
+          "name": "A complex, hand-engineered set of brass gears inscribed with runes in silver dust"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Zaliac",
+          "language": "Zaliac"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Reactive: Whenever you take damage, you have damage immunity 2 until the end of your next turn after the triggering damage is resolved."
+  },
+  {
+    "id": "second_wind_armor_imbuement_5th",
+    "type": "armor_imbuement",
+    "level": 5,
+    "name": "Second Wind - 5th-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Armor with a 1st-level imbuement; varies"
+        },
+        {
+          "name": "The sweat of a troll"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Kalliiak",
+          "language": "Kalliiak"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Second Wind: Whenever you become winded, you can use a free triggered action to spend a Recovery."
+  },
+  {
+    "id": "shattering_armor_imbuement_5th",
+    "type": "armor_imbuement",
+    "level": 5,
+    "name": "Shattering - 5th-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Armor with a 1st-level imbuement; varies"
+        },
+        {
+          "name": "A pound of volcanic obsidian, formed naturally as a single piece"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Zaliac",
+          "language": "Zaliac"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Shattering: Whenever an enemy scores a critical hit against you, they take 10 sonic damage."
+  },
+  {
+    "id": "tempest_ii_armor_imbuement_5th",
+    "type": "armor_imbuement",
+    "level": 5,
+    "name": "Tempest II - 5th-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Armor with a 1st-level imbuement; varies"
+        },
+        {
+          "name": "The armor must be laid out under a clear sky as a comet passes over"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Ullorvic",
+          "language": "Ullorvic"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Tempest II: When you use the armor's Tempest I imbuement, the affected creature takes 8 lightning damage and you push them up to 3 squares."
+  },
+  {
+    "id": "devils_bargain_armor_imbuement_9th",
+    "type": "armor_imbuement",
+    "level": 9,
+    "name": "Devil's Bargain - 9th-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Armor with a 5th-level imbuement; varies"
+        },
+        {
+          "name": "The wing of an archdevil"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Anjali",
+          "language": "Anjali"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Devil's Bargain: You can fly. Additionally, if an effect would make you prone while flying, you can choose to not go prone by losing Stamina equal to the distance you would have fallen from becoming prone."
+  },
+  {
+    "id": "dragon_soul_ii_armor_imbuement_9th",
+    "type": "armor_imbuement",
+    "level": 9,
+    "name": "Dragon Soul II - 9th-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Armor with a 5th-level imbuement; varies"
+        },
+        {
+          "name": "An offering of gems, coins, and art stolen from a dragon's hoard, sacrificed in ritual fire"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Vastariax",
+          "language": "Vastariax"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Dragon Soul II: While you are winded, your head transforms into a dragon's head and you have the following ability.\n\n**Dragon's Fire**\n🗲 So great is your maw you unleash hell.\nArea, Magic\n📐 5 × 1 line within 1 ⌖ Each enemy in the area\n\n**Power Roll + Your Highest Characteristic Score:**\n• 11 or lower: 5 fire damage\n• 12-16: 8 fire damage\n• 17+: 11 fire damage"
+  },
+  {
+    "id": "invulnerable_armor_imbuement_9th",
+    "type": "armor_imbuement",
+    "level": 9,
+    "name": "Invulnerable - 9th-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Armor with a 5th-level imbuement; varies"
+        },
+        {
+          "name": "Repurposed metal plates from a servok war engine"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Rallarian",
+          "language": "Rallarian"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Invulnerable: When an ability roll made against you obtains a tier 1 outcome, you can ignore the damage and effects."
+  },
+  {
+    "id": "leyline_walker_armor_imbuement_9th",
+    "type": "armor_imbuement",
+    "level": 9,
+    "name": "Leyline Walker - 9th-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Armor with a 5th-level imbuement; varies"
+        },
+        {
+          "name": "A cutting from an ethereal tree that manifests in the mundane world only once a year"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Yllyric",
+          "language": "Yllyric"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Leyline Walker: Once per turn as a move action, you can spend any amount of your movement to instead teleport that distance."
+  },
+  {
+    "id": "life_armor_imbuement_9th",
+    "type": "armor_imbuement",
+    "level": 9,
+    "name": "Life - 9th-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Armor with a 5th-level imbuement; varies"
+        },
+        {
+          "name": "The tear of a saint"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in High Kuric",
+          "language": "High Kuric"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Life: Whenever you would die, you can spend a Recovery to regain Stamina instead. If you have no Recoveries to spend, you die."
+  },
+  {
+    "id": "magic_resistance_iii_armor_imbuement_9th",
+    "type": "armor_imbuement",
+    "level": 9,
+    "name": "Magic Resistance III - 9th-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Armor with a 5th-level imbuement; varies"
+        },
+        {
+          "name": "A scale from an ancient dragon"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in The First Language",
+          "language": "The First Language"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Magic Resistance III: The benefit of the armor's Magic Resistance II imbuement extends to each ally within 3 squares of you."
+  },
+  {
+    "id": "phasing_iii_armor_imbuement_9th",
+    "type": "armor_imbuement",
+    "level": 9,
+    "name": "Phasing III - 9th-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Armor with a 5th-level imbuement; varies"
+        },
+        {
+          "name": "Perfectly clear glass from a house that disappeared into the Ethereal Plane"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Szetch",
+          "language": "Szetch"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Phasing III: Your movement doesn't provoke opportunity attacks, and you can move through the space of any enemy as if they were an ally. You can't end your turn in an enemy's space."
+  },
+  {
+    "id": "psionic_resistance_iii_armor_imbuement_9th",
+    "type": "armor_imbuement",
+    "level": 9,
+    "name": "Psionic Resistance III - 9th-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Armor with a 5th-level imbuement; varies"
+        },
+        {
+          "name": "The skull of a voiceless talker at least a century old"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Voll",
+          "language": "Voll"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Psionic Resistance III: The benefit of the armor's Psionic Resistance II imbuement extends to each ally within 3 squares of you."
+  },
+  {
+    "id": "temporal_flux_armor_imbuement_9th",
+    "type": "armor_imbuement",
+    "level": 9,
+    "name": "Temporal Flux - 9th-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Armor with a 5th-level imbuement; varies"
+        },
+        {
+          "name": "An experimental temporal capacitor invented by the kuran zol"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Voll",
+          "language": "Voll"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Temporal Flux: Whenever you move out of a square, you can choose to leave an imprint that lasts until the end of the encounter, until your imprint takes 20 or more damage, or until you create a new imprint. The square is occupied by your imprint, and you can share the space with it.\n\nOn your turn, you can teleport to the imprint's space as a free maneuver. When you are targeted by an ability, you can use a free triggered action to teleport to your imprint, and the power roll for the ability is an automatic tier 1 result."
+  },
+  {
+    "id": "unbending_armor_imbuement_9th",
+    "type": "armor_imbuement",
+    "level": 9,
+    "name": "Unbending - 9th-Level Armor Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Armor with a 5th-level imbuement; varies"
+        },
+        {
+          "name": "A spearhead or other weapon broken off in the body of a stone giant, and ossified for a year or more"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in High Kuric",
+          "language": "High Kuric"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Unbending: You can't be subjected to forced movement unless you choose to be. Effects that ignore Stability also ignore this imbuement."
+  },
+  {
+    "id": "berserking_implement_imbuement_1st",
+    "type": "implement_imbuement",
+    "level": 1,
+    "name": "Berserking - 1st-Level Implement Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Varies"
+        },
+        {
+          "name": "The tusk of a feral boar"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Ralliak",
+          "language": "Ralliak"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Agility"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Berserking: Whenever you damage a creature using a magic or psionic ability and obtain a tier 3 outcome, that creature must make an opportunity attack against their nearest ally if possible after the ability's effects resolve. This strike deals extra damage equal to the highest of your Reason, Intuition, or Presence scores."
+  },
+  {
+    "id": "displacing_i_implement_imbuement_1st",
+    "type": "implement_imbuement",
+    "level": 1,
+    "name": "Displacing I - 1st-Level Implement Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Varies"
+        },
+        {
+          "name": "Slime from an ooze"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Khelt",
+          "language": "Khelt"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Agility"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Displacing I: Whenever you damage a creature using a magic or psionic ability and obtain a tier 3 outcome, you can teleport that creature up to 3 squares after the ability's effects resolve. If the creature ends on a horizontal surface, they must end on a horizontal surface."
+  },
+  {
+    "id": "elemental_implement_imbuement_1st",
+    "type": "implement_imbuement",
+    "level": 1,
+    "name": "Elemental - 1st-Level Implement Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Varies"
+        },
+        {
+          "name": "Ashes or other leavings from a natural disaster"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in The First Language",
+          "language": "The First Language"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Agility"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Elemental: Whenever you use an ability with the Air, Earth, Fire, Green, Rot, Void, or Water keyword, you can attune this implement to that element until the end of the encounter. While the implement is attuned, you gain an edge on power rolls with that elemental keyword. The implement can be attuned to only one element at a time."
+  },
+  {
+    "id": "forceful_i_implement_imbuement_1st",
+    "type": "implement_imbuement",
+    "level": 1,
+    "name": "Forceful I - 1st-Level Implement Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Varies"
+        },
+        {
+          "name": "A lead slingstone that killed a giant"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in High Kuric",
+          "language": "High Kuric"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Agility"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Forceful I: Whenever you use a magic or psionic ability to push or pull a creature, you can move that creature an additional 1 square."
+  },
+  {
+    "id": "rat_form_implement_imbuement_1st",
+    "type": "implement_imbuement",
+    "level": 1,
+    "name": "Rat Form - 1st-Level Implement Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Varies"
+        },
+        {
+          "name": "One hundred rat pelts"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Khamish",
+          "language": "Khamish"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Agility"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Rat Form: As a maneuver, you transform into a rat. Your equipment transforms with you. As a rat, you have speed 5 and can automatically climb at full speed while moving, your size is 1T, and you can see in the dark. You cannot speak and keep your stats while in rat form, but your Might is -5 and you lose all your regular abilities, features, and benefits. You can revert to your natural form as a maneuver, and do so automatically if you take any damage."
+  },
+  {
+    "id": "rejuvenating_i_implement_imbuement_1st",
+    "type": "implement_imbuement",
+    "level": 1,
+    "name": "Rejuvenating I - 1st-Level Implement Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Varies"
+        },
+        {
+          "name": "A singing quartz crystal"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in The First Language",
+          "language": "The First Language"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Agility"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Rejuvenating I: Whenever you use an ability that costs 1 or more of your Heroic Resource, you roll a d10. On a 9 or higher, you gain 1 Heroic Resource."
+  },
+  {
+    "id": "seeking_implement_imbuement_1st",
+    "type": "implement_imbuement",
+    "level": 1,
+    "name": "Seeking - 1st-Level Implement Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Varies"
+        },
+        {
+          "name": "An inch-long needle carved from a diamond"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Caelian",
+          "language": "Caelian"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Agility"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Seeking: Your ranged magic or psionic abilities gain a +2 distance bonus. Additionally, if you think the name of a specific creature, place, or object to the implement, the implement points toward that target provided you are on the same world."
+  },
+  {
+    "id": "thought_sending_implement_imbuement_1st",
+    "type": "implement_imbuement",
+    "level": 1,
+    "name": "Thought Sending - 1st-Level Implement Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Varies"
+        },
+        {
+          "name": "The brain of a psionic creature"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Variac",
+          "language": "Variac"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Agility"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Thought Sending: Your ranged magic and psionic abilities gain a +2 distance bonus. Additionally, you can telepathically communicate with any willing creature who knows a language and whose existence you know, provided they are on the same world as you. You must initiate the conversation, but once you do, the creature can respond until you end the conversation."
+  },
+  {
+    "id": "warding_i_implement_imbuement_1st",
+    "type": "implement_imbuement",
+    "level": 1,
+    "name": "Warding I - 1st-Level Implement Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Varies"
+        },
+        {
+          "name": "Three skulls from the same chimera"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Zaliac",
+          "language": "Zaliac"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Agility"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Warding I: You gain a +6 bonus to Stamina."
+  },
+  {
+    "id": "celerity_implement_imbuement_5th",
+    "type": "implement_imbuement",
+    "level": 5,
+    "name": "Celerity - 5th-Level Implement Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "An implement with a 1st-level imbuement"
+        },
+        {
+          "name": "A dire falcon's beak"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Khelt",
+          "language": "Khelt"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Agility"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Celerity: Immediately after using a magic or psionic ability that requires a maneuver action, you can shift up to 3 squares, or you can use the Escape Grab maneuver as a free maneuver (see Maneuvers in Chapter 10: Combat)."
+  },
+  {
+    "id": "celestine_implement_imbuement_5th",
+    "type": "implement_imbuement",
+    "level": 5,
+    "name": "Celestine - 5th-Level Implement Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "An implement with a 1st-level imbuement"
+        },
+        {
+          "name": "A still-warm piece of a meteorite"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Ufloric",
+          "language": "Ufloric"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Agility"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Celestine: As a main action, you conjure up to three stars, which hover in unoccupied squares of your choice within 5 squares of you. The stars remain in place, and disappear if you create more stars. When an enemy enters any star's space, the star detonates and is destroyed, and the enemy takes 10 fire damage. If you have line of effect to the stars, you can also slide them 1 square. Otherwise, the enemy slides 1 square in a random direction."
+  },
+  {
+    "id": "displacing_ii_implement_imbuement_5th",
+    "type": "implement_imbuement",
+    "level": 5,
+    "name": "Displacing II - 5th-Level Implement Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "An implement with a 1st-level imbuement"
+        },
+        {
+          "name": "The wing of a pixie"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Voll",
+          "language": "Voll"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Agility"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Displacing II: When you use the implement's Displacing I imbuement, you can teleport the creature up to 4 squares. Additionally, the creature takes a bane on their next power roll made before the end of their next turn."
+  },
+  {
+    "id": "erupting_i_implement_imbuement_5th",
+    "type": "implement_imbuement",
+    "level": 5,
+    "name": "Erupting I - 5th-Level Implement Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "An implement with a 1st-level imbuement"
+        },
+        {
+          "name": "Obsidian from an active volcano"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Vlatariak",
+          "language": "Vlatariak"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Agility"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Erupting I: Whenever you damage a creature using a magic or psionic ability that targets only a single creature and obtain a tier 3 outcome, each enemy within 2 squares of the creature takes 3 fire damage after the ability's effects resolve."
+  },
+  {
+    "id": "forceful_ii_implement_imbuement_5th",
+    "type": "implement_imbuement",
+    "level": 5,
+    "name": "Forceful II - 5th-Level Implement Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "An implement with a 1st-level imbuement"
+        },
+        {
+          "name": "A marble stone giant's fingernail"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in High Kuric",
+          "language": "High Kuric"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Agility"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Forceful II: Whenever you use a magic or psionic ability to push or pull a creature, you can move that creature an additional 1 square. This replaces the benefit of Forceful I."
+  },
+  {
+    "id": "hallucinatory_implement_imbuement_5th",
+    "type": "implement_imbuement",
+    "level": 5,
+    "name": "Hallucinatory - 5th-Level Implement Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "An implement with a 1st-level imbuement"
+        },
+        {
+          "name": "A night hag's hairpin"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Variac",
+          "language": "Variac"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Agility"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Hallucinatory: As a maneuver, you create an area of sensory instability in a 2 aura centered on yourself. The area is difficult terrain for your enemies until the end of the encounter."
+  },
+  {
+    "id": "lingering_i_implement_imbuement_5th",
+    "type": "implement_imbuement",
+    "level": 5,
+    "name": "Lingering I - 5th-Level Implement Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "An implement with a 1st-level imbuement"
+        },
+        {
+          "name": "Slow-acting poison refined from rare fungi"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Szetch",
+          "language": "Szetch"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Agility"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Lingering I: Whenever you damage a creature using a magic or psionic ability and obtain a tier 3 outcome, that creature takes 8 damage at the start of your next turn."
+  },
+  {
+    "id": "rejuvenating_ii_implement_imbuement_5th",
+    "type": "implement_imbuement",
+    "level": 5,
+    "name": "Rejuvenating II - 5th-Level Implement Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "An implement with a 1st-level imbuement"
+        },
+        {
+          "name": "A still-growing bonsai tree at least 30 years old"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in The First Language",
+          "language": "The First Language"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Agility"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Rejuvenating II: Whenever you use an ability that costs 1 or more of your Heroic Resource, roll a d10. On an 8 or higher, you gain 1 Heroic Resource and you can spend a Recovery. This replaces the benefit of Rejuvenating I."
+  },
+  {
+    "id": "warding_ii_implement_imbuement_5th",
+    "type": "implement_imbuement",
+    "level": 5,
+    "name": "Warding II - 5th-Level Implement Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "An implement with a 1st-level imbuement"
+        },
+        {
+          "name": "A metallic dragon's horn"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Zallac",
+          "language": "Zallac"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Agility"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Warding II: The Stamina bonus for the Warding I imbuement becomes +12. Additionally, your characteristic scores are treated as 1 higher for the purpose of resisting potencies."
+  },
+  {
+    "id": "anathema_implement_imbuement_9th",
+    "type": "implement_imbuement",
+    "level": 9,
+    "name": "Anathema - 9th-Level Implement Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "An implement with a 5th-level imbuement"
+        },
+        {
+          "name": "An olothe tentacle"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Variac",
+          "language": "Variac"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Agility"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Anathema: Whenever you damage a creature using a magic or psionic ability and obtain a tier 3 outcome, that creature is also weakened (save ends). If the creature is within 10 squares when this weakened effect ends, you can use a free triggered action to make a free strike against them."
+  },
+  {
+    "id": "displacing_iii_implement_imbuement_9th",
+    "type": "implement_imbuement",
+    "level": 9,
+    "name": "Displacing III - 9th-Level Implement Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "An implement with a 5th-level imbuement"
+        },
+        {
+          "name": "The keystone from a gate used for crossing between worlds"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Voll",
+          "language": "Voll"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Agility"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Displacing III: When you use the implement's Displacing I imbuement, you can teleport the creature up to 5 squares. Additionally, the creature takes a bane on their next power roll made before the end of their next turn."
+  },
+  {
+    "id": "erupting_ii_implement_imbuement_9th",
+    "type": "implement_imbuement",
+    "level": 9,
+    "name": "Erupting II - 9th-Level Implement Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "An implement with a 5th-level imbuement"
+        },
+        {
+          "name": "A sealed geode containing explosive gas"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Vlatariak",
+          "language": "Vlatariak"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Agility"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Erupting II: The fire damage dealt by the implement's Erupting I imbuement increases to 6."
+  },
+  {
+    "id": "forceful_iii_implement_imbuement_9th",
+    "type": "implement_imbuement",
+    "level": 9,
+    "name": "Forceful III - 9th-Level Implement Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "An implement with a 5th-level imbuement"
+        },
+        {
+          "name": "A scale from the kraken"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in High Kuric",
+          "language": "High Kuric"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Agility"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Forceful III: Whenever you use a magic or psionic ability to push or pull a creature, you can move that creature an additional 3 squares and that movement can be upward. This replaces the benefit of Forceful II."
+  },
+  {
+    "id": "lingering_ii_implement_imbuement_9th",
+    "type": "implement_imbuement",
+    "level": 9,
+    "name": "Lingering II - 9th-Level Implement Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "An implement with a 5th-level imbuement"
+        },
+        {
+          "name": "A venom gland from a mature dragon"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Szetch",
+          "language": "Szetch"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Agility"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Lingering II: Whenever you damage a creature using a magic or psionic ability and obtain a tier 3 outcome, that creature takes 15 damage at the start of your next turn. This replaces the benefit of Lingering I."
+  },
+  {
+    "id": "piercing_implement_imbuement_9th",
+    "type": "implement_imbuement",
+    "level": 9,
+    "name": "Piercing - 9th-Level Implement Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "An implement with a 5th-level imbuement"
+        },
+        {
+          "name": "Black iron harvested from a slain blood elemental"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Anjali",
+          "language": "Anjali"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Agility"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Piercing: Your magic and psionic abilities ignore damage immunities."
+  },
+  {
+    "id": "psionic_siphon_implement_imbuement_9th",
+    "type": "implement_imbuement",
+    "level": 9,
+    "name": "Psionic Siphon - 9th-Level Implement Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "An implement with a 5th-level imbuement"
+        },
+        {
+          "name": "The frontal lobe of an overmind"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Variac",
+          "language": "Variac"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Agility"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Psionic Siphon: Once per turn when you damage one or more creatures using a magic or psionic ability and obtain a tier 3 outcome, you gain Stamina equal to your highest characteristic score, and one creature you damage takes an extra 5 damage."
+  },
+  {
+    "id": "rejuvenating_iii_implement_imbuement_9th",
+    "type": "implement_imbuement",
+    "level": 9,
+    "name": "Rejuvenating III - 9th-Level Implement Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "An implement with a 5th-level imbuement"
+        },
+        {
+          "name": "A live flower that blooms only once a decade"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in The First Language",
+          "language": "The First Language"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Agility"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Rejuvenating III: Whenever you use an ability that costs 1 or more of your Heroic Resource, roll a d10. On a 7 or higher, you gain 1 Heroic Resource, and you or a creature of your choice within 3 squares can spend a Recovery. This replaces the benefit of Rejuvenating II."
+  },
+  {
+    "id": "warding_iii_implement_imbuement_9th",
+    "type": "implement_imbuement",
+    "level": 9,
+    "name": "Warding III - 9th-Level Implement Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "An implement with a 5th-level imbuement"
+        },
+        {
+          "name": "Heartwood from a two-century-old tree"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Zallac",
+          "language": "Zallac"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Agility"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Warding III: The Stamina bonus for the Warding I imbuement becomes +18. Additionally, you and each ally within 3 squares of you has their characteristic scores treated as 1 higher for the purpose of resisting potencies. This replaces the benefit of Warding II."
+  },
+  {
+    "id": "blood_bargain_weapon_imbuement_1st",
+    "type": "weapon_imbuement",
+    "level": 1,
+    "name": "Blood Bargain - 1st-Level Weapon Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Varies"
+        },
+        {
+          "name": "The blood of a devil"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Anjali",
+          "language": "Anjali"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Blood Bargain: As a maneuver, you can harm yourself with the weapon, taking 1d6 damage that can't be reduced in any way. An ally within 5 squares can then spend a Recovery."
+  },
+  {
+    "id": "chilling_i_weapon_imbuement_1st",
+    "type": "weapon_imbuement",
+    "level": 1,
+    "name": "Chilling I - 1st-Level Weapon Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Varies"
+        },
+        {
+          "name": "A piece of ice from Quintessence that never melts"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Yllyric",
+          "language": "Yllyric"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Chilling I: Whenever you damage a creature with an ability using this weapon and obtain a tier 3 outcome, that creature takes 3 cold damage."
+  },
+  {
+    "id": "disrupting_i_weapon_imbuement_1st",
+    "type": "weapon_imbuement",
+    "level": 1,
+    "name": "Disrupting I - 1st-Level Weapon Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Varies"
+        },
+        {
+          "name": "A vial of blood from a living saint"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Anjali",
+          "language": "Anjali"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Disrupting I: Whenever you damage an undead using this weapon and leave that undead with 15 Stamina or less, they drop to 0 Stamina."
+  },
+  {
+    "id": "hurling_weapon_imbuement_1st",
+    "type": "weapon_imbuement",
+    "level": 1,
+    "name": "Hurling - 1st-Level Weapon Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Varies"
+        },
+        {
+          "name": "A magnet made from rare metals"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Variac",
+          "language": "Variac"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Hurling: Whenever you use a melee ability using this weapon, you can throw the weapon by treating the ability's distance as ranged 5 instead. When the ability is resolved, the weapon returns to your hand. Any ability used when you throw this weapon can't impose the grabbed or restrained conditions."
+  },
+  {
+    "id": "merciful_weapon_imbuement_1st",
+    "type": "weapon_imbuement",
+    "level": 1,
+    "name": "Merciful - 1st-Level Weapon Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Varies"
+        },
+        {
+          "name": "A sprig of dockwart, a rare plant with natural anesthetic properties"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Yllyric",
+          "language": "Yllyric"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Merciful: Whenever you reduce a non-undead creature to 0 Stamina using this weapon, the creature falls unconscious and wakes up 10 minutes later. A creature with the Heal skill can wake the unconscious creature early with 1 uninterrupted minute of medical care. Whenever the creature wakes, they regain 1 Stamina."
+  },
+  {
+    "id": "terrifying_i_weapon_imbuement_1st",
+    "type": "weapon_imbuement",
+    "level": 1,
+    "name": "Terrifying I - 1st-Level Weapon Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Varies"
+        },
+        {
+          "name": "The preserved, intact amygdala of a mindkiller"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Variac",
+          "language": "Variac"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Terrifying I: Whenever you damage a creature with an ability using this weapon and obtain a tier 3 outcome, that creature takes 2 psychic damage."
+  },
+  {
+    "id": "thundering_i_weapon_imbuement_1st",
+    "type": "weapon_imbuement",
+    "level": 1,
+    "name": "Thundering I - 1st-Level Weapon Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Varies"
+        },
+        {
+          "name": "The heart of a lion, bear, or other large predatory animal"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Low Kuric",
+          "language": "Low Kuric"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Thundering I: Whenever you deal rolled damage to a creature using this weapon, you can cause that creature or another creature who can be hit by the ability to make a solid surface, the bleeding condition ends."
+  },
+  {
+    "id": "vengeance_i_weapon_imbuement_1st",
+    "type": "weapon_imbuement",
+    "level": 1,
+    "name": "Vengeance I - 1st-Level Weapon Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Varies"
+        },
+        {
+          "name": "The crown of a usurper"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Kalliak",
+          "language": "Kalliak"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Vengeance I: Whenever you use a damage-dealing ability using this weapon against a creature who has dealt damage to you since the end of your last turn, the ability deals extra damage."
+  },
+  {
+    "id": "wingbane_weapon_imbuement_1st",
+    "type": "weapon_imbuement",
+    "level": 1,
+    "name": "Wingbane - 1st-Level Weapon Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "Varies"
+        },
+        {
+          "name": "The pinfeather of a giant hawk"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Yllyric",
+          "language": "Yllyric"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Wingbane: Whenever you damage a flying creature using this weapon, that creature is also bleeding (save ends). While bleeding in this way, the creature takes 1 damage per square they fly. If the creature starts their turn on the same solid surface, the bleeding condition ends."
+  },
+  {
+    "id": "chargebreaker_weapon_imbuement_5th",
+    "type": "weapon_imbuement",
+    "level": 5,
+    "name": "Chargebreaker - 5th-Level Weapon Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "A weapon with a 1st-level imbuement"
+        },
+        {
+          "name": "An adamantine spearhead"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Zallac",
+          "language": "Zallac"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Chargebreaker: While you wield this weapon, you have the following ability.\n\n**Stop Right There**\n🗲 Their momentum, your impact.\nMelee, Strike, Weapon\n📐 Melee 1 ⌖ One enemy\n\nTrigger: The target willingly moves adjacent to you.\nEffect: The target takes 5 damage."
+  },
+  {
+    "id": "chilling_ii_weapon_imbuement_5th",
+    "type": "weapon_imbuement",
+    "level": 5,
+    "name": "Chilling II - 5th-Level Weapon Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "A weapon with a 1st-level imbuement"
+        },
+        {
+          "name": "Frozen bones from the lair of a white dragon"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Yllyric",
+          "language": "Yllyric"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Chilling II: Whenever you damage a creature with an ability using this weapon and obtain a tier 3 outcome, that creature takes 5 cold damage and is slowed (save ends). This replaces the benefit of Chilling I."
+  },
+  {
+    "id": "devastating_weapon_imbuement_5th",
+    "type": "weapon_imbuement",
+    "level": 5,
+    "name": "Devastating - 5th-Level Weapon Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "A weapon with a 1st-level imbuement"
+        },
+        {
+          "name": "A slaughter demon's horn"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in High Kuric",
+          "language": "High Kuric"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Devastating: Whenever you make an ability roll using this weapon, the number you need to roll to score a critical hit is reduced by 1."
+  },
+  {
+    "id": "disrupting_ii_weapon_imbuement_5th",
+    "type": "weapon_imbuement",
+    "level": 5,
+    "name": "Disrupting II - 5th-Level Weapon Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "A weapon with a 1st-level imbuement"
+        },
+        {
+          "name": "A cutting from a century-old living tree in a graveyard"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Anjali",
+          "language": "Anjali"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Disrupting II: Whenever you damage an undead using this weapon and leave that undead with 30 Stamina or less, they drop to 0 Stamina. This replaces the benefit of Disrupting I."
+  },
+  {
+    "id": "metamorphic_weapon_imbuement_5th",
+    "type": "weapon_imbuement",
+    "level": 5,
+    "name": "Metamorphic - 5th-Level Weapon Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "A weapon with a 1st-level imbuement"
+        },
+        {
+          "name": "Oil from an olothe's liver"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Variac",
+          "language": "Variac"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Metamorphic: You can change this weapon's shape and form as a maneuver, granting one of the following benefits of your choice:\n\n• Concealed: The weapon shrinks to the size of a piece of jewelry and can be worn as an article of clothing. While similar garb or accessories this form, the weapon can't be used for weapon abilities.\n• Large: Abilities using this weapon gain a +1 melee distance bonus or a +3 ranged distance bonus.\n• Vicious: Whenever you damage a creature using this weapon, you deal an extra 1 damage on a tier 1 outcome, an extra 2 damage on a tier 2 outcome, and an extra 3 damage on a tier 3 outcome."
+  },
+  {
+    "id": "silencing_weapon_imbuement_5th",
+    "type": "weapon_imbuement",
+    "level": 5,
+    "name": "Silencing - 5th-Level Weapon Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "A weapon with a 1st-level imbuement"
+        },
+        {
+          "name": "An executioner's hood worn during the execution of a mage"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in The First Language",
+          "language": "The First Language"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Silencing: Whenever you damage a creature with an ability using this weapon and obtain a tier 3 outcome, that creature also can't use magic abilities until the end of their next turn."
+  },
+  {
+    "id": "terrifying_ii_weapon_imbuement_5th",
+    "type": "weapon_imbuement",
+    "level": 5,
+    "name": "Terrifying II - 5th-Level Weapon Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "A weapon with a 1st-level imbuement"
+        },
+        {
+          "name": "Riverbed silt harvested from the Abyssal Wasteland"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Variac",
+          "language": "Variac"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Terrifying II: Whenever you damage a creature with an ability using this weapon and obtain a tier 3 outcome, that creature takes 4 psychic damage and is frightened (save ends). This replaces the benefit of Terrifying I."
+  },
+  {
+    "id": "thundering_ii_weapon_imbuement_5th",
+    "type": "weapon_imbuement",
+    "level": 5,
+    "name": "Thundering II - 5th-Level Weapon Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "A weapon with a 1st-level imbuement"
+        },
+        {
+          "name": "An iron rod charged by the death throes of an elemental of storms"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Low Kuric",
+          "language": "Low Kuric"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Thundering II: Whenever you deal rolled damage to a creature using this weapon, you can push that creature up to 3 squares after the other effects of the ability resolve. If you retained a tier 3 outcome, the creature is also knocked prone after being pushed. This replaces the benefit of Thundering I."
+  },
+  {
+    "id": "vengeance_ii_weapon_imbuement_5th",
+    "type": "weapon_imbuement",
+    "level": 5,
+    "name": "Vengeance II - 5th-Level Weapon Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "A weapon with a 1st-level imbuement"
+        },
+        {
+          "name": "The remains of a sworn foe of the creature imbuing the item"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Kalliak",
+          "language": "Kalliak"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Vengeance II: Whenever you use a damage-dealing ability using this weapon against a creature who has dealt damage to you since the end of your last turn, the ability deals an extra 4 damage. This replaces the benefit of Vengeance I."
+  },
+  {
+    "id": "chilling_iii_weapon_imbuement_9th",
+    "type": "weapon_imbuement",
+    "level": 9,
+    "name": "Chilling III - 9th-Level Weapon Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "A weapon with a 5th-level imbuement"
+        },
+        {
+          "name": "The weapon must be dipped in the Glacial Forge in the coldest depths of Hell"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Yllyric",
+          "language": "Yllyric"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Chilling III: Whenever you damage a creature with an ability using this weapon and obtain a tier 3 outcome, that creature takes 8 cold damage and is slowed (save ends). This replaces the benefit of Chilling II."
+  },
+  {
+    "id": "disrupting_iii_weapon_imbuement_9th",
+    "type": "weapon_imbuement",
+    "level": 9,
+    "name": "Disrupting III - 9th-Level Weapon Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "A weapon with a 5th-level imbuement"
+        },
+        {
+          "name": "Wrappings from a mummy buried at least a century ago"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Anjali",
+          "language": "Anjali"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Disrupting III: Whenever you damage an undead using this weapon and leave that undead with 50 Stamina or less, they immediately drop to 0 Stamina. If you instead leave the undead with 100 Stamina or less, they are frightened (save ends). This replaces the benefit of Disrupting II."
+  },
+  {
+    "id": "draining_weapon_imbuement_9th",
+    "type": "weapon_imbuement",
+    "level": 9,
+    "name": "Draining - 9th-Level Weapon Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "A weapon with a 5th-level imbuement"
+        },
+        {
+          "name": "The intact, still-thinking brain of a voiceless talker"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Voll",
+          "language": "Voll"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Draining: Whenever you damage a creature with an ability using this weapon and obtain a tier 3 outcome, that creature is also weakened (save ends). Each time you weaken a creature with this weapon, you gain 1 surge."
+  },
+  {
+    "id": "imprisoning_weapon_imbuement_9th",
+    "type": "weapon_imbuement",
+    "level": 9,
+    "name": "Imprisoning - 9th-Level Weapon Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "A weapon with a 5th-level imbuement"
+        },
+        {
+          "name": "A chain once used to restrain an angel"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Anjali",
+          "language": "Anjali"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Imprisoning: Whenever you damage a creature with an ability using this weapon and obtain a tier 3 outcome, that creature is also restrained (save ends). While restrained in this way, the creature can't use magic or psionic abilities."
+  },
+  {
+    "id": "nova_weapon_imbuement_9th",
+    "type": "weapon_imbuement",
+    "level": 9,
+    "name": "Nova - 9th-Level Weapon Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "A weapon with a 5th-level imbuement"
+        },
+        {
+          "name": "A piece of metal touched by a sun"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Ufloric",
+          "language": "Ufloric"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Nova: Whenever you damage a creature using this weapon, each enemy adjacent to you takes damage based on the tier outcome of the power roll—2 damage for tier 1, 6 for tier 2, or 10 for tier 3. Additionally, while you are winded, you have the following ability.\n\n**Nova**\n🗲 I am an eternal flame, baby!\nArea, Magic\n📐 3 area ⌖ Each enemy in the area\n\nPower Roll + Your Highest Characteristic Score:\n• 11 or lower: 7 fire damage\n• 12-16: 11 fire damage\n• 17+: 16 fire damage"
+  },
+  {
+    "id": "terrifying_iii_weapon_imbuement_9th",
+    "type": "weapon_imbuement",
+    "level": 9,
+    "name": "Terrifying III - 9th-Level Weapon Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "A weapon with a 5th-level imbuement"
+        },
+        {
+          "name": "The central eye of an overmind"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Variac",
+          "language": "Variac"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Terrifying III: Whenever you damage a creature with an ability using this weapon and obtain a tier 3 outcome, that creature takes 6 psychic damage and is frightened (save ends). This replaces the benefit of Terrifying II."
+  },
+  {
+    "id": "thundering_iii_weapon_imbuement_9th",
+    "type": "weapon_imbuement",
+    "level": 9,
+    "name": "Thundering III - 9th-Level Weapon Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "A weapon with a 5th-level imbuement"
+        },
+        {
+          "name": "An oracle of storms must willingly bless the weapon with lightning while it is being wielded and its wielder must survive this trial"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Low Kuric",
+          "language": "Low Kuric"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Thundering III: Whenever you deal rolled damage to a creature using this weapon, you can push that creature up to 5 squares and knock them prone after the other effects of the ability resolve. If the creature takes or deals damage as a result of this movement, they also take 5 thunder damage. This replaces the benefit of Thundering II."
+  },
+  {
+    "id": "vengeance_iii_weapon_imbuement_9th",
+    "type": "weapon_imbuement",
+    "level": 9,
+    "name": "Vengeance III - 9th-Level Weapon Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "A weapon with a 5th-level imbuement"
+        },
+        {
+          "name": "The true name of a devil who haunts other devils"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Kalliak",
+          "language": "Kalliak"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Vengeance III: Whenever you use a damage-dealing ability using this weapon against a creature who has dealt damage to you since the end of your last turn, the ability deals an extra 6 damage. This replaces the benefit of Vengeance II."
+  },
+  {
+    "id": "windcutting_weapon_imbuement_9th",
+    "type": "weapon_imbuement",
+    "level": 9,
+    "name": "Windcutting - 9th-Level Weapon Imbuement",
+    "prerequisites": {
+      "item_prerequisite": [
+        {
+          "name": "A weapon with a 5th-level imbuement"
+        },
+        {
+          "name": "A feather from a bird, once thought extinct, who dwells at the eye of an ever-whirling tornado"
+        }
+      ],
+      "project_source": [
+        {
+          "name": "Texts or lore in Yllyric",
+          "language": "Yllyric"
+        }
+      ]
+    },
+    "project_roll_characteristic": [
+      {
+        "name": "Might"
+      },
+      {
+        "name": "Reason"
+      },
+      {
+        "name": "Intuition"
+      }
+    ],
+    "project_goal": 150,
+    "project_guides": [],
+    "description": "Windcutting: Whenever you use a melee signature ability that usually targets one creature, you can take a bane on the ability to target each enemy in a cube 3 within distance. If your signature ability would usually cause one target to become grabbed or restrained, each target in the area is instead slowed until the end of their next turn."
+  }
+]

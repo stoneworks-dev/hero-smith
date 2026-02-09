@@ -1,0 +1,170 @@
+[
+  {
+    "type": "ability",
+    "id": "friend_catapult",
+    "name": "Friend Catapult",
+    "level": "",
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "One willing adjacent ally or object of your size or smaller",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "Grab a willing adjacent ally or object of your size or smaller, then vertical push that target up to a number of squares equal to twice your Might score. If a creature you push falls as a result of this movement, the effective distance of the fall is reduced by a number of squares equal to twice your Might score. ",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "ive_got_you",
+    "name": "I’ve Got You!",
+    "level": "",
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "",
+    "action_type": "free triggered action",
+    "trigger_text": "When a willing ally falls and would land on you or adjacent to you.",
+    "distance": "Self",
+    "targets": "One willing falling ally",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "You safely catch the ally. Neither of you takes damage from the fall.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "gum_up_the_works",
+    "name": "Gum Up the Works",
+    "level": "",
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "",
+    "action_type": "triggered action",
+    "trigger_text": "A mundane trap activates within 3 squares.",
+    "distance": "3 squares",
+    "targets": "One trap's mechanism",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "Move up to 3 squares toward the trap. If you end adjacent to any mechanism of the trap, you jam it, preventing it from activating. The trap cannot go off while you remain adjacent unless a disarm attempt fails.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "arcane_trick",
+    "name": "Arcane Trick",
+    "level": "",
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "You cast an entertaining spell that creates a minor but impressive magical effect.",
+    "keywords": "Magic",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Self; see below",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "Choose one of the following effects:\n• You teleport a size 1S or smaller object adjacent to you into an unoccupied space adjacent to you.\n• Until the start of your next turn, a part of your body shoots a shower of harmless noisy sparks that light up each square adjacent to you.\n• You ignite or snuff out (your choice) every mundane light source of 1L or smaller adjacent to you.\n• You transform up to 1 pound of edible food you touch to make it taste delicious or disgusting.\n• Until the start of your next turn, you make your body exude a particular odor you've smelled before. This smell can be sensed by each creature within 5 squares of you, but can't impose any condition or other drawback on those creatures.\n• You place a small magical inscription on the surface of a mundane object you touch, or you can remove an inscription that was made by you or by another creature using Arcane Trick.\n• You touch a size 1T object to cover it with an illusion that makes it look like a different object. Any creature who handles the object becomes aware of the illusion. The illusion ends when you stop touching the object.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "creature_sense",
+    "name": "Creature Sense",
+    "level": "",
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "You can sense the nature of nearby creatures.",
+    "keywords": "",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "One creature within 10 squares",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "If that creature is your level or lower, you learn the keywords in their stat block (Demon, Humanoid, Undead, and so forth).",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "invisible_force",
+    "name": "Invisible Force",
+    "level": "",
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "You can manipulate objects with your mind.",
+    "keywords": "Psionic, Ranged",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One size 1T object",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "You can grab or manipulate the target object with your mind, moving the object up to a number of squares equal to your Reason, Intuition, or Presence score (your choice). You can use this ability to turn doorknobs, pull levers, and so forth. You can manipulate any small movable piece of a larger object as long as the piece is unattended and size 1T. You can’t use this ability to break a smaller piece off a larger object.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "psychic_whisper",
+    "name": "Psychic Whisper",
+    "level": "",
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "You send a one-way telepathic message to a friend.",
+    "keywords": "Psionic, Ranged",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One ally",
+    "power_roll": "",
+    "tier_effects": [
+      {
+        "tier1": "",
+        "tier2": "",
+        "tier3": ""
+      }
+    ],
+    "effect": "As long as the target understands one or more languages, you send a telepathic message to them that takes 10 seconds or less to speak. The target knows who the message is from and can decide to ignore it and subsequent messages. ",
+    "special_effect": ""
+  }
+]

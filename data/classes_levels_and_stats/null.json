@@ -1,0 +1,184 @@
+{
+  "classId": "class_null",
+  "name": "Null",
+  "type": "class",
+  "starting_characteristics": {
+    "motto": "“Any weapon can be turned against the hand that wields it.” — Ardashir",
+    "heroicResourceName": "Discipline",
+    "baseStamina": 21,
+    "stamina_per_level": 9,
+    "baseRecoveries": 8,
+    "baseSpeed": 5,
+    "baseStability": 0,
+    "baseDisengage": 1,
+
+    "potency_progression": {
+      "characteristic": "Intuition",
+      "modifiers": {
+        "weak": -2,
+        "average": -1,
+        "strong": 0
+      }
+    },
+
+    "starting_skills": {
+      "granted_skills": ["Psionics"],
+      "skill_groups": ["interpersonal", "lore"],
+      "skill_count": 2,
+      "quick_build": ["Psionics", "Read Person", "Timescape"]
+    },
+    "fixed_starting_characteristics": {
+      "agility": 2,
+      "intuition": 2
+    },
+    "starting_characteristics_arrays": [
+      {
+        "values": [2, -1, -1]
+      },
+      { "values": [1, 1, -1] },
+      { "values": [1, 0, 0] }
+    ]
+  },
+  "levels": [
+    {
+      "level": 1,
+      "features": [
+        {
+          "name": "Null Tradition",
+          "grant_type": "pick",
+          "type": "class_subclass"
+        },
+        { "name": "Discipline", "grant_type": "granted" },
+        { "name": "Null Field", "grant_type": "ability" },
+        { "name": "Inertial Shield", "grant_type": "ability" },
+        {
+          "name": "Discipline Mastery",
+          "grant_type": "granted",
+          "type": "subclass"
+        },
+        { "name": "Null Speed", "grant_type": "granted" },
+        { "name": "Psionic Augmentation", "grant_type": "pick", "count": 1 },
+        { "name": "Psionic Martial Arts", "grant_type": "granted" }
+      ],
+      "new_abilities": {
+        "signature": 1,
+        "3_cost": 1,
+        "5_cost": 1
+      }
+    },
+    {
+      "level": 2,
+      "features": [
+        {
+          "name": "Tradition Feature",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "perks": [
+        {
+          "count": 1,
+          "perk_groups": ["exploration", "interpersonal", "intrigue"]
+        }
+      ],
+      "new_subclass_abilities": { "5_cost": 1 }
+    },
+    {
+      "level": 3,
+      "features": [
+        { "name": "Psionic Leap", "grant_type": "granted" },
+        { "name": "Reorder", "grant_type": "granted" }
+      ],
+      "new_abilities": { "7_cost": 1 }
+    },
+    {
+      "level": 4,
+      "features": [
+        { "name": "Discipline Mastery Improvement", "grant_type": "granted" },
+        { "name": "Enhanced Null Field", "grant_type": "granted" },
+        { "name": "Regenerative Field", "grant_type": "granted" }
+      ],
+      "perks": [{ "count": 1 }],
+      "skills": [{ "count": 1 }],
+      "characteristics": [
+        { "Agility": { "setTo": 3 } },
+        { "Intuition": { "setTo": 3 } }
+      ]
+    },
+    {
+      "level": 5,
+      "features": [
+        {
+          "name": "Tradition Feature",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "new_abilities": { "9_cost": 1 }
+    },
+    {
+      "level": 6,
+      "features": [
+        { "name": "Elemental Absorption", "grant_type": "granted" },
+        { "name": "Elemental Buffer", "grant_type": "granted" }
+      ],
+      "perks": [
+        {
+          "count": 1,
+          "perk_groups": ["exploration", "interpersonal", "intrigue"]
+        }
+      ],
+      "new_subclass_abilities": { "9_cost": 1 }
+    },
+    {
+      "level": 7,
+      "features": [
+        { "name": "Discipline Mastery Improvement", "grant_type": "granted" },
+        { "name": "Psi Boost", "grant_type": "granted" },
+        { "name": "Improved Body", "grant_type": "granted" }
+      ],
+      "skills": [{ "count": 1 }],
+      "characteristics": [{ "All": { "increaseBy": 1, "max": 4 } }]
+    },
+    {
+      "level": 8,
+      "features": [
+        {
+          "name": "Tradition Feature",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "perks": [{ "count": 1 }],
+      "new_abilities": { "11_cost": 1 }
+    },
+    {
+      "level": 9,
+      "features": [{ "name": "I Am the Weapon", "grant_type": "granted" }],
+      "new_subclass_abilities": { "11_cost": 1 }
+    },
+    {
+      "level": 10,
+      "features": [
+        {
+          "name": " Discipline Mastery Improvement",
+          "grant_type": "granted"
+        },
+        { "name": "Manifold Body", "grant_type": "granted" },
+        { "name": "Manifold Resonance", "grant_type": "granted" },
+        { "name": "Order", "grant_type": "granted" }
+      ],
+      "perks": [
+        {
+          "count": 1,
+          "perk_groups": ["exploration", "interpersonal", "intrigue"]
+        }
+      ],
+      "skills": [{ "count": 1 }],
+      "characteristics": [
+        { "Agility": { "setTo": 5 } },
+        { "Intuition": { "setTo": 5 } }
+      ]
+    }
+  ]
+}

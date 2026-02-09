@@ -1,0 +1,1886 @@
+[
+  {
+    "id": "ancient_loremaster",
+    "type": "title",
+    "name": "Ancient Loremaster",
+    "description_text": "It’s astonishing what you find in old books. Look at this—nearly complete schematics for a war automaton, gathering dust because nobody here reads Zaliac.",
+    "echelon": 1,
+    "prerequisite": "You find a trove of forgotten books.",
+    "benefits": [
+      {
+        "id": "ancient_loremaster__leverage",
+        "name": "Leverage",
+        "description": "Know a priceless secret; in a negotiation with an appropriate person you can offer it to increase their interest by 3 (max 5) once.",
+        "ability": null
+      },
+      {
+        "id": "ancient_loremaster__rare_books",
+        "name": "Rare Books",
+        "description": "When you undertake a research project, roll 1d6 per dead language you know and add total to the project roll.",
+        "ability": null
+      },
+      {
+        "id": "ancient_loremaster__susurrus_codex",
+        "name": "Susurrus Codex",
+        "description": "Follow the book’s whispered advice: edge on Reason tests, bane on Presence tests. Stop anytime; then no advice for rest of day.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "battleaxe_diplomat",
+    "type": "title",
+    "name": "Battleaxe Diplomat",
+    "description_text": "We seem to be equals in might and combat prowess. Perhaps we should bandy words awhile instead.",
+    "echelon": 1,
+    "prerequisite": "Gain the friendship or alliance of a creature you once battled.",
+    "benefits": [
+      {
+        "id": "battleaxe_diplomat__iron_hand_in_velvet_glove",
+        "name": "Iron Hand in Velvet Glove",
+        "description": "First negotiation Intimidate test without appealing to motivation doesn’t lower patience or interest regardless of result.",
+        "ability": null
+      },
+      {
+        "id": "battleaxe_diplomat__truce",
+        "name": "Truce!",
+        "description": "Double edge on tests to stop combat and start a negotiation.",
+        "ability": null
+      },
+      {
+        "id": "battleaxe_diplomat__warriors_understanding",
+        "name": "Warriors’ Understanding",
+        "description": "Edge on Presence tests to interact with creatures you have fought in combat encounters.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "brawler",
+    "type": "title",
+    "name": "Brawler",
+    "description_text": "We won’t kill you. But you might wish we had.",
+    "echelon": 1,
+    "prerequisite": "Triumph in battle without killing any foes.",
+    "benefits": [
+      {
+        "id": "brawler__duck",
+        "name": "Duck!",
+        "description": "When struck while a second creature flanks you, redirect the strike to that second creature (triggered). Regain after 1+ Victories.",
+        "ability": null
+      },
+      {
+        "id": "brawler__furniture_fighter",
+        "name": "Furniture Fighter",
+        "description": "Improvised or non-kit weapon abilities benefit from your kit’s melee weapon damage bonus.",
+        "ability": null
+      },
+      {
+        "id": "brawler__headbutt",
+        "name": "Headbutt",
+        "description": "While grabbed or restrained, your free strikes don’t take a bane from those conditions.",
+        "ability": null
+      },
+      {
+        "id": "brawler__if_i_wanted_you_dead_youd_be_dead",
+        "name": "If I Wanted You Dead, You’d Be Dead",
+        "description": "When you defeat foes without killing them, edge on negotiation tests with those foes.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "city_rat",
+    "type": "title",
+    "name": "City Rat",
+    "description_text": "Stay out all night, visit the dives. Get in a fight, run from the cops. That’s the real city.",
+    "echelon": 1,
+    "prerequisite": "Spend at least five respites in a metropolis.",
+    "benefits": [
+      {
+        "id": "city_rat__discerning_shopper",
+        "name": "Discerning Shopper",
+        "description": "When seeking an item prerequisite for a crafting project, recall someone who might have it or information about it.",
+        "ability": null
+      },
+      {
+        "id": "city_rat__one_with_the_crowd",
+        "name": "One with the Crowd",
+        "description": "While using one or more creatures as cover, edge on tests to hide and sneak.",
+        "ability": null
+      },
+      {
+        "id": "city_rat__street_smart",
+        "name": "Street Smart",
+        "description": "While in a settlement, you can’t be surprised.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "doomed",
+    "type": "title",
+    "name": "Doomed",
+    "description_text": "A haunting vision of your own death shapes your fate.",
+    "echelon": 1,
+    "prerequisite": "Not a hakaan and have witnessed the death of a hakaan.",
+    "benefits": [
+      {
+        "id": "doomed__death_defiance",
+        "name": "Doomed Fate",
+        "description": "While at 0 Stamina but conscious you can become doomed: can’t regain Stamina, auto tier 3 on tests and power rolls, die only at negative Stamina max; die at encounter end.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "dwarven_legionnaire",
+    "type": "title",
+    "name": "Dwarven Legionnaire",
+    "description_text": "Stand fast and do not yield.",
+    "echelon": 1,
+    "prerequisite": "Fight alongside three or more dwarves.",
+    "benefits": [
+      {
+        "id": "dwarven_legionnaire__close_formation",
+        "name": "Close Formation",
+        "description": "While adjacent to two or more allies, +2 stability.",
+        "ability": null
+      },
+      {
+        "id": "dwarven_legionnaire__rune_of_alarm",
+        "name": "Rune of Alarm",
+        "description": "Spend 10 minutes to inscribe rune. Activates when enemy within 2; you wake if asleep; perceive through it for 1 minute; sheds light 2 squares.",
+        "ability": null
+      },
+      {
+        "id": "dwarven_legionnaire__stonemeld",
+        "name": "Stonemeld",
+        "description": "Adjacent to stone wall: maneuver for concealment until you leave square or use an ability.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "elemental_dabbler",
+    "type": "title",
+    "name": "Elemental Dabbler",
+    "description_text": "You harness a fragment of elemental power.",
+    "echelon": 1,
+    "prerequisite": "Defeat a creature with the Elemental keyword.",
+    "benefits": [
+      {
+        "id": "elemental_dabbler__elemental_blaster",
+        "name": "Elemental Blaster",
+        "description": "Gain Elementalist 1st-level Hurl Element feature dealing chosen damage type (from defeated creature’s immunity).",
+        "ability": null
+      },
+      {
+        "id": "elemental_dabbler__elemental_immunity",
+        "name": "Elemental Immunity",
+        "description": "Immunity to chosen damage type equal to highest characteristic score.",
+        "ability": null
+      },
+      {
+        "id": "elemental_dabbler__elemental_weapons",
+        "name": "Elemental Weapons",
+        "description": "Your damage-dealing weapon abilities can deal the chosen type instead of normal type.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "faction_member",
+    "type": "title",
+    "name": "Faction Member",
+    "description_text": "Promising recruit in an organization.",
+    "echelon": 1,
+    "prerequisite": "Join an army, guild, or similar organization.",
+    "benefits": [
+      {
+        "id": "faction_member__academic_faction",
+        "name": "Academic Faction",
+        "description": "Sage makes up to three Reason tests or research project rolls for you (+5), 10 minutes each, not requiring a respite.",
+        "ability": null
+      },
+      {
+        "id": "faction_member__guild_faction",
+        "name": "Guild Faction",
+        "description": "Expert crafter makes up to three crafting project rolls for you (+5), 10 uninterrupted minutes each, no respite required.",
+        "ability": null
+      },
+      {
+        "id": "faction_member__martial_faction",
+        "name": "Martial Faction",
+        "description": "Recruit up to three minions (levels ≤ yours) appropriate to faction for a day.",
+        "ability": null
+      },
+      {
+        "id": "faction_member__spy_faction",
+        "name": "Spy Faction",
+        "description": "Agent provides three pieces of settlement information (hidden person, secret entrance, motivations/pitfalls).",
+        "ability": null
+      }
+    ],
+    "special": "Can take multiple times, once per faction; can be stripped if acting against faction. Use benefit only in settlement with faction presence and once per task completion."
+  },
+  {
+    "id": "local_hero",
+    "type": "title",
+    "name": "Local Hero",
+    "description_text": "The community owes you everything.",
+    "echelon": 1,
+    "prerequisite": "Save a community from certain destruction.",
+    "benefits": [
+      {
+        "id": "local_hero__easy_marks",
+        "name": "Easy Marks",
+        "description": "Edge on interpersonal & intrigue skill tests influencing members of a community you saved.",
+        "ability": null
+      },
+      {
+        "id": "local_hero__local_fame",
+        "name": "Local Fame",
+        "description": "Earn 1 Renown.",
+        "ability": null,
+        "grants": [{ "type": "renown", "value": 1 }]
+      },
+      {
+        "id": "local_hero__a_new_dawn",
+        "name": "A New Dawn",
+        "description": "Each respite in that community grants party 1 hero token (expires end of next respite).",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "mage_hunter",
+    "type": "title",
+    "name": "Mage Hunter",
+    "description_text": "Vigilant against dangerous magic.",
+    "echelon": 1,
+    "prerequisite": "Defeat three leader/solo creatures each with a Magic ability.",
+    "benefits": [
+      {
+        "id": "mage_hunter__arcane_dampening",
+        "name": "Arcane Dampening",
+        "description": "Resisting potencies from magic abilities: characteristics count as 1 higher.",
+        "ability": null
+      },
+      {
+        "id": "mage_hunter__oh_no_you_dont",
+        "name": "Oh No, You Don’t!",
+        "description": "Adjacent creature uses Magic ability: make a free strike (triggered).",
+        "ability": null
+      },
+      {
+        "id": "mage_hunter__stink_of_magic",
+        "name": "Stink of Magic",
+        "description": "Maneuver: sense creature type (construct, undead, otherworld) and if used magic within hour; cannot be surprised by them.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "marshal",
+    "type": "title",
+    "name": "Marshal",
+    "description_text": "Relentless enforcer of the law.",
+    "echelon": 1,
+    "prerequisite": "Join criminal-hunting organization or be deputized.",
+    "benefits": [
+      {
+        "id": "marshal__guess_its_the_hard_way_then",
+        "name": "Guess It’s the Hard Way Then",
+        "description": "First time you take damage before first turn when not surprised: halve that damage.",
+        "ability": null
+      },
+      {
+        "id": "marshal__heedless_pursuer",
+        "name": "Heedless Pursuer",
+        "description": "Once per turn free maneuver: take 1d6 irreducible damage to ignore difficult terrain and +1 square to jumps until end of turn.",
+        "ability": null
+      },
+      {
+        "id": "marshal__silver_shield",
+        "name": "Silver Shield",
+        "description": "Badge grants My Life for Yours feature (censor); can’t spend wrath unless you have Wrath feature.",
+        "ability": null
+      },
+      {
+        "id": "marshal__trained_tracker",
+        "name": "Trained Tracker",
+        "description": "Edge on tests to track criminals.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "monster_bane",
+    "type": "title",
+    "name": "Monster Bane",
+    "description_text": "Feared by beasts and monsters alike.",
+    "echelon": 1,
+    "prerequisite": "Defeat a leader or solo creature with Reason −2 or lower (e.g., arixx).",
+    "benefits": [
+      {
+        "id": "monster_bane__beast_bane",
+        "name": "Beast Bane",
+        "description": "Creatures with Animal keyword take a bane on strikes against you.",
+        "ability": null
+      },
+      {
+        "id": "monster_bane__monster_soother",
+        "name": "Monster Soother",
+        "description": "Edge on tests to calm or tame nonsapient creatures.",
+        "ability": null
+      },
+      {
+        "id": "monster_bane__monster_trophy",
+        "name": "Monster Trophy",
+        "description": "Display a trophy: edge on tests to intimidate sapient creatures.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "owed_a_favor",
+    "type": "title",
+    "name": "Owed a Favor",
+    "description_text": "A powerful faction stands ready to repay you (within limits).",
+    "echelon": 1,
+    "prerequisite": "Successfully perform a service for a powerful faction.",
+    "benefits": [
+      {
+        "id": "owed_a_favor__faction_favor",
+        "name": "Faction Favor",
+        "description": "Faction performs one favor for the party if it doesn’t conflict with its goals.",
+        "ability": null
+      },
+      {
+        "id": "owed_a_favor__knowledge_network",
+        "name": "Knowledge Network",
+        "description": "Gain appropriate crafting/lore skill in faction settlement; if already trained, edge with that skill.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "presumed_dead",
+    "type": "title",
+    "name": "Presumed Dead",
+    "description_text": "You return from an apparent death.",
+    "echelon": 1,
+    "prerequisite": "Die in a way preventing recovery or examination of body.",
+    "benefits": [
+      {
+        "id": "presumed_dead__narrow_escape",
+        "name": "Narrow Escape",
+        "description": "Regain 1 Stamina, spend Recoveries; gain 1st-echelon trinket; later rejoin party dramatically with explanation.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "ratcatcher",
+    "type": "title",
+    "name": "Ratcatcher",
+    "description_text": "You specialize in bringing down the small and troublesome.",
+    "echelon": 1,
+    "prerequisite": "Defeat a leader or solo creature size 1S or smaller.",
+    "benefits": [
+      {
+        "id": "ratcatcher__come_out_to_play",
+        "name": "Come Out to Play",
+        "description": "You have an ability (details not transcribed) paid with class Heroic Resource.",
+        "ability": "come_out_to_play"
+      },
+      {
+        "id": "ratcatcher__deadly_and_big",
+        "name": "Deadly and Big",
+        "description": "+3 damage bonus on strikes vs creatures smaller than you.",
+        "ability": null
+      },
+      {
+        "id": "ratcatcher__everybody_move",
+        "name": "Everybody Move!",
+        "description": "Knockback maneuver: target one extra same-size creature or two extra smaller creatures.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "saved_for_a_worse_fate",
+    "type": "title",
+    "name": "Saved for a Worse Fate",
+    "description_text": "Captured instead of slain; a darker fate looms.",
+    "echelon": 1,
+    "prerequisite": "Entire party killed or captured by sapient foes.",
+    "benefits": [
+      {
+        "id": "saved_for_a_worse_fate__gladiators",
+        "name": "Gladiators",
+        "description": "Fight for captors’ amusement; opponents guard trinket or leveled treasure you can earn.",
+        "ability": null
+      },
+      {
+        "id": "saved_for_a_worse_fate__prey",
+        "name": "Prey",
+        "description": "+1 speed and +2 Recoveries until end of next respite via draught.",
+        "ability": null
+      },
+      {
+        "id": "saved_for_a_worse_fate__sacrifices",
+        "name": "Sacrifices",
+        "description": "Being prepared for sacrifice: each hero earns 1 Wealth.",
+        "ability": null
+      },
+      {
+        "id": "saved_for_a_worse_fate__saviors",
+        "name": "Saviors",
+        "description": "Captors fear stronger foe; defeat it and keep treasure.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "ship_captain",
+    "type": "title",
+    "name": "Ship Captain",
+    "description_text": "Leader of a crew in pursuit of glory.",
+    "echelon": 1,
+    "prerequisite": "Acquire a ship, airship, or similar vessel.",
+    "benefits": [
+      {
+        "id": "ship_captain__deep_sea_diver",
+        "name": "Deep-Sea Diver",
+        "description": "Automatically swim at full speed while moving.",
+        "ability": null
+      },
+      {
+        "id": "ship_captain__ship_speaker",
+        "name": "Ship Speaker",
+        "description": "Know location of any party-controlled ship; telepathic communication with anyone aboard regardless of distance.",
+        "ability": null
+      },
+      {
+        "id": "ship_captain__signal_flags",
+        "name": "Signal Flags",
+        "description": "Communicate/ negotiate with another ship up to 5 miles away (line of effect); edge on Presence tests for such negotiation.",
+        "ability": null
+      },
+      {
+        "id": "ship_captain__trained_crewmember",
+        "name": "Trained Crewmember",
+        "description": "Edge on tests to handle air or sea vessels.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "troupe_leading_player",
+    "type": "title",
+    "name": "Troupe Leading Player",
+    "description_text": "Leader and star of a performing troupe.",
+    "echelon": 1,
+    "prerequisite": "Party successfully performs as troupe of entertainers.",
+    "benefits": [
+      {
+        "id": "troupe_leading_player__flying_circus",
+        "name": "Flying Circus",
+        "description": "Triggered: push adjacent willing ally 2 (or 4 if smaller); ally may maneuver pre-fall to reduce fall by 2.",
+        "ability": null
+      },
+      {
+        "id": "troupe_leading_player__spotlight",
+        "name": "Spotlight",
+        "description": "Illuminate creature within 10 for 1 minute (or until >10 away/dismissed); illuminated can’t sneak/hide, bane on secret action tests, edge on Lead/Music/Perform tests.",
+        "ability": null
+      },
+      {
+        "id": "troupe_leading_player__supporting_player",
+        "name": "Supporting Player",
+        "description": "Edge on group Presence tests and assisting another creature’s Presence test.",
+        "ability": null
+      },
+      {
+        "id": "troupe_leading_player__work_the_crowd",
+        "name": "Work the Crowd",
+        "description": "While ally performs music/performance: edge on conceal, hide, pick pockets, sneak tests.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "wanted_dead_or_alive",
+    "type": "title",
+    "name": "Wanted Dead or Alive",
+    "description_text": "Outlaw with a price on your head.",
+    "echelon": 1,
+    "prerequisite": "Declared an outlaw by a governmental authority.",
+    "benefits": [
+      {
+        "id": "wanted_dead_or_alive__honor_among_thieves",
+        "name": "Honor Among Thieves",
+        "description": "Renown considered 2 higher when negotiating with criminals.",
+        "ability": null
+      },
+      {
+        "id": "wanted_dead_or_alive__minion_mower",
+        "name": "Minion Mower",
+        "description": "Melee strike vs minion with another minion in distance: +3 damage.",
+        "ability": null
+      },
+      {
+        "id": "wanted_dead_or_alive__no_youre_under_arrest",
+        "name": "No, You’re Under Arrest!",
+        "description": "Edge on Escape Grab; succeeding escaping bonds/manacles lets you transfer them to adjacent same-size creature unnoticed.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "zombie_slayer",
+    "type": "title",
+    "name": "Zombie Slayer",
+    "description_text": "Vanquisher of the undead.",
+    "echelon": 1,
+    "prerequisite": "Defeat a leader or solo creature with the Undead keyword (e.g., ghost).",
+    "benefits": [
+      {
+        "id": "zombie_slayer__blessed_weapons",
+        "name": "Blessed Weapons",
+        "description": "Your damage-dealing weapon abilities can deal holy damage instead of normal type.",
+        "ability": null
+      },
+      {
+        "id": "zombie_slayer__divine_health",
+        "name": "Divine Health",
+        "description": "Corruption immunity equal to highest characteristic score; you can’t become undead.",
+        "ability": null
+      },
+      {
+        "id": "zombie_slayer__holy_terror",
+        "name": "Holy Terror",
+        "description": "You have an ability (details not transcribed) paid with class Heroic Resource.",
+        "ability": "holy_terror"
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "arena_fighter",
+    "type": "title",
+    "name": "Arena Fighter",
+    "description_text": "Brutal combat entertainer with a signature move.",
+    "echelon": 2,
+    "prerequisite": "Victorious in arena or public combat contest.",
+    "benefits": [
+      {
+        "id": "arena_fighter__dirty_fighting",
+        "name": "Dirty Fighting",
+        "description": "While standing, melee strikes +3 damage vs prone; being prone doesn’t impose bane on your strikes.",
+        "ability": null
+      },
+      {
+        "id": "arena_fighter__foes_as_weapons",
+        "name": "Foes as Weapons",
+        "description": "Grabbed same-size-or-smaller creature can be used as weapon for melee free strike; both it and target take damage.",
+        "ability": null
+      },
+      {
+        "id": "arena_fighter__instant_celebrity",
+        "name": "Instant Celebrity",
+        "description": "Earn 1 Renown.",
+        "ability": null,
+        "grants": [{ "type": "renown", "value": 1 }]
+      },
+      {
+        "id": "arena_fighter__showstopper",
+        "name": "Showstopper",
+        "description": "You have an ability (details not transcribed) paid with class Heroic Resource.",
+        "ability": "showstopper"
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "awakened",
+    "type": "title",
+    "name": "Awakened",
+    "description_text": "Psionic potential released by a foe’s death.",
+    "echelon": 2,
+    "prerequisite": "Defeat leader or solo with Psionic ability.",
+    "benefits": [
+      {
+        "id": "awakened__foresight",
+        "name": "Foresight",
+        "description": "No bane when using abilities against concealed creatures.",
+        "ability": null
+      },
+      {
+        "id": "awakened__rogue_talent",
+        "name": "Rogue Talent",
+        "description": "Gain a 1st-level talent class triggered action (clarity requires feature).",
+        "ability": null
+      },
+      {
+        "id": "awakened__telepathy",
+        "name": "Telepathy",
+        "description": "Maneuver: telepathic communication within 10 squares with a language-sharer; they can respond.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "battlefield_commander",
+    "type": "title",
+    "name": "Battlefield Commander",
+    "description_text": "Field leader forging victory.",
+    "echelon": 2,
+    "prerequisite": "Lead an army in battle and win.",
+    "benefits": [
+      {
+        "id": "battlefield_commander__charge",
+        "name": "Charge!",
+        "description": "You have an ability (details not transcribed).",
+        "ability": "charge"
+      },
+      {
+        "id": "battlefield_commander__renowned_warrior",
+        "name": "Renowned Warrior",
+        "description": "Earn 1 Renown.",
+        "ability": null,
+        "grants": [{ "type": "renown", "value": 1 }]
+      },
+      {
+        "id": "battlefield_commander__student_of_war",
+        "name": "Student of War",
+        "description": "Choose a 1st-level tactician doctrine feature; gain it even without Tactical Doctrine.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "blood_magic",
+    "type": "title",
+    "name": "Blood Magic",
+    "description_text": "Forbidden sanguine arts empower your spells.",
+    "echelon": 2,
+    "prerequisite": "Participate in a Discover Lore project to learn forbidden knowledge.",
+    "benefits": [
+      {
+        "id": "blood_magic__blood_mage",
+        "name": "Blood Mage",
+        "description": "Area Magic/Psionic ability: take level damage (irreducible) to increase area by 1 (line: one dimension) for encounter; once per ability use.",
+        "ability": null
+      },
+      {
+        "id": "blood_magic__bloody_murder",
+        "name": "Bloody Murder",
+        "description": "On strike dealing rolled damage: take level damage to deal double that corruption damage (once per ability); if target reduced to 0 by that corruption damage, it explodes and you regain lost Stamina (not usable on bloodless creatures).",
+        "ability": null
+      },
+      {
+        "id": "blood_magic__i_reject_this_evil_power",
+        "name": "I Reject This Evil Power!",
+        "description": "Corruption immunity equal to your level.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "corsair",
+    "type": "title",
+    "name": "Corsair",
+    "description_text": "Dread pirate of the high seas.",
+    "echelon": 2,
+    "prerequisite": "Have Ship Captain title and sink or capture equal/greater ship.",
+    "benefits": [
+      {
+        "id": "corsair__artillerist",
+        "name": "Artillerist",
+        "description": "+5 damage when using a ship’s weapons.",
+        "ability": null
+      },
+      {
+        "id": "corsair__black_flag",
+        "name": "Black Flag",
+        "description": "Iconic flag: enemy crews with line of effect take bane on strikes vs your ship or crew.",
+        "ability": null
+      },
+      {
+        "id": "corsair__fearsome_reputation",
+        "name": "Fearsome Reputation",
+        "description": "Earn 1 Renown.",
+        "ability": null,
+        "grants": [{ "type": "renown", "value": 1 }]
+      },
+      {
+        "id": "corsair__scoundrel_tactics",
+        "name": "Scoundrel Tactics",
+        "description": "While aboard ship, Disguise/Intimidate/Hide/Sneak to influence another ship up to 5 miles (line of effect); gain edge.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "faction_officer",
+    "type": "title",
+    "name": "Faction Officer",
+    "description_text": "Authority figure within your faction.",
+    "echelon": 2,
+    "prerequisite": "Have Faction Member title and greatly advance faction goals.",
+    "benefits": [
+      {
+        "id": "faction_officer__requisition",
+        "name": "Requisition",
+        "description": "Gain 1st/2nd-echelon magic trinket; can swap on leveling.",
+        "ability": null
+      },
+      {
+        "id": "faction_officer__youre_the_boss",
+        "name": "You’re the Boss",
+        "description": "Lower ranks follow routine orders; edge influencing them in nonroutine matters.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "fey_friend",
+    "type": "title",
+    "name": "Fey Friend",
+    "description_text": "Blessed by an immortal revel.",
+    "echelon": 2,
+    "prerequisite": "Eat and drink with an elf monarch or archfey.",
+    "benefits": [
+      {
+        "id": "fey_friend__gift_of_charm",
+        "name": "Gift of Charm",
+        "description": "Gain one interpersonal skill of your choice.",
+        "ability": null,
+        "grants": [
+          { "type": "skill_choice", "group": "interpersonal", "count": 1 }
+        ]
+      },
+      {
+        "id": "fey_friend__gift_of_foresight",
+        "name": "Gift of Foresight",
+        "description": "Intuition score counts as 1 higher when resisting potencies.",
+        "ability": null
+      },
+      {
+        "id": "fey_friend__gift_of_knowledge",
+        "name": "Gift of Knowledge",
+        "description": "Edge on tests using any lore skill group skill.",
+        "ability": null
+      }
+    ],
+    "special": "Know the Khelt language.",
+    "grants": [{ "type": "languages", "count": 1, "specific": ["khelt"] }]
+  },
+  {
+    "id": "giant_slayer",
+    "type": "title",
+    "name": "Giant Slayer",
+    "description_text": "Foe of towering giants.",
+    "echelon": 2,
+    "prerequisite": "Defeat a leader or solo creature with Giant keyword.",
+    "benefits": [
+      {
+        "id": "giant_slayer__smallfolk_dodge",
+        "name": "Smallfolk Dodge",
+        "description": "Creatures size 2+ take bane on strikes against you.",
+        "ability": null
+      },
+      {
+        "id": "giant_slayer__the_harder_they_fall",
+        "name": "The Harder They Fall",
+        "description": "You have an ability (details not transcribed).",
+        "ability": "the_harder_they_fall"
+      },
+      {
+        "id": "giant_slayer__up_the_beanstalk",
+        "name": "Up the Beanstalk",
+        "description": "Gain Climb skill or edge with it; while climbing a creature: its strikes vs you double bane; you double edge to stay on.",
+        "ability": null,
+        "grants": [
+          {
+            "type": "skill_choice",
+            "skill": "climb",
+            "count": 1,
+            "mode": "gain_or_edge"
+          }
+        ]
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "godsworn",
+    "type": "title",
+    "name": "Godsworn",
+    "description_text": "Marked by divine favor.",
+    "echelon": 2,
+    "prerequisite": "Do or promise a favor for an agent of a god or saint.",
+    "benefits": [
+      {
+        "id": "godsworn__healing_gift",
+        "name": "Healing Gift",
+        "description": "Use Conduit Healing Grace 1st-level feature as if spending 1 piety; regain after 1+ Victories.",
+        "ability": null
+      },
+      {
+        "id": "godsworn__last_ditch_prayer",
+        "name": "Last-Ditch Prayer",
+        "description": "Free maneuver: gain 2d10 Heroic Resource pool for turn; regain after service or level up.",
+        "ability": null
+      },
+      {
+        "id": "godsworn__touched_by_the_divine",
+        "name": "Touched by the Divine",
+        "description": "Choose god/saint domain; gain a Conduit 1st-level domain feature.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "heist_hero",
+    "type": "title",
+    "name": "Heist Hero",
+    "description_text": "Master planner of daring thefts.",
+    "echelon": 2,
+    "prerequisite": "Have Troupe Leading Player title and execute a planned theft successfully.",
+    "benefits": [
+      {
+        "id": "heist_hero__mother_hen",
+        "name": "Mother Hen",
+        "description": "Spend 10 minutes: up to five willing creatures within 10 squares gain telepathic link with you & each other for 1 hour.",
+        "ability": null
+      },
+      {
+        "id": "heist_hero__sneakers",
+        "name": "Sneakers",
+        "description": "Gain Sneak skill or edge with it; in group tests, can both use Sneak and assist another using Sneak.",
+        "ability": null,
+        "grants": [
+          {
+            "type": "skill_choice",
+            "skill": "sneak",
+            "count": 1,
+            "mode": "gain_or_edge"
+          }
+        ]
+      },
+      {
+        "id": "heist_hero__timely_distraction",
+        "name": "Timely Distraction",
+        "description": "You have a triggered action (details not transcribed).",
+        "ability": "timely_distraction"
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "knight",
+    "type": "title",
+    "name": "Knight",
+    "description_text": "Sworn blade of a noble power.",
+    "echelon": 2,
+    "prerequisite": "Granted knighthood or similar rank by a noble or monarch.",
+    "benefits": [
+      {
+        "id": "knight__heraldic_fame",
+        "name": "Heraldic Fame",
+        "description": "Earn 1 Renown.",
+        "ability": null,
+        "grants": [{ "type": "renown", "value": 1 }]
+      },
+      {
+        "id": "knight__knightly_aegis",
+        "name": "Knightly Aegis",
+        "description": "+6 Stamina maximum.",
+        "ability": null
+      },
+      {
+        "id": "knight__knightly_challenge",
+        "name": "Knightly Challenge",
+        "description": "You have an ability (details not transcribed).",
+        "ability": "knightly_challenge"
+      }
+    ],
+    "special": "May be called to perform duties for the granting authority."
+  },
+  {
+    "id": "master_librarian",
+    "type": "title",
+    "name": "Master Librarian",
+    "description_text": "Keeper of deep and arcane knowledge.",
+    "echelon": 2,
+    "prerequisite": "Have Ancient Loremaster title and complete Discover Lore project for lost/forbidden knowledge.",
+    "benefits": [
+      {
+        "id": "master_librarian__arcane_improvisation",
+        "name": "Arcane Improvisation",
+        "description": "When using damage-dealing magic signature ability, change its damage type to acid, cold, corruption, fire, lightning, poison, or sonic.",
+        "ability": null
+      },
+      {
+        "id": "master_librarian__i_have_just_the_book",
+        "name": "I Have Just the Book",
+        "description": "Start Discover Lore project in stronghold/base: immediately gain 60 project points (complete if ≤60) in 10 minutes w/o respite.",
+        "ability": null
+      },
+      {
+        "id": "master_librarian__picked_up_a_few_things",
+        "name": "Picked Up a Few Things",
+        "description": "Gain one lore skill.",
+        "ability": null,
+        "grants": [{ "type": "skill_choice", "group": "lore", "count": 1 }]
+      },
+      {
+        "id": "master_librarian__polyglot",
+        "name": "Polyglot",
+        "description": "Know two languages; Learn New Language project goal is halved for you.",
+        "ability": null,
+        "grants": [{ "type": "languages", "count": 2 }]
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "special_agent",
+    "type": "title",
+    "name": "Special Agent",
+    "description_text": "Entrusted with a critical secret mission.",
+    "echelon": 2,
+    "prerequisite": "Given an important secret mission by a spymaster.",
+    "benefits": [
+      {
+        "id": "special_agent__boffin",
+        "name": "Boffin",
+        "description": "Gain a boffin device; once per encounter activate a property (see properties list).",
+        "ability": null
+      },
+      {
+        "id": "special_agent__caustic_alchemy",
+        "name": "Caustic Alchemy",
+        "description": "Choose 1st-level shadow college Coat the Blade or Smoke Bomb; can’t spend insight unless you have the Insight feature.",
+        "ability": null
+      },
+      {
+        "id": "special_agent__spy_ring",
+        "name": "Spy Ring",
+        "description": "Magic jewelry: main action adopt illusory appearance of observed individual within 10; auto succeed Disguise tests based on visual ID.",
+        "ability": null
+      }
+    ],
+    "special": "Boffin Properties: edge Disguise test; unlock touched mundane lock; remote observe square within 10 (no line of effect); throw for 2d10 + level fire damage 5 cube (destroys boffin)."
+  },
+  {
+    "id": "sworn_hunter",
+    "type": "title",
+    "name": "Sworn Hunter",
+    "description_text": "Pursuer of criminal organizations to the bitter end.",
+    "echelon": 2,
+    "prerequisite": "Have Marshal title and take down an entire criminal organization.",
+    "benefits": [
+      {
+        "id": "sworn_hunter__hunters_oath",
+        "name": "Hunter’s Oath",
+        "description": "Main action: swear oath vs creature within 10 (line of effect); know direction if within 50 miles; your damage-dealing abilities +5 damage vs target until death or new oath.",
+        "ability": null
+      },
+      {
+        "id": "sworn_hunter__particular_set_of_skills",
+        "name": "Particular Set of Skills",
+        "description": "Gain one intrigue skill.",
+        "ability": null
+      },
+      {
+        "id": "sworn_hunter__were_in_this_together",
+        "name": "We’re In This Together",
+        "description": "If you have a creature grabbed and take damage from another source’s ability, grabbed creature takes same damage.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "undead_slain",
+    "type": "title",
+    "name": "Undead Slain",
+    "description_text": "Returned from death by undead hands.",
+    "echelon": 2,
+    "prerequisite": "Killed by an undead creature.",
+    "benefits": [
+      {
+        "id": "undead_slain__ghoul_or_vampire",
+        "name": "Ghoul or Vampire",
+        "description": "Melee free strike vs adjacent: bite on tier 3 to gain temp Stamina equal to damage (lasts until end of next respite).",
+        "ability": null
+      },
+      {
+        "id": "undead_slain__incorporeal_undead",
+        "name": "Incorporeal Undead",
+        "description": "Move through creatures/objects; first pass-through per round deals corruption damage = half level; no damage from being forced into objects.",
+        "ability": null
+      },
+      {
+        "id": "undead_slain__other_corporeal_undead",
+        "name": "Other Corporeal Undead",
+        "description": "Reduced to 0 by non-fire/holy & body intact: regain half Stamina and fall prone (once per 10+ Victories).",
+        "ability": null
+      }
+    ],
+    "special": "Gain corruption immunity equal to level; if die again you rise as undead under Director’s control."
+  },
+  {
+    "id": "unstoppable",
+    "type": "title",
+    "name": "Unstoppable",
+    "description_text": "You refuse to fall even when mortally wounded.",
+    "echelon": 2,
+    "prerequisite": "Defeat a foe while at or below 0 Stamina.",
+    "benefits": [
+      {
+        "id": "unstoppable__from_hells_heart",
+        "name": "From Hell’s Heart",
+        "description": "While winded, melee strikes +3 damage.",
+        "ability": null
+      },
+      {
+        "id": "unstoppable__furious_attack",
+        "name": "Furious Attack",
+        "description": "Gain a fury class signature ability (ferocity usage requires feature).",
+        "ability": null
+      },
+      {
+        "id": "unstoppable__furious_charge",
+        "name": "Furious Charge",
+        "description": "Charge action: strike gains damage bonus equal to squares moved.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "armed_and_dangerous",
+    "name": "Armed and Dangerous",
+    "description_text": "Weapon mastery despite lacking kit support.",
+    "echelon": 3,
+    "prerequisite": "Cannot use kits and defeat five non-minion enemies using non-Magic/Psionic weapon abilities.",
+    "benefits": [
+      {
+        "id": "armed_and_dangerous__kit_access",
+        "name": "Kit Access",
+        "description": "You can use and gain benefits of kits.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "back_from_the_grave",
+    "type": "title",
+    "name": "Back From the Grave",
+    "description_text": "Returned from death to settle unfinished business.",
+    "echelon": 3,
+    "prerequisite": "Die at hands of greatest foe who still lives and not a revenant.",
+    "benefits": [
+      {
+        "id": "back_from_the_grave__tough_but_withered",
+        "name": "Tough But Withered",
+        "description": "Gain the Tough But Withered signature trait from revenant ancestry.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "demon_slayer",
+    "type": "title",
+    "name": "Demon Slayer",
+    "description_text": "Scourge of demonic entities.",
+    "echelon": 3,
+    "prerequisite": "Defeat or be possessed by leader/solo with Demon keyword.",
+    "benefits": [
+      {
+        "id": "demon_slayer__demonic_lore",
+        "name": "Demonic Lore",
+        "description": "Know Proto-Ctholl; when using magic ability you may change damage type to holy.",
+        "ability": null
+      },
+      {
+        "id": "demon_slayer__lethe",
+        "name": "Lethe",
+        "description": "While winded, strikes +5 damage.",
+        "ability": null
+      },
+      {
+        "id": "demon_slayer__made_of_teeth",
+        "name": "Made of Teeth",
+        "description": "Physical contact or creature starts turn touching you: deal 5 damage (no action).",
+        "ability": null
+      },
+      {
+        "id": "demon_slayer__soulsight",
+        "name": "Soulsight",
+        "description": "Creatures within 2 squares can’t be hidden from you.",
+        "ability": null
+      }
+    ],
+    "special": "Presence test natural 5 or lower: cursed to speak only Proto-Ctholl for 1 minute."
+  },
+  {
+    "id": "diabolist",
+    "type": "title",
+    "name": "Diabolist",
+    "description_text": "Power bargained from infernal forces.",
+    "echelon": 3,
+    "prerequisite": "Defeat leader/solo with Devil keyword or make a deal with a devil.",
+    "benefits": [
+      {
+        "id": "diabolist__devil_lore",
+        "name": "Devil Lore",
+        "description": "Know Anjali; potencies of magic/psionic abilities targeting Reason, Intuition, or Presence increase by 1.",
+        "ability": null
+      },
+      {
+        "id": "diabolist__infernal_legacy",
+        "name": "Infernal Legacy",
+        "description": "Gain 3 ancestry points for purchased devil ancestry traits.",
+        "ability": null,
+        "grants": [
+          { "type": "ancestry_points", "ancestry": "devil", "value": 3 }
+        ]
+      },
+      {
+        "id": "diabolist__sly_devil",
+        "name": "Sly Devil",
+        "description": "Gain Silver Tongue signature trait from devil ancestry.",
+        "ability": null
+      },
+      {
+        "id": "diabolist__untouched_by_corruption",
+        "name": "Untouched by Corruption",
+        "description": "Damage-dealing abilities can deal holy damage instead of normal type.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "dragon_blooded",
+    "type": "title",
+    "name": "Dragon Blooded",
+    "description_text": "Infused with dragon’s heartblood.",
+    "echelon": 3,
+    "prerequisite": "Defeat a leader or solo creature with Dragon keyword.",
+    "benefits": [
+      {
+        "id": "dragon_blooded__dragon_scaled",
+        "name": "Dragon Scaled",
+        "description": "Gain Wyrmplate signature trait from dragon knight ancestry.",
+        "ability": null
+      },
+      {
+        "id": "dragon_blooded__dragon_touched",
+        "name": "Dragon Touched",
+        "description": "Gain 3 ancestry points for purchased dragon knight ancestry traits.",
+        "ability": null,
+        "grants": [
+          { "type": "ancestry_points", "ancestry": "dragon_knight", "value": 3 }
+        ]
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "fleet_admiral",
+    "type": "title",
+    "name": "Fleet Admiral",
+    "description_text": "Commander of a feared fleet.",
+    "echelon": 3,
+    "prerequisite": "Have Corsair title and lead a fleet of at least three ships.",
+    "benefits": [
+      {
+        "id": "fleet_admiral__first_mate",
+        "name": "First Mate",
+        "description": "Gain a pirate retainer whose level scales to yours.",
+        "ability": null
+      },
+      {
+        "id": "fleet_admiral__swashbuckler",
+        "name": "Swashbuckler",
+        "description": "Automatically climb at full speed while moving.",
+        "ability": null
+      },
+      {
+        "id": "fleet_admiral__treasure_keeper",
+        "name": "Treasure Keeper",
+        "description": "Earn 1 Wealth.",
+        "ability": null,
+        "grants": [{ "type": "wealth", "value": 1 }]
+      },
+      {
+        "id": "fleet_admiral__weather_wizard",
+        "name": "Weather Wizard",
+        "description": "Once per day 10-minute ritual alters mundane weather (5-mile radius) for 6 hours (choose Calm/Fog/High Winds/Light Winds/Storm with listed effects).",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "maestro",
+    "type": "title",
+    "name": "Maestro",
+    "description_text": "You have heard the Music of Creation.",
+    "echelon": 3,
+    "prerequisite": "Visit realms of immortals and hear a note of the Music of Creation.",
+    "benefits": [
+      {
+        "id": "maestro__angelic_chorus",
+        "name": "Angelic Chorus",
+        "description": "Choose troubadour class act triggered action; gain it (drama replaced by your class Heroic Resource).",
+        "ability": null
+      },
+      {
+        "id": "maestro__devils_opera",
+        "name": "Devil’s Opera",
+        "description": "You have an ability (details not transcribed).",
+        "ability": "devils_opera"
+      },
+      {
+        "id": "maestro__music_of_the_spheres",
+        "name": "Music of the Spheres",
+        "description": "Main action: until start of your next turn, any creature within 10 making a strike takes 8 sonic; you also take 8 sonic when you strike.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "master_crafter",
+    "type": "title",
+    "name": "Master Crafter",
+    "description_text": "Artisan of legendary creations.",
+    "echelon": 3,
+    "prerequisite": "Complete downtime project to imbue item with 9th-level enhancement.",
+    "benefits": [
+      {
+        "id": "master_crafter__masterpiece",
+        "name": "Masterpiece",
+        "description": "Item can be imbued a fourth time with any qualifying enhancement.",
+        "ability": null
+      },
+      {
+        "id": "master_crafter__research_dividends",
+        "name": "Research Dividends",
+        "description": "Gain item prerequisite for an enhancement and learn its project source language.",
+        "ability": null
+      },
+      {
+        "id": "master_crafter__skilled_hands",
+        "name": "Skilled Hands",
+        "description": "Gain a relevant crafting skill; if already have it, edge on tests with it and gain second crafting skill of choice.",
+        "ability": null,
+        "grants": [
+          {
+            "type": "skill_choice",
+            "group": "crafting",
+            "count": 1,
+            "mode": "gain_or_edge"
+          }
+        ]
+      },
+      {
+        "id": "master_crafter__strong_hands_make_light_work",
+        "name": "Strong Hands Make Light Work",
+        "description": "May use Might for project rolls.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "noble",
+    "type": "title",
+    "name": "Noble",
+    "description_text": "Bearer of an honored title and its obligations.",
+    "echelon": 3,
+    "prerequisite": "Granted a noble rank by monarch or important noble.",
+    "benefits": [
+      {
+        "id": "noble__i_know_how_to_talk_to_these_people",
+        "name": "I Know How to Talk to These People",
+        "description": "Edge on Presence tests with royals, nobles, and feudal followers aware of your rank.",
+        "ability": null
+      },
+      {
+        "id": "noble__noble_splendor",
+        "name": "Noble Splendor",
+        "description": "Earn 1 Renown and 1 Wealth.",
+        "ability": null,
+        "grants": [
+          { "type": "renown", "value": 1 },
+          { "type": "wealth", "value": 1 }
+        ]
+      },
+      {
+        "id": "noble__retinue",
+        "name": "Retinue",
+        "description": "Followers cap increases by two.",
+        "ability": null,
+        "grants": [{ "type": "followers_cap", "value": 2 }]
+      }
+    ],
+    "special": "May be called upon to perform duties for grantor."
+  },
+  {
+    "id": "planar_voyager",
+    "type": "title",
+    "name": "Planar Voyager",
+    "description_text": "Traveler of bizarre worlds and vehicles.",
+    "echelon": 3,
+    "prerequisite": "Voyage in strange vehicles on different worlds.",
+    "benefits": [
+      {
+        "id": "planar_voyager__prismacore_eyes",
+        "name": "Prismacore Eyes",
+        "description": "Psychic immunity 10; opponents can’t locate/read thoughts magically unless allowed; +3 stability vs magic/psionic abilities.",
+        "ability": null
+      },
+      {
+        "id": "planar_voyager__stellar_knowledge",
+        "name": "Stellar Knowledge",
+        "description": "Gain Mechanics skill or edge with it; also gain item prerequisite and project source for a psionic trinket.",
+        "ability": null,
+        "grants": [
+          {
+            "type": "skill_choice",
+            "skill": "mechanics",
+            "count": 1,
+            "mode": "gain_or_edge"
+          },
+          {
+            "type": "item_prerequisite",
+            "category": "trinket",
+            "tag": "psionic",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "id": "planar_voyager__time_raider_training",
+        "name": "Time Raider Training",
+        "description": "Gain 2 ancestry points for purchased time raider ancestry traits.",
+        "ability": null,
+        "grants": [
+          { "type": "ancestry_points", "ancestry": "time_raider", "value": 2 }
+        ]
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "scarred",
+    "type": "title",
+    "name": "Scarred",
+    "description_text": "Battle scars that empower resilience.",
+    "echelon": 3,
+    "prerequisite": "An enemy leader or solo reduces you to 0 Stamina.",
+    "benefits": [
+      {
+        "id": "scarred__lasting_mark",
+        "name": "Lasting Mark",
+        "description": "Gain visible scar; +20 Stamina max; scar maker takes bane on abilities against you.",
+        "ability": null
+      }
+    ],
+    "special": "Can gain multiple times; subsequent gains do not further increase Stamina max (typo corrected)."
+  },
+  {
+    "id": "siege_breaker",
+    "type": "title",
+    "name": "Siege Breaker",
+    "description_text": "Defender and breaker of fortifications.",
+    "echelon": 3,
+    "prerequisite": "Have Battlefield Commander title and lead defense of settlement/fortification.",
+    "benefits": [
+      {
+        "id": "siege_breaker__death_from_above",
+        "name": "Death From Above",
+        "description": "Edge from high ground grants +8 damage bonus to the ability.",
+        "ability": null
+      },
+      {
+        "id": "siege_breaker__hold_the_line",
+        "name": "Hold the Line",
+        "description": "Within 5 squares of an ally: you and allies within 5 gain +3 stability.",
+        "ability": null
+      },
+      {
+        "id": "siege_breaker__last_defender",
+        "name": "Last Defender",
+        "description": "Ally within 5 reduced to 0: gain temp Stamina equal to ally level (1 if no level); if already have temp from this, add amount instead.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "teacher",
+    "type": "title",
+    "name": "Teacher",
+    "description_text": "Mentor to the next generation.",
+    "echelon": 3,
+    "prerequisite": "Train or command at least three lower-level members of your class.",
+    "benefits": [
+      {
+        "id": "teacher__apprentice",
+        "name": "Apprentice",
+        "description": "Travel with non-combat student (1st-level of your class) sharing your skills; assists can’t yield worse than tier 2 outcome.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "champion_competitor",
+    "type": "title",
+    "name": "Champion Competitor",
+    "description_text": "World-class victor in contest of skill.",
+    "echelon": 4,
+    "prerequisite": "Beat the best in the world at a game or sport.",
+    "benefits": [
+      {
+        "id": "champion_competitor__best_of_the_best",
+        "name": "Best of the Best",
+        "description": "Choose a competition skill: +4 bonus (instead of +2) to tests using it.",
+        "ability": null
+      },
+      {
+        "id": "champion_competitor__glory_and_riches",
+        "name": "Glory and Riches",
+        "description": "Earn 2 Renown and 1 Wealth.",
+        "ability": null,
+        "grants": [
+          { "type": "renown", "value": 2 },
+          { "type": "wealth", "value": 1 }
+        ]
+      },
+      {
+        "id": "champion_competitor__ill_just_take_the_prize",
+        "name": "I’ll Just Take the Prize",
+        "description": "Gain a trinket or leveled treasure of Director’s choice.",
+        "ability": null
+      }
+    ],
+    "special": "Increase a competition-used characteristic by 1 (max 6).",
+    "grants": [
+      {
+        "type": "characteristic_increase",
+        "choices": ["might", "agility", "reason", "intuition", "presence"],
+        "value": 1,
+        "max": 6,
+        "tag": "competition"
+      }
+    ]
+  },
+  {
+    "id": "demigod",
+    "type": "title",
+    "name": "Demigod",
+    "description_text": "Ascended to near-divine status.",
+    "echelon": 4,
+    "prerequisite": "Have Godsworn title and mortals complete divine ritual in your name.",
+    "benefits": [
+      {
+        "id": "demigod__immortal_excellence",
+        "name": "Immortal Excellence",
+        "description": "Increase a characteristic by 1 (max 6).",
+        "ability": null,
+        "grants": [
+          {
+            "type": "characteristic_increase",
+            "choices": ["might", "agility", "reason", "intuition", "presence"],
+            "value": 1,
+            "max": 6
+          }
+        ]
+      },
+      {
+        "id": "demigod__longevity",
+        "name": "Longevity",
+        "description": "Natural lifespan doubles; can appear any age.",
+        "ability": null
+      },
+      {
+        "id": "demigod__worshippers",
+        "name": "Worshippers",
+        "description": "Magically hear prayers directed to you.",
+        "ability": null
+      },
+      {
+        "id": "demigod__acolytes",
+        "name": "Acolytes",
+        "description": "Followers cap increases by two.",
+        "ability": null,
+        "grants": [{ "type": "followers_cap", "value": 2 }]
+      },
+      {
+        "id": "demigod__divine_weapons",
+        "name": "Divine Weapons",
+        "description": "Damage-dealing weapon abilities can deal corruption or holy damage instead of normal type.",
+        "ability": null
+      },
+      {
+        "id": "demigod__missionaries",
+        "name": "Missionaries",
+        "description": "Earn 2 Renown.",
+        "ability": null,
+        "grants": [{ "type": "renown", "value": 2 }]
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "enlightened",
+    "type": "title",
+    "name": "Enlightened",
+    "description_text": "Mind expanded by cosmic truth.",
+    "echelon": 4,
+    "prerequisite": "Learn a cosmic truth altering understanding of reality.",
+    "benefits": [
+      {
+        "id": "enlightened__cosmic_revelation",
+        "name": "Cosmic Revelation",
+        "description": "Lore skill test tier 1/2 outcome may become tier 3 (once per 1+ Victories).",
+        "ability": null
+      },
+      {
+        "id": "enlightened__mind_over_matter",
+        "name": "Mind Over Matter",
+        "description": "Whenever you spend a Recovery, end one condition on yourself.",
+        "ability": null
+      },
+      {
+        "id": "enlightened__rearrange_the_game_pieces",
+        "name": "Rearrange the Game Pieces",
+        "description": "Start of combat: reposition self or creature within 5 to chosen space (safe) unnoticed; only you recall prior position.",
+        "ability": null
+      }
+    ],
+    "special": "Increase Reason or Intuition by 1 (max 6).",
+    "grants": [
+      {
+        "type": "characteristic_increase",
+        "choices": ["reason", "intuition"],
+        "value": 1,
+        "max": 6
+      }
+    ]
+  },
+  {
+    "id": "forsaken",
+    "type": "title",
+    "name": "Forsaken",
+    "description_text": "You continue after losing an artifact of power.",
+    "echelon": 4,
+    "prerequisite": "Party loses/destroys/parts with an artifact.",
+    "benefits": [
+      {
+        "id": "forsaken__brief_reunion",
+        "name": "Brief Reunion",
+        "description": "While winded, maneuver to summon artifact for one round; once per 1+ Victories.",
+        "ability": null
+      },
+      {
+        "id": "forsaken__perfect_protection",
+        "name": "Perfect Protection",
+        "description": "Director chooses artifact-related damage type; you have immunity to that type.",
+        "ability": null
+      },
+      {
+        "id": "forsaken__poor_compensation",
+        "name": "Poor Compensation",
+        "description": "Artifact becomes a trinket or leveled treasure retaining shape, Director’s choice.",
+        "ability": null
+      }
+    ],
+    "special": "Increase a characteristic by 1 (max 6).",
+    "grants": [
+      {
+        "type": "characteristic_increase",
+        "choices": ["might", "agility", "reason", "intuition", "presence"],
+        "value": 1,
+        "max": 6
+      }
+    ]
+  },
+  {
+    "id": "monarch",
+    "type": "title",
+    "name": "Monarch",
+    "description_text": "Ruler of a nation with sweeping authority.",
+    "echelon": 4,
+    "prerequisite": "You or party member becomes monarch of a nation.",
+    "benefits": [
+      {
+        "id": "monarch__royal_authority",
+        "name": "Royal Authority",
+        "description": "Inhabitants must obey lawful orders or face consequences.",
+        "ability": null
+      },
+      {
+        "id": "monarch__royal_majesty",
+        "name": "Royal Majesty",
+        "description": "Increase Might or Presence by 1 (max 6).",
+        "ability": null,
+        "grants": [
+          {
+            "type": "characteristic_increase",
+            "choices": ["might", "presence"],
+            "value": 1,
+            "max": 6
+          }
+        ]
+      },
+      {
+        "id": "monarch__crown_jewels",
+        "name": "Crown Jewels",
+        "description": "Gain a national treasure (trinket of Director’s choice).",
+        "ability": null
+      },
+      {
+        "id": "monarch__royal_fame",
+        "name": "Royal Fame",
+        "description": "Earn 2 Renown.",
+        "ability": null,
+        "grants": [{ "type": "renown", "value": 2 }]
+      },
+      {
+        "id": "monarch__royal_retinue",
+        "name": "Royal Retinue",
+        "description": "Followers cap increases by 2.",
+        "ability": null,
+        "grants": [{ "type": "followers_cap", "value": 2 }]
+      },
+      {
+        "id": "monarch__royal_wealth",
+        "name": "Royal Wealth",
+        "description": "Earn 2 Wealth.",
+        "ability": null,
+        "grants": [{ "type": "wealth", "value": 2 }]
+      }
+    ],
+    "special": "May be called upon for national duties."
+  },
+  {
+    "id": "peace_bringer",
+    "type": "title",
+    "name": "Peace Bringer",
+    "description_text": "Broker of high-stakes peace.",
+    "echelon": 4,
+    "prerequisite": "Conduct successful negotiation deciding fate of a nation or world.",
+    "benefits": [
+      {
+        "id": "peace_bringer__calm_heads_prevail",
+        "name": "Calm Heads Prevail",
+        "description": "Tests to stop combat/start negotiation automatically tier 3.",
+        "ability": null
+      },
+      {
+        "id": "peace_bringer__drop_your_sword",
+        "name": "Drop Your Sword",
+        "description": "On success with Intimidate test, affected creatures drop held items.",
+        "ability": null
+      },
+      {
+        "id": "peace_bringer__hear_me_out",
+        "name": "Hear Me Out",
+        "description": "While present, NPC starting patience +3 (max 5).",
+        "ability": null
+      },
+      {
+        "id": "peace_bringer__many_paths_to_peace",
+        "name": "Many Paths to Peace",
+        "description": "When using interpersonal skill group skill, use any characteristic of choice.",
+        "ability": null
+      }
+    ],
+    "special": "Increase Reason or Presence by 1 (max 6).",
+    "grants": [
+      {
+        "type": "characteristic_increase",
+        "choices": ["reason", "presence"],
+        "value": 1,
+        "max": 6
+      }
+    ]
+  },
+  {
+    "id": "reborn",
+    "type": "title",
+    "name": "Reborn",
+    "description_text": "Returned by higher powers to finish your task.",
+    "echelon": 4,
+    "prerequisite": "Die gloriously while on a quest for a higher power.",
+    "benefits": [
+      {
+        "id": "reborn__holy_weapon",
+        "name": "Holy Weapon",
+        "description": "Gain a leveled treasure (Director’s choice).",
+        "ability": null
+      },
+      {
+        "id": "reborn__kill_me_once_shame_on_you",
+        "name": "Kill Me Once, Shame On You",
+        "description": "Choose a keyword from a defeating creature; creatures with that keyword take bane on ability rolls vs you.",
+        "ability": null
+      },
+      {
+        "id": "reborn__memories_of_the_beyond",
+        "name": "Memories of the Beyond",
+        "description": "Gain two skills of your choice.",
+        "ability": null,
+        "grants": [{ "type": "skill_choice", "count": 2 }]
+      }
+    ],
+    "special": "If a hakaan gains via Doomsight trait they lose that trait. Increase Intuition or Presence by 1 (max 6).",
+    "grants": [
+      {
+        "type": "characteristic_increase",
+        "choices": ["intuition", "presence"],
+        "value": 1,
+        "max": 6
+      }
+    ]
+  },
+  {
+    "id": "theoretical_warrior",
+    "type": "title",
+    "name": "Theoretical Warrior",
+    "description_text": "Scholar of battle turned practitioner.",
+    "echelon": 4,
+    "prerequisite": "Have Master Librarian title and complete Learn From a Master project (goal 1,000).",
+    "benefits": [
+      {
+        "id": "theoretical_warrior__heroic_study",
+        "name": "Heroic Study",
+        "description": "Increase Reason or Intuition by 1 (max 6) and gain a heroic ability from any class (usable with your class resource; feature prerequisites still required).",
+        "ability": null,
+        "grants": [
+          {
+            "type": "characteristic_increase",
+            "choices": ["reason", "intuition"],
+            "value": 1,
+            "max": 6
+          },
+          { "type": "heroic_ability_choice", "count": 1, "source": "any_class" }
+        ]
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "tireless",
+    "type": "title",
+    "name": "Tireless",
+    "description_text": "Ever-moving and unyielding endurance.",
+    "echelon": 4,
+    "prerequisite": "Have Unstoppable title and assist in montage test achieving full success.",
+    "benefits": [
+      {
+        "id": "tireless__bounce_back_fast",
+        "name": "Bounce Back Fast",
+        "description": "Rest 8+ hours: may gain respite benefits (once per 1+ Victories).",
+        "ability": null
+      },
+      {
+        "id": "tireless__reserves_of_strength",
+        "name": "Reserves of Strength",
+        "description": "Recovery value = half Stamina.",
+        "ability": null
+      },
+      {
+        "id": "tireless__undying",
+        "name": "Undying",
+        "description": "Immune to bleeding condition.",
+        "ability": null
+      }
+    ],
+    "special": "Increase Might or Agility by 1 (max 6).",
+    "grants": [
+      {
+        "type": "characteristic_increase",
+        "choices": ["might", "agility"],
+        "value": 1,
+        "max": 6
+      }
+    ]
+  },
+  {
+    "id": "unchained",
+    "type": "title",
+    "name": "Unchained",
+    "description_text": "Escape artist beyond compare.",
+    "echelon": 4,
+    "prerequisite": "Have Heist Hero title and steal precious object or escape captivity while evading guards level 8+.",
+    "benefits": [
+      {
+        "id": "unchained__bye_bye",
+        "name": "Bye-Bye",
+        "description": "Maneuver: teleport self and willing allies within 5 to positions within 10 of origin; once per 1+ Victories.",
+        "ability": null
+      },
+      {
+        "id": "unchained__laughs_at_locks",
+        "name": "Laughs at Locks",
+        "description": "Tests to open locks/break restraints need no tools and automatically tier 3.",
+        "ability": null
+      },
+      {
+        "id": "unchained__slippery",
+        "name": "Slippery",
+        "description": "Cannot be grabbed against your will.",
+        "ability": null
+      }
+    ],
+    "special": "Increase Might or Agility by 1 (max 6).",
+    "grants": [
+      {
+        "type": "characteristic_increase",
+        "choices": ["might", "agility"],
+        "value": 1,
+        "max": 6
+      }
+    ]
+  }
+]

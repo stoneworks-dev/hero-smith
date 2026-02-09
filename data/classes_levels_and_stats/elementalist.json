@@ -1,0 +1,208 @@
+{
+  "classId": "class_elementalist",
+  "name": "Elementalist",
+  "type": "class",
+  "starting_characteristics": {
+    "motto": "“Understanding the mystery, requires ignorance of the mystery.”",
+    "heroicResourceName": "Essence",
+    "baseStamina": 18,
+    "stamina_per_level": 6,
+    "baseRecoveries": 8,
+    "baseSpeed": 5,
+    "baseStability": 0,
+    "baseDisengage": 1,
+
+    "potency_progression": {
+      "characteristic": "Reason",
+      "modifiers": {
+        "weak": -2,
+        "average": -1,
+        "strong": 0
+      }
+    },
+
+    "starting_skills": {
+      "skill_groups": ["Crafting", "Lore"],
+      "skill_count": 3,
+      "granted": ["Magic"],
+      "quick_build": ["Alchemy", "Blacksmithing", "History", "Magic"]
+    },
+    "fixed_starting_characteristics": {
+      "reason": 2
+    },
+    "starting_characteristics_arrays": [
+      {
+        "values": [2, 2, -1, -1]
+      },
+      {
+        "values": [2, 1, 1, -1]
+      },
+      {
+        "values": [2, 1, 0, 0]
+      },
+      {
+        "values": [1, 1, 1, 0]
+      }
+    ]
+  },
+  "levels": [
+    {
+      "level": 1,
+      "features": [
+        {
+          "name": "Elemental Specialization",
+          "grant_type": "pick",
+          "type": "class_subclass"
+        },
+        { "name": "Essence", "grant_type": "granted" },
+        { "name": "Hurl Element", "grant_type": "ability" },
+        { "name": "Persistent Magic", "grant_type": "granted" },
+        { "name": "Practical Magic", "grant_type": "ability" },
+        {
+          "name": "Specialization Feature",
+          "grant_type": "granted",
+          "type": "subclass"
+        },
+        {
+          "name": "Specialization Triggered Action",
+          "grant_type": "granted",
+          "type": "subclass"
+        },
+        { "name": "Enchantment", "grant_type": "pick", "count": 1 },
+        { "name": "Elementalist Ward", "grant_type": "pick", "count": 1 }
+      ],
+      "new_abilities": {
+        "signature": 2,
+        "3_cost": 1,
+        "5_cost": 1
+      }
+    },
+    {
+      "level": 2,
+      "features": [
+        {
+          "name": "Specialization Feature",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "perks": {
+        "count": 1,
+        "perk_groups": ["crafting", "lore", "supernatural"]
+      },
+      "new_abilities": {
+        "grants_previous_levels": true,
+        "5_cost": 1
+      }
+    },
+    {
+      "level": 3,
+      "features": [
+        {
+          "name": "Specialization Feature",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "new_abilities": { "7_cost": 1 }
+    },
+    {
+      "level": 4,
+      "features": [
+        { "name": "Font of Essence", "grant_type": "granted" },
+        { "name": "Mantle of Essence", "grant_type": "granted" },
+        {
+          "name": "Specialization Feature",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "perks": {
+        "count": 1
+      },
+      "skills": [{ "count": 1 }],
+      "characteristics": [
+        { "Reason": { "setTo": 3 } },
+        { "Any": { "increaseBy": 1, "max": 3 } }
+      ]
+    },
+    {
+      "level": 5,
+      "features": [
+        {
+          "name": "Specialization Feature",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "new_abilities": { "9_cost": 1 }
+    },
+    {
+      "level": 6,
+      "features": [{ "name": "Wyrding", "grant_type": "granted" }],
+      "perks": [
+        {
+          "count": 1,
+          "perk_groups": ["crafting", "lore", "supernatural"]
+        }
+      ],
+      "new_abilities": {
+        "grants_previous_levels": true,
+        "9_cost": 1
+      }
+    },
+    {
+      "level": 7,
+      "features": [
+        { "name": "Mantle of Quintessence", "grant_type": "granted" },
+        { "name": "Surging Essence", "grant_type": "granted" }
+      ],
+      "skills": [{ "count": 1 }],
+      "characteristics": [{ "All": { "increaseBy": 1, "max": 4 } }]
+    },
+    {
+      "level": 8,
+      "features": [
+        {
+          "name": "Specialization Feature",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "perks": [{ "count": 1 }],
+      "new_abilities": { "11_cost": 1 }
+    },
+    {
+      "level": 9,
+      "features": [{ "name": "Grand Wyrding", "grant_type": "granted" }],
+      "new_abilities": {
+        "grants_previous_levels": true,
+        "11_cost": 1
+      }
+    },
+    {
+      "level": 10,
+      "features": [
+        {
+          "name": "Specialization Feature",
+          "grant_type": "granted",
+          "type": "subclass"
+        },
+        { "name": "Breath", "grant_type": "granted" },
+        { "name": "Essential Being", "grant_type": "granted" },
+        { "name": "One", "grant_type": "granted" }
+      ],
+      "perks": [
+        {
+          "count": 1,
+          "restrictions": ["crafting", "lore", "supernatural"]
+        }
+      ],
+      "skills": [{ "count": 1 }],
+      "characteristics": [
+        { "Reason": { "setTo": 5 } },
+        { "Any": { "increaseBy": 1, "max": 5 } }
+      ]
+    }
+  ]
+}

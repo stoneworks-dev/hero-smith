@@ -1,0 +1,146 @@
+[
+  {
+    "type": "ability",
+    "id": "black_ash_dart",
+    "name": "Black Ash Dart",
+    "level": null,
+    "resource": null,
+    "resource_value": null,
+    "story_text": null,
+    "keywords": "Ranged, Weapon",
+    "action_type": "maneuver",
+    "trigger_text": null,
+    "distance": null,
+    "targets": "One creature",
+    "power_roll": "Power Roll + Your Highest Characteristic Score",
+    "tier_effects": [
+      {
+        "tier1": "You can teleport the target up to 2 squares.",
+        "tier2": "You can teleport the target up to 4 squares.",
+        "tier3": "You can teleport the target up to 6 squares."
+      }
+    ],
+    "effect": "As a maneuver, you make a ranged free strike using a black ash dart. The strike deals an extra 1 damage and adds the listed effects to the tier outcomes of the power roll.",
+    "special_effect": null
+  },
+  {
+    "type": "ability",
+    "id": "lachomp_tooth",
+    "name": "Lachomp Tooth",
+    "level": null,
+    "resource": null,
+    "resource_value": null,
+    "story_text": null,
+    "keywords": "Melee, Ranged, Weapon",
+    "action_type": "maneuver",
+    "trigger_text": null,
+    "distance": null,
+    "targets": "Multiple creatures",
+    "power_roll": "Power Roll + Your Highest Characteristic Score",
+    "tier_effects": [
+      {
+        "tier1": "You can affect one additional target with this strike.",
+        "tier2": "You can affect up to three additional targets with this strike.",
+        "tier3": "You can affect up to seven additional targets with this strike."
+      }
+    ],
+    "effect": "As a maneuver, you attach a lachomp tooth to a weapon, allowing that weapon to flicker in and out of reality. Your next strike with the weapon can tear through multiple targets in a line (for a ranged strike) or surrounding you (for a melee strike). The strike adds the listed effects to the tier outcomes of the power roll.",
+    "special_effect": null
+  },
+  {
+    "type": "ability",
+    "id": "time_splitter",
+    "name": "Time-Splitter",
+    "level": null,
+    "resource": null,
+    "resource_value": null,
+    "story_text": null,
+    "keywords": "Ranged, Psionic, Weapon",
+    "action_type": "maneuver",
+    "trigger_text": null,
+    "distance": null,
+    "targets": "One creature and nearby creatures",
+    "power_roll": "Power Roll + Your Highest Characteristic Score",
+    "tier_effects": [
+      {
+        "tier1": "The target and each creature within 3 squares of them is slowed (save ends).",
+        "tier2": "The target and each creature within 5 squares of them is slowed (save ends).",
+        "tier3": "The target and each creature within 8 squares of them is slowed (save ends)."
+      }
+    ],
+    "effect": "As a maneuver, you make a ranged free strike using the Time-Splitter, which shatters upon impact. The strike deals an extra 1d6 psychic damage and adds the listed effects to the tier outcomes of the power roll.",
+    "special_effect": null
+  },
+  {
+    "type": "ability",
+    "id": "hallucination_field",
+    "name": "Hallucination Field",
+    "level": null,
+    "resource": null,
+    "resource_value": null,
+    "story_text": "A blanket of illusion twists around you and your allies, making you seem as if you belong wherever you are.",
+    "keywords": "Psionic, Ranged",
+    "action_type": "maneuver",
+    "trigger_text": null,
+    "distance": "Ranged 10",
+    "targets": "Self and any ally",
+    "power_roll": null,
+    "tier_effects": [
+      {
+        "tier1": null,
+        "tier2": null,
+        "tier3": null
+      }
+    ],
+    "effect": "Each target is covered by an illusion causing them to appear exactly as any creature an observer most expects to see. The illusion ends for all targets if any creature under its effect harms or physically interacts with any creature not affected by the illusion, if you use this ability again, or if you choose to end the effect (no action required). The illusion also ends for any affected ally who moves more than the distance of this ability away from you.",
+    "special_effect": null
+  },
+  {
+    "type": "ability",
+    "id": "nullring_strike",
+    "name": "Nullring Strike",
+    "level": null,
+    "resource": null,
+    "resource_value": null,
+    "story_text": "Your punch delivers a devastating burst of psionic energy.",
+    "keywords": "Melee, Psionic, Strike, Weapon",
+    "action_type": "main action",
+    "trigger_text": null,
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + Might(M) or Agility(A)",
+    "tier_effects": [
+      {
+        "tier1": "3 psychic damage.",
+        "tier2": "5 psychic damage; I<AVERAGE>, slowed (save ends).",
+        "tier3": "8 psychic damage; I<STRONG>, slowed (save ends)."
+      }
+    ],
+    "effect": "While slowed in this way, the target takes a bane on magic or psionic abilities.",
+    "special_effect": null
+  },
+  {
+    "type": "ability",
+    "id": "gravekeepers_lantern",
+    "name": "Gravekeeper’s Lantern",
+    "level": null,
+    "resource": null,
+    "resource_value": null,
+    "story_text": null,
+    "keywords": "Magic",
+    "action_type": "main action",
+    "trigger_text": null,
+    "distance": "Within 10 squares",
+    "targets": "One nonhostile spirit",
+    "power_roll": "Power Roll + Presence(P)",
+    "tier_effects": [
+      {
+        "tier1": "You can ask two questions, one of which the spirit must answer fully and honestly.",
+        "tier2": "You can ask three questions, two of which the spirit must answer fully and honestly.",
+        "tier3": "You can ask five questions, all of which the spirit must answer fully and honestly."
+      }
+    ],
+    "effect": "The lantern can temporarily trap a nonhostile spirit of the dead—either an incorporeal undead or the wandering spirit of a creature who died within the last 30 days—allowing you to interrogate them. Trapping a spirit requires you to be within 10 squares of them and succeed on a hard Intuition test. A trapped spirit remains in the lantern for 10 minutes. They remember being trapped and might become hostile thereafter.",
+    "special_effect": null
+  }
+]
