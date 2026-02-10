@@ -22,7 +22,7 @@ A Flutter app for creating and managing heroes for the **Draw Steel** tabletop r
 
 1. Go to the [Releases](https://github.com/stoneworks-dev/hero-smith/releases) page.
 2. Download the latest `andr-X.Y.Z` release asset (`.apk` file).
-3. On your device, enable **Install from unknown sources** in Settings → Security (if not already enabled). I recommend giving permission to your phone file system and installing from there, not the browser.
+3. On your device, enable Install from unknown sources in Settings → Security (if not already enabled). I recommend giving permission to your phone file system app and installing from there, not the browser. Your phone should prompt you to enable this permission when you click on the downloaded file. You can safely remove the permission after installation.
 4. Open the downloaded `.apk` and tap **Install**. Your phone will scan the app for malware. Wait for it, then install.
 5. Launch Hero Smith from your app drawer.
 
