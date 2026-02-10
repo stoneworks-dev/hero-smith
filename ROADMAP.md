@@ -33,6 +33,7 @@ Development is currently **slow and best-effort**, as this is a solo project wit
   - Elemental forms
 - Retainer support
 - Add new official content **once MCDM allows free use under their Creator License**
+- New User Guide at first run of the app
 
 ---
 
