@@ -198,6 +198,7 @@ class _PerksTabState extends ConsumerState<_PerksTab> {
           right: 16,
           bottom: 16,
           child: FloatingActionButton.small(
+            heroTag: 'perks_tab_fab',
             onPressed: () => _showAddPerkDialog(selectedPerkIds),
             backgroundColor: NavigationTheme.cardBackgroundDark,
             foregroundColor: _perksColor,

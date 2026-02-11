@@ -353,6 +353,7 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
           right: 16,
           bottom: 16,
           child: FloatingActionButton.small(
+            heroTag: 'titles_tab_fab',
             onPressed: _showAddTitleDialog,
             backgroundColor: NavigationTheme.cardBackgroundDark,
             foregroundColor: _titlesColor,

@@ -36,6 +36,14 @@ class LanguagesPage extends ConsumerWidget {
               sortedGroups.add(MapEntry(type, groupedLanguages[type]!));
             }
           }
+          // Add any remaining types not in orderedTypes (e.g. custom language types)
+          final remaining = groupedLanguages.keys
+              .where((k) => !orderedTypes.contains(k))
+              .toList()
+            ..sort();
+          for (final g in remaining) {
+            sortedGroups.add(MapEntry(g, groupedLanguages[g]!));
+          }
           
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16),
@@ -46,6 +54,7 @@ class LanguagesPage extends ConsumerWidget {
                   group.key,
                   group.value,
                   context,
+                  ref,
                 );
               }).toList(),
             ),
@@ -55,7 +64,7 @@ class LanguagesPage extends ConsumerWidget {
     );
   }
   
-  Widget _buildLanguageGroup(String type, List<Component> languages, BuildContext context) {
+  Widget _buildLanguageGroup(String type, List<Component> languages, BuildContext context, WidgetRef ref) {
     // Sort languages within each group alphabetically
     languages.sort((a, b) => a.name.compareTo(b.name));
     
@@ -63,7 +72,8 @@ class LanguagesPage extends ConsumerWidget {
       'human' => 'Human Languages',
       'ancestral' => 'Ancestral Languages', 
       'dead' => 'Dead Languages',
-      _ => 'Other Languages',
+      'unknown' => 'Other Languages',
+      _ => '${type[0].toUpperCase()}${type.substring(1)} Languages',
     };
     
     return Column(
@@ -103,12 +113,40 @@ class LanguagesPage extends ConsumerWidget {
           children: languages.map((language) {
             return Container(
               margin: const EdgeInsets.only(bottom: 16),
-              child: LanguageCard(language: language),
+              child: LanguageCard(
+                language: language,
+                onDelete: language.source == 'user'
+                    ? () => _confirmDelete(context, ref, language.name, language.id, 'Language')
+                    : null,
+              ),
             );
           }).toList(),
         ),
         const SizedBox(height: 8),
       ],
+    );
+  }
+  void _confirmDelete(BuildContext context, WidgetRef ref, String name, String id, String type) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Delete Custom $type'),
+        content: Text('Remove "$name"? This cannot be undone.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              ref.read(appDatabaseProvider).deleteComponent(id);
+            },
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
     );
   }
 }

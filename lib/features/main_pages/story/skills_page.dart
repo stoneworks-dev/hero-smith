@@ -42,7 +42,7 @@ class SkillsPage extends ConsumerWidget {
             padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: sorted.map((entry) => _buildGroup(context, entry.key, entry.value)).toList(),
+              children: sorted.map((entry) => _buildGroup(context, ref, entry.key, entry.value)).toList(),
             ),
           );
         },
@@ -50,7 +50,7 @@ class SkillsPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildGroup(BuildContext context, String group, List<Component> skills) {
+  Widget _buildGroup(BuildContext context, WidgetRef ref, String group, List<Component> skills) {
     skills.sort((a, b) => a.name.compareTo(b.name));
     final title = switch (group) {
       'crafting' => 'Crafting',
@@ -91,12 +91,40 @@ class SkillsPage extends ConsumerWidget {
           children: skills.map((s) {
             return Container(
               margin: const EdgeInsets.only(bottom: 16),
-              child: SkillCard(skill: s),
+              child: SkillCard(
+                skill: s,
+                onDelete: s.source == 'user'
+                    ? () => _confirmDelete(context, ref, s.name, s.id, 'Skill')
+                    : null,
+              ),
             );
           }).toList(),
         ),
         const SizedBox(height: 8),
       ],
+    );
+  }
+  void _confirmDelete(BuildContext context, WidgetRef ref, String name, String id, String type) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Delete Custom $type'),
+        content: Text('Remove "$name"? This cannot be undone.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              ref.read(appDatabaseProvider).deleteComponent(id);
+            },
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
     );
   }
 }

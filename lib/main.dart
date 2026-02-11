@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/theme/navigation_theme.dart';
@@ -89,12 +90,12 @@ class _SplashWrapperState extends ConsumerState<SplashWrapper> {
       await ref.read(seedOnStartupProvider.future).timeout(
         const Duration(seconds: 30),
         onTimeout: () {
-          debugPrint('Startup seed timed out after 30 seconds');
+          if (kDebugMode) debugPrint('Startup seed timed out after 30 seconds');
         },
       );
     } catch (e) {
       // Best-effort: allow app to continue; downstream pages can surface errors.
-      debugPrint('Startup seed failed: $e');
+      if (kDebugMode) debugPrint('Startup seed failed: $e');
     }
 
     if (mounted) {

@@ -14,7 +14,6 @@ import '../../../core/services/class_feature_data_service.dart';
 import '../../../core/services/class_feature_grants_service.dart';
 import '../../../core/services/complication_grants_service.dart';
 import '../../../core/services/story_creator_service.dart';
-import '../../../core/services/skill_data_service.dart';
 import '../../../core/services/subclass_data_service.dart';
 
 import '../../../core/theme/navigation_theme.dart';
@@ -24,6 +23,8 @@ import '../../creators/widgets/strength_creator/class_features_section.dart';
 
 import '../../../widgets/perks/perks_selection_widget.dart';
 import '../../../widgets/abilities/ability_expandable_item.dart';
+import '../../../widgets/skills/skill_card.dart';
+import '../../../widgets/languages/language_card.dart';
 import 'story_sections/story_sections.dart';
 
 part 'sheet_story_story_tab.dart';

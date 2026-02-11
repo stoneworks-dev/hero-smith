@@ -425,7 +425,7 @@ class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage> {
       _refreshReservedSkills();
       _refreshReservedPerks();
     } catch (e) {
-      debugPrint('Failed to load hero data: $e');
+      if (kDebugMode) debugPrint('Failed to load hero data: $e');
       // Don't fail the whole initialization if hero data can't be loaded
     }
   }
@@ -1815,7 +1815,7 @@ class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage> {
         );
       } catch (e) {
         // Best-effort: class feature grants are non-critical for the main save
-        debugPrint('Failed to apply class feature grants: $e');
+        if (kDebugMode) debugPrint('Failed to apply class feature grants: $e');
       }
 
       if (!mounted) return;

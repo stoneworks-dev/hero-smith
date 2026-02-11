@@ -67,7 +67,7 @@ class HeroFileService {
         final fileName = _sanitizeFileName(hero.name);
         exportedFiles.add(MapEntry('$fileName.$_fileExtension', code));
       } catch (e) {
-        debugPrint('Failed to export hero ${hero.name}: $e');
+        if (kDebugMode) debugPrint('Failed to export hero ${hero.name}: $e');
       }
     }
 
@@ -148,7 +148,7 @@ class HeroFileService {
             await exportService.importHeroFromCode(content.trim());
         imported.add(MapEntry(heroId, preview.name ?? 'Unknown'));
       } catch (e) {
-        debugPrint('Failed to import file ${file.name}: $e');
+        if (kDebugMode) debugPrint('Failed to import file ${file.name}: $e');
       }
     }
 
@@ -219,7 +219,7 @@ class HeroFileService {
         await file.writeAsString(entry.value);
         count++;
       } catch (e) {
-        debugPrint('Failed to save ${entry.key}: $e');
+        if (kDebugMode) debugPrint('Failed to save ${entry.key}: $e');
       }
     }
     return count;

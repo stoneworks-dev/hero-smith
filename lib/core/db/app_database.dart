@@ -344,7 +344,7 @@ class AppDatabase extends _$AppDatabase {
       }
     } catch (e) {
       // If migration fails, log it but don't crash
-      debugPrint('Migration warning: $e');
+      if (kDebugMode) debugPrint('Migration warning: $e');
     }
   }
 
@@ -877,9 +877,14 @@ class AppDatabase extends _$AppDatabase {
       (select(components)..where((c) => c.type.equals(type))).watch();
 
   Future<bool> deleteComponent(String id) async {
-    final count =
-        await (delete(components)..where((c) => c.id.equals(id))).go();
-    return count > 0;
+    return transaction(() async {
+      // Remove any hero_entries that reference this component
+      await (delete(heroEntries)..where((t) => t.entryId.equals(id))).go();
+      // Remove the component itself
+      final count =
+          await (delete(components)..where((c) => c.id.equals(id))).go();
+      return count > 0;
+    });
   }
 
   // --- Meta helpers (simple key-value store) ---
@@ -1066,6 +1071,21 @@ class AppDatabase extends _$AppDatabase {
         updatedAt: Value(now),
       ),
     );
+  }
+
+  /// Remove a single hero entry by entryId, across all sources.
+  /// Use this when the user explicitly removes an item from the hero sheet.
+  Future<void> removeSingleHeroEntry({
+    required String heroId,
+    required String entryType,
+    required String entryId,
+  }) async {
+    await (delete(heroEntries)
+          ..where((t) =>
+              t.heroId.equals(heroId) &
+              t.entryType.equals(entryType) &
+              t.entryId.equals(entryId)))
+        .go();
   }
 
   Future<void> setHeroEntryIds({

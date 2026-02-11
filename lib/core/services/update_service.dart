@@ -51,7 +51,7 @@ class UpdateService {
       final prefix = _platformPrefixes[platform];
 
       if (prefix == null) {
-        debugPrint('Update check: unsupported platform $platform');
+        if (kDebugMode) debugPrint('Update check: unsupported platform $platform');
         return null;
       }
 
@@ -63,7 +63,7 @@ class UpdateService {
           .timeout(const Duration(seconds: 10));
 
       if (response.statusCode != 200) {
-        debugPrint('Update check: GitHub API returned ${response.statusCode}');
+        if (kDebugMode) debugPrint('Update check: GitHub API returned ${response.statusCode}');
         return null;
       }
 
@@ -100,7 +100,7 @@ class UpdateService {
         break;
       }
     } catch (e) {
-      debugPrint('Update check failed: $e');
+      if (kDebugMode) debugPrint('Update check failed: $e');
     }
     return null;
   }

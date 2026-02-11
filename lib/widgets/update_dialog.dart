@@ -76,6 +76,32 @@ void showUpdateDialog(
             'Version ${update.version} is available.',
             style: const TextStyle(fontSize: 15),
           ),
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.orange.withAlpha(25),
+              border: Border.all(color: Colors.orange.withAlpha(100)),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Icon(Icons.warning_amber_rounded, color: Colors.orange, size: 20),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Back up your heroes before updating! You can export them from the Heroes page.',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.orange.shade200,
+                      height: 1.3,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
           if (update.releaseNotes != null &&
               update.releaseNotes!.isNotEmpty) ...[
             const SizedBox(height: 12),

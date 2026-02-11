@@ -13,11 +13,16 @@ class _LanguagesTab extends ConsumerStatefulWidget {
   ConsumerState<_LanguagesTab> createState() => _LanguagesTabState();
 }
 
-class _LanguagesTabState extends ConsumerState<_LanguagesTab> {
+class _LanguagesTabState extends ConsumerState<_LanguagesTab>
+    with AutomaticKeepAliveClientMixin {
   List<_LanguageOption> _availableLanguages = [];
+  Map<String, model.Component> _componentMap = {};
   List<String> _selectedLanguageIds = [];
   bool _isLoading = true;
   String? _errorMessage;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -32,23 +37,37 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab> {
         _errorMessage = null;
       });
 
-      // Load languages from JSON - it's a direct array, not wrapped in an object
-      final languagesData = await rootBundle.loadString('data/story/languages.json');
-      final languagesList = json.decode(languagesData) as List;
+      final db = ref.read(appDatabaseProvider);
 
-      _availableLanguages = languagesList.map((lang) {
-        final langMap = lang as Map<String, dynamic>;
-        return _LanguageOption(
-          id: langMap['id'] as String,
-          name: langMap['name'] as String,
-          languageType: langMap['language_type'] as String? ?? '',
-          region: langMap['region'] as String? ?? '',
-          ancestry: langMap['ancestry'] as String? ?? '',
+      // Load ALL languages from the components table (seed + user)
+      final allLangRows = await db.getComponentsByType('language');
+
+      _availableLanguages = [];
+      _componentMap = {};
+
+      for (final comp in allLangRows) {
+        final data = comp.dataJson.isNotEmpty
+            ? json.decode(comp.dataJson) as Map<String, dynamic>
+            : <String, dynamic>{};
+
+        _availableLanguages.add(_LanguageOption(
+          id: comp.id,
+          name: comp.name,
+          languageType: data['language_type'] as String? ?? '',
+          region: data['region'] as String? ?? '',
+          ancestry: data['ancestry'] as String? ?? '',
+        ));
+
+        _componentMap[comp.id] = model.Component(
+          id: comp.id,
+          type: comp.type,
+          name: comp.name,
+          data: data,
+          source: comp.source,
         );
-      }).toList();
+      }
 
       // Load selected languages for this hero
-      final db = ref.read(appDatabaseProvider);
       _selectedLanguageIds = await db.getHeroComponentIds(widget.heroId, 'language');
 
       setState(() {
@@ -62,6 +81,42 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab> {
     }
   }
 
+  Future<void> _reloadAvailableLanguages() async {
+    final db = ref.read(appDatabaseProvider);
+    final allLangRows = await db.getComponentsByType('language');
+
+    final updatedOptions = <_LanguageOption>[];
+    final updatedMap = <String, model.Component>{};
+
+    for (final comp in allLangRows) {
+      final data = comp.dataJson.isNotEmpty
+          ? json.decode(comp.dataJson) as Map<String, dynamic>
+          : <String, dynamic>{};
+
+      updatedOptions.add(_LanguageOption(
+        id: comp.id,
+        name: comp.name,
+        languageType: (data['language_type'] as String? ?? '').trim(),
+        region: data['region'] as String? ?? '',
+        ancestry: data['ancestry'] as String? ?? '',
+      ));
+
+      updatedMap[comp.id] = model.Component(
+        id: comp.id,
+        type: comp.type,
+        name: comp.name,
+        data: data,
+        source: comp.source,
+      );
+    }
+
+    if (!mounted) return;
+    setState(() {
+      _availableLanguages = updatedOptions;
+      _componentMap = updatedMap;
+    });
+  }
+
   Future<void> _addLanguage(String languageId) async {
     if (_selectedLanguageIds.contains(languageId)) {
       if (mounted) {
@@ -73,15 +128,17 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab> {
     }
     try {
       final db = ref.read(appDatabaseProvider);
-      final updatedIds = [..._selectedLanguageIds, languageId];
-      await db.setHeroComponentIds(
+      await db.upsertHeroEntry(
         heroId: widget.heroId,
-        category: 'language',
-        componentIds: updatedIds,
+        entryType: 'language',
+        entryId: languageId,
+        sourceType: 'hero_sheet',
+        sourceId: 'language',
+        gainedBy: 'choice',
       );
 
       setState(() {
-        _selectedLanguageIds = updatedIds;
+        _selectedLanguageIds = [..._selectedLanguageIds, languageId];
       });
     } catch (e) {
       if (mounted) {
@@ -95,15 +152,14 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab> {
   Future<void> _removeLanguage(String languageId) async {
     try {
       final db = ref.read(appDatabaseProvider);
-      final updatedIds = _selectedLanguageIds.where((id) => id != languageId).toList();
-      await db.setHeroComponentIds(
+      await db.removeSingleHeroEntry(
         heroId: widget.heroId,
-        category: 'language',
-        componentIds: updatedIds,
+        entryType: 'language',
+        entryId: languageId,
       );
 
       setState(() {
-        _selectedLanguageIds = updatedIds;
+        _selectedLanguageIds = _selectedLanguageIds.where((id) => id != languageId).toList();
       });
     } catch (e) {
       if (mounted) {
@@ -114,7 +170,9 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab> {
     }
   }
 
-  void _showAddLanguageDialog() {
+  Future<void> _showAddLanguageDialog() async {
+    await _reloadAvailableLanguages();
+    if (!mounted) return;
     final unselectedLanguages = _availableLanguages
         .where((lang) => !_selectedLanguageIds.contains(lang.id))
         .toList();
@@ -123,9 +181,55 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab> {
       context: context,
       builder: (context) => _AddLanguageDialog(
         availableLanguages: unselectedLanguages,
-        onLanguageSelected: (languageId) {
-          _addLanguage(languageId);
+        onLanguageSelected: (languageId) async {
           Navigator.of(context).pop();
+          await _addLanguage(languageId);
+        },
+        onCreateCustom: () {
+          Navigator.of(context).pop();
+          _showCreateCustomLanguageDialog();
+        },
+      ),
+    );
+  }
+
+  void _showCreateCustomLanguageDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => _CreateCustomLanguageDialog(
+        onLanguageCreated: (langOption, extraData) async {
+          // Save to Components table with source='user'
+          final db = ref.read(appDatabaseProvider);
+          await db.upsertComponentModel(
+            id: langOption.id,
+            type: 'language',
+            name: langOption.name,
+            dataMap: {
+              'language_type': langOption.languageType,
+              if (langOption.region.isNotEmpty) 'region': langOption.region,
+              if (langOption.ancestry.isNotEmpty) 'ancestry': langOption.ancestry,
+              ...extraData,
+            },
+            source: 'user',
+          );
+
+          // Add to available languages + component map, then select for this hero
+          setState(() {
+            _availableLanguages.add(langOption);
+            _componentMap[langOption.id] = model.Component(
+              id: langOption.id,
+              type: 'language',
+              name: langOption.name,
+              data: {
+                'language_type': langOption.languageType,
+                if (langOption.region.isNotEmpty) 'region': langOption.region,
+                if (langOption.ancestry.isNotEmpty) 'ancestry': langOption.ancestry,
+                ...extraData,
+              },
+              source: 'user',
+            );
+          });
+          await _addLanguage(langOption.id);
         },
       ),
     );
@@ -133,6 +237,7 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     if (_isLoading) {
       return const Center(
         child: CircularProgressIndicator(color: _languagesColor),
@@ -161,17 +266,19 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab> {
       );
     }
 
-    final selectedLanguages = _availableLanguages
-        .where((lang) => _selectedLanguageIds.contains(lang.id))
+    final selectedComponents = _selectedLanguageIds
+        .where((id) => _componentMap.containsKey(id))
+        .map((id) => _componentMap[id]!)
         .toList();
 
     // Group languages by type
-    final groupedLanguages = <String, List<_LanguageOption>>{};
-    for (final lang in selectedLanguages) {
-      final groupKey = lang.languageType.isNotEmpty
-          ? lang.languageType
+    final groupedLanguages = <String, List<model.Component>>{};
+    for (final comp in selectedComponents) {
+      final raw = (comp.data['language_type'] as String? ?? '').trim();
+      final groupKey = raw.isNotEmpty
+          ? raw.toLowerCase()
           : SheetStoryLanguagesTabText.otherGroup;
-      groupedLanguages.putIfAbsent(groupKey, () => []).add(lang);
+      groupedLanguages.putIfAbsent(groupKey, () => []).add(comp);
     }
 
     return Stack(
@@ -221,7 +328,7 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab> {
                             ),
                           ),
                           Text(
-                            '${selectedLanguages.length} languages known',
+                            '${selectedComponents.length} languages known',
                             style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
                           ),
                         ],
@@ -231,7 +338,7 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab> {
                 ),
               ),
               const SizedBox(height: 16),
-              if (selectedLanguages.isEmpty)
+              if (selectedComponents.isEmpty)
                 Center(
                   child: Padding(
                     padding: const EdgeInsets.all(32),
@@ -280,7 +387,13 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab> {
                           ],
                         ),
                       ),
-                      ...languages.map((lang) => _buildLanguageCard(lang)),
+                      ...languages.map((comp) => Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: LanguageCard(
+                          language: comp,
+                          onRemove: () => _removeLanguage(comp.id),
+                        ),
+                      )),
                     ],
                   );
                 }),
@@ -293,6 +406,7 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab> {
           right: 16,
           bottom: 16,
           child: FloatingActionButton.small(
+            heroTag: 'languages_tab_fab',
             onPressed: _showAddLanguageDialog,
             backgroundColor: NavigationTheme.cardBackgroundDark,
             foregroundColor: _languagesColor,
@@ -307,61 +421,17 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab> {
     );
   }
 
-  Widget _buildLanguageCard(_LanguageOption lang) {
-    String subtitle = '';
-    if (lang.region.isNotEmpty) {
-      subtitle = 'Region: ${lang.region}';
-    }
-    if (lang.ancestry.isNotEmpty) {
-      subtitle = subtitle.isEmpty
-          ? 'Ancestry: ${lang.ancestry}'
-          : '$subtitle • Ancestry: ${lang.ancestry}';
-    }
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
-        color: NavigationTheme.cardBackgroundDark,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey.shade800),
-      ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-        leading: Container(
-          padding: const EdgeInsets.all(6),
-          decoration: BoxDecoration(
-            color: _languagesColor.withAlpha(26),
-            borderRadius: BorderRadius.circular(6),
-          ),
-          child: const Icon(Icons.record_voice_over, color: _languagesColor, size: 18),
-        ),
-        title: Text(
-          lang.name,
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
-        ),
-        subtitle: subtitle.isNotEmpty
-            ? Text(
-                subtitle,
-                style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
-              )
-            : null,
-        trailing: IconButton(
-          icon: Icon(Icons.close, color: Colors.red.shade400, size: 20),
-          onPressed: () => _removeLanguage(lang.id),
-          tooltip: SheetStoryLanguagesTabText.removeLanguageTooltip,
-        ),
-      ),
-    );
-  }
 }
 
 class _AddLanguageDialog extends StatefulWidget {
   final List<_LanguageOption> availableLanguages;
   final Function(String) onLanguageSelected;
+  final VoidCallback onCreateCustom;
 
   const _AddLanguageDialog({
     required this.availableLanguages,
     required this.onLanguageSelected,
+    required this.onCreateCustom,
   });
 
   @override
@@ -480,6 +550,24 @@ class _AddLanguageDialogState extends State<_AddLanguageDialog> {
                 onChanged: _filterLanguages,
               ),
             ),
+            // Create custom language button
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: OutlinedButton.icon(
+                onPressed: widget.onCreateCustom,
+                icon: const Icon(Icons.edit_note, size: 18),
+                label: const Text(SheetStoryLanguagesTabText.createCustomLanguage),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: _languagesColor,
+                  side: BorderSide(color: _languagesColor.withAlpha(128)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  minimumSize: const Size(double.infinity, 40),
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
             // Languages list
             Flexible(
               child: _filteredLanguages.isEmpty
@@ -599,4 +687,344 @@ class _LanguageOption {
     required this.region,
     required this.ancestry,
   });
+}
+
+// --- Custom Language Creation Dialog ---
+
+class _CreateCustomLanguageDialog extends StatefulWidget {
+  final Future<void> Function(
+      _LanguageOption langOption, Map<String, dynamic> extraData)
+      onLanguageCreated;
+
+  const _CreateCustomLanguageDialog({required this.onLanguageCreated});
+
+  @override
+  State<_CreateCustomLanguageDialog> createState() =>
+      _CreateCustomLanguageDialogState();
+}
+
+class _CreateCustomLanguageDialogState
+    extends State<_CreateCustomLanguageDialog> {
+  final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _regionController = TextEditingController();
+  final _ancestryController = TextEditingController();
+  final _commonTopicsController = TextEditingController();
+  final _relatedLanguagesController = TextEditingController();
+  String? _selectedType;
+  final _customTypeController = TextEditingController();
+  bool _useCustomType = false;
+  bool _isSaving = false;
+
+  static const _knownTypes = ['human', 'ancestral', 'dead'];
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _regionController.dispose();
+    _ancestryController.dispose();
+    _commonTopicsController.dispose();
+    _relatedLanguagesController.dispose();
+    _customTypeController.dispose();
+    super.dispose();
+  }
+
+  String _generateId(String name) {
+    final slug = name
+        .toLowerCase()
+        .trim()
+        .replaceAll(RegExp(r'[^a-z0-9]+'), '_')
+        .replaceAll(RegExp(r'_+'), '_')
+        .replaceAll(RegExp(r'^_|_$'), '');
+    return 'custom_language_$slug';
+  }
+
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isSaving = true);
+
+    final name = _nameController.text.trim();
+    final languageType = _useCustomType
+        ? _customTypeController.text.trim().toLowerCase()
+        : (_selectedType ?? SheetStoryLanguagesTabText.customType);
+    final region = _regionController.text.trim();
+    final ancestry = _ancestryController.text.trim();
+    final commonTopics = _commonTopicsController.text.trim();
+    final relatedLanguages = _relatedLanguagesController.text.trim();
+
+    final langOption = _LanguageOption(
+      id: _generateId(name),
+      name: name,
+      languageType: languageType,
+      region: region,
+      ancestry: ancestry,
+    );
+
+    final extraData = <String, dynamic>{};
+    if (commonTopics.isNotEmpty) {
+      extraData['common_topics'] =
+          commonTopics.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+    }
+    if (relatedLanguages.isNotEmpty) {
+      extraData['related_languages'] =
+          relatedLanguages.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+    }
+
+    await widget.onLanguageCreated(langOption, extraData);
+
+    if (mounted) Navigator.of(context).pop();
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required String hint,
+    int maxLines = 1,
+    String? Function(String?)? validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      style: const TextStyle(color: Colors.white),
+      maxLines: maxLines,
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        labelStyle: TextStyle(color: Colors.grey.shade400),
+        hintStyle: TextStyle(color: Colors.grey.shade600),
+        filled: true,
+        fillColor: StoryTheme.cardBackground,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: _languagesColor, width: 2),
+        ),
+      ),
+      validator: validator,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: NavigationTheme.cardBackgroundDark,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Container(
+        width: 400,
+        constraints: const BoxConstraints(maxHeight: 600),
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Header
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    borderRadius:
+                        const BorderRadius.vertical(top: Radius.circular(16)),
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        _languagesColor.withAlpha(51),
+                        _languagesColor.withAlpha(13),
+                      ],
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: _languagesColor.withAlpha(51),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(Icons.edit_note,
+                            color: _languagesColor, size: 24),
+                      ),
+                      const SizedBox(width: 12),
+                      const Expanded(
+                        child: Text(
+                          SheetStoryLanguagesTabText
+                              .createCustomLanguageTitle,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close, color: Colors.white70),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Name field (required)
+                      _buildTextField(
+                        controller: _nameController,
+                        label: SheetStoryLanguagesTabText.languageNameLabel,
+                        hint: SheetStoryLanguagesTabText.languageNameHint,
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return SheetStoryLanguagesTabText
+                                .languageNameRequired;
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Language type dropdown / custom input
+                      if (!_useCustomType)
+                        DropdownButtonFormField<String>(
+                          value: _selectedType,
+                          dropdownColor: NavigationTheme.cardBackgroundDark,
+                          style: const TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            labelText:
+                                SheetStoryLanguagesTabText.languageTypeLabel,
+                            hintText:
+                                SheetStoryLanguagesTabText.languageTypeHint,
+                            labelStyle: TextStyle(color: Colors.grey.shade400),
+                            hintStyle: TextStyle(color: Colors.grey.shade600),
+                            filled: true,
+                            fillColor: StoryTheme.cardBackground,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none,
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: const BorderSide(
+                                  color: _languagesColor, width: 2),
+                            ),
+                          ),
+                          items: _knownTypes
+                              .map((t) => DropdownMenuItem(
+                                    value: t,
+                                    child: Text(
+                                        t[0].toUpperCase() + t.substring(1)),
+                                  ))
+                              .toList(),
+                          onChanged: (val) =>
+                              setState(() => _selectedType = val),
+                        )
+                      else
+                        _buildTextField(
+                          controller: _customTypeController,
+                          label: SheetStoryLanguagesTabText.languageTypeLabel,
+                          hint: SheetStoryLanguagesTabText.languageTypeHint,
+                        ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton.icon(
+                          onPressed: () =>
+                              setState(() => _useCustomType = !_useCustomType),
+                          icon: Icon(
+                            _useCustomType ? Icons.list : Icons.edit,
+                            size: 16,
+                            color: _languagesColor,
+                          ),
+                          label: Text(
+                            _useCustomType
+                                ? 'Pick from list'
+                                : 'Custom type',
+                            style: const TextStyle(
+                                color: _languagesColor, fontSize: 12),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+
+                      // Region field (optional)
+                      _buildTextField(
+                        controller: _regionController,
+                        label: SheetStoryLanguagesTabText.regionLabel,
+                        hint: SheetStoryLanguagesTabText.regionHint,
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Ancestry field (optional)
+                      _buildTextField(
+                        controller: _ancestryController,
+                        label: SheetStoryLanguagesTabText.ancestryLabel,
+                        hint: SheetStoryLanguagesTabText.ancestryHint,
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Common topics field (optional)
+                      _buildTextField(
+                        controller: _commonTopicsController,
+                        label: SheetStoryLanguagesTabText.commonTopicsLabel,
+                        hint: SheetStoryLanguagesTabText.commonTopicsHint,
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Related languages field (optional)
+                      _buildTextField(
+                        controller: _relatedLanguagesController,
+                        label:
+                            SheetStoryLanguagesTabText.relatedLanguagesLabel,
+                        hint:
+                            SheetStoryLanguagesTabText.relatedLanguagesHint,
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Action buttons
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: Text(
+                              SheetStoryLanguagesTabText.cancelButton,
+                              style: TextStyle(color: Colors.grey.shade400),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          ElevatedButton(
+                            onPressed: _isSaving ? null : _submit,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: _languagesColor,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            child: _isSaving
+                                ? const SizedBox(
+                                    width: 18,
+                                    height: 18,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : const Text(
+                                    SheetStoryLanguagesTabText.createButton),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
