@@ -43,6 +43,7 @@ Development is currently **slow and best-effort**, as this is a solo project wit
   - And more
 - Cheat sheet for both players and directors
 - Export to PDF. If I can use the official sheets it would be perfect!
+- More UI themes: white, dark, fantasy, etc.
 ---
 
 This roadmap will be updated over time as ideas evolve or are discarded.
