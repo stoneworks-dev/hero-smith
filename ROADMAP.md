@@ -35,7 +35,14 @@ Development is currently **slow and best-effort**, as this is a solo project wit
 - Add new official content **once MCDM allows free use under their Creator License**
 - New User Guide at first run of the app
 - Better Icons when I can get some
-
+- Add Director resources:
+  - Initiative tracker
+  - Homebrew monster stat calculator
+  - Encounter value
+  - Random generated encounter rewards
+  - And more
+- Cheat sheet for both players and directors
+- Export to PDF. If I can use the official sheets it would be perfect!
 ---
 
 This roadmap will be updated over time as ideas evolve or are discarded.
