@@ -1,6 +1,6 @@
 name: hero_smith
 description: Hero Smith app - assemble heroes from modular Components.
-version: 0.1.5
+version: 0.1.6
 publish_to: "none"
 
 environment:
@@ -94,6 +94,8 @@ flutter:
     - data/treasures/
     # Downtime projects data
     - data/downtime/
+    # Items data
+    - data/items/
     # Game-icons.net SVG icons (CC BY 3.0)
     - assets/icons/lorc/
     - assets/icons/delapouite/

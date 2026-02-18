@@ -7,6 +7,7 @@ import '../../../core/db/app_database.dart';
 import '../../../core/models/component.dart' as model;
 import '../../../core/models/downtime.dart';
 import '../../../core/services/class_data_service.dart';
+import '../../../core/services/items_catalog_service.dart';
 import '../../../core/text/heroes_sheet/gear/gear_dialogs_text.dart';
 import '../../../core/theme/app_icon.dart';
 import '../../../core/theme/app_icons.dart';
@@ -600,6 +601,15 @@ class _CreateItemDialogState extends State<CreateItemDialog> {
   final _nameController = TextEditingController();
   final _descController = TextEditingController();
   int _quantity = 1;
+  String _selectedCategory = 'custom';
+
+  static const _categoryOptions = <(String, String)>[
+    ('custom', 'Custom'),
+    ('equipment', 'Equipment'),
+    ('consumable', 'Consumable'),
+    ('project_material', 'Project Material'),
+    ('treasure_component', 'Treasure Component'),
+  ];
 
   @override
   void dispose() {
@@ -689,6 +699,83 @@ class _CreateItemDialogState extends State<CreateItemDialog> {
               maxLines: 2,
             ),
             const SizedBox(height: 16),
+            // Category picker
+            Container(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              decoration: BoxDecoration(
+                color: FormTheme.surface,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: FormTheme.border),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    GearDialogsText.createItemCategoryLabel,
+                    style: TextStyle(
+                        color: FormTheme.textSecondary, fontSize: 13),
+                  ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 6,
+                    children: _categoryOptions.map((option) {
+                      final (key, label) = option;
+                      final isSelected = _selectedCategory == key;
+                      final catColor =
+                          ItemsCatalogService.categoryColor(key);
+                      return GestureDetector(
+                        onTap: () =>
+                            setState(() => _selectedCategory = key),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? catColor.withValues(alpha: 0.2)
+                                : FormTheme.surfaceDark,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: isSelected
+                                  ? catColor
+                                  : FormTheme.borderDim,
+                              width: isSelected ? 1.5 : 1,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                ItemsCatalogService.categoryIcon(key),
+                                color: isSelected
+                                    ? catColor
+                                    : FormTheme.textMuted,
+                                size: 16,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                label,
+                                style: TextStyle(
+                                  color: isSelected
+                                      ? catColor
+                                      : FormTheme.textMuted,
+                                  fontSize: 13,
+                                  fontWeight: isSelected
+                                      ? FontWeight.w600
+                                      : FontWeight.normal,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
             // Quantity row
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -775,6 +862,7 @@ class _CreateItemDialogState extends State<CreateItemDialog> {
                       'name': name,
                       'description': _descController.text.trim(),
                       'quantity': _quantity.toString(),
+                      'category': _selectedCategory,
                     });
                   },
                   child: const Text(GearDialogsText.createItemAddAction),

@@ -32,6 +32,7 @@ import '../../../widgets/abilities/ability_expandable_item.dart';
 import '../../../widgets/skills/skill_card.dart';
 import '../../../widgets/languages/language_card.dart';
 import 'story_sections/story_sections.dart';
+import 'title_progress_page.dart';
 
 part 'sheet_story_story_tab.dart';
 part 'sheet_story_skills_tab.dart';

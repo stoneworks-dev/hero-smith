@@ -682,22 +682,22 @@ class HeroesPage extends ConsumerWidget {
 
   Future<void> _exportHeroCode(
       BuildContext context, WidgetRef ref, dynamic hero) async {
-    // Show tier selection dialog first
-    final selectedTier = await showDialog<ExportTier>(
+    // Show export options dialog first
+    final selectedOptions = await showDialog<ExportOptions>(
       context: context,
       builder: (ctx) => _ExportOptionsDialog(heroName: hero.name),
     );
 
-    if (selectedTier == null || !context.mounted) return;
+    if (selectedOptions == null || !context.mounted) return;
 
     try {
       final db = ref.read(appDatabaseProvider);
       final exportService = HeroExportService(db);
 
-      // Generate compressed database snapshot with selected tier
+      // Generate compressed database snapshot with selected options
       final code = await exportService.exportHeroToCode(
         hero.id,
-        tier: selectedTier,
+        options: selectedOptions,
       );
 
       if (!context.mounted) return;
@@ -723,14 +723,18 @@ class HeroesPage extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    selectedTier.label,
+                    selectedOptions.label,
                     style: theme.textTheme.labelSmall?.copyWith(
                       color: theme.colorScheme.onSecondaryContainer,
                     ),
                   ),
                 ),
-                const SizedBox(height: 12),
-
+              ],
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Text(
                   HeroesPageText.exportShareMessage,
                   style: theme.textTheme.bodyMedium?.copyWith(
@@ -767,7 +771,7 @@ class HeroesPage extends ConsumerWidget {
 
                 // Code info
                 Text(
-                  HeroesPageText.codeInfo(codeLength, selectedTier.description),
+                  HeroesPageText.codeInfo(codeLength, selectedOptions.description),
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant
                         .withValues(alpha: 0.7),
@@ -956,7 +960,7 @@ class HeroesPage extends ConsumerWidget {
       if (!context.mounted) return;
 
       // Show success message with tier info
-      final tierInfo = preview.exportTier != null
+      final tierInfo = preview.exportOptions != null
           ? ' (${preview.tierDescription})'
           : '';
 
@@ -1000,13 +1004,13 @@ class HeroesPage extends ConsumerWidget {
 
   Future<void> _exportHeroFile(
       BuildContext context, WidgetRef ref, dynamic hero) async {
-    // Show tier selection dialog first
-    final selectedTier = await showDialog<ExportTier>(
+    // Show export options dialog first
+    final selectedOptions = await showDialog<ExportOptions>(
       context: context,
       builder: (ctx) => _ExportOptionsDialog(heroName: hero.name),
     );
 
-    if (selectedTier == null || !context.mounted) return;
+    if (selectedOptions == null || !context.mounted) return;
 
     try {
       final db = ref.read(appDatabaseProvider);
@@ -1014,7 +1018,7 @@ class HeroesPage extends ConsumerWidget {
       final success = await fileService.exportHeroToFile(
         hero.id,
         heroName: hero.name,
-        tier: selectedTier,
+        options: selectedOptions,
       );
 
       if (!context.mounted) return;
@@ -1085,18 +1089,18 @@ class HeroesPage extends ConsumerWidget {
   }
 
   Future<void> _exportAllHeroes(BuildContext context, WidgetRef ref) async {
-    // Show tier selection for all heroes
-    final selectedTier = await showDialog<ExportTier>(
+    // Show export options for all heroes
+    final selectedOptions = await showDialog<ExportOptions>(
       context: context,
       builder: (ctx) => _ExportOptionsDialog(heroName: HeroesPageText.allHeroes),
     );
 
-    if (selectedTier == null || !context.mounted) return;
+    if (selectedOptions == null || !context.mounted) return;
 
     try {
       final db = ref.read(appDatabaseProvider);
       final fileService = HeroFileService(db);
-      final count = await fileService.exportAllHeroesToFiles(tier: selectedTier);
+      final count = await fileService.exportAllHeroesToFiles(options: selectedOptions);
 
       if (!context.mounted) return;
       if (count > 0) {
@@ -1127,7 +1131,7 @@ class HeroesPage extends ConsumerWidget {
   }
 }
 
-/// Dialog for selecting export tier options
+/// Dialog for selecting export content options (checkbox-based).
 class _ExportOptionsDialog extends StatefulWidget {
   const _ExportOptionsDialog({required this.heroName});
 
@@ -1138,7 +1142,9 @@ class _ExportOptionsDialog extends StatefulWidget {
 }
 
 class _ExportOptionsDialogState extends State<_ExportOptionsDialog> {
-  ExportTier _selectedTier = ExportTier.full;
+  bool _includeDowntime = true;
+  bool _includeTitles = true;
+  bool _includeNotes = true;
 
   @override
   Widget build(BuildContext context) {
@@ -1163,7 +1169,53 @@ class _ExportOptionsDialogState extends State<_ExportOptionsDialog> {
             ),
           ),
           const SizedBox(height: 16),
-          ...ExportTier.values.map((tier) => _buildTierOption(tier, theme)),
+
+          // Core build — always included (disabled checkbox)
+          _buildOptionTile(
+            theme: theme,
+            icon: Icons.person,
+            title: 'Core Build',
+            subtitle: 'Class, ancestry, kit, abilities, stats',
+            value: true,
+            enabled: false,
+            onChanged: null,
+          ),
+          const SizedBox(height: 8),
+
+          // Downtime
+          _buildOptionTile(
+            theme: theme,
+            icon: Icons.construction,
+            title: 'Downtime',
+            subtitle: 'Projects, followers, and sources',
+            value: _includeDowntime,
+            enabled: true,
+            onChanged: (v) => setState(() => _includeDowntime = v ?? false),
+          ),
+          const SizedBox(height: 8),
+
+          // Titles
+          _buildOptionTile(
+            theme: theme,
+            icon: Icons.military_tech,
+            title: 'Titles',
+            subtitle: 'Title progress tracking data',
+            value: _includeTitles,
+            enabled: true,
+            onChanged: (v) => setState(() => _includeTitles = v ?? false),
+          ),
+          const SizedBox(height: 8),
+
+          // Notes
+          _buildOptionTile(
+            theme: theme,
+            icon: Icons.note_alt_outlined,
+            title: 'Notes',
+            subtitle: 'Personal notes and session logs',
+            value: _includeNotes,
+            enabled: true,
+            onChanged: (v) => setState(() => _includeNotes = v ?? false),
+          ),
         ],
       ),
       actions: [
@@ -1172,55 +1224,74 @@ class _ExportOptionsDialogState extends State<_ExportOptionsDialog> {
           child: Text(HeroesPageText.cancel),
         ),
         FilledButton(
-          onPressed: () => Navigator.of(context).pop(_selectedTier),
+          onPressed: () => Navigator.of(context).pop(
+            ExportOptions(
+              includeDowntime: _includeDowntime,
+              includeTitles: _includeTitles,
+              includeNotes: _includeNotes,
+            ),
+          ),
           child: Text(HeroesPageText.export_),
         ),
       ],
     );
   }
 
-  Widget _buildTierOption(ExportTier tier, ThemeData theme) {
-    final isSelected = _selectedTier == tier;
-
+  Widget _buildOptionTile({
+    required ThemeData theme,
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required bool value,
+    required bool enabled,
+    required ValueChanged<bool?>? onChanged,
+  }) {
     return InkWell(
-      onTap: () => setState(() => _selectedTier = tier),
+      onTap: enabled ? () => onChanged?.call(!value) : null,
       borderRadius: BorderRadius.circular(8),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected
-              ? theme.colorScheme.primaryContainer.withValues(alpha: 0.5)
+          color: value
+              ? theme.colorScheme.primaryContainer.withValues(alpha: 0.35)
               : null,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: isSelected
-                ? theme.colorScheme.primary
+            color: value
+                ? theme.colorScheme.primary.withValues(alpha: 0.6)
                 : theme.colorScheme.outline.withValues(alpha: 0.3),
           ),
         ),
         child: Row(
           children: [
-            Radio<ExportTier>(
-              value: tier,
-              groupValue: _selectedTier,
-              onChanged: (val) {
-                if (val != null) setState(() => _selectedTier = val);
-              },
+            Checkbox(
+              value: value,
+              onChanged: enabled ? onChanged : null,
             ),
-            const SizedBox(width: 8),
+            Icon(
+              icon,
+              size: 20,
+              color: enabled
+                  ? theme.colorScheme.onSurface
+                  : theme.colorScheme.onSurface.withValues(alpha: 0.4),
+            ),
+            const SizedBox(width: 10),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    tier.label,
+                    title,
                     style: theme.textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w600,
+                      color: enabled
+                          ? null
+                          : theme.colorScheme.onSurface.withValues(alpha: 0.5),
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    tier.description,
+                    subtitle,
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                     ),

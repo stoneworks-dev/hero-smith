@@ -12,21 +12,69 @@ const int kExportVersion = 2;
 /// Magic prefix for database snapshot exports
 const String kExportMagic = 'HS2:';
 
-/// Export tier levels - each tier includes all previous tiers
-enum ExportTier {
-  /// Tier 1: Core hero data (hero_config, hero_entries, hero_values)
-  core(1, 'Core Build', 'Hero build data only'),
+/// Options controlling what data is included in an export.
+///
+/// Core build data (hero_config, hero_entries, hero_values) is always included.
+/// Additional sections can be toggled on/off independently.
+class ExportOptions {
+  /// Include downtime data (projects, followers, sources).
+  final bool includeDowntime;
 
-  /// Tier 2: Tier 1 + downtime data (downtime_projects, hero_followers, hero_project_sources)
-  downtime(2, 'Build + Downtime', 'Adds downtime projects, followers, sources'),
+  /// Include title progress tracking data.
+  final bool includeTitles;
 
-  /// Tier 3: Tier 2 + notes (hero_notes)
-  full(3, 'Full Export', 'Adds personal notes');
+  /// Include personal notes.
+  final bool includeNotes;
 
-  const ExportTier(this.level, this.label, this.description);
-  final int level;
-  final String label;
-  final String description;
+  const ExportOptions({
+    this.includeDowntime = false,
+    this.includeTitles = false,
+    this.includeNotes = false,
+  });
+
+  /// All optional sections enabled.
+  static const full = ExportOptions(
+    includeDowntime: true,
+    includeTitles: true,
+    includeNotes: true,
+  );
+
+  /// Core build only (no optional sections).
+  static const core = ExportOptions();
+
+  /// Numeric flags bitmask stored in the export for import decoding.
+  /// Bit 0 = downtime, Bit 1 = titles, Bit 2 = notes.
+  int get flags =>
+      (includeDowntime ? 1 : 0) |
+      (includeTitles ? 2 : 0) |
+      (includeNotes ? 4 : 0);
+
+  /// Reconstruct from flags bitmask.
+  factory ExportOptions.fromFlags(int flags) => ExportOptions(
+        includeDowntime: (flags & 1) != 0,
+        includeTitles: (flags & 2) != 0,
+        includeNotes: (flags & 4) != 0,
+      );
+
+  /// Human-readable label for what's included.
+  String get label {
+    if (includeDowntime && includeTitles && includeNotes) return 'Full Export';
+    final parts = <String>['Core Build'];
+    if (includeDowntime) parts.add('Downtime');
+    if (includeTitles) parts.add('Titles');
+    if (includeNotes) parts.add('Notes');
+    return parts.join(' + ');
+  }
+
+  /// Short description of what's included.
+  String get description {
+    final extras = <String>[];
+    if (includeDowntime) extras.add('downtime projects');
+    if (includeTitles) extras.add('title progress');
+    if (includeNotes) extras.add('personal notes');
+    if (extras.isEmpty) return 'Hero build data only';
+    return 'Includes ${extras.join(', ')}';
+  }
 }
 
 /// Service for exporting and importing heroes as compressed database snapshots.
@@ -49,11 +97,11 @@ class HeroExportService {
 
   /// Export a hero to a compressed database snapshot string.
   ///
-  /// [tier] controls what data is included (default: full export)
+  /// [options] controls what data is included (default: full export)
   /// Returns a string starting with "HS2:" followed by base64-encoded gzip data.
   Future<String> exportHeroToCode(
     String heroId, {
-    ExportTier tier = ExportTier.full,
+    ExportOptions options = ExportOptions.full,
   }) async {
     // Fetch hero row
     final heroRow = await (_db.select(_db.heroes)
@@ -64,7 +112,7 @@ class HeroExportService {
     }
 
     // Build the snapshot data
-    final snapshot = await _buildSnapshot(heroId, heroRow, tier);
+    final snapshot = await _buildSnapshot(heroId, heroRow, options);
 
     // Convert to JSON, compress with gzip, encode as base64
     final jsonStr = jsonEncode(snapshot);
@@ -75,15 +123,15 @@ class HeroExportService {
     return '$kExportMagic$base64Str';
   }
 
-  /// Build a complete snapshot of all hero data based on tier
+  /// Build a complete snapshot of all hero data based on options
   Future<Map<String, dynamic>> _buildSnapshot(
     String heroId,
     dynamic heroRow,
-    ExportTier tier,
+    ExportOptions options,
   ) async {
     final snapshot = <String, dynamic>{
       'v': kExportVersion,
-      'tier': tier.level,
+      'flags': options.flags,
       'ts': DateTime.now().toIso8601String(),
     };
 
@@ -110,18 +158,23 @@ class HeroExportService {
           .toList();
     }
 
-    // Hero config
+    // Hero config (filter out title_progress unless titles included)
     final configs = await (_db.select(_db.heroConfig)
           ..where((t) => t.heroId.equals(heroId)))
         .get();
     if (configs.isNotEmpty) {
-      snapshot['config'] = configs
-          .map((c) => {
-                'k': c.configKey,
-                'v': c.valueJson,
-                if (c.metadata != null) 'm': c.metadata,
-              })
-          .toList();
+      final filteredConfigs = options.includeTitles
+          ? configs
+          : configs.where((c) => c.configKey != 'title_progress').toList();
+      if (filteredConfigs.isNotEmpty) {
+        snapshot['config'] = filteredConfigs
+            .map((c) => {
+                  'k': c.configKey,
+                  'v': c.valueJson,
+                  if (c.metadata != null) 'm': c.metadata,
+                })
+            .toList();
+      }
     }
 
     // Hero values
@@ -140,9 +193,9 @@ class HeroExportService {
     }
 
     // =========================================================================
-    // TIER 2: Downtime data
+    // OPTIONAL: Downtime data
     // =========================================================================
-    if (tier.level >= ExportTier.downtime.level) {
+    if (options.includeDowntime) {
       // Downtime projects
       final projects = await (_db.select(_db.heroDowntimeProjects)
             ..where((t) => t.heroId.equals(heroId)))
@@ -208,9 +261,9 @@ class HeroExportService {
     }
 
     // =========================================================================
-    // TIER 3: Notes
+    // OPTIONAL: Notes
     // =========================================================================
-    if (tier.level >= ExportTier.full.level) {
+    if (options.includeNotes) {
       // Hero notes
       final notes = await (_db.select(_db.heroNotes)
             ..where((t) => t.heroId.equals(heroId)))
@@ -278,8 +331,18 @@ class HeroExportService {
         }
       }
 
-      // Extract tier level
-      final tier = snapshot['tier'] as int? ?? 3; // Default to full for legacy
+      // Extract export flags (backwards compatible with old tier field)
+      final flags = snapshot['flags'] as int?;
+      final legacyTier = snapshot['tier'] as int?;
+      final exportOptions = flags != null
+          ? ExportOptions.fromFlags(flags)
+          : legacyTier != null
+              ? ExportOptions(
+                  includeDowntime: legacyTier >= 2,
+                  includeTitles: legacyTier >= 1,
+                  includeNotes: legacyTier >= 3,
+                )
+              : ExportOptions.full;
 
       return HeroImportPreview(
         name: name,
@@ -288,7 +351,7 @@ class HeroExportService {
         className: className,
         ancestryName: ancestryName,
         level: level,
-        exportTier: tier,
+        exportOptions: exportOptions,
       );
     } catch (_) {
       return null;

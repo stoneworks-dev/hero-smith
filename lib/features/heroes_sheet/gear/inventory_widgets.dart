@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/services/items_catalog_service.dart';
 import '../../../core/text/heroes_sheet/gear/inventory_widgets_text.dart';
 import '../../../core/theme/app_icon.dart';
 import '../../../core/theme/app_icons.dart';
@@ -12,20 +13,24 @@ class ContainerCard extends StatefulWidget {
     super.key,
     required this.container,
     required this.onAddItem,
+    required this.onAddFromCatalog,
     required this.onDeleteContainer,
     required this.onDeleteItem,
     required this.onEditItem,
     required this.onEditContainer,
     required this.onUpdateItemQuantity,
+    this.onMoveItem,
   });
 
   final Map<String, dynamic> container;
   final VoidCallback onAddItem;
+  final VoidCallback onAddFromCatalog;
   final VoidCallback onDeleteContainer;
   final Function(String) onDeleteItem;
   final Function(String, Map<String, dynamic>) onEditItem;
   final VoidCallback onEditContainer;
   final Function(String, int) onUpdateItemQuantity;
+  final Function(Map<String, dynamic>)? onMoveItem;
 
   @override
   State<ContainerCard> createState() => _ContainerCardState();
@@ -106,6 +111,13 @@ class _ContainerCardState extends State<ContainerCard> {
                 ),
                 // Action buttons
                 IconButton(
+                  icon: const Icon(Icons.search,
+                      color: NavigationTheme.itemsColor, size: 22),
+                  onPressed: widget.onAddFromCatalog,
+                  tooltip: InventoryWidgetsText.addFromCatalogTooltip,
+                  visualDensity: VisualDensity.compact,
+                ),
+                IconButton(
                   icon: const Icon(Icons.add_circle_outline,
                       color: NavigationTheme.itemsColor, size: 22),
                   onPressed: widget.onAddItem,
@@ -150,8 +162,12 @@ class _ContainerCardState extends State<ContainerCard> {
                       ? qty
                       : int.tryParse(qty?.toString() ?? '1') ?? 1;
                   final description = itemMap['description'] as String?;
+                  final category =
+                      itemMap['category'] as String? ?? 'custom';
+                  final itemColor =
+                      ItemsCatalogService.categoryColor(category);
 
-                  return Container(
+                  final itemWidget = Container(
                     margin: const EdgeInsets.only(bottom: 8),
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
@@ -161,16 +177,23 @@ class _ContainerCardState extends State<ContainerCard> {
                     ),
                     child: Row(
                       children: [
+                        // Drag handle
+                        Icon(
+                          Icons.drag_indicator,
+                          size: 18,
+                          color: FormTheme.borderLight,
+                        ),
+                        const SizedBox(width: 4),
                         // Fantasy item icon
                         Container(
                           padding: const EdgeInsets.all(6),
                           decoration: BoxDecoration(
-                            color: NavigationTheme.itemsColor.withAlpha(26),
+                            color: itemColor.withAlpha(26),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: AppIcon(
-                            AppIcons.gear.item,
-                            color: NavigationTheme.itemsColor,
+                          child: Icon(
+                            ItemsCatalogService.categoryIcon(category),
+                            color: itemColor,
                             size: 20,
                           ),
                         ),
@@ -265,7 +288,18 @@ class _ContainerCardState extends State<ContainerCard> {
                             ],
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 4),
+                        // Move button
+                        if (widget.onMoveItem != null)
+                          IconButton(
+                            icon: Icon(Icons.drive_file_move_outline,
+                                size: 18, color: FormTheme.textSecondary),
+                            onPressed: () => widget.onMoveItem!(itemMap),
+                            tooltip: InventoryWidgetsText.moveItemTooltip,
+                            constraints: const BoxConstraints(),
+                            padding: const EdgeInsets.all(4),
+                            visualDensity: VisualDensity.compact,
+                          ),
                         // Edit button
                         IconButton(
                           icon: Icon(Icons.edit_outlined,
@@ -288,6 +322,33 @@ class _ContainerCardState extends State<ContainerCard> {
                         ),
                       ],
                     ),
+                  );
+
+                  final containerId =
+                      widget.container['id']?.toString() ?? '';
+
+                  return LongPressDraggable<Map<String, dynamic>>(
+                    delay: const Duration(milliseconds: 150),
+                    data: {
+                      'item': itemMap,
+                      'source': 'container',
+                      'containerId': containerId,
+                    },
+                    feedback: Material(
+                      color: Colors.transparent,
+                      child: Opacity(
+                        opacity: 0.85,
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.7,
+                          child: itemWidget,
+                        ),
+                      ),
+                    ),
+                    childWhenDragging: Opacity(
+                      opacity: 0.3,
+                      child: itemWidget,
+                    ),
+                    child: itemWidget,
                   );
                 }).toList(),
               ),

@@ -9,5 +9,6 @@ export 'sheet_story_perks_tab_text.dart';
 export 'sheet_story_skills_tab_text.dart';
 export 'sheet_story_story_tab_text.dart';
 export 'sheet_story_tabs_text.dart';
+export 'sheet_story_title_progress_text.dart';
 export 'sheet_story_titles_tab_text.dart';
 export 'sheet_story_token_tracker_text.dart';

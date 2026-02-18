@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/db/providers.dart';
+import '../../../core/models/component.dart' as model;
+import '../../../core/services/items_catalog_service.dart';
 import '../../../core/theme/app_icon.dart';
 import '../../../core/theme/app_icons.dart';
 import '../../../core/theme/form_theme.dart';
 import '../../../core/theme/navigation_theme.dart';
 import '../../../core/text/heroes_sheet/gear/inventory_tab_text.dart';
+import '../../../core/text/heroes_sheet/gear/inventory_widgets_text.dart';
 import 'gear_dialogs.dart';
 import 'inventory_widgets.dart';
 
@@ -22,6 +25,7 @@ class InventoryTab extends ConsumerStatefulWidget {
 
 class _InventoryTabState extends ConsumerState<InventoryTab> {
   List<Map<String, dynamic>> _containers = [];
+  List<Map<String, dynamic>> _looseItems = [];
   bool _isLoading = true;
   String? _error;
 
@@ -35,9 +39,11 @@ class _InventoryTabState extends ConsumerState<InventoryTab> {
     try {
       final heroRepo = ref.read(heroRepositoryProvider);
       final containers = await heroRepo.getInventoryContainers(widget.heroId);
+      final looseItems = await heroRepo.getLooseItems(widget.heroId);
       if (mounted) {
         setState(() {
           _containers = containers;
+          _looseItems = looseItems;
           _isLoading = false;
         });
       }
@@ -142,10 +148,15 @@ class _InventoryTabState extends ConsumerState<InventoryTab> {
       final items =
           List<Map<String, dynamic>>.from(container['items'] as List? ?? []);
 
+      final itemName = itemData['name'] as String;
+      final itemDesc = itemData['description'] as String? ?? '';
+      final itemCategory = itemData['category'] as String? ?? 'custom';
+
       items.add({
         'id': DateTime.now().millisecondsSinceEpoch.toString(),
-        'name': itemData['name'],
-        'description': itemData['description'],
+        'name': itemName,
+        'description': itemDesc,
+        'category': itemCategory,
         'quantity': int.tryParse(itemData['quantity']?.toString() ?? '1') ?? 1,
       });
 
@@ -155,6 +166,14 @@ class _InventoryTabState extends ConsumerState<InventoryTab> {
       updated[containerIndex] = container;
 
       await heroRepo.saveInventoryContainers(widget.heroId, updated);
+
+      // Also ensure the item exists in the global items catalog
+      final catalogService = ref.read(itemsCatalogServiceProvider);
+      await catalogService.ensureItemInCatalog(
+        name: itemName,
+        description: itemDesc,
+      );
+
       setState(() {
         _containers = updated;
       });
@@ -332,6 +351,436 @@ class _InventoryTabState extends ConsumerState<InventoryTab> {
     }
   }
 
+  /// Show a dialog to search and add an item from the global catalog.
+  Future<void> _addItemFromCatalog(String containerId) async {
+    final selected = await showDialog<model.Component>(
+      context: context,
+      builder: (context) => _CatalogSearchDialog(ref: ref),
+    );
+
+    if (selected == null || !mounted) return;
+
+    try {
+      final heroRepo = ref.read(heroRepositoryProvider);
+      final containerIndex =
+          _containers.indexWhere((c) => c['id'] == containerId);
+      if (containerIndex == -1) return;
+
+      final container = Map<String, dynamic>.from(_containers[containerIndex]);
+      final items =
+          List<Map<String, dynamic>>.from(container['items'] as List? ?? []);
+
+      items.add({
+        'id': DateTime.now().millisecondsSinceEpoch.toString(),
+        'name': selected.name,
+        'description': selected.data['description']?.toString() ?? '',
+        'category': selected.data['category']?.toString() ?? 'custom',
+        'quantity': 1,
+      });
+
+      container['items'] = items;
+
+      final updated = List<Map<String, dynamic>>.from(_containers);
+      updated[containerIndex] = container;
+
+      await heroRepo.saveInventoryContainers(widget.heroId, updated);
+      setState(() {
+        _containers = updated;
+      });
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${InventoryTabText.addItemFailedPrefix}$e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  // ===========================================================================
+  // LOOSE ITEMS
+  // ===========================================================================
+
+  Future<void> _addLooseItem() async {
+    final itemData = await showDialog<Map<String, dynamic>>(
+      context: context,
+      builder: (context) => const CreateItemDialog(),
+    );
+
+    if (itemData == null || !mounted) return;
+
+    try {
+      final heroRepo = ref.read(heroRepositoryProvider);
+      final itemName = itemData['name'] as String;
+      final itemDesc = itemData['description'] as String? ?? '';
+      final itemCategory = itemData['category'] as String? ?? 'custom';
+
+      final newItem = {
+        'id': DateTime.now().millisecondsSinceEpoch.toString(),
+        'name': itemName,
+        'description': itemDesc,
+        'category': itemCategory,
+        'quantity': int.tryParse(itemData['quantity']?.toString() ?? '1') ?? 1,
+      };
+
+      final updated = [..._looseItems, newItem];
+      await heroRepo.saveLooseItems(widget.heroId, updated);
+
+      // Sync to catalog
+      final catalogService = ref.read(itemsCatalogServiceProvider);
+      await catalogService.ensureItemInCatalog(
+        name: itemName,
+        description: itemDesc,
+      );
+
+      setState(() {
+        _looseItems = updated;
+      });
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${InventoryTabText.addItemFailedPrefix}$e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _addLooseItemFromCatalog() async {
+    final selected = await showDialog<model.Component>(
+      context: context,
+      builder: (context) => _CatalogSearchDialog(ref: ref),
+    );
+
+    if (selected == null || !mounted) return;
+
+    try {
+      final heroRepo = ref.read(heroRepositoryProvider);
+      final newItem = {
+        'id': DateTime.now().millisecondsSinceEpoch.toString(),
+        'name': selected.name,
+        'description': selected.data['description']?.toString() ?? '',
+        'category': selected.data['category']?.toString() ?? 'custom',
+        'quantity': 1,
+      };
+
+      final updated = [..._looseItems, newItem];
+      await heroRepo.saveLooseItems(widget.heroId, updated);
+      setState(() {
+        _looseItems = updated;
+      });
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${InventoryTabText.addItemFailedPrefix}$e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _deleteLooseItem(String itemId) async {
+    try {
+      final heroRepo = ref.read(heroRepositoryProvider);
+      final updated = _looseItems.where((i) => i['id'] != itemId).toList();
+      await heroRepo.saveLooseItems(widget.heroId, updated);
+      setState(() {
+        _looseItems = updated;
+      });
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${InventoryTabText.deleteItemFailedPrefix}$e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _editLooseItem(
+      String itemId, Map<String, dynamic> currentItem) async {
+    final updatedItem = await showDialog<Map<String, dynamic>>(
+      context: context,
+      builder: (context) => EditItemDialog(item: currentItem),
+    );
+
+    if (updatedItem == null || !mounted) return;
+
+    try {
+      final heroRepo = ref.read(heroRepositoryProvider);
+      final updated = List<Map<String, dynamic>>.from(_looseItems);
+      final idx = updated.indexWhere((i) => i['id'] == itemId);
+      if (idx == -1) return;
+
+      updated[idx] = {
+        'id': itemId,
+        'name': updatedItem['name'],
+        'description': updatedItem['description'],
+        'category': _looseItems[idx]['category'] ?? 'custom',
+        'quantity': updatedItem['quantity'],
+      };
+
+      await heroRepo.saveLooseItems(widget.heroId, updated);
+      setState(() {
+        _looseItems = updated;
+      });
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${InventoryTabText.updateItemFailedPrefix}$e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _updateLooseItemQuantity(String itemId, int newQuantity) async {
+    if (newQuantity < 1) return;
+
+    try {
+      final heroRepo = ref.read(heroRepositoryProvider);
+      final updated = List<Map<String, dynamic>>.from(_looseItems);
+      final idx = updated.indexWhere((i) => i['id'] == itemId);
+      if (idx == -1) return;
+
+      final item = Map<String, dynamic>.from(updated[idx]);
+      item['quantity'] = newQuantity;
+      updated[idx] = item;
+
+      await heroRepo.saveLooseItems(widget.heroId, updated);
+      setState(() {
+        _looseItems = updated;
+      });
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${InventoryTabText.updateQuantityFailedPrefix}$e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  // ===========================================================================
+  // MOVE ITEMS BETWEEN LOCATIONS
+  // ===========================================================================
+
+  /// Move an item from a container to another container or loose items.
+  Future<void> _moveItemFromContainer(
+      String fromContainerId, Map<String, dynamic> item) async {
+    final destination = await _showMoveDialog(
+      excludeContainerId: fromContainerId,
+      showLooseOption: true,
+    );
+    if (destination == null || !mounted) return;
+
+    try {
+      final heroRepo = ref.read(heroRepositoryProvider);
+
+      // Remove from source container
+      final containers = List<Map<String, dynamic>>.from(_containers);
+      final srcIdx = containers.indexWhere((c) => c['id'] == fromContainerId);
+      if (srcIdx == -1) return;
+
+      final srcContainer = Map<String, dynamic>.from(containers[srcIdx]);
+      final srcItems =
+          List<Map<String, dynamic>>.from(srcContainer['items'] as List? ?? []);
+      srcItems.removeWhere((i) => i['id'] == item['id']);
+      srcContainer['items'] = srcItems;
+      containers[srcIdx] = srcContainer;
+
+      final movedItem = Map<String, dynamic>.from(item);
+      // Give it a new ID in the destination
+      movedItem['id'] = DateTime.now().millisecondsSinceEpoch.toString();
+
+      if (destination == '__loose__') {
+        // Move to loose items
+        final looseItems = [..._looseItems, movedItem];
+        await heroRepo.saveInventoryContainers(widget.heroId, containers);
+        await heroRepo.saveLooseItems(widget.heroId, looseItems);
+        setState(() {
+          _containers = containers;
+          _looseItems = looseItems;
+        });
+      } else {
+        // Move to another container
+        final destIdx = containers.indexWhere((c) => c['id'] == destination);
+        if (destIdx == -1) return;
+
+        final destContainer = Map<String, dynamic>.from(containers[destIdx]);
+        final destItems = List<Map<String, dynamic>>.from(
+            destContainer['items'] as List? ?? []);
+        destItems.add(movedItem);
+        destContainer['items'] = destItems;
+        containers[destIdx] = destContainer;
+
+        await heroRepo.saveInventoryContainers(widget.heroId, containers);
+        setState(() {
+          _containers = containers;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${InventoryTabText.moveItemFailedPrefix}$e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  /// Move an item from loose items to a container.
+  Future<void> _moveItemFromLoose(Map<String, dynamic> item) async {
+    final destination = await _showMoveDialog(
+      showLooseOption: false,
+    );
+    if (destination == null || !mounted) return;
+
+    try {
+      final heroRepo = ref.read(heroRepositoryProvider);
+
+      // Remove from loose items
+      final looseItems =
+          _looseItems.where((i) => i['id'] != item['id']).toList();
+
+      // Add to destination container
+      final containers = List<Map<String, dynamic>>.from(_containers);
+      final destIdx = containers.indexWhere((c) => c['id'] == destination);
+      if (destIdx == -1) return;
+
+      final destContainer = Map<String, dynamic>.from(containers[destIdx]);
+      final destItems = List<Map<String, dynamic>>.from(
+          destContainer['items'] as List? ?? []);
+
+      final movedItem = Map<String, dynamic>.from(item);
+      movedItem['id'] = DateTime.now().millisecondsSinceEpoch.toString();
+      destItems.add(movedItem);
+      destContainer['items'] = destItems;
+      containers[destIdx] = destContainer;
+
+      await heroRepo.saveLooseItems(widget.heroId, looseItems);
+      await heroRepo.saveInventoryContainers(widget.heroId, containers);
+      setState(() {
+        _looseItems = looseItems;
+        _containers = containers;
+      });
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${InventoryTabText.moveItemFailedPrefix}$e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  /// Show a dialog to pick the destination for a move.
+  Future<String?> _showMoveDialog({
+    String? excludeContainerId,
+    required bool showLooseOption,
+  }) async {
+    final destinations = <Map<String, String>>[];
+
+    if (showLooseOption) {
+      destinations.add({
+        'id': '__loose__',
+        'name': InventoryTabText.looseItemsDestination,
+      });
+    }
+
+    for (final container in _containers) {
+      final cId = container['id']?.toString() ?? '';
+      if (cId == excludeContainerId) continue;
+      destinations.add({
+        'id': cId,
+        'name': container['name']?.toString() ??
+            InventoryTabText.defaultContainerName,
+      });
+    }
+
+    if (destinations.isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(InventoryTabText.noDestinations),
+          ),
+        );
+      }
+      return null;
+    }
+
+    return showDialog<String>(
+      context: context,
+      builder: (ctx) => Dialog(
+        backgroundColor: NavigationTheme.cardBackgroundDark,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  InventoryTabText.moveItemTitle,
+                  style: TextStyle(
+                    color: FormTheme.textBright,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 4),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  InventoryTabText.moveItemSubtitle,
+                  style: TextStyle(
+                    color: FormTheme.textSecondary,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              const Divider(height: 1),
+              ...destinations.map((dest) => ListTile(
+                    leading: Icon(
+                      dest['id'] == '__loose__'
+                          ? Icons.inventory_2_outlined
+                          : Icons.cases_outlined,
+                      color: NavigationTheme.itemsColor,
+                      size: 22,
+                    ),
+                    title: Text(
+                      dest['name'] ?? '',
+                      style: const TextStyle(color: FormTheme.textBright),
+                    ),
+                    onTap: () => Navigator.pop(ctx, dest['id']),
+                  )),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
@@ -380,7 +829,7 @@ class _InventoryTabState extends ConsumerState<InventoryTab> {
               ),
             ),
             Expanded(
-              child: _containers.isEmpty
+              child: (_containers.isEmpty && _looseItems.isEmpty)
                   ? Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -399,26 +848,40 @@ class _InventoryTabState extends ConsumerState<InventoryTab> {
                         ],
                       ),
                     )
-                  : ListView.builder(
+                  : ListView(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      itemCount: _containers.length,
-                      itemBuilder: (context, index) {
-                        final container = _containers[index];
-                        final containerId = container['id'] as String;
-                        return ContainerCard(
-                          container: container,
-                          onAddItem: () => _addItemToContainer(containerId),
-                          onDeleteContainer: () =>
-                              _deleteContainer(containerId),
-                          onDeleteItem: (itemId) =>
-                              _deleteItem(containerId, itemId),
-                          onEditItem: (itemId, itemMap) =>
-                              _editItem(containerId, itemId, itemMap),
-                          onEditContainer: () => _editContainer(containerId),
-                          onUpdateItemQuantity: (itemId, newQty) =>
-                              _updateItemQuantity(containerId, itemId, newQty),
-                        );
-                      },
+                      children: [
+                        // ── Loose Items Section ──
+                        _buildLooseItemsDragTarget(),
+                        // ── Containers ──
+                        ..._containers.map((container) {
+                          final containerId = container['id'] as String;
+                          return _buildContainerDragTarget(
+                            containerId,
+                            ContainerCard(
+                              container: container,
+                              onAddItem: () =>
+                                  _addItemToContainer(containerId),
+                              onAddFromCatalog: () =>
+                                  _addItemFromCatalog(containerId),
+                              onDeleteContainer: () =>
+                                  _deleteContainer(containerId),
+                              onDeleteItem: (itemId) =>
+                                  _deleteItem(containerId, itemId),
+                              onEditItem: (itemId, itemMap) =>
+                                  _editItem(containerId, itemId, itemMap),
+                              onEditContainer: () =>
+                                  _editContainer(containerId),
+                              onUpdateItemQuantity: (itemId, newQty) =>
+                                  _updateItemQuantity(
+                                      containerId, itemId, newQty),
+                              onMoveItem: (item) =>
+                                  _moveItemFromContainer(containerId, item),
+                            ),
+                          );
+                        }),
+                        const SizedBox(height: 72), // FAB clearance
+                      ],
                     ),
             ),
           ],
@@ -441,6 +904,745 @@ class _InventoryTabState extends ConsumerState<InventoryTab> {
           ),
         ),
       ],
+    );
+  }
+  // ===========================================================================
+  // DRAG & DROP
+  // ===========================================================================
+
+  /// Wraps a ContainerCard in a DragTarget that accepts items from elsewhere.
+  Widget _buildContainerDragTarget(String containerId, Widget child) {
+    return DragTarget<Map<String, dynamic>>(
+      onWillAcceptWithDetails: (details) {
+        final data = details.data;
+        // Don't accept if dragged from the same container
+        if (data['source'] == 'container' &&
+            data['containerId'] == containerId) {
+          return false;
+        }
+        return true;
+      },
+      onAcceptWithDetails: (details) {
+        final data = details.data;
+        final item = Map<String, dynamic>.from(data['item'] as Map);
+        _handleDrop(
+          item: item,
+          fromSource: data['source'] as String,
+          fromContainerId: data['containerId'] as String?,
+          toTarget: containerId,
+        );
+      },
+      builder: (context, candidateData, rejectedData) {
+        final isHovering = candidateData.isNotEmpty;
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          decoration: isHovering
+              ? BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: NavigationTheme.itemsColor.withValues(alpha: 0.7),
+                    width: 2,
+                  ),
+                )
+              : const BoxDecoration(),
+          child: child,
+        );
+      },
+    );
+  }
+
+  /// Wraps the loose items section in a DragTarget.
+  Widget _buildLooseItemsDragTarget() {
+    return DragTarget<Map<String, dynamic>>(
+      onWillAcceptWithDetails: (details) {
+        final data = details.data;
+        // Don't accept if already from loose
+        return data['source'] != 'loose';
+      },
+      onAcceptWithDetails: (details) {
+        final data = details.data;
+        final item = Map<String, dynamic>.from(data['item'] as Map);
+        _handleDrop(
+          item: item,
+          fromSource: data['source'] as String,
+          fromContainerId: data['containerId'] as String?,
+          toTarget: '__loose__',
+        );
+      },
+      builder: (context, candidateData, rejectedData) {
+        final isHovering = candidateData.isNotEmpty;
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          decoration: isHovering
+              ? BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: NavigationTheme.itemsColor.withValues(alpha: 0.7),
+                    width: 2,
+                  ),
+                )
+              : const BoxDecoration(),
+          child: _buildLooseItemsSection(),
+        );
+      },
+    );
+  }
+
+  /// Handle a drag-drop from source to target.
+  Future<void> _handleDrop({
+    required Map<String, dynamic> item,
+    required String fromSource,
+    required String? fromContainerId,
+    required String toTarget,
+  }) async {
+    try {
+      final heroRepo = ref.read(heroRepositoryProvider);
+      final containers = List<Map<String, dynamic>>.from(_containers);
+      var looseItems = List<Map<String, dynamic>>.from(_looseItems);
+
+      // Remove from source
+      if (fromSource == 'loose') {
+        looseItems.removeWhere((i) => i['id'] == item['id']);
+      } else if (fromSource == 'container' && fromContainerId != null) {
+        final srcIdx =
+            containers.indexWhere((c) => c['id'] == fromContainerId);
+        if (srcIdx != -1) {
+          final src = Map<String, dynamic>.from(containers[srcIdx]);
+          final srcItems =
+              List<Map<String, dynamic>>.from(src['items'] as List? ?? []);
+          srcItems.removeWhere((i) => i['id'] == item['id']);
+          src['items'] = srcItems;
+          containers[srcIdx] = src;
+        }
+      }
+
+      // Add to destination with new ID
+      final movedItem = Map<String, dynamic>.from(item);
+      movedItem['id'] = DateTime.now().millisecondsSinceEpoch.toString();
+
+      if (toTarget == '__loose__') {
+        looseItems.add(movedItem);
+      } else {
+        final destIdx = containers.indexWhere((c) => c['id'] == toTarget);
+        if (destIdx != -1) {
+          final dest = Map<String, dynamic>.from(containers[destIdx]);
+          final destItems =
+              List<Map<String, dynamic>>.from(dest['items'] as List? ?? []);
+          destItems.add(movedItem);
+          dest['items'] = destItems;
+          containers[destIdx] = dest;
+        }
+      }
+
+      await heroRepo.saveInventoryContainers(widget.heroId, containers);
+      await heroRepo.saveLooseItems(widget.heroId, looseItems);
+      setState(() {
+        _containers = containers;
+        _looseItems = looseItems;
+      });
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${InventoryTabText.moveItemFailedPrefix}$e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Widget _buildLooseItemsSection() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: NavigationTheme.cardBackgroundDark,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: FormTheme.borderDim),
+      ),
+      child: Column(
+        children: [
+          // Header
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: NavigationTheme.itemsColor.withAlpha(18),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(12),
+              ),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.inventory_2_outlined,
+                    color: NavigationTheme.itemsColor, size: 22),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        InventoryTabText.looseItemsTitle,
+                        style: TextStyle(
+                          color: FormTheme.textBright,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                      Text(
+                        InventoryTabText.looseItemsSubtitle,
+                        style: TextStyle(
+                          color: FormTheme.textSecondary,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.search,
+                      color: NavigationTheme.itemsColor, size: 22),
+                  onPressed: _addLooseItemFromCatalog,
+                  tooltip: InventoryWidgetsText.addFromCatalogTooltip,
+                  visualDensity: VisualDensity.compact,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.add_circle_outline,
+                      color: NavigationTheme.itemsColor, size: 22),
+                  onPressed: _addLooseItem,
+                  tooltip: InventoryWidgetsText.addItemTooltip,
+                  visualDensity: VisualDensity.compact,
+                ),
+              ],
+            ),
+          ),
+          // Items list
+          if (_looseItems.isNotEmpty)
+            Container(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                children: _looseItems.map((itemMap) {
+                  final itemId = itemMap['id'] as String;
+                  final qty = itemMap['quantity'];
+                  final quantity = qty is int
+                      ? qty
+                      : int.tryParse(qty?.toString() ?? '1') ?? 1;
+                  final description = itemMap['description'] as String?;
+                  final category = itemMap['category'] as String? ?? 'custom';
+                  final itemColor =
+                      ItemsCatalogService.categoryColor(category);
+
+                  final itemWidget = Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: FormTheme.surfaceDark,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: FormTheme.borderDim),
+                    ),
+                    child: Row(
+                      children: [
+                        // Drag handle
+                        Icon(
+                          Icons.drag_indicator,
+                          size: 18,
+                          color: FormTheme.borderLight,
+                        ),
+                        const SizedBox(width: 4),
+                        Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: itemColor.withAlpha(26),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(
+                            ItemsCatalogService.categoryIcon(category),
+                            color: itemColor,
+                            size: 20,
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                itemMap['name'] as String? ??
+                                    InventoryWidgetsText.defaultItemName,
+                                style: TextStyle(
+                                  color: FormTheme.textBright,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              if (description != null &&
+                                  description.isNotEmpty)
+                                Text(
+                                  description,
+                                  style: TextStyle(
+                                    color: FormTheme.textMuted,
+                                    fontSize: 12,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                            ],
+                          ),
+                        ),
+                        // Quantity controls
+                        Container(
+                          decoration: BoxDecoration(
+                            color: FormTheme.surfaceMuted,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              InkWell(
+                                borderRadius: const BorderRadius.horizontal(
+                                    left: Radius.circular(8)),
+                                onTap: quantity > 1
+                                    ? () => _updateLooseItemQuantity(
+                                        itemId, quantity - 1)
+                                    : null,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(6.0),
+                                  child: Icon(
+                                    Icons.remove,
+                                    size: 14,
+                                    color: quantity > 1
+                                        ? NavigationTheme.itemsColor
+                                        : FormTheme.borderLight,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0),
+                                child: Text(
+                                  '$quantity',
+                                  style: TextStyle(
+                                    color: FormTheme.textBright,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ),
+                              InkWell(
+                                borderRadius: const BorderRadius.horizontal(
+                                    right: Radius.circular(8)),
+                                onTap: quantity < 999
+                                    ? () => _updateLooseItemQuantity(
+                                        itemId, quantity + 1)
+                                    : null,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(6.0),
+                                  child: Icon(
+                                    Icons.add,
+                                    size: 14,
+                                    color: quantity < 999
+                                        ? NavigationTheme.itemsColor
+                                        : FormTheme.borderLight,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        // Move button
+                        if (_containers.isNotEmpty)
+                          IconButton(
+                            icon: Icon(Icons.drive_file_move_outline,
+                                size: 18, color: FormTheme.textSecondary),
+                            onPressed: () => _moveItemFromLoose(itemMap),
+                            tooltip: InventoryWidgetsText.moveItemTooltip,
+                            constraints: const BoxConstraints(),
+                            padding: const EdgeInsets.all(4),
+                            visualDensity: VisualDensity.compact,
+                          ),
+                        // Edit button
+                        IconButton(
+                          icon: Icon(Icons.edit_outlined,
+                              size: 18, color: FormTheme.textSecondary),
+                          onPressed: () =>
+                              _editLooseItem(itemId, itemMap),
+                          tooltip: InventoryWidgetsText.editItemTooltip,
+                          constraints: const BoxConstraints(),
+                          padding: const EdgeInsets.all(4),
+                          visualDensity: VisualDensity.compact,
+                        ),
+                        // Delete button
+                        IconButton(
+                          icon: Icon(Icons.close,
+                              size: 18, color: Colors.red.shade400),
+                          onPressed: () => _deleteLooseItem(itemId),
+                          tooltip: InventoryWidgetsText.deleteItemTooltip,
+                          constraints: const BoxConstraints(),
+                          padding: const EdgeInsets.all(4),
+                          visualDensity: VisualDensity.compact,
+                        ),
+                      ],
+                    ),
+                  );
+
+                  return LongPressDraggable<Map<String, dynamic>>(
+                    delay: const Duration(milliseconds: 150),
+                    data: {
+                      'item': itemMap,
+                      'source': 'loose',
+                      'containerId': null,
+                    },
+                    feedback: Material(
+                      color: Colors.transparent,
+                      child: Opacity(
+                        opacity: 0.85,
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.7,
+                          child: itemWidget,
+                        ),
+                      ),
+                    ),
+                    childWhenDragging: Opacity(
+                      opacity: 0.3,
+                      child: itemWidget,
+                    ),
+                    child: itemWidget,
+                  );
+                }).toList(),
+              ),
+            ),
+          if (_looseItems.isEmpty)
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                InventoryTabText.emptyLooseItems,
+                style: TextStyle(color: FormTheme.textMuted),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Catalog Search Dialog — search and pick items from the global catalog
+// ---------------------------------------------------------------------------
+
+class _CatalogSearchDialog extends StatefulWidget {
+  const _CatalogSearchDialog({required this.ref});
+
+  final WidgetRef ref;
+
+  @override
+  State<_CatalogSearchDialog> createState() => _CatalogSearchDialogState();
+}
+
+class _CatalogSearchDialogState extends State<_CatalogSearchDialog> {
+  List<model.Component> _allItems = [];
+  List<model.Component> _filteredItems = [];
+  String _query = '';
+  String _selectedCategory = 'all';
+  bool _isLoading = true;
+
+  static const _categoryFilters = <(String, String)>[
+    ('all', 'All'),
+    ('project_material', 'Project Material'),
+    ('treasure_component', 'Treasure Component'),
+    ('equipment', 'Equipment'),
+    ('consumable', 'Consumable'),
+    ('custom', 'Custom'),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCatalog();
+  }
+
+  Future<void> _loadCatalog() async {
+    final service = widget.ref.read(itemsCatalogServiceProvider);
+    final items = await service.getAllItems();
+    if (mounted) {
+      setState(() {
+        _allItems = items;
+        _filteredItems = items;
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _applyFilters() {
+    setState(() {
+      var results = _allItems;
+
+      // Category filter
+      if (_selectedCategory != 'all') {
+        results = results
+            .where((item) =>
+                (item.data['category']?.toString() ?? 'custom') ==
+                _selectedCategory)
+            .toList();
+      }
+
+      // Text search
+      if (_query.isNotEmpty) {
+        final lower = _query.toLowerCase();
+        results = results
+            .where((item) =>
+                item.name.toLowerCase().contains(lower) ||
+                (item.data['description']?.toString() ?? '')
+                    .toLowerCase()
+                    .contains(lower))
+            .toList();
+      }
+
+      _filteredItems = results;
+    });
+  }
+
+  void _filter(String query) {
+    _query = query;
+    _applyFilters();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: NavigationTheme.cardBackgroundDark,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.9,
+        height: MediaQuery.of(context).size.height * 0.65,
+        child: Column(
+          children: [
+            // Header
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    NavigationTheme.itemsColor.withValues(alpha: 0.3),
+                    NavigationTheme.itemsColor.withValues(alpha: 0.1),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                border: Border(
+                  bottom: BorderSide(
+                      color:
+                          NavigationTheme.itemsColor.withValues(alpha: 0.3)),
+                ),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.search,
+                      color: NavigationTheme.itemsColor, size: 24),
+                  const SizedBox(width: 12),
+                  const Expanded(
+                    child: Text(
+                      InventoryTabText.searchCatalogTitle,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: FormTheme.textBright,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close, color: FormTheme.textBright),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ],
+              ),
+            ),
+
+            // Search field
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              child: TextField(
+                autofocus: true,
+                style: const TextStyle(color: FormTheme.textBright),
+                decoration: InputDecoration(
+                  hintText: InventoryTabText.searchCatalogHint,
+                  hintStyle: TextStyle(color: FormTheme.textMuted),
+                  prefixIcon:
+                      Icon(Icons.search, color: FormTheme.textSecondary),
+                  filled: true,
+                  fillColor: FormTheme.surface,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: FormTheme.border),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: FormTheme.border),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(
+                        color: NavigationTheme.itemsColor),
+                  ),
+                  isDense: true,
+                ),
+                onChanged: _filter,
+              ),
+            ),
+
+            // Category filter chips
+            SizedBox(
+              height: 40,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                itemCount: _categoryFilters.length,
+                itemBuilder: (context, index) {
+                  final (filterKey, filterLabel) = _categoryFilters[index];
+                  final isSelected = _selectedCategory == filterKey;
+                  final chipColor = filterKey == 'all'
+                      ? NavigationTheme.itemsColor
+                      : ItemsCatalogService.categoryColor(filterKey);
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 6),
+                    child: FilterChip(
+                      label: Text(filterLabel),
+                      selected: isSelected,
+                      onSelected: (_) {
+                        _selectedCategory = filterKey;
+                        _applyFilters();
+                      },
+                      selectedColor: chipColor.withValues(alpha: 0.3),
+                      checkmarkColor: chipColor,
+                      labelStyle: TextStyle(
+                        color:
+                            isSelected ? chipColor : FormTheme.textSecondary,
+                        fontSize: 12,
+                      ),
+                      backgroundColor: FormTheme.surface,
+                      side: BorderSide(
+                        color: isSelected ? chipColor : FormTheme.borderDim,
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 2),
+                      visualDensity: VisualDensity.compact,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 4),
+
+            // Items list
+            Expanded(
+              child: _isLoading
+                  ? Center(
+                      child: CircularProgressIndicator(
+                          color: NavigationTheme.itemsColor))
+                  : _filteredItems.isEmpty
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              AppIcon(
+                                AppIcons.gear.item,
+                                size: 48,
+                                color: FormTheme.borderLight,
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                _query.isNotEmpty
+                                    ? InventoryTabText.searchCatalogEmpty
+                                    : InventoryTabText
+                                        .searchCatalogEmptySubtitle,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: FormTheme.textSecondary),
+                              ),
+                            ],
+                          ),
+                        )
+                      : ListView.builder(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          itemCount: _filteredItems.length,
+                          itemBuilder: (context, index) {
+                            final item = _filteredItems[index];
+                            final description =
+                                item.data['description']?.toString() ?? '';
+                            final category =
+                                item.data['category']?.toString() ?? 'custom';
+                            final catColor =
+                                ItemsCatalogService.categoryColor(category);
+
+                            return Container(
+                              margin: const EdgeInsets.only(bottom: 6),
+                              decoration: BoxDecoration(
+                                color: FormTheme.surface,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                    color: catColor.withValues(alpha: 0.3)),
+                              ),
+                              child: ListTile(
+                                dense: true,
+                                leading: Container(
+                                  width: 36,
+                                  height: 36,
+                                  decoration: BoxDecoration(
+                                    color: catColor
+                                        .withValues(alpha: 0.15),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Icon(
+                                    ItemsCatalogService.categoryIcon(category),
+                                    color: catColor,
+                                    size: 18,
+                                  ),
+                                ),
+                                title: Text(
+                                  item.name,
+                                  style: const TextStyle(
+                                    color: FormTheme.textBright,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                subtitle: description.isNotEmpty
+                                    ? Text(
+                                        description,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          color: FormTheme.textSecondary,
+                                          fontSize: 12,
+                                        ),
+                                      )
+                                    : null,
+                                trailing: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        catColor.withValues(alpha: 0.15),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: Text(
+                                    ItemsCatalogService.categoryLabel(
+                                        category),
+                                    style: TextStyle(
+                                      color: catColor,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                                onTap: () =>
+                                    Navigator.of(context).pop(item),
+                              ),
+                            );
+                          },
+                        ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

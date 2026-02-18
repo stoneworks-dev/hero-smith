@@ -1,3 +1,5 @@
+import 'hero_export_service.dart';
+
 /// Preview information for a hero import.
 class HeroImportPreview {
   const HeroImportPreview({
@@ -7,7 +9,7 @@ class HeroImportPreview {
     this.className,
     this.ancestryName,
     this.level,
-    this.exportTier,
+    this.exportOptions,
   });
 
   final String name;
@@ -17,20 +19,9 @@ class HeroImportPreview {
   final String? ancestryName;
   final int? level;
 
-  /// The tier level used when this hero was exported (1-3)
-  final int? exportTier;
+  /// The export options used when this hero was exported.
+  final ExportOptions? exportOptions;
 
-  /// Human-readable description of what's included in this export
-  String get tierDescription {
-    switch (exportTier) {
-      case 1:
-        return 'Core build only';
-      case 2:
-        return 'Build + downtime data';
-      case 3:
-        return 'Full export (includes notes)';
-      default:
-        return 'Unknown tier';
-    }
-  }
+  /// Human-readable description of what's included in this export.
+  String get tierDescription => exportOptions?.label ?? 'Unknown';
 }

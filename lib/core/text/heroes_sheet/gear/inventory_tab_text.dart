@@ -19,4 +19,25 @@ class InventoryTabText {
   static const String defaultContainerName = 'Container';
   static const String emptyContainersMessage =
       'No containers yet.\nCreate a container to organize your items.';
+
+  // Catalog search
+  static const String searchCatalogTitle = 'Add From Catalog';
+  static const String searchCatalogHint = 'Search items...';
+  static const String searchCatalogEmpty = 'No items found';
+  static const String searchCatalogEmptySubtitle =
+      'Create items in the Items page to see them here';
+  static const String addToCatalogAction = 'Add';
+
+  // Loose items
+  static const String looseItemsTitle = 'Loose Items';
+  static const String looseItemsSubtitle = 'Items not in any container';
+  static const String emptyLooseItems = 'No loose items';
+  static const String addLooseItemTitle = 'Add Loose Item';
+  static const String moveItemFailedPrefix = 'Failed to move item: ';
+
+  // Move dialog
+  static const String moveItemTitle = 'Move Item';
+  static const String moveItemSubtitle = 'Select destination';
+  static const String looseItemsDestination = 'Loose Items';
+  static const String noDestinations = 'No other destinations available';
 }

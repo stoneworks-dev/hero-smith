@@ -882,6 +882,30 @@ class HeroRepository {
     return [];
   }
 
+  /// Save loose inventory items (not in any container)
+  Future<void> saveLooseItems(
+    String heroId,
+    List<Map<String, dynamic>> items,
+  ) async {
+    await _db.setHeroConfig(
+      heroId: heroId,
+      configKey: 'gear.inventory_loose_items',
+      value: {'items': items},
+    );
+  }
+
+  /// Load loose inventory items
+  Future<List<Map<String, dynamic>>> getLooseItems(String heroId) async {
+    final config =
+        await _db.getHeroConfigValue(heroId, 'gear.inventory_loose_items');
+    if (config == null) return [];
+    final items = config['items'];
+    if (items is List) {
+      return items.map((e) => Map<String, dynamic>.from(e as Map)).toList();
+    }
+    return [];
+  }
+
   Future<void> updateCharacteristicArray(
     String heroId, {
     String? arrayName,

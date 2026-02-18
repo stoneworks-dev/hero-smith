@@ -206,6 +206,8 @@ const essentialConfigKeys = [
   'strife.class_feature_selections',
   // Strength
   'kit.selections',
+  // Titles
+  'title_progress',
   // Dynamic: perk.{id}.selections
 ];
 

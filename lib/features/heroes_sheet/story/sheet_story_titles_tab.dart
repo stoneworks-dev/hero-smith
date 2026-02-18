@@ -196,6 +196,46 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
     );
   }
 
+  void _openProgressPage() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => TitleProgressPage(
+          heroId: widget.heroId,
+          earnedTitleIds: _selectedTitles.keys.toSet(),
+          onTitleEarned: (titleId) {
+            // When a title is earned from the progress page, show the add dialog
+            // pre-filtered to that title so the user can pick a benefit.
+            final title = _availableTitles.firstWhere(
+              (t) => t['id'] == titleId,
+              orElse: () => <String, dynamic>{},
+            );
+            if (title.isNotEmpty) {
+              final benefits = title['benefits'] as List? ?? [];
+              if (benefits.length <= 1) {
+                _addTitle(titleId, 0);
+              } else {
+                // Show benefit selection via the add dialog
+                showDialog(
+                  context: context,
+                  builder: (ctx) => AddTitleDialog(
+                    availableTitles: [title],
+                    onTitleSelected: (id, benefitIndex) {
+                      _addTitle(id, benefitIndex);
+                      Navigator.of(ctx).pop();
+                    },
+                  ),
+                );
+              }
+            }
+          },
+        ),
+      ),
+    ).then((_) {
+      // Refresh data when returning from progress page
+      _loadData();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
@@ -287,6 +327,46 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                       ),
                     ),
                   ],
+                ),
+              ),
+              const SizedBox(height: 10),
+              // Track Progress banner
+              GestureDetector(
+                onTap: _openProgressPage,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: _titlesColor.withAlpha(16),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: _titlesColor.withAlpha(60)),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.track_changes, color: _titlesColor, size: 22),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Track Title Progress',
+                              style: TextStyle(
+                                color: _titlesColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              'View prerequisites and track your journey',
+                              style: TextStyle(color: FormTheme.textSecondary, fontSize: 12),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Icon(Icons.chevron_right, color: _titlesColor.withAlpha(180), size: 22),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 16),

@@ -35,6 +35,7 @@ class GearDialogsText {
   static const String createItemDescriptionLabel = 'Description (optional)';
   static const String createItemDescriptionHint = 'e.g., 50ft hemp rope';
   static const String createItemQuantityLabel = 'Quantity:';
+  static const String createItemCategoryLabel = 'Type';
   static const String createItemCancelAction = CommonText.cancel;
   static const String createItemAddAction = CommonText.add;
   static const String editItemTitle = 'Edit Item';

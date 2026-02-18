@@ -5,6 +5,7 @@ class InventoryWidgetsText {
   static const String defaultItemName = 'Item';
   static const String containerItemsSuffix = ' items';
   static const String addItemTooltip = 'Add item';
+  static const String addFromCatalogTooltip = 'Add from catalog';
   static const String editContainerTooltip = 'Edit container name';
   static const String deleteContainerTooltip = 'Delete container';
   static const String editItemTooltip = 'Edit item';
@@ -14,4 +15,5 @@ class InventoryWidgetsText {
   static const String quantityDialogLabel = 'Quantity (1-999)';
   static const String quantityDialogCancelAction = CommonText.cancel;
   static const String quantityDialogSetAction = 'Set';
+  static const String moveItemTooltip = 'Move to another location';
 }

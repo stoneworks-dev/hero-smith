@@ -30,10 +30,10 @@ class HeroFileService {
   Future<bool> exportHeroToFile(
     String heroId, {
     required String heroName,
-    ExportTier tier = ExportTier.full,
+    ExportOptions options = ExportOptions.full,
   }) async {
     final exportService = HeroExportService(_db);
-    final code = await exportService.exportHeroToCode(heroId, tier: tier);
+    final code = await exportService.exportHeroToCode(heroId, options: options);
     final fileName = _sanitizeFileName(heroName);
 
     if (_isMobile) {
@@ -53,7 +53,7 @@ class HeroFileService {
   /// On desktop, asks for a folder and saves each file there.
   /// Returns the number of heroes successfully exported.
   Future<int> exportAllHeroesToFiles({
-    ExportTier tier = ExportTier.full,
+    ExportOptions options = ExportOptions.full,
   }) async {
     final heroes = await _db.select(_db.heroes).get();
     if (heroes.isEmpty) return 0;
@@ -63,7 +63,7 @@ class HeroFileService {
 
     for (final hero in heroes) {
       try {
-        final code = await exportService.exportHeroToCode(hero.id, tier: tier);
+        final code = await exportService.exportHeroToCode(hero.id, options: options);
         final fileName = _sanitizeFileName(hero.name);
         exportedFiles.add(MapEntry('$fileName.$_fileExtension', code));
       } catch (e) {

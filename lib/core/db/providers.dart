@@ -17,6 +17,7 @@ import '../services/damage_resistance_service.dart';
 import '../services/hero_config_service.dart';
 import '../services/hero_assembly_service.dart';
 import '../services/treasure_bonus_service.dart';
+import '../services/items_catalog_service.dart';
 import '../models/hero_assembled_model.dart';
 
 // Core singletons
@@ -75,6 +76,12 @@ final heroRepositoryProvider = Provider<HeroRepository>((ref) {
 final downtimeRepositoryProvider = Provider<DowntimeRepository>((ref) {
   final db = ref.read(appDatabaseProvider);
   return DowntimeRepository(db);
+});
+
+final itemsCatalogServiceProvider = Provider<ItemsCatalogService>((ref) {
+  final db = ref.read(appDatabaseProvider);
+  final repo = ref.read(componentRepositoryProvider);
+  return ItemsCatalogService(db, repo);
 });
 
 // Toggle for auto-seeding on startup. Tests can override this to false.
