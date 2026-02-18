@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/theme/app_icon.dart';
+import '../../../core/theme/app_icons.dart';
+import '../../../core/theme/form_theme.dart';
 import '../../../core/theme/navigation_theme.dart';
 import '../../../core/text/heroes_sheet/downtime/hero_downtime_tracking_page_text.dart';
 import '../../../widgets/downtime/downtime_tabs.dart';
@@ -62,8 +65,8 @@ class _HeroDowntimeTrackingPageState
                         color: _downtimeColor.withAlpha(51),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Icon(
-                        Icons.schedule,
+                      child: AppIcon(
+                        DowntimeIcons.downtimeHeader,
                         color: _downtimeColor,
                         size: 20,
                       ),
@@ -73,14 +76,14 @@ class _HeroDowntimeTrackingPageState
                       child: Text(
                         'Downtime',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: FormTheme.textBright,
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.event_note, color: _downtimeColor),
+                      icon: AppIcon(DowntimeIcons.events, color: _downtimeColor, size: 20),
                       tooltip:
                           HeroDowntimeTrackingPageText.viewEventTablesTooltip,
                       onPressed: () {
@@ -100,20 +103,20 @@ class _HeroDowntimeTrackingPageState
               color: NavigationTheme.cardBackgroundDark,
               child: TabBar(
                 labelColor: _downtimeColor,
-                unselectedLabelColor: Colors.grey.shade500,
+                unselectedLabelColor: FormTheme.textMuted,
                 indicatorColor: _downtimeColor,
                 indicatorWeight: 3,
-                tabs: const [
+                tabs: [
                   Tab(
-                    icon: Icon(Icons.assignment),
+                    icon: AppIcon(DowntimeIcons.projects, color: _downtimeColor, size: 20),
                     text: HeroDowntimeTrackingPageText.tabProjectsLabel,
                   ),
                   Tab(
-                    icon: Icon(Icons.people),
+                    icon: AppIcon(DowntimeIcons.followers, color: _downtimeColor, size: 20),
                     text: HeroDowntimeTrackingPageText.tabFollowersLabel,
                   ),
                   Tab(
-                    icon: Icon(Icons.book),
+                    icon: AppIcon(DowntimeIcons.sources, color: _downtimeColor, size: 20),
                     text: HeroDowntimeTrackingPageText.tabSourcesLabel,
                   ),
                 ],
@@ -140,12 +143,12 @@ class _HeroDowntimeTrackingPageState
       backgroundColor: NavigationTheme.navBarBackground,
       appBar: AppBar(
         backgroundColor: NavigationTheme.cardBackgroundDark,
-        foregroundColor: Colors.white,
+        foregroundColor: FormTheme.textBright,
         title: Text('${widget.heroName} - Downtime Projects'),
         elevation: 2,
         actions: [
           IconButton(
-            icon: const Icon(Icons.event_note, color: _downtimeColor),
+            icon: AppIcon(DowntimeIcons.events, color: _downtimeColor, size: 20),
             tooltip: HeroDowntimeTrackingPageText.viewEventTablesTooltip,
             onPressed: () {
               Navigator.of(context).push(
@@ -171,18 +174,18 @@ class _HeroDowntimeTrackingPageState
         type: BottomNavigationBarType.fixed,
         backgroundColor: NavigationTheme.cardBackgroundDark,
         selectedItemColor: _downtimeColor,
-        unselectedItemColor: Colors.grey.shade500,
-        items: const [
+        unselectedItemColor: FormTheme.textMuted,
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.assignment),
+            icon: AppIcon(DowntimeIcons.projects, size: 22),
             label: HeroDowntimeTrackingPageText.bottomNavProjectsLabel,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.people),
+            icon: AppIcon(DowntimeIcons.followers, size: 22),
             label: HeroDowntimeTrackingPageText.bottomNavFollowersLabel,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.book),
+            icon: AppIcon(DowntimeIcons.sources, size: 22),
             label: HeroDowntimeTrackingPageText.bottomNavSourcesLabel,
           ),
         ],

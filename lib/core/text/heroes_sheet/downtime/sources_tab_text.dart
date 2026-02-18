@@ -1,14 +1,16 @@
+import '../../common/common_text.dart';
+
 class SourcesTabText {
   static const String addSourceButtonLabel = 'Add Source';
-  static const String editMenuLabel = 'Edit';
-  static const String deleteMenuLabel = 'Delete';
+  static const String editMenuLabel = CommonText.edit;
+  static const String deleteMenuLabel = CommonText.delete;
   static const String emptyTitle = 'No Sources Yet';
   static const String emptySubtitle =
       'Add books, items, or guides to help with projects';
   static const String emptyActionLabel = 'Add First Source';
   static const String deleteDialogTitle = 'Delete Source';
-  static const String deleteDialogCancel = 'Cancel';
-  static const String deleteDialogConfirm = 'Delete';
+  static const String deleteDialogCancel = CommonText.cancel;
+  static const String deleteDialogConfirm = CommonText.delete;
   static const String dialogTitleAdd = 'Add Source';
   static const String dialogTitleEdit = 'Edit Source';
   static const String nameLabel = 'Name *';
@@ -19,6 +21,6 @@ class SourcesTabText {
   static const String typeOptionGuide = 'Guide (Person)';
   static const String languageLabel = 'Language';
   static const String descriptionLabel = 'Description';
-  static const String cancelButtonLabel = 'Cancel';
-  static const String saveButtonLabel = 'Save';
+  static const String cancelButtonLabel = CommonText.cancel;
+  static const String saveButtonLabel = CommonText.save;
 }

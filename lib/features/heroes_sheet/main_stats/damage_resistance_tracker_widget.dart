@@ -5,6 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/models/damage_resistance_model.dart';
 import '../../../core/services/ancestry_bonus_service.dart';
 import '../../../core/text/heroes_sheet/main_stats/damage_resistance_tracker_text.dart';
+import '../../../core/theme/app_icon.dart';
+import '../../../core/theme/app_icons.dart';
+import '../../../core/theme/ability_colors.dart';
+import '../../../core/theme/form_theme.dart';
 import '../../../core/theme/navigation_theme.dart';
 import 'hero_main_stats_providers.dart';
 
@@ -98,7 +102,7 @@ class _DamageResistanceTrackerWidgetState
           surfaceTintColor: Colors.transparent,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
-            side: BorderSide(color: Colors.grey.shade800),
+            side: BorderSide(color: FormTheme.borderDim),
           ),
           title: Row(
             children: [
@@ -108,12 +112,12 @@ class _DamageResistanceTrackerWidgetState
                   color: Colors.blue.withAlpha(40),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(Icons.shield_outlined, color: Colors.blue.shade400),
+                child: AppIcon(CombatIcons.damageResistances, color: Colors.blue.shade400),
               ),
               const SizedBox(width: 12),
-              const Text(
+              Text(
                 DamageResistanceTrackerText.addDamageTypeDialogTitle,
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: FormTheme.textBright),
               ),
             ],
           ),
@@ -128,14 +132,14 @@ class _DamageResistanceTrackerWidgetState
                 final isTracked = existing != null;
                 
                 return ListTile(
-                  leading: Icon(
-                    _getDamageTypeIcon(type),
+                  leading: AppIcon(
+                    DamageTypeIcons.fromName(type),
                     color: _getDamageTypeColor(type),
                   ),
                   title: Text(
                     DamageTypes.displayName(type),
                     style: TextStyle(
-                      color: isTracked ? Colors.grey.shade600 : Colors.white,
+                      color: isTracked ? FormTheme.borderLight : FormTheme.textBright,
                     ),
                   ),
                   trailing: isTracked
@@ -154,7 +158,7 @@ class _DamageResistanceTrackerWidgetState
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              style: TextButton.styleFrom(foregroundColor: Colors.grey.shade400),
+              style: TextButton.styleFrom(foregroundColor: FormTheme.textSecondary),
               child: const Text(
                 DamageResistanceTrackerText.addDamageTypeCancelLabel,
               ),
@@ -185,7 +189,7 @@ class _DamageResistanceTrackerWidgetState
             surfaceTintColor: Colors.transparent,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
-              side: BorderSide(color: Colors.grey.shade800),
+              side: BorderSide(color: FormTheme.borderDim),
             ),
             title: Row(
               children: [
@@ -198,26 +202,26 @@ class _DamageResistanceTrackerWidgetState
                   child: Icon(Icons.create, color: Colors.purple.shade400),
                 ),
                 const SizedBox(width: 12),
-                const Text(
+                Text(
                   DamageResistanceTrackerText.customDamageTypeDialogTitle,
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: FormTheme.textBright),
                 ),
               ],
             ),
             content: TextField(
               controller: controller,
-              style: const TextStyle(color: Colors.white),
+              style: TextStyle(color: FormTheme.textBright),
               decoration: InputDecoration(
                 labelText:
                     DamageResistanceTrackerText.customDamageTypeNameLabel,
-                labelStyle: TextStyle(color: Colors.grey.shade400),
+                labelStyle: TextStyle(color: FormTheme.textSecondary),
                 hintText: DamageResistanceTrackerText.customDamageTypeNameHint,
-                hintStyle: TextStyle(color: Colors.grey.shade600),
+                hintStyle: TextStyle(color: FormTheme.borderLight),
                 border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey.shade700),
+                  borderSide: BorderSide(color: FormTheme.border),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey.shade700),
+                  borderSide: BorderSide(color: FormTheme.border),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.purple.shade400),
@@ -229,7 +233,7 @@ class _DamageResistanceTrackerWidgetState
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                style: TextButton.styleFrom(foregroundColor: Colors.grey.shade400),
+                style: TextButton.styleFrom(foregroundColor: FormTheme.textSecondary),
                 child: const Text(
                   DamageResistanceTrackerText.customDamageTypeCancelLabel,
                 ),
@@ -238,7 +242,7 @@ class _DamageResistanceTrackerWidgetState
                 onPressed: () => Navigator.of(context).pop(true),
                 style: FilledButton.styleFrom(
                   backgroundColor: Colors.purple.shade600,
-                  foregroundColor: Colors.white,
+                  foregroundColor: FormTheme.textBright,
                 ),
                 child: const Text(
                   DamageResistanceTrackerText.customDamageTypeAddLabel,
@@ -291,7 +295,7 @@ class _DamageResistanceTrackerWidgetState
             surfaceTintColor: Colors.transparent,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
-              side: BorderSide(color: Colors.grey.shade800),
+              side: BorderSide(color: FormTheme.borderDim),
             ),
             title: Row(
               children: [
@@ -301,8 +305,8 @@ class _DamageResistanceTrackerWidgetState
                     color: _getDamageTypeColor(resistance.damageType).withAlpha(40),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(
-                    _getDamageTypeIcon(resistance.damageType),
+                  child: AppIcon(
+                    DamageTypeIcons.fromName(resistance.damageType),
                     color: _getDamageTypeColor(resistance.damageType),
                   ),
                 ),
@@ -310,7 +314,7 @@ class _DamageResistanceTrackerWidgetState
                 Expanded(
                   child: Text(
                     '${DamageResistanceTrackerText.editResistanceTitlePrefix}${DamageTypes.displayName(resistance.damageType)}',
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(color: FormTheme.textBright),
                   ),
                 ),
               ],
@@ -333,9 +337,9 @@ class _DamageResistanceTrackerWidgetState
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade800.withAlpha(100),
+                        color: FormTheme.surfaceMuted,
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.grey.shade700),
+                        border: Border.all(color: FormTheme.border),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -349,17 +353,17 @@ class _DamageResistanceTrackerWidgetState
                                   ? Colors.green.shade400
                                   : net < 0
                                       ? Colors.red.shade400
-                                      : Colors.white,
+                                      : FormTheme.textBright,
                             ),
                           ),
                           const SizedBox(height: 8),
                           Text(
                             '${DamageResistanceTrackerText.totalImmunityPrefix}$totalImm (Base: $baseImm + Bonus: ${resistance.bonusImmunity})',
-                            style: TextStyle(color: Colors.grey.shade300),
+                            style: TextStyle(color: FormTheme.textSecondary),
                           ),
                           Text(
                             '${DamageResistanceTrackerText.totalWeaknessPrefix}$totalWeak (Base: $baseWeak + Bonus: ${resistance.bonusWeakness})',
-                            style: TextStyle(color: Colors.grey.shade300),
+                            style: TextStyle(color: FormTheme.textSecondary),
                           ),
                         ],
                       ),
@@ -369,7 +373,7 @@ class _DamageResistanceTrackerWidgetState
                       Text(
                         DamageResistanceTrackerText.sourcesLabel,
                         style: TextStyle(
-                          color: Colors.grey.shade500,
+                          color: FormTheme.textMuted,
                           fontSize: 12,
                         ),
                       ),
@@ -381,10 +385,10 @@ class _DamageResistanceTrackerWidgetState
                             .map((s) => Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                   decoration: BoxDecoration(
-                                    color: Colors.grey.shade800,
+                                    color: FormTheme.surfaceMuted,
                                     borderRadius: BorderRadius.circular(12),
                                   ),
-                                  child: Text(s, style: TextStyle(fontSize: 11, color: Colors.grey.shade300)),
+                                  child: Text(s, style: TextStyle(fontSize: 11, color: FormTheme.textSecondary)),
                                 ))
                             .toList(),
                       ),
@@ -396,16 +400,16 @@ class _DamageResistanceTrackerWidgetState
                         Expanded(
                           child: TextField(
                             controller: immunityController,
-                            style: const TextStyle(color: Colors.white),
+                            style: TextStyle(color: FormTheme.textBright),
                             decoration: InputDecoration(
                               labelText:
                                   DamageResistanceTrackerText.baseImmunityLabel,
-                              labelStyle: TextStyle(color: Colors.grey.shade400),
+                              labelStyle: TextStyle(color: FormTheme.textSecondary),
                               border: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey.shade700),
+                                borderSide: BorderSide(color: FormTheme.border),
                               ),
                               enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey.shade700),
+                                borderSide: BorderSide(color: FormTheme.border),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(color: Colors.green.shade400),
@@ -422,16 +426,16 @@ class _DamageResistanceTrackerWidgetState
                         Expanded(
                           child: TextField(
                             controller: weaknessController,
-                            style: const TextStyle(color: Colors.white),
+                            style: TextStyle(color: FormTheme.textBright),
                             decoration: InputDecoration(
                               labelText:
                                   DamageResistanceTrackerText.baseWeaknessLabel,
-                              labelStyle: TextStyle(color: Colors.grey.shade400),
+                              labelStyle: TextStyle(color: FormTheme.textSecondary),
                               border: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey.shade700),
+                                borderSide: BorderSide(color: FormTheme.border),
                               ),
                               enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey.shade700),
+                                borderSide: BorderSide(color: FormTheme.border),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(color: Colors.red.shade400),
@@ -453,7 +457,7 @@ class _DamageResistanceTrackerWidgetState
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                style: TextButton.styleFrom(foregroundColor: Colors.grey.shade400),
+                style: TextButton.styleFrom(foregroundColor: FormTheme.textSecondary),
                 child: const Text(
                   DamageResistanceTrackerText.editResistanceCancelLabel,
                 ),
@@ -462,7 +466,7 @@ class _DamageResistanceTrackerWidgetState
                 onPressed: () => Navigator.of(context).pop(true),
                 style: FilledButton.styleFrom(
                   backgroundColor: Colors.blue.shade600,
-                  foregroundColor: Colors.white,
+                  foregroundColor: FormTheme.textBright,
                 ),
                 child: const Text(
                   DamageResistanceTrackerText.editResistanceSaveLabel,
@@ -506,36 +510,8 @@ class _DamageResistanceTrackerWidgetState
     return DamageResistanceTrackerText.netNoneLabel;
   }
 
-  IconData _getDamageTypeIcon(String type) {
-    return switch (type.toLowerCase()) {
-      'fire' => Icons.local_fire_department,
-      'cold' => Icons.ac_unit,
-      'lightning' => Icons.bolt,
-      'acid' => Icons.science,
-      'poison' => Icons.coronavirus,
-      'psychic' => Icons.psychology,
-      'corruption' => Icons.warning,
-      'holy' => Icons.star,
-      'sonic' => Icons.volume_up,
-      'damage' => Icons.dangerous,
-      _ => Icons.shield,
-    };
-  }
-
   Color _getDamageTypeColor(String type) {
-    return switch (type.toLowerCase()) {
-      'fire' => Colors.orange,
-      'cold' => Colors.lightBlue,
-      'lightning' => Colors.yellow.shade700,
-      'acid' => Colors.green,
-      'poison' => Colors.purple,
-      'psychic' => Colors.pink,
-      'corruption' => Colors.deepPurple,
-      'holy' => Colors.amber,
-      'sonic' => Colors.cyan,
-      'damage' => Colors.red,
-      _ => Colors.grey,
-    };
+    return AbilityColors.getDamageTypeColor(type);
   }
 
   Widget _buildContent(BuildContext context) {
@@ -543,7 +519,7 @@ class _DamageResistanceTrackerWidgetState
       decoration: BoxDecoration(
         color: NavigationTheme.cardBackgroundDark,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade800),
+        border: Border.all(color: FormTheme.borderDim),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -559,23 +535,16 @@ class _DamageResistanceTrackerWidgetState
                     color: Colors.blue.withAlpha(40),
                     borderRadius: BorderRadius.circular(6),
                   ),
-                  child: Icon(Icons.shield_outlined, size: 18, color: Colors.blue.shade400),
+                  child: AppIcon(CombatIcons.damageResistances, size: 18, color: Colors.blue.shade400),
                 ),
                 const SizedBox(width: 8),
-                const Text(
+                Text(
                   DamageResistanceTrackerText.damageResistancesTitle,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
-                    color: Colors.white,
+                    color: FormTheme.textBright,
                   ),
-                ),
-                const Spacer(),
-                IconButton(
-                  icon: Icon(Icons.add, size: 20, color: Colors.blue.shade400),
-                  tooltip: DamageResistanceTrackerText.addDamageTypeTooltip,
-                  onPressed: _showAddDamageTypeDialog,
-                  visualDensity: VisualDensity.compact,
                 ),
               ],
             ),
@@ -583,7 +552,7 @@ class _DamageResistanceTrackerWidgetState
             Text(
               DamageResistanceTrackerText.damageResistancesFormulaLabel,
               style: TextStyle(
-                color: Colors.grey.shade500,
+                color: FormTheme.textMuted,
                 fontSize: 12,
               ),
             ),
@@ -597,7 +566,7 @@ class _DamageResistanceTrackerWidgetState
                   child: Text(
                     DamageResistanceTrackerText.emptyResistancesLabel,
                     style: TextStyle(
-                      color: Colors.grey.shade500,
+                      color: FormTheme.textMuted,
                     ),
                   ),
                 ),
@@ -608,6 +577,20 @@ class _DamageResistanceTrackerWidgetState
                     .map((r) => _buildResistanceTile(context, r))
                     .toList(),
               ),
+
+            const SizedBox(height: 8),
+
+            // Add button
+            Center(
+              child: TextButton.icon(
+                onPressed: _showAddDamageTypeDialog,
+                icon: Icon(Icons.add, size: 18, color: Colors.blue.shade400),
+                label: Text(
+                  DamageResistanceTrackerText.addDamageTypeTooltip,
+                  style: TextStyle(color: Colors.blue.shade400),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -628,17 +611,17 @@ class _DamageResistanceTrackerWidgetState
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
           decoration: BoxDecoration(
-            color: Colors.grey.shade800.withAlpha(100),
+            color: FormTheme.surfaceMuted,
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: Colors.grey.shade700,
+              color: FormTheme.border,
             ),
           ),
           child: Row(
             children: [
               // Type icon
-              Icon(
-                _getDamageTypeIcon(resistance.damageType),
+              AppIcon(
+                DamageTypeIcons.fromName(resistance.damageType),
                 size: 18,
                 color: typeColor,
               ),
@@ -647,9 +630,9 @@ class _DamageResistanceTrackerWidgetState
               Expanded(
                 child: Text(
                   DamageTypes.displayName(resistance.damageType),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.w500,
-                    color: Colors.white,
+                    color: FormTheme.textBright,
                   ),
                 ),
               ),
@@ -658,7 +641,7 @@ class _DamageResistanceTrackerWidgetState
                 constraints: const BoxConstraints(minWidth: 90),
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: color?.withAlpha(30) ?? Colors.grey.shade800,
+                  color: color?.withAlpha(30) ?? FormTheme.surfaceMuted,
                   borderRadius: BorderRadius.circular(6),
                   border: color != null
                       ? Border.all(color: color.withAlpha(100))
@@ -667,7 +650,7 @@ class _DamageResistanceTrackerWidgetState
                 child: Text(
                   _formatNetValue(net),
                   style: TextStyle(
-                    color: color ?? Colors.grey.shade400,
+                    color: color ?? FormTheme.textSecondary,
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
                   ),
@@ -676,7 +659,7 @@ class _DamageResistanceTrackerWidgetState
               // Delete button
               const SizedBox(width: 4),
               IconButton(
-                icon: Icon(Icons.close, size: 18, color: Colors.grey.shade500),
+                icon: Icon(Icons.close, size: 18, color: FormTheme.textMuted),
                 padding: const EdgeInsets.all(4),
                 constraints: const BoxConstraints(),
                 visualDensity: VisualDensity.compact,

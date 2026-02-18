@@ -12,6 +12,8 @@ import 'package:flutter/services.dart';
 import '../../../core/repositories/hero_repository.dart';
 import '../../../core/text/heroes_sheet/main_stats/hero_main_stats_view_text.dart';
 import '../../../core/theme/ability_colors.dart';
+import '../../../core/theme/app_icon.dart';
+import '../../../core/theme/app_icons.dart';
 import 'hero_main_stats_models.dart';
 
 /// Callback for editing a number field.
@@ -61,7 +63,7 @@ class SurgesSectionWidget extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.electric_bolt_outlined,
+                const AppIcon(CombatIcons.surges,
                   size: 14, color: AbilityColors.surge),
               const SizedBox(width: 4),
               Expanded(
@@ -252,9 +254,9 @@ Future<void> showSurgesInfoDialog(BuildContext context) async {
       return AlertDialog(
         title: Row(
           children: [
-            const Icon(Icons.electric_bolt_outlined, color: AbilityColors.surge),
+             const AppIcon(CombatIcons.surges, color: AbilityColors.surge),
             const SizedBox(width: 8),
-            const Text('Surges'),
+            const Text(HeroMainStatsViewText.surgesCardTitle),
           ],
         ),
         content: SingleChildScrollView(
@@ -266,7 +268,7 @@ Future<void> showSurgesInfoDialog(BuildContext context) async {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(),
-            child: const Text('Close'),
+            child: const Text(HeroMainStatsViewText.breakdownCloseLabel),
           ),
         ],
       );

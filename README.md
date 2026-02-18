@@ -87,9 +87,32 @@ See [PRIVACY_POLICY.md](PRIVACY_POLICY.md) for details.
 ## Acknowledgments
 
 - **MCDM Productions** - Creators of Draw Steel TTRPG. Great game!
-- **Steel Compendium** (https://steelcompendium.io) - Thanks for allowing use of the abilities dat
+- **Steel Compendium** (https://steelcompendium.io) - Thanks for allowing use of the abilities data
 - **Flutter/Dart Team** - Framework and language
 - **Drift** - SQLite database package
+
+### Game Icons Attribution
+
+This app uses icons from **[game-icons.net](https://game-icons.net)**, licensed under the [Creative Commons Attribution 3.0 Unported (CC BY 3.0)](https://creativecommons.org/licenses/by/3.0/) license. Icons have been recolored and resized for use in the app.
+
+Icons by the following authors:
+
+| Author | Website |
+|--------|---------|
+| **Lorc** | [lorcblog.blogspot.com](https://lorcblog.blogspot.com/) |
+| **Delapouite** | [delapouite.com](https://delapouite.com/) |
+| **sbed** | [opengameart.org](https://opengameart.org/content/95-game-icons) |
+| **Zeromancer** | [gnomosygoblins.blogspot.com](https://www.gnomosygoblins.blogspot.com/) |
+| **Kier Heyl** | [game-icons.net](https://game-icons.net/) |
+| **Willdabeast** | [game-icons.net](https://game-icons.net/) |
+| **Skoll** | [game-icons.net](https://game-icons.net/) |
+| **DarkZaitzev** | [game-icons.net](https://game-icons.net/) |
+| **Faithtoken** | [game-icons.net](https://game-icons.net/) |
+| **Caro Asercion** | [game-icons.net](https://game-icons.net/) |
+| **Cathelineau** | [game-icons.net](https://game-icons.net/) |
+| **Seregacthtuf** | [game-icons.net](https://game-icons.net/) |
+
+Full icon set available at [https://game-icons.net](https://game-icons.net).
 
 ### For Developers: 
 

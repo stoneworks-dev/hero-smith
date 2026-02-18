@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/data/downtime_data_source.dart';
+import '../../../core/text/main_pages/downtime/craftable_treasure_type_detail_page_text.dart';
+import '../../../core/theme/form_theme.dart';
 import '../../../core/theme/navigation_theme.dart';
 import '../../../widgets/shared/expandable_card.dart';
 
@@ -186,13 +188,13 @@ class _LeveledTreasureDetailPage extends StatelessWidget {
   String _getEquipmentTypeName(String equipType) {
     switch (equipType) {
       case 'armor':
-        return 'Armor';
+        return CraftableTreasureTypeDetailPageText.armorType;
       case 'weapon':
-        return 'Weapons';
+        return CraftableTreasureTypeDetailPageText.weaponsType;
       case 'implement':
-        return 'Implements';
+        return CraftableTreasureTypeDetailPageText.implementsType;
       case 'shield':
-        return 'Shields';
+        return CraftableTreasureTypeDetailPageText.shieldsType;
       default:
         return equipType
             .split('_')
@@ -242,7 +244,7 @@ class _LeveledTreasureDetailPage extends StatelessWidget {
       child: Scaffold(
         backgroundColor: NavigationTheme.navBarBackground,
         appBar: AppBar(
-          title: const Text('Leveled Treasures'),
+          title: Text(CraftableTreasureTypeDetailPageText.leveledTreasuresTitle),
           backgroundColor: NavigationTheme.navBarBackground,
           elevation: 0,
           bottom: PreferredSize(
@@ -403,9 +405,9 @@ class _SummaryHeader extends StatelessWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      '$totalCount craftable items across $echelonCount ${isLeveled ? 'equipment types' : 'echelons'}',
+                      CraftableTreasureTypeDetailPageText.summaryText(totalCount, echelonCount, isLeveled: isLeveled),
                       style: TextStyle(
-                        color: Colors.grey.shade300,
+                        color: FormTheme.textSecondary,
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                       ),
@@ -579,7 +581,7 @@ class _TreasureDetails extends StatelessWidget {
             borderRadius: BorderRadius.circular(4),
           ),
           child: Text(
-            'EFFECT',
+            CraftableTreasureTypeDetailPageText.effectLabel,
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: color,
@@ -621,7 +623,7 @@ class _TreasureDetails extends StatelessWidget {
             borderRadius: BorderRadius.circular(4),
           ),
           child: Text(
-            'LEVEL VARIANTS',
+            CraftableTreasureTypeDetailPageText.levelVariantsLabel,
             style: theme.textTheme.labelSmall?.copyWith(
               fontWeight: FontWeight.bold,
               color: color,
@@ -679,9 +681,9 @@ class _TreasureDetails extends StatelessWidget {
               ),
             ),
             child: Text(
-              'LEVEL $level',
+              CraftableTreasureTypeDetailPageText.levelLabel(level),
               style: theme.textTheme.labelMedium?.copyWith(
-                color: Colors.white,
+                color: FormTheme.textBright,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.2,
               ),
@@ -711,7 +713,7 @@ class _TreasureDetails extends StatelessWidget {
       case 9:
         return Colors.purple.shade600;
       default:
-        return Colors.grey.shade600;
+        return FormTheme.borderLight;
     }
   }
 }
@@ -737,7 +739,7 @@ class _CraftingInfoSection extends StatelessWidget {
             Icon(Icons.construction, size: 18, color: color),
             const SizedBox(width: 8),
             Text(
-              'CRAFTING PROJECT',
+              CraftableTreasureTypeDetailPageText.craftingProjectLabel,
               style: theme.textTheme.labelMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: color,
@@ -752,8 +754,8 @@ class _CraftingInfoSection extends StatelessWidget {
         if (treasure.projectGoal != null) ...[
           _InfoRow(
             icon: Icons.flag,
-            label: 'Project Goal',
-            value: '${treasure.projectGoal} points',
+            label: CraftableTreasureTypeDetailPageText.projectGoalLabel,
+            value: CraftableTreasureTypeDetailPageText.projectGoalValue(treasure.projectGoal!),
             color: color,
           ),
           const SizedBox(height: 8),
@@ -764,7 +766,7 @@ class _CraftingInfoSection extends StatelessWidget {
             treasure.projectGoalDescription!.isNotEmpty) ...[
           _InfoRow(
             icon: Icons.info_outline,
-            label: 'Goal Note',
+            label: CraftableTreasureTypeDetailPageText.goalNoteLabel,
             value: treasure.projectGoalDescription!,
             color: color,
           ),
@@ -775,7 +777,7 @@ class _CraftingInfoSection extends StatelessWidget {
         if (treasure.projectRollCharacteristics.isNotEmpty) ...[
           _InfoRow(
             icon: Icons.casino,
-            label: 'Roll Characteristics',
+            label: CraftableTreasureTypeDetailPageText.rollCharacteristicsLabel,
             value: treasure.projectRollCharacteristics.join(' or '),
             color: color,
           ),
@@ -787,7 +789,7 @@ class _CraftingInfoSection extends StatelessWidget {
             treasure.itemPrerequisite!.isNotEmpty) ...[
           _InfoRow(
             icon: Icons.checklist,
-            label: 'Prerequisites',
+            label: CraftableTreasureTypeDetailPageText.prerequisitesLabel,
             value: treasure.itemPrerequisite!,
             color: color,
           ),
@@ -799,7 +801,7 @@ class _CraftingInfoSection extends StatelessWidget {
             treasure.projectSource!.isNotEmpty) ...[
           _InfoRow(
             icon: Icons.menu_book,
-            label: 'Source',
+            label: CraftableTreasureTypeDetailPageText.sourceLabel,
             value: treasure.projectSource!,
             color: color,
           ),

@@ -78,7 +78,7 @@ class _SkillsTabState extends ConsumerState<_SkillsTab>
     } catch (e) {
       setState(() {
         _isLoading = false;
-        _errorMessage = 'Failed to load skills: $e';
+        _errorMessage = SheetStorySkillsTabText.failedToLoadSkills(e);
       });
     }
   }
@@ -146,7 +146,7 @@ class _SkillsTabState extends ConsumerState<_SkillsTab>
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to add skill: $e')),
+          SnackBar(content: Text(SheetStorySkillsTabText.failedToAddSkill(e))),
         );
       }
     }
@@ -167,7 +167,7 @@ class _SkillsTabState extends ConsumerState<_SkillsTab>
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to remove skill: $e')),
+          SnackBar(content: Text(SheetStorySkillsTabText.failedToRemoveSkill(e))),
         );
       }
     }
@@ -256,7 +256,7 @@ class _SkillsTabState extends ConsumerState<_SkillsTab>
               onPressed: _loadData,
               style: ElevatedButton.styleFrom(
                 backgroundColor: _skillsColor,
-                foregroundColor: Colors.white,
+                foregroundColor: FormTheme.textBright,
               ),
               child: const Text(SheetStoryCommonText.retry),
             ),
@@ -314,7 +314,7 @@ class _SkillsTabState extends ConsumerState<_SkillsTab>
                 decoration: BoxDecoration(
                   color: NavigationTheme.cardBackgroundDark,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey.shade800),
+                  border: Border.all(color: FormTheme.borderDim),
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
@@ -332,7 +332,7 @@ class _SkillsTabState extends ConsumerState<_SkillsTab>
                         color: _skillsColor.withAlpha(51),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Icon(Icons.psychology, color: _skillsColor, size: 24),
+                      child: AppIcon(SkillGroupIcons.fromGroup('crafting'), color: _skillsColor, size: 24),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -342,14 +342,14 @@ class _SkillsTabState extends ConsumerState<_SkillsTab>
                           const Text(
                             SheetStorySkillsTabText.skillsTitle,
                             style: TextStyle(
-                              color: Colors.white,
+                              color: FormTheme.textBright,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
-                            '${selectedComponents.length} skills learned',
-                            style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+                            SheetStorySkillsTabText.skillsLearned(selectedComponents.length),
+                            style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
                           ),
                         ],
                       ),
@@ -364,11 +364,11 @@ class _SkillsTabState extends ConsumerState<_SkillsTab>
                     padding: const EdgeInsets.all(32),
                     child: Column(
                       children: [
-                        Icon(Icons.school_outlined, size: 48, color: Colors.grey.shade600),
+                        Icon(Icons.school_outlined, size: 48, color: FormTheme.borderLight),
                         const SizedBox(height: 16),
                         Text(
                           SheetStorySkillsTabText.emptyState,
-                          style: TextStyle(color: Colors.grey.shade400),
+                          style: TextStyle(color: FormTheme.textSecondary),
                           textAlign: TextAlign.center,
                         ),
                       ],
@@ -397,6 +397,8 @@ class _SkillsTabState extends ConsumerState<_SkillsTab>
                                 ),
                               ),
                               const SizedBox(width: 8),
+                              AppIcon(SkillGroupIcons.fromGroup(groupName), color: _skillsColor, size: 18),
+                              const SizedBox(width: 6),
                               Text(
                                 displayGroupName(groupName),
                                 style: const TextStyle(
@@ -555,7 +557,7 @@ class _AddSkillDialogState extends State<_AddSkillDialog> {
                     child: Text(
                       SheetStorySkillsTabText.addSkillDialogTitle,
                       style: TextStyle(
-                        color: Colors.white,
+                        color: FormTheme.textBright,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -572,11 +574,11 @@ class _AddSkillDialogState extends State<_AddSkillDialog> {
             Padding(
               padding: const EdgeInsets.all(16),
               child: TextField(
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: FormTheme.textBright),
                 decoration: InputDecoration(
                   labelText: SheetStorySkillsTabText.searchSkillsLabel,
-                  labelStyle: TextStyle(color: Colors.grey.shade400),
-                  prefixIcon: Icon(Icons.search, color: Colors.grey.shade400),
+                  labelStyle: TextStyle(color: FormTheme.textSecondary),
+                  prefixIcon: Icon(Icons.search, color: FormTheme.textSecondary),
                   filled: true,
                   fillColor: StoryTheme.cardBackground,
                   border: OutlineInputBorder(
@@ -618,11 +620,11 @@ class _AddSkillDialogState extends State<_AddSkillDialog> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.search_off, size: 48, color: Colors.grey.shade600),
+                            Icon(Icons.search_off, size: 48, color: FormTheme.borderLight),
                             const SizedBox(height: 16),
                             Text(
                               SheetStorySkillsTabText.noSkillsFound,
-                              style: TextStyle(color: Colors.grey.shade400),
+                              style: TextStyle(color: FormTheme.textSecondary),
                             ),
                           ],
                         ),
@@ -666,7 +668,7 @@ class _AddSkillDialogState extends State<_AddSkillDialog> {
                                 decoration: BoxDecoration(
                                   color: StoryTheme.cardBackground,
                                   borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(color: Colors.grey.shade800),
+                                  border: Border.all(color: FormTheme.borderDim),
                                 ),
                                 child: ListTile(
                                   dense: true,
@@ -681,12 +683,12 @@ class _AddSkillDialogState extends State<_AddSkillDialog> {
                                   ),
                                   title: Text(
                                     skill.name,
-                                    style: const TextStyle(color: Colors.white, fontSize: 14),
+                                    style: const TextStyle(color: FormTheme.textBright, fontSize: 14),
                                   ),
                                   subtitle: skill.description.isNotEmpty
                                       ? Text(
                                           skill.description,
-                                          style: TextStyle(color: Colors.grey.shade500, fontSize: 11),
+                                          style: TextStyle(color: FormTheme.textMuted, fontSize: 11),
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
                                         )
@@ -835,7 +837,7 @@ class _CreateCustomSkillDialogState extends State<_CreateCustomSkillDialog> {
                         child: Text(
                           SheetStorySkillsTabText.createCustomSkillTitle,
                           style: TextStyle(
-                            color: Colors.white,
+                            color: FormTheme.textBright,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -856,12 +858,12 @@ class _CreateCustomSkillDialogState extends State<_CreateCustomSkillDialog> {
                       // Name field (required)
                       TextFormField(
                         controller: _nameController,
-                        style: const TextStyle(color: Colors.white),
+                        style: const TextStyle(color: FormTheme.textBright),
                         decoration: InputDecoration(
                           labelText: SheetStorySkillsTabText.skillNameLabel,
                           hintText: SheetStorySkillsTabText.skillNameHint,
-                          labelStyle: TextStyle(color: Colors.grey.shade400),
-                          hintStyle: TextStyle(color: Colors.grey.shade600),
+                          labelStyle: TextStyle(color: FormTheme.textSecondary),
+                          hintStyle: TextStyle(color: FormTheme.borderLight),
                           filled: true,
                           fillColor: StoryTheme.cardBackground,
                           border: OutlineInputBorder(
@@ -888,12 +890,12 @@ class _CreateCustomSkillDialogState extends State<_CreateCustomSkillDialog> {
                         DropdownButtonFormField<String>(
                           value: _selectedGroup,
                           dropdownColor: NavigationTheme.cardBackgroundDark,
-                          style: const TextStyle(color: Colors.white),
+                          style: const TextStyle(color: FormTheme.textBright),
                           decoration: InputDecoration(
                             labelText: SheetStorySkillsTabText.skillGroupLabel,
                             hintText: SheetStorySkillsTabText.skillGroupHint,
-                            labelStyle: TextStyle(color: Colors.grey.shade400),
-                            hintStyle: TextStyle(color: Colors.grey.shade600),
+                            labelStyle: TextStyle(color: FormTheme.textSecondary),
+                            hintStyle: TextStyle(color: FormTheme.borderLight),
                             filled: true,
                             fillColor: StoryTheme.cardBackground,
                             border: OutlineInputBorder(
@@ -919,12 +921,12 @@ class _CreateCustomSkillDialogState extends State<_CreateCustomSkillDialog> {
                       else
                         TextFormField(
                           controller: _customGroupController,
-                          style: const TextStyle(color: Colors.white),
+                          style: const TextStyle(color: FormTheme.textBright),
                           decoration: InputDecoration(
                             labelText: SheetStorySkillsTabText.skillGroupLabel,
                             hintText: SheetStorySkillsTabText.skillGroupHint,
-                            labelStyle: TextStyle(color: Colors.grey.shade400),
-                            hintStyle: TextStyle(color: Colors.grey.shade600),
+                            labelStyle: TextStyle(color: FormTheme.textSecondary),
+                            hintStyle: TextStyle(color: FormTheme.borderLight),
                             filled: true,
                             fillColor: StoryTheme.cardBackground,
                             border: OutlineInputBorder(
@@ -950,8 +952,8 @@ class _CreateCustomSkillDialogState extends State<_CreateCustomSkillDialog> {
                           ),
                           label: Text(
                             _useCustomGroup
-                                ? 'Pick from list'
-                                : 'Custom group',
+                                ? SheetStorySkillsTabText.pickFromList
+                                : SheetStorySkillsTabText.customGroup,
                             style: const TextStyle(
                                 color: _skillsColor, fontSize: 12),
                           ),
@@ -962,15 +964,15 @@ class _CreateCustomSkillDialogState extends State<_CreateCustomSkillDialog> {
                       // Description field (optional)
                       TextFormField(
                         controller: _descriptionController,
-                        style: const TextStyle(color: Colors.white),
+                        style: const TextStyle(color: FormTheme.textBright),
                         maxLines: 3,
                         decoration: InputDecoration(
                           labelText:
                               SheetStorySkillsTabText.skillDescriptionLabel,
                           hintText:
                               SheetStorySkillsTabText.skillDescriptionHint,
-                          labelStyle: TextStyle(color: Colors.grey.shade400),
-                          hintStyle: TextStyle(color: Colors.grey.shade600),
+                          labelStyle: TextStyle(color: FormTheme.textSecondary),
+                          hintStyle: TextStyle(color: FormTheme.borderLight),
                           filled: true,
                           fillColor: StoryTheme.cardBackground,
                           border: OutlineInputBorder(
@@ -994,7 +996,7 @@ class _CreateCustomSkillDialogState extends State<_CreateCustomSkillDialog> {
                             onPressed: () => Navigator.of(context).pop(),
                             child: Text(
                               SheetStorySkillsTabText.cancelButton,
-                              style: TextStyle(color: Colors.grey.shade400),
+                              style: TextStyle(color: FormTheme.textSecondary),
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -1002,7 +1004,7 @@ class _CreateCustomSkillDialogState extends State<_CreateCustomSkillDialog> {
                             onPressed: _isSaving ? null : _submit,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: _skillsColor,
-                              foregroundColor: Colors.white,
+                              foregroundColor: FormTheme.textBright,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
@@ -1013,7 +1015,7 @@ class _CreateCustomSkillDialogState extends State<_CreateCustomSkillDialog> {
                                     height: 18,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2,
-                                      color: Colors.white,
+                                      color: FormTheme.textBright,
                                     ),
                                   )
                                 : const Text(

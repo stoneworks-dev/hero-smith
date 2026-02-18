@@ -1,3 +1,5 @@
+import '../common/common_text.dart';
+
 class SheetNotesText {
   static const String untitledNote = 'Untitled Note';
 
@@ -44,14 +46,14 @@ class SheetNotesText {
   static const String noteSavedSnack = 'Note saved';
 
   static const String editNoteTitle = 'Edit Note';
-  static const String saveTooltip = 'Save';
+  static const String saveTooltip = CommonText.save;
 
   static const String fieldTitleLabel = 'Title';
   static const String fieldContentLabel = 'Content';
 
-  static const String actionCancel = 'Cancel';
-  static const String actionCreate = 'Create';
-  static const String actionDelete = 'Delete';
+  static const String actionCancel = CommonText.cancel;
+  static const String actionCreate = CommonText.create;
+  static const String actionDelete = CommonText.delete;
 
   static const String dateJustNow = 'just now';
   static const String dateYesterday = 'yesterday';

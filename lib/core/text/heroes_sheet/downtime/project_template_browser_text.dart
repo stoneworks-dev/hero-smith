@@ -43,4 +43,19 @@ class ProjectTemplateBrowserText {
   static const String imbuementTypeArmorLabel = 'Armor Imbuements';
   static const String imbuementTypeWeaponLabel = 'Weapon Imbuements';
   static const String imbuementTypeImplementLabel = 'Implement Imbuements';
+  static String noProjectsFound(String query) =>
+      'No projects found for "$query"';
+  static String searchResults(int count, String query) =>
+      '$count results for "$query"';
+  static String goalBadge(dynamic goal) => 'Goal: $goal';
+  static String itemCount(int count) => '$count items';
+  static String rollLabel(String chars) => 'Roll: $chars';
+  static String echelonFallback(dynamic echelon) => '${echelon}th Echelon';
+  static String addedCraftingProject(String name) =>
+      'Added "$name" crafting project';
+  static String failedToAddProject(Object e) => 'Failed to add project: $e';
+  static String levelImbuementsFallback(dynamic level) =>
+      '${level}th Level Imbuements';
+  static String addedToProjects(String name) =>
+      'Added "$name" to your projects';
 }

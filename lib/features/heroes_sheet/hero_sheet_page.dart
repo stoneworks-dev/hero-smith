@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../creators/hero_creators/hero_creator_page.dart';
 import '../../core/text/heroes_sheet/hero_sheet_page_text.dart';
+import '../../core/theme/app_icon.dart';
+import '../../core/theme/app_icon_data.dart';
+import '../../core/theme/app_icons.dart';
 import '../../core/theme/navigation_theme.dart';
 import '../../core/theme/hero_sheet_theme.dart';
 import 'abilities/sheet_abilities.dart';
@@ -57,7 +60,7 @@ class _HeroSheetPageState extends State<HeroSheetPage> {
         title: Text(HeroSheetPageText.appBarTitle(widget.heroName)),
         actions: [
           IconButton(
-            icon: const Icon(Icons.edit),
+            icon: AppIcon(StoryIcons.editHero, color: Colors.white),
             tooltip: HeroSheetPageText.editHeroTooltip,
             onPressed: () {
               Navigator.of(context).pushReplacement(
@@ -84,11 +87,36 @@ class _HeroSheetPageState extends State<HeroSheetPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildNavItem(0, Icons.person, HeroSheetPageText.navMain),
-                _buildNavItem(1, Icons.flash_on, HeroSheetPageText.navAbilities),
-                _buildNavItem(2, Icons.backpack, HeroSheetPageText.navGear),
-                _buildNavItem(3, Icons.auto_awesome, HeroSheetPageText.navFeatures),
-                _buildNavItem(4, Icons.sticky_note_2, HeroSheetPageText.navNotes),
+                _buildNavItem(
+                  0,
+                  NavIcons.sheetMain,
+                  NavIcons.sheetMainActive,
+                  HeroSheetPageText.navMain,
+                ),
+                _buildNavItem(
+                  1,
+                  NavIcons.sheetAbilities,
+                  NavIcons.sheetAbilitiesActive,
+                  HeroSheetPageText.navAbilities,
+                ),
+                _buildNavItem(
+                  2,
+                  NavIcons.sheetGear,
+                  NavIcons.sheetGearActive,
+                  HeroSheetPageText.navGear,
+                ),
+                _buildNavItem(
+                  3,
+                  NavIcons.sheetFeatures,
+                  NavIcons.sheetFeaturesActive,
+                  HeroSheetPageText.navFeatures,
+                ),
+                _buildNavItem(
+                  4,
+                  NavIcons.sheetNotes,
+                  NavIcons.sheetNotesActive,
+                  HeroSheetPageText.navNotes,
+                ),
               ],
             ),
           ),
@@ -97,18 +125,25 @@ class _HeroSheetPageState extends State<HeroSheetPage> {
     );
   }
 
-  Widget _buildNavItem(int index, IconData icon, String label) {
+  Widget _buildNavItem(
+    int index,
+    AppIconData icon,
+    AppIconData activeIcon,
+    String label,
+  ) {
     final isSelected = _currentIndex == index;
     final color = isSelected
         ? HeroSheetTheme.orderedSectionAccents[index]
         : NavigationTheme.inactiveColor;
+    final displayIcon = isSelected ? activeIcon : icon;
 
     return GestureDetector(
       onTap: () => _onSectionTapped(index),
       behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        curve: Curves.easeOut,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: isSelected
             ? NavigationTheme.selectedNavItemDecoration(
                 HeroSheetTheme.orderedSectionAccents[index],
@@ -117,8 +152,8 @@ class _HeroSheetPageState extends State<HeroSheetPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
+            AppIcon(
+              displayIcon,
               color: color,
               size: NavigationTheme.navBarIconSize,
             ),

@@ -444,7 +444,7 @@ class _FeatureContent extends StatelessWidget {
     if (details == null || details!.isEmpty) return const [];
 
     final sections = <Widget>[];
-    void addSection(String title, IconData icon, dynamic value) {
+    void addSection(String title, AppIconData icon, dynamic value) {
       if (value == null) return;
       String? content;
       if (value is String) {
@@ -464,22 +464,22 @@ class _FeatureContent extends StatelessWidget {
 
     addSection(
       FeatureContentText.detailTitleInCombat,
-      Icons.sports_kabaddi,
+      CombatIcons.freeStrike,
       details!['in_combat'],
     );
     addSection(
       FeatureContentText.detailTitleOutOfCombat,
-      Icons.explore,
+      SkillGroupIcons.exploration,
       details!['out_of_combat'],
     );
     addSection(
       FeatureContentText.detailTitleSpecial,
-      Icons.auto_awesome,
+      AbilityIcons.ability,
       details!['special'],
     );
     addSection(
       FeatureContentText.detailTitleNotes,
-      Icons.sticky_note_2,
+      AppIcons.notes.note,
       details!['notes'],
     );
 
@@ -514,7 +514,7 @@ class _DetailBlock extends StatelessWidget {
   });
 
   final String title;
-  final IconData icon;
+  final AppIconData icon;
   final String content;
 
   @override
@@ -535,7 +535,7 @@ class _DetailBlock extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(icon, size: 18, color: CreatorTheme.strengthAccent),
+              AppIcon(icon, size: 18, color: CreatorTheme.strengthAccent),
               const SizedBox(width: 8),
               Text(
                 title,

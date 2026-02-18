@@ -18,4 +18,18 @@ class SheetStoryComplicationSectionText {
   static const String ancestryTraitsSelectedSuffix = ' selected';
   static const String languageLoadingSuffix = ': Loading...';
   static const String languageErrorLoadingSuffix = ': Error loading';
+  static const String notFound = 'Not found';
+  static const String ofYourChoice = 'of your choice';
+  static String tokenSuffix(int count) => count == 1 ? 'token' : 'tokens';
+  static String abilityGrant(String ability) => 'Ability: $ability';
+  static String skillGrant(String skill) => 'Skill: $skill';
+  static String loadingLabel(String label) => '${label}s: Loading...';
+  static String errorLoadingLabel(String label) => '${label}s: Error loading';
+  static String chooseLabel(int count, String label) =>
+      'Choose $count $label${count == 1 ? '' : 's'}';
+  static String chooseTraitPoints(int points, String ancestry) =>
+      'Choose $points $ancestry ancestry trait point${points == 1 ? '' : 's'}';
+  static String ancestryTraitsSelected(int count) =>
+      'Ancestry Traits: $count selected';
+  static String ancestryTraits(String ancestry) => '$ancestry Traits';
 }

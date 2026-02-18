@@ -5,6 +5,10 @@ import '../../core/db/providers.dart';
 import '../../core/services/hero_export_service.dart';
 import '../../core/services/hero_file_service.dart';
 import '../../core/theme/ability_colors.dart';
+import '../../core/theme/app_icon.dart';
+import '../../core/theme/app_icons.dart';
+import '../../core/theme/form_theme.dart';
+import '../../core/text/main_pages/heroes_page_text.dart';
 import '../../core/theme/hero_theme.dart';
 import '../../core/theme/navigation_theme.dart';
 import '../about/about_page.dart';
@@ -90,7 +94,7 @@ class HeroesPage extends ConsumerWidget {
             },
             icon: Icon(Icons.info_outline, color: accent, size: 18),
             label: Text(
-              'About Hero Smith',
+              HeroesPageText.aboutHeroSmith,
               style: TextStyle(color: accent, fontSize: 13),
             ),
             style: TextButton.styleFrom(
@@ -142,7 +146,7 @@ class HeroesPage extends ConsumerWidget {
                   width: 48,
                   height: 48,
                   decoration: NavigationTheme.cardIconDecoration(accent),
-                  child: Icon(Icons.shield, color: accent, size: 24),
+                  child: AppIcon(StoryIcons.yourHeroes, color: accent, size: 24),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -150,7 +154,7 @@ class HeroesPage extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Your Heroes',
+                        HeroesPageText.yourHeroes,
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 22,
@@ -159,10 +163,10 @@ class HeroesPage extends ConsumerWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Create and manage your Draw Steel heroes',
+                        HeroesPageText.heroesSubtitle,
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.grey.shade400,
+                          color: FormTheme.textSecondary,
                         ),
                       ),
                     ],
@@ -198,10 +202,10 @@ class HeroesPage extends ConsumerWidget {
                     );
                   },
                   icon: const Icon(Icons.add),
-                  label: const Text('Create New Hero'),
+                  label: Text(HeroesPageText.createNewHero),
                   style: FilledButton.styleFrom(
                     backgroundColor: accent,
-                    foregroundColor: Colors.white,
+                    foregroundColor: FormTheme.textBright,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 24, vertical: 14),
                     shape: RoundedRectangleBorder(
@@ -215,7 +219,7 @@ class HeroesPage extends ConsumerWidget {
               PopupMenuButton<String>(
                 icon: Icon(Icons.more_horiz, color: accent),
                 color: NavigationTheme.cardBackgroundDark,
-                tooltip: 'Import & Export',
+                tooltip: HeroesPageText.importExportTooltip,
                 onSelected: (value) async {
                   switch (value) {
                     case 'import_code':
@@ -231,9 +235,9 @@ class HeroesPage extends ConsumerWidget {
                     value: 'import_code',
                     child: Row(
                       children: [
-                        Icon(Icons.content_paste, color: Colors.grey.shade300),
+                        Icon(Icons.content_paste, color: FormTheme.textSecondary),
                         const SizedBox(width: 8),
-                        Text('Import from Code',
+                        Text(HeroesPageText.importFromCode,
                             style: TextStyle(color: Colors.grey.shade200)),
                       ],
                     ),
@@ -242,9 +246,9 @@ class HeroesPage extends ConsumerWidget {
                     value: 'import_file',
                     child: Row(
                       children: [
-                        Icon(Icons.file_open, color: Colors.grey.shade300),
+                        Icon(Icons.file_open, color: FormTheme.textSecondary),
                         const SizedBox(width: 8),
-                        Text('Import from File',
+                        Text(HeroesPageText.importFromFile,
                             style: TextStyle(color: Colors.grey.shade200)),
                       ],
                     ),
@@ -254,9 +258,9 @@ class HeroesPage extends ConsumerWidget {
                     value: 'export_all',
                     child: Row(
                       children: [
-                        Icon(Icons.save_alt, color: Colors.grey.shade300),
+                        Icon(Icons.save_alt, color: FormTheme.textSecondary),
                         const SizedBox(width: 8),
-                        Text('Export All Heroes',
+                        Text(HeroesPageText.exportAllHeroes,
                             style: TextStyle(color: Colors.grey.shade200)),
                       ],
                     ),
@@ -339,14 +343,14 @@ class HeroesPage extends ConsumerWidget {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _buildChip(context, 'Lvl ${hero.level}', accent),
+                  _buildChip(context, HeroesPageText.heroLevel(hero.level), accent),
                   const SizedBox(height: 8),
                   Container(
                     width: 44,
                     height: 44,
                     decoration: NavigationTheme.cardIconDecoration(accent),
-                    child: Icon(
-                      Icons.person,
+                    child: AppIcon(
+                      StoryIcons.heroAvatar,
                       color: accent,
                       size: 22,
                     ),
@@ -378,8 +382,8 @@ class HeroesPage extends ConsumerWidget {
                 ),
               ),
               IconButton(
-                icon: Icon(Icons.edit, color: Colors.grey.shade400),
-                tooltip: 'Edit Hero',
+                icon: AppIcon(StoryIcons.editHero, color: FormTheme.textSecondary),
+                tooltip: HeroesPageText.editHeroTooltip,
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
@@ -389,7 +393,7 @@ class HeroesPage extends ConsumerWidget {
                 },
               ),
               PopupMenuButton<String>(
-                icon: Icon(Icons.more_vert, color: Colors.grey.shade400),
+                icon: Icon(Icons.more_vert, color: FormTheme.textSecondary),
                 color: NavigationTheme.cardBackgroundDark,
                 onSelected: (value) async {
                   if (value == 'export') {
@@ -405,9 +409,9 @@ class HeroesPage extends ConsumerWidget {
                     value: 'export',
                     child: Row(
                       children: [
-                        Icon(Icons.share, color: Colors.grey.shade300),
+                        Icon(Icons.share, color: FormTheme.textSecondary),
                         const SizedBox(width: 8),
-                        Text('Export Code',
+                        Text(HeroesPageText.exportCode,
                             style: TextStyle(color: Colors.grey.shade200)),
                       ],
                     ),
@@ -416,9 +420,9 @@ class HeroesPage extends ConsumerWidget {
                     value: 'export_file',
                     child: Row(
                       children: [
-                        Icon(Icons.save_alt, color: Colors.grey.shade300),
+                        Icon(Icons.save_alt, color: FormTheme.textSecondary),
                         const SizedBox(width: 8),
-                        Text('Export File',
+                        Text(HeroesPageText.exportFile,
                             style: TextStyle(color: Colors.grey.shade200)),
                       ],
                     ),
@@ -429,7 +433,7 @@ class HeroesPage extends ConsumerWidget {
                       children: [
                         const Icon(Icons.delete_outline, color: Colors.red),
                         const SizedBox(width: 8),
-                        Text('Delete',
+                        Text(HeroesPageText.delete,
                             style: TextStyle(color: Colors.grey.shade200)),
                       ],
                     ),
@@ -481,7 +485,7 @@ class HeroesPage extends ConsumerWidget {
             },
             icon: Icon(Icons.info_outline, color: accent, size: 18),
             label: Text(
-              'About',
+              HeroesPageText.about,
               style: TextStyle(color: accent, fontSize: 13),
             ),
             style: TextButton.styleFrom(
@@ -493,8 +497,8 @@ class HeroesPage extends ConsumerWidget {
         HeroTheme.buildEmptyState(
           context,
           icon: Icons.person_add,
-          title: 'No Heroes Yet',
-          subtitle: 'Create your first hero to begin your Draw Steel adventure',
+          title: HeroesPageText.noHeroesYet,
+          subtitle: HeroesPageText.emptySubtitle,
           action: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -509,10 +513,10 @@ class HeroesPage extends ConsumerWidget {
                   );
                 },
                 icon: const Icon(Icons.add),
-                label: const Text('Create First Hero'),
+                label: Text(HeroesPageText.createFirstHero),
                 style: FilledButton.styleFrom(
                   backgroundColor: accent,
-                  foregroundColor: Colors.white,
+                  foregroundColor: FormTheme.textBright,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
                   shape: RoundedRectangleBorder(
@@ -529,7 +533,7 @@ class HeroesPage extends ConsumerWidget {
                     onPressed: () => _showImportDialog(context, ref),
                     icon: Icon(Icons.content_paste, color: accent),
                     label:
-                        Text('Import Code', style: TextStyle(color: accent)),
+                        Text(HeroesPageText.importCode, style: TextStyle(color: accent)),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 14),
@@ -544,7 +548,7 @@ class HeroesPage extends ConsumerWidget {
                     onPressed: () => _importHeroFile(context, ref),
                     icon: Icon(Icons.file_open, color: accent),
                     label:
-                        Text('Import File', style: TextStyle(color: accent)),
+                        Text(HeroesPageText.importFile, style: TextStyle(color: accent)),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 14),
@@ -578,7 +582,7 @@ class HeroesPage extends ConsumerWidget {
             ),
             const SizedBox(height: 24),
             Text(
-              'Failed to Load Heroes',
+              HeroesPageText.failedToLoadHeroes,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 22,
@@ -590,7 +594,7 @@ class HeroesPage extends ConsumerWidget {
               error.toString(),
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.grey.shade400,
+                color: FormTheme.textSecondary,
               ),
               textAlign: TextAlign.center,
             ),
@@ -601,10 +605,10 @@ class HeroesPage extends ConsumerWidget {
                 ref.invalidate(heroSummariesProvider);
               },
               icon: const Icon(Icons.refresh),
-              label: const Text('Retry'),
+              label: Text(HeroesPageText.retry),
               style: FilledButton.styleFrom(
                 backgroundColor: accent,
-                foregroundColor: Colors.white,
+                foregroundColor: FormTheme.textBright,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
                 shape: RoundedRectangleBorder(
@@ -630,10 +634,10 @@ class HeroesPage extends ConsumerWidget {
           ),
           const SizedBox(height: 24),
           Text(
-            'Loading heroes...',
+            HeroesPageText.loadingHeroes,
             style: TextStyle(
               fontSize: 16,
-              color: Colors.grey.shade400,
+              color: FormTheme.textSecondary,
             ),
           ),
         ],
@@ -646,18 +650,18 @@ class HeroesPage extends ConsumerWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete Hero'),
+        title: Text(HeroesPageText.deleteHero),
         content: Text(
-            'Are you sure you want to delete "${hero.name}"? This cannot be undone.'),
+            HeroesPageText.deleteConfirmation(hero.name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Cancel'),
+            child: Text(HeroesPageText.cancel),
           ),
           FilledButton.icon(
             onPressed: () => Navigator.of(ctx).pop(true),
             icon: const Icon(Icons.delete),
-            label: const Text('Delete'),
+            label: Text(HeroesPageText.delete),
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
@@ -671,7 +675,7 @@ class HeroesPage extends ConsumerWidget {
       await repo.deleteHero(hero.id);
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Deleted ${hero.name}')),
+        SnackBar(content: Text(HeroesPageText.deletedHero(hero.name))),
       );
     }
   }
@@ -709,14 +713,7 @@ class HeroesPage extends ConsumerWidget {
               children: [
                 Icon(Icons.upload_rounded, color: theme.colorScheme.primary),
                 const SizedBox(width: 12),
-                Expanded(child: Text('Export ${hero.name}')),
-              ],
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Tier info chip
+                Expanded(child: Text(HeroesPageText.exportName(hero.name))),
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -735,7 +732,7 @@ class HeroesPage extends ConsumerWidget {
                 const SizedBox(height: 12),
 
                 Text(
-                  'Share this code with a friend so they can import your hero build.',
+                  HeroesPageText.exportShareMessage,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
@@ -770,7 +767,7 @@ class HeroesPage extends ConsumerWidget {
 
                 // Code info
                 Text(
-                  '$codeLength characters • ${selectedTier.description}',
+                  HeroesPageText.codeInfo(codeLength, selectedTier.description),
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant
                         .withValues(alpha: 0.7),
@@ -781,18 +778,18 @@ class HeroesPage extends ConsumerWidget {
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(ctx).pop(),
-                child: const Text('Close'),
+                child: Text(HeroesPageText.close),
               ),
               FilledButton.icon(
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: code));
                   ScaffoldMessenger.of(ctx).showSnackBar(
                     SnackBar(
-                      content: const Row(
+                      content: Row(
                         children: [
-                          Icon(Icons.check_circle, color: Colors.white),
-                          SizedBox(width: 12),
-                          Text('Code copied to clipboard!'),
+                          Icon(Icons.check_circle, color: FormTheme.textBright),
+                          const SizedBox(width: 12),
+                          Text(HeroesPageText.codeCopied),
                         ],
                       ),
                       backgroundColor: Colors.green.shade700,
@@ -802,7 +799,7 @@ class HeroesPage extends ConsumerWidget {
                   Navigator.of(ctx).pop();
                 },
                 icon: const Icon(Icons.copy),
-                label: const Text('Copy Code'),
+                label: Text(HeroesPageText.copyCode),
               ),
             ],
           );
@@ -811,7 +808,7 @@ class HeroesPage extends ConsumerWidget {
     } catch (e) {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to export hero: $e')),
+        SnackBar(content: Text(HeroesPageText.failedToExportHero(e))),
       );
     }
   }
@@ -830,7 +827,7 @@ class HeroesPage extends ConsumerWidget {
               children: [
                 Icon(Icons.download_rounded, color: theme.colorScheme.primary),
                 const SizedBox(width: 12),
-                const Text('Import Hero'),
+                Text(HeroesPageText.importHero),
               ],
             ),
             content: Column(
@@ -838,7 +835,7 @@ class HeroesPage extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Paste a hero code from a friend to add their build to your heroes.',
+                  HeroesPageText.importPasteMessage,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
@@ -852,7 +849,7 @@ class HeroesPage extends ConsumerWidget {
                     fontSize: 11,
                   ),
                   decoration: InputDecoration(
-                    hintText: 'HS2:...',
+                    hintText: HeroesPageText.importHintText,
                     hintStyle: TextStyle(
                       fontFamily: 'monospace',
                       fontSize: 11,
@@ -862,7 +859,7 @@ class HeroesPage extends ConsumerWidget {
                     border: const OutlineInputBorder(),
                     suffixIcon: IconButton(
                       icon: const Icon(Icons.paste),
-                      tooltip: 'Paste from clipboard',
+                      tooltip: HeroesPageText.pasteFromClipboard,
                       onPressed: () async {
                         final data =
                             await Clipboard.getData(Clipboard.kTextPlain);
@@ -878,7 +875,7 @@ class HeroesPage extends ConsumerWidget {
                 if (controller.text.isNotEmpty) ...[
                   const SizedBox(height: 8),
                   Text(
-                    '${controller.text.length} characters',
+                    HeroesPageText.characterCount(controller.text.length),
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant
                           .withValues(alpha: 0.7),
@@ -890,14 +887,14 @@ class HeroesPage extends ConsumerWidget {
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(ctx).pop(),
-                child: const Text('Cancel'),
+                child: Text(HeroesPageText.cancel),
               ),
               FilledButton.icon(
                 onPressed: controller.text.trim().isEmpty
                     ? null
                     : () => Navigator.of(ctx).pop(controller.text.trim()),
                 icon: const Icon(Icons.download),
-                label: const Text('Import'),
+                label: Text(HeroesPageText.import_),
               ),
             ],
           ),
@@ -917,11 +914,11 @@ class HeroesPage extends ConsumerWidget {
         if (!context.mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Row(
+            content: Row(
               children: [
-                Icon(Icons.error_outline, color: Colors.white),
-                SizedBox(width: 12),
-                Text('Invalid hero code format'),
+                Icon(Icons.error_outline, color: FormTheme.textBright),
+                const SizedBox(width: 12),
+                Text(HeroesPageText.invalidHeroCodeFormat),
               ],
             ),
             backgroundColor: Colors.red.shade700,
@@ -937,11 +934,11 @@ class HeroesPage extends ConsumerWidget {
           SnackBar(
             content: Row(
               children: [
-                const Icon(Icons.warning_amber, color: Colors.white),
+                Icon(Icons.warning_amber, color: FormTheme.textBright),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Incompatible version (v${preview.formatVersion}). Please ask for an updated code.',
+                    HeroesPageText.incompatibleVersion(preview.formatVersion),
                   ),
                 ),
               ],
@@ -967,11 +964,11 @@ class HeroesPage extends ConsumerWidget {
         SnackBar(
           content: Row(
             children: [
-              const Icon(Icons.check_circle, color: Colors.white),
+              Icon(Icons.check_circle, color: FormTheme.textBright),
               const SizedBox(width: 12),
               Expanded(
                   child:
-                      Text('Imported "${preview.name}"$tierInfo successfully!')),
+                      Text(HeroesPageText.importedSuccessfully(preview.name, tierInfo))),
             ],
           ),
           backgroundColor: Colors.green.shade700,
@@ -989,9 +986,9 @@ class HeroesPage extends ConsumerWidget {
         SnackBar(
           content: Row(
             children: [
-              const Icon(Icons.error_outline, color: Colors.white),
+              Icon(Icons.error_outline, color: FormTheme.textBright),
               const SizedBox(width: 12),
-              Expanded(child: Text('Failed to import: $e')),
+              Expanded(child: Text(HeroesPageText.failedToImport(e))),
             ],
           ),
           backgroundColor: Colors.red.shade700,
@@ -1026,9 +1023,9 @@ class HeroesPage extends ConsumerWidget {
           SnackBar(
             content: Row(
               children: [
-                const Icon(Icons.check_circle, color: Colors.white),
+                Icon(Icons.check_circle, color: FormTheme.textBright),
                 const SizedBox(width: 12),
-                Expanded(child: Text('Exported "${hero.name}" to file')),
+                Expanded(child: Text(HeroesPageText.exportedToFile(hero.name))),
               ],
             ),
             backgroundColor: Colors.green.shade700,
@@ -1039,7 +1036,7 @@ class HeroesPage extends ConsumerWidget {
     } catch (e) {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to export file: $e')),
+        SnackBar(content: Text(HeroesPageText.failedToExportFile(e))),
       );
     }
   }
@@ -1054,11 +1051,11 @@ class HeroesPage extends ConsumerWidget {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Row(
+          content: Row(
             children: [
-              Icon(Icons.check_circle, color: Colors.white),
-              SizedBox(width: 12),
-              Text('Hero imported successfully!'),
+              Icon(Icons.check_circle, color: FormTheme.textBright),
+              const SizedBox(width: 12),
+              Text(HeroesPageText.heroImportedSuccessfully),
             ],
           ),
           backgroundColor: Colors.green.shade700,
@@ -1075,9 +1072,9 @@ class HeroesPage extends ConsumerWidget {
         SnackBar(
           content: Row(
             children: [
-              const Icon(Icons.error_outline, color: Colors.white),
+              Icon(Icons.error_outline, color: FormTheme.textBright),
               const SizedBox(width: 12),
-              Expanded(child: Text('Failed to import file: $e')),
+              Expanded(child: Text(HeroesPageText.failedToImportFile(e))),
             ],
           ),
           backgroundColor: Colors.red.shade700,
@@ -1091,7 +1088,7 @@ class HeroesPage extends ConsumerWidget {
     // Show tier selection for all heroes
     final selectedTier = await showDialog<ExportTier>(
       context: context,
-      builder: (ctx) => _ExportOptionsDialog(heroName: 'All Heroes'),
+      builder: (ctx) => _ExportOptionsDialog(heroName: HeroesPageText.allHeroes),
     );
 
     if (selectedTier == null || !context.mounted) return;
@@ -1107,9 +1104,9 @@ class HeroesPage extends ConsumerWidget {
           SnackBar(
             content: Row(
               children: [
-                const Icon(Icons.check_circle, color: Colors.white),
+                Icon(Icons.check_circle, color: FormTheme.textBright),
                 const SizedBox(width: 12),
-                Expanded(child: Text('Exported $count hero(es) to files')),
+                Expanded(child: Text(HeroesPageText.exportedHeroesToFiles(count))),
               ],
             ),
             backgroundColor: Colors.green.shade700,
@@ -1118,13 +1115,13 @@ class HeroesPage extends ConsumerWidget {
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No heroes to export')),
+          SnackBar(content: Text(HeroesPageText.noHeroesToExport)),
         );
       }
     } catch (e) {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to export heroes: $e')),
+        SnackBar(content: Text(HeroesPageText.failedToExportHeroes(e))),
       );
     }
   }
@@ -1152,7 +1149,7 @@ class _ExportOptionsDialogState extends State<_ExportOptionsDialog> {
         children: [
           Icon(Icons.tune, color: theme.colorScheme.primary),
           const SizedBox(width: 12),
-          Expanded(child: Text('Export ${widget.heroName}')),
+          Expanded(child: Text(HeroesPageText.exportName(widget.heroName))),
         ],
       ),
       content: Column(
@@ -1160,7 +1157,7 @@ class _ExportOptionsDialogState extends State<_ExportOptionsDialog> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Choose what to include in the export:',
+            HeroesPageText.chooseExportContent,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),
@@ -1172,11 +1169,11 @@ class _ExportOptionsDialogState extends State<_ExportOptionsDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(HeroesPageText.cancel),
         ),
         FilledButton(
           onPressed: () => Navigator.of(context).pop(_selectedTier),
-          child: const Text('Export'),
+          child: Text(HeroesPageText.export_),
         ),
       ],
     );

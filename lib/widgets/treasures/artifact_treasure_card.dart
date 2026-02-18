@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../core/models/component.dart' as model;
+import '../../core/text/widgets/treasure_card_text.dart';
+import '../../core/theme/app_icon.dart';
+import '../../core/theme/app_icons.dart';
 import 'base_treasure_card.dart';
 import '../../core/theme/treasure_theme.dart';
 
@@ -72,14 +75,14 @@ class ArtifactTreasureCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.auto_awesome,
+              AppIcon(
+                TreasureIcons.fromArtifactId(component.id),
                 size: 18,
                 color: TreasureTheme.getTextColor(context),
               ),
               const SizedBox(width: 8),
               Text(
-                'ARTIFACT POWERS',
+                TreasureCardText.artifactPowers,
                 style: TreasureTheme.sectionTitleStyle.copyWith(
                   color: TreasureTheme.getTextColor(context),
                   fontSize: 15,

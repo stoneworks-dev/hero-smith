@@ -1,6 +1,6 @@
 name: hero_smith
 description: Hero Smith app - assemble heroes from modular Components.
-version: 0.1.4
+version: 0.1.5
 publish_to: "none"
 
 environment:
@@ -21,6 +21,7 @@ dependencies:
   shared_preferences: ^2.2.3
   file_picker: ^8.0.0
   share_plus: ^9.0.0
+  flutter_svg: ^2.0.10+1
 
 dev_dependencies:
   flutter_test:
@@ -93,6 +94,19 @@ flutter:
     - data/treasures/
     # Downtime projects data
     - data/downtime/
+    # Game-icons.net SVG icons (CC BY 3.0)
+    - assets/icons/lorc/
+    - assets/icons/delapouite/
+    - assets/icons/sbed/
+    - assets/icons/kier-heyl/
+    - assets/icons/zeromancer/
+    - assets/icons/willdabeast/
+    - assets/icons/seregacthtuf/
+    - assets/icons/skoll/
+    - assets/icons/darkzaitzev/
+    - assets/icons/caro-asercion/
+    - assets/icons/faithtoken/
+    - assets/icons/cathelineau/
     # Images
     - data/images/loading_screen/
     - data/images/logo/

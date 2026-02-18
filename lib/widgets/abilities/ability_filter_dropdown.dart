@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/theme/form_theme.dart';
 import '../../core/theme/navigation_theme.dart';
 
 class AbilityFilterDropdown extends StatelessWidget {
@@ -24,7 +25,7 @@ class AbilityFilterDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accent = accentColor ?? Colors.grey.shade400;
+    final accent = accentColor ?? FormTheme.textSecondary;
     
     return Container(
       constraints: const BoxConstraints(maxWidth: 160),
@@ -36,8 +37,8 @@ class AbilityFilterDropdown extends StatelessWidget {
           color: value != null
               ? accent
               : (enabled
-                    ? Colors.grey.shade700
-                    : Colors.grey.shade800),
+                    ? FormTheme.border
+                    : FormTheme.borderDim),
           width: value != null ? 2 : 1,
         ),
       ),
@@ -46,7 +47,7 @@ class AbilityFilterDropdown extends StatelessWidget {
         hint: Text(
           label,
           style: TextStyle(
-            color: enabled ? Colors.grey.shade400 : Colors.grey.shade600,
+            color: enabled ? FormTheme.textSecondary : FormTheme.borderLight,
           ),
           overflow: TextOverflow.ellipsis,
         ),
@@ -55,12 +56,12 @@ class AbilityFilterDropdown extends StatelessWidget {
         isExpanded: true,
         dropdownColor: NavigationTheme.cardBackgroundDark,
         style: TextStyle(
-          color: Colors.grey.shade300,
+          color: FormTheme.textSecondary,
           fontSize: 14,
         ),
         icon: Icon(
           Icons.arrow_drop_down,
-          color: value != null ? accent : Colors.grey.shade500,
+          color: value != null ? accent : FormTheme.textMuted,
         ),
         items: enabled
             ? [

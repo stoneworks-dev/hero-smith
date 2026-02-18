@@ -10,6 +10,7 @@ import '../../../core/services/class_feature_data_service.dart';
 import '../../../core/services/class_feature_grants_service.dart';
 import '../../../core/text/creators/hero_creators/strength_creator_page_text.dart';
 import '../../../core/theme/creator_theme.dart';
+import '../../../core/theme/form_theme.dart';
 import '../widgets/strength_creator/class_features_section.dart';
 import '../../../widgets/creature stat block/hero_green_form_widget.dart';
 
@@ -592,7 +593,7 @@ class _PendingChoicesBanner extends StatelessWidget {
                     Text(
                       StrengthCreatorPageText.pendingChoicesHint,
                       style: TextStyle(
-                        color: Colors.grey.shade400,
+                        color: FormTheme.textSecondary,
                         fontSize: 12,
                       ),
                     ),

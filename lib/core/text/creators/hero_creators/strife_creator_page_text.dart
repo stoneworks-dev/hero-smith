@@ -20,4 +20,5 @@ class StrifeCreatorPageText {
   static const String savedSnackBarStabilityBonusSuffix = ')';
   static const String failedToSavePrefix = 'Failed to save: ';
   static const String retryLabel = 'Retry';
+  static const String saved = 'Saved!';
 }

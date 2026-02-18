@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hero_smith/core/models/component.dart';
 import 'package:hero_smith/core/db/providers.dart';
+import 'package:hero_smith/core/theme/form_theme.dart';
+import 'package:hero_smith/core/text/main_pages/story/cultures_page_text.dart';
 import 'package:hero_smith/widgets/cultures/culture_card.dart';
 
 class CulturesPage extends ConsumerWidget {
@@ -16,7 +18,7 @@ class CulturesPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cultures'),
+        title: Text(CulturesPageText.appBarTitle),
         backgroundColor: Theme.of(context).colorScheme.surface,
         surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
       ),
@@ -32,14 +34,14 @@ class CulturesPage extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Cultures',
+                    CulturesPageText.headerTitle,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Your culture is a combination of environment, organization, and upbringing.',
+                    CulturesPageText.headerDescription,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                     ),
@@ -50,13 +52,13 @@ class CulturesPage extends ConsumerWidget {
             
             // Environments Section
             environmentsAsync.when(
-              loading: () => _buildLoadingSection('Environments'),
-              error: (error, stack) => _buildErrorSection('Environments', error),
+              loading: () => _buildLoadingSection(CulturesPageText.environmentsTitle),
+              error: (error, stack) => _buildErrorSection(CulturesPageText.environmentsTitle, error),
               data: (environments) => _buildCultureGroup(
                 context,
-                'Environments',
-                '🏞️',
-                'Where your culture lives and thrives',
+                CulturesPageText.environmentsTitle,
+                CulturesPageText.environmentsEmoji,
+                CulturesPageText.environmentsDescription,
                 environments,
               ),
             ),
@@ -65,13 +67,13 @@ class CulturesPage extends ConsumerWidget {
             
             // Organizations Section
             organisationsAsync.when(
-              loading: () => _buildLoadingSection('Organizations'),
-              error: (error, stack) => _buildErrorSection('Organizations', error),
+              loading: () => _buildLoadingSection(CulturesPageText.organizationsTitle),
+              error: (error, stack) => _buildErrorSection(CulturesPageText.organizationsTitle, error),
               data: (organisations) => _buildCultureGroup(
                 context,
-                'Organizations',
-                '🏛️',
-                'How your culture is structured and governed',
+                CulturesPageText.organizationsTitle,
+                CulturesPageText.organizationsEmoji,
+                CulturesPageText.organizationsDescription,
                 organisations,
               ),
             ),
@@ -80,13 +82,13 @@ class CulturesPage extends ConsumerWidget {
             
             // Upbringings Section
             upbringingsAsync.when(
-              loading: () => _buildLoadingSection('Upbringings'),
-              error: (error, stack) => _buildErrorSection('Upbringings', error),
+              loading: () => _buildLoadingSection(CulturesPageText.upbringingsTitle),
+              error: (error, stack) => _buildErrorSection(CulturesPageText.upbringingsTitle, error),
               data: (upbringings) => _buildCultureGroup(
                 context,
-                'Upbringings',
-                '👨‍👩‍👧‍👦',
-                'How you were raised within your culture',
+                CulturesPageText.upbringingsTitle,
+                CulturesPageText.upbringingsEmoji,
+                CulturesPageText.upbringingsDescription,
                 upbringings,
               ),
             ),
@@ -195,7 +197,7 @@ class CulturesPage extends ConsumerWidget {
               const Icon(Icons.error_outline, color: Colors.red),
               const SizedBox(height: 8),
               Text(
-                'Error loading $title',
+                CulturesPageText.errorLoadingTitle(title),
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 4),
@@ -225,7 +227,7 @@ class CulturesPage extends ConsumerWidget {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Colors.grey.shade50,
-            border: Border.all(color: Colors.grey.shade300),
+            border: Border.all(color: FormTheme.textSecondary),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Column(
@@ -233,10 +235,10 @@ class CulturesPage extends ConsumerWidget {
               const Icon(Icons.inbox_outlined, size: 48, color: Colors.grey),
               const SizedBox(height: 8),
               Text(
-                'No $title found',
-                style: const TextStyle(
+                CulturesPageText.noItemsFound(title),
+                style: TextStyle(
                   fontWeight: FontWeight.w500,
-                  color: Colors.grey,
+                  color: FormTheme.textMuted,
                 ),
               ),
             ],

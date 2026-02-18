@@ -5,6 +5,7 @@ import 'package:hero_smith/core/text/heroes_sheet/story/sheet_story_ancestry_sec
 import 'package:hero_smith/core/theme/navigation_theme.dart';
 import 'package:hero_smith/core/theme/story_theme.dart';
 
+import '../../../../core/theme/form_theme.dart';
 import '../../../../core/db/providers.dart';
 import '../../../../core/models/component.dart' as model;
 import '../../../../widgets/shared/story_display_widgets.dart';
@@ -49,7 +50,7 @@ class AncestrySection extends ConsumerWidget {
       decoration: BoxDecoration(
         color: NavigationTheme.cardBackgroundDark,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade800),
+        border: Border.all(color: FormTheme.borderDim),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -70,7 +71,7 @@ class AncestrySection extends ConsumerWidget {
                 const Text(
                   SheetStoryAncestrySectionText.sectionTitle,
                   style: TextStyle(
-                    color: Colors.white,
+                    color: FormTheme.textBright,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
@@ -88,7 +89,7 @@ class AncestrySection extends ConsumerWidget {
                 if (ancestry == null) {
                   return Text(
                     SheetStoryAncestrySectionText.ancestryNotFound,
-                    style: TextStyle(color: Colors.grey.shade400),
+                    style: TextStyle(color: FormTheme.textSecondary),
                   );
                 }
 
@@ -104,7 +105,7 @@ class AncestrySection extends ConsumerWidget {
                       const SizedBox(height: 8),
                       Text(
                         ancestry.data['description'].toString(),
-                        style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+                        style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
                       ),
                     ],
                   ],
@@ -137,14 +138,14 @@ class AncestrySection extends ConsumerWidget {
     if (ancestryTraitComponent == null && allTraits.isNotEmpty) {
       return Text(
         SheetStoryAncestrySectionText.noTraitDataAvailable,
-        style: TextStyle(color: Colors.grey.shade400),
+        style: TextStyle(color: FormTheme.textSecondary),
       );
     }
 
     if (ancestryTraitComponent == null) {
       return Text(
         SheetStoryAncestrySectionText.noTraitsAvailable,
-        style: TextStyle(color: Colors.grey.shade400),
+        style: TextStyle(color: FormTheme.textSecondary),
       );
     }
 
@@ -173,7 +174,7 @@ class AncestrySection extends ConsumerWidget {
             SheetStoryAncestrySectionText.signatureAbilityTitle,
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: Colors.grey.shade300,
+              color: FormTheme.textSecondary,
               fontSize: 14,
             ),
           ),
@@ -204,7 +205,7 @@ class AncestrySection extends ConsumerWidget {
                     const SizedBox(height: 6),
                     Text(
                       signature['description'].toString(),
-                      style: TextStyle(color: Colors.grey.shade300, fontSize: 13),
+                      style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
                     ),
                   ],
                 ],
@@ -218,7 +219,7 @@ class AncestrySection extends ConsumerWidget {
             SheetStoryAncestrySectionText.optionalTraitsTitle,
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: Colors.grey.shade300,
+              color: FormTheme.textSecondary,
               fontSize: 14,
             ),
           ),

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/db/providers.dart';
 import '../../../core/models/component.dart';
+import '../../../core/theme/form_theme.dart';
 import '../../../widgets/languages/language_card.dart';
+import '../../../core/text/main_pages/story/languages_page_text.dart';
 
 class LanguagesPage extends ConsumerWidget {
   const LanguagesPage({super.key});
@@ -11,13 +13,13 @@ class LanguagesPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final langs = ref.watch(componentsByTypeProvider('language'));
     return Scaffold(
-      appBar: AppBar(title: const Text('Languages')),
+      appBar: AppBar(title: Text(LanguagesPageText.appBarTitle)),
       body: langs.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Error: $e')),
+        error: (e, _) => Center(child: Text(LanguagesPageText.errorMessage(e))),
         data: (items) {
           if (items.isEmpty) {
-            return const Center(child: Text('No languages found.'));
+            return Center(child: Text(LanguagesPageText.noLanguagesFound));
           }
           
           // Group languages by type
@@ -69,11 +71,11 @@ class LanguagesPage extends ConsumerWidget {
     languages.sort((a, b) => a.name.compareTo(b.name));
     
     String groupTitle = switch (type) {
-      'human' => 'Human Languages',
-      'ancestral' => 'Ancestral Languages', 
-      'dead' => 'Dead Languages',
-      'unknown' => 'Other Languages',
-      _ => '${type[0].toUpperCase()}${type.substring(1)} Languages',
+      'human' => LanguagesPageText.humanLanguages,
+      'ancestral' => LanguagesPageText.ancestralLanguages, 
+      'dead' => LanguagesPageText.deadLanguages,
+      'unknown' => LanguagesPageText.otherLanguages,
+      _ => LanguagesPageText.languageGroupTitle(type),
     };
     
     return Column(
@@ -99,10 +101,10 @@ class LanguagesPage extends ConsumerWidget {
                 ),
                 child: Text(
                   '${languages.length}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
-                    color: Colors.white,
+                    color: FormTheme.textBright,
                   ),
                 ),
               ),
@@ -130,12 +132,12 @@ class LanguagesPage extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Delete Custom $type'),
-        content: Text('Remove "$name"? This cannot be undone.'),
+        title: Text(LanguagesPageText.deleteCustomTitle(type)),
+        content: Text(LanguagesPageText.removeConfirmation(name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancel'),
+            child: Text(LanguagesPageText.cancel),
           ),
           TextButton(
             onPressed: () {
@@ -143,7 +145,7 @@ class LanguagesPage extends ConsumerWidget {
               ref.read(appDatabaseProvider).deleteComponent(id);
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete'),
+            child: Text(LanguagesPageText.delete),
           ),
         ],
       ),

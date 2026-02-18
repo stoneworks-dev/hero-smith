@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'form_theme.dart';
 import 'navigation_theme.dart';
 
 /// Hero-specific design tokens and theme utilities
@@ -218,7 +219,7 @@ class HeroTheme {
             Icon(
               icon,
               size: 80,
-              color: Colors.grey.shade500,
+              color: FormTheme.textMuted,
             ),
             const SizedBox(height: 24),
             Text(
@@ -226,7 +227,7 @@ class HeroTheme {
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 22,
-                color: Colors.grey.shade300,
+                color: FormTheme.textSecondary,
               ),
               textAlign: TextAlign.center,
             ),
@@ -236,7 +237,7 @@ class HeroTheme {
                 subtitle,
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.grey.shade500,
+                  color: FormTheme.textMuted,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -302,7 +303,7 @@ class HeroTheme {
                     subtitle,
                     style: TextStyle(
                       fontSize: 13,
-                      color: Colors.grey.shade400,
+                      color: FormTheme.textSecondary,
                     ),
                   ),
                 ],

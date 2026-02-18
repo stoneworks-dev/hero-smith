@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../../core/models/downtime_tracking.dart';
+import '../../../../core/theme/app_icon.dart';
+import '../../../../core/theme/app_icons.dart';
 import '../../../../core/theme/navigation_theme.dart';
+import '../../../../core/theme/form_theme.dart';
 import '../../../../core/text/heroes_sheet/downtime/project_editor_dialog_text.dart';
 
 /// Accent color for projects
@@ -83,7 +86,7 @@ class _ProjectEditorDialogState extends State<ProjectEditorDialog> {
       surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Colors.grey.shade800),
+        side: BorderSide(color: FormTheme.borderDim),
       ),
       title: Row(
         children: [
@@ -93,18 +96,16 @@ class _ProjectEditorDialogState extends State<ProjectEditorDialog> {
               color: _projectsColor.withAlpha(40),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(
-              widget.existingProject == null ? Icons.add_task : Icons.edit,
-              color: _projectsColor,
-              size: 24,
-            ),
+            child: widget.existingProject == null
+                ? AppIcon(DowntimeIcons.projects, color: _projectsColor, size: 24)
+                : Icon(Icons.edit, color: _projectsColor, size: 24),
           ),
           const SizedBox(width: 12),
           Text(
             widget.existingProject == null
                 ? ProjectEditorDialogText.titleCreateProject
                 : ProjectEditorDialogText.titleEditProject,
-            style: const TextStyle(color: Colors.white),
+            style: TextStyle(color: FormTheme.textBright),
           ),
         ],
       ),
@@ -225,14 +226,14 @@ class _ProjectEditorDialogState extends State<ProjectEditorDialog> {
                   ProjectEditorDialogText.eventMilestonesLabel,
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: FormTheme.textBright,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Container(
                   decoration: BoxDecoration(
                     color: NavigationTheme.navBarBackground,
-                    border: Border.all(color: Colors.grey.shade700),
+                    border: Border.all(color: FormTheme.border),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Column(
@@ -272,7 +273,7 @@ class _ProjectEditorDialogState extends State<ProjectEditorDialog> {
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
           style: TextButton.styleFrom(
-            foregroundColor: Colors.grey.shade400,
+            foregroundColor: FormTheme.textSecondary,
           ),
           child: const Text(ProjectEditorDialogText.cancelButtonLabel),
         ),
@@ -280,7 +281,7 @@ class _ProjectEditorDialogState extends State<ProjectEditorDialog> {
           onPressed: _saveProject,
           style: FilledButton.styleFrom(
             backgroundColor: _projectsColor,
-            foregroundColor: Colors.white,
+            foregroundColor: FormTheme.textBright,
           ),
           child: const Text(ProjectEditorDialogText.saveButtonLabel),
         ),
@@ -361,7 +362,7 @@ class _EventEditorTile extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: Colors.grey.shade700,
+            color: FormTheme.border,
           ),
         ),
       ),
@@ -373,14 +374,14 @@ class _EventEditorTile extends StatelessWidget {
               Icon(
                 event.triggered ? Icons.check_circle : Icons.circle_outlined,
                 size: 18,
-                color: event.triggered ? Colors.amber : Colors.grey.shade600,
+                color: event.triggered ? Colors.amber : FormTheme.borderLight,
               ),
               const SizedBox(width: 8),
               Text(
                 'Event at ${event.pointThreshold} points',
                 style: theme.textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: event.triggered ? Colors.amber.shade600 : Colors.grey.shade400,
+                  color: event.triggered ? Colors.amber.shade600 : FormTheme.textSecondary,
                 ),
               ),
               if (event.triggered) ...[
@@ -404,20 +405,20 @@ class _EventEditorTile extends StatelessWidget {
           const SizedBox(height: 8),
           TextFormField(
             initialValue: event.eventDescription ?? '',
-            style: TextStyle(color: Colors.grey.shade300, fontSize: 13),
+            style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
             decoration: InputDecoration(
               hintText: ProjectEditorDialogText.eventNotesHint,
-              hintStyle: TextStyle(color: Colors.grey.shade600),
+              hintStyle: TextStyle(color: FormTheme.borderLight),
               isDense: true,
               filled: true,
               fillColor: NavigationTheme.cardBackgroundDark,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(6),
-                borderSide: BorderSide(color: Colors.grey.shade700),
+                borderSide: BorderSide(color: FormTheme.border),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(6),
-                borderSide: BorderSide(color: Colors.grey.shade700),
+                borderSide: BorderSide(color: FormTheme.border),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(6),

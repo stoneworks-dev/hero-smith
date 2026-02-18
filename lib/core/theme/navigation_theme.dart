@@ -58,6 +58,7 @@ class NavigationTheme {
   static const Color shieldColor = Color(0xFF546E7A);      // Blue grey
   static const Color implementColor = Color(0xFF5E35B1);   // Deep purple
   static const Color weaponColor = Color(0xFFC62828);      // Red
+  static const Color otherLeveledColor = Color(0xFF00897B); // Teal
 
   /// Downtime tab colors
   static const Color projectsTabColor = Color(0xFF00695C); // Teal

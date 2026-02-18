@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../../core/models/downtime_tracking.dart';
 import '../../../../core/text/heroes_sheet/downtime/follower_editor_dialog_text.dart';
+import '../../../../core/theme/app_icon.dart';
+import '../../../../core/theme/app_icons.dart';
+import '../../../../core/theme/form_theme.dart';
 import '../../../../core/theme/navigation_theme.dart';
 
 /// Accent color for followers
@@ -71,7 +74,7 @@ class _FollowerEditorDialogState extends State<FollowerEditorDialog> {
       surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Colors.grey.shade800),
+        side: BorderSide(color: FormTheme.borderDim),
       ),
       title: Row(
         children: [
@@ -81,11 +84,9 @@ class _FollowerEditorDialogState extends State<FollowerEditorDialog> {
               color: _followersColor.withAlpha(40),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(
-              widget.existingFollower == null ? Icons.person_add : Icons.edit,
-              color: _followersColor.shade300,
-              size: 20,
-            ),
+            child: widget.existingFollower == null
+                ? AppIcon(DowntimeIcons.addFollower, color: _followersColor.shade300, size: 20)
+                : Icon(Icons.edit, color: _followersColor.shade300, size: 20),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -93,7 +94,7 @@ class _FollowerEditorDialogState extends State<FollowerEditorDialog> {
               widget.existingFollower == null
                   ? FollowerEditorDialogText.titleAddFollower
                   : FollowerEditorDialogText.titleEditFollower,
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+              style: TextStyle(color: FormTheme.textBright, fontWeight: FontWeight.w600),
             ),
           ),
         ],
@@ -108,15 +109,15 @@ class _FollowerEditorDialogState extends State<FollowerEditorDialog> {
               children: [
                 TextFormField(
                   controller: _nameController,
-                  style: const TextStyle(color: Colors.white),
+                  style: TextStyle(color: FormTheme.textBright),
                   decoration: InputDecoration(
                     labelText: FollowerEditorDialogText.nameLabel,
-                    labelStyle: TextStyle(color: Colors.grey.shade400),
-                    border: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade700)),
-                    enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade700)),
+                    labelStyle: TextStyle(color: FormTheme.textSecondary),
+                    border: OutlineInputBorder(borderSide: BorderSide(color: FormTheme.border)),
+                    enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: FormTheme.border)),
                     focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: _followersColor.shade400)),
                     filled: true,
-                    fillColor: Colors.grey.shade900,
+                    fillColor: FormTheme.surfaceDark,
                   ),
                   validator: (v) => v == null || v.isEmpty
                       ? FollowerEditorDialogText.nameRequiredError
@@ -126,17 +127,17 @@ class _FollowerEditorDialogState extends State<FollowerEditorDialog> {
                 
                 TextFormField(
                   controller: _typeController,
-                  style: const TextStyle(color: Colors.white),
+                  style: TextStyle(color: FormTheme.textBright),
                   decoration: InputDecoration(
                     labelText: FollowerEditorDialogText.followerTypeLabel,
                     hintText: FollowerEditorDialogText.followerTypeHint,
-                    hintStyle: TextStyle(color: Colors.grey.shade600),
-                    labelStyle: TextStyle(color: Colors.grey.shade400),
-                    border: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade700)),
-                    enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade700)),
+                    hintStyle: TextStyle(color: FormTheme.borderLight),
+                    labelStyle: TextStyle(color: FormTheme.textSecondary),
+                    border: OutlineInputBorder(borderSide: BorderSide(color: FormTheme.border)),
+                    enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: FormTheme.border)),
                     focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: _followersColor.shade400)),
                     filled: true,
-                    fillColor: Colors.grey.shade900,
+                    fillColor: FormTheme.surfaceDark,
                   ),
                   validator: (v) => v == null || v.isEmpty
                       ? FollowerEditorDialogText.followerTypeRequiredError
@@ -146,7 +147,7 @@ class _FollowerEditorDialogState extends State<FollowerEditorDialog> {
                 
                 Text(
                   FollowerEditorDialogText.characteristicsLabel,
-                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey.shade300),
+                  style: TextStyle(fontWeight: FontWeight.bold, color: FormTheme.textSecondary),
                 ),
                 const SizedBox(height: 8),
                 
@@ -192,34 +193,34 @@ class _FollowerEditorDialogState extends State<FollowerEditorDialog> {
                 
                 TextFormField(
                   controller: _skillsController,
-                  style: const TextStyle(color: Colors.white),
+                  style: TextStyle(color: FormTheme.textBright),
                   decoration: InputDecoration(
                     labelText: FollowerEditorDialogText.skillsLabel,
                     hintText: FollowerEditorDialogText.skillsHint,
-                    hintStyle: TextStyle(color: Colors.grey.shade600),
-                    labelStyle: TextStyle(color: Colors.grey.shade400),
-                    border: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade700)),
-                    enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade700)),
+                    hintStyle: TextStyle(color: FormTheme.borderLight),
+                    labelStyle: TextStyle(color: FormTheme.textSecondary),
+                    border: OutlineInputBorder(borderSide: BorderSide(color: FormTheme.border)),
+                    enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: FormTheme.border)),
                     focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: _followersColor.shade400)),
                     filled: true,
-                    fillColor: Colors.grey.shade900,
+                    fillColor: FormTheme.surfaceDark,
                   ),
                 ),
                 const SizedBox(height: 12),
                 
                 TextFormField(
                   controller: _languagesController,
-                  style: const TextStyle(color: Colors.white),
+                  style: TextStyle(color: FormTheme.textBright),
                   decoration: InputDecoration(
                     labelText: FollowerEditorDialogText.languagesLabel,
                     hintText: FollowerEditorDialogText.languagesHint,
-                    hintStyle: TextStyle(color: Colors.grey.shade600),
-                    labelStyle: TextStyle(color: Colors.grey.shade400),
-                    border: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade700)),
-                    enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade700)),
+                    hintStyle: TextStyle(color: FormTheme.borderLight),
+                    labelStyle: TextStyle(color: FormTheme.textSecondary),
+                    border: OutlineInputBorder(borderSide: BorderSide(color: FormTheme.border)),
+                    enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: FormTheme.border)),
                     focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: _followersColor.shade400)),
                     filled: true,
-                    fillColor: Colors.grey.shade900,
+                    fillColor: FormTheme.surfaceDark,
                   ),
                 ),
               ],
@@ -230,14 +231,14 @@ class _FollowerEditorDialogState extends State<FollowerEditorDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          style: TextButton.styleFrom(foregroundColor: Colors.grey.shade400),
+          style: TextButton.styleFrom(foregroundColor: FormTheme.textSecondary),
           child: const Text(FollowerEditorDialogText.cancelButtonLabel),
         ),
         FilledButton(
           onPressed: _save,
           style: FilledButton.styleFrom(
             backgroundColor: _followersColor,
-            foregroundColor: Colors.white,
+            foregroundColor: FormTheme.textBright,
           ),
           child: const Text(FollowerEditorDialogText.saveButtonLabel),
         ),
@@ -248,15 +249,15 @@ class _FollowerEditorDialogState extends State<FollowerEditorDialog> {
   Widget _buildStatField(String label, TextEditingController controller) {
     return TextFormField(
       controller: controller,
-      style: const TextStyle(color: Colors.white),
+      style: TextStyle(color: FormTheme.textBright),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(color: Colors.grey.shade400),
-        border: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade700)),
-        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade700)),
+        labelStyle: TextStyle(color: FormTheme.textSecondary),
+        border: OutlineInputBorder(borderSide: BorderSide(color: FormTheme.border)),
+        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: FormTheme.border)),
         focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: _followersColor.shade400)),
         filled: true,
-        fillColor: Colors.grey.shade900,
+        fillColor: FormTheme.surfaceDark,
         isDense: true,
       ),
       keyboardType: TextInputType.number,

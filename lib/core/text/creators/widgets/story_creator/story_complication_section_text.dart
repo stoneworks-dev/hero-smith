@@ -1,17 +1,19 @@
+import '../../../common/common_text.dart';
+
 class StoryComplicationSectionText {
   static const String searchHint = 'Search...';
   static const String noMatchesFound = 'No matches found';
-  static const String cancelLabel = 'Cancel';
+  static const String cancelLabel = CommonText.cancel;
   static const String sectionTitle = 'Complication';
   static const String sectionSubtitle =
       'Choose a complication that adds depth to your character';
   static const String failedToLoadComplicationsPrefix =
       'Failed to load complications: ';
   static const String noComplicationsAvailable = 'No complications available';
-  static const String noneOptionLabel = 'None';
+  static const String noneOptionLabel = CommonText.none;
   static const String selectComplicationTitle = 'Select Complication';
   static const String selectComplicationLabel = 'Select Complication';
-  static const String nonePlaceholder = 'None';
+  static const String nonePlaceholder = CommonText.none;
   static const String effectsTitle = 'Effects';
   static const String effectBenefitLabel = 'Benefit';
   static const String effectDrawbackLabel = 'Drawback';

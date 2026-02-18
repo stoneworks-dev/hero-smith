@@ -10,6 +10,7 @@ import 'skills_page.dart';
 import 'titles_page.dart';
 import 'perks_page.dart';
 import 'deities_page.dart';
+import '../../../core/text/main_pages/story/story_page_text.dart';
 
 class StoryPage extends StatelessWidget {
   const StoryPage({super.key});
@@ -20,8 +21,8 @@ class StoryPage extends StatelessWidget {
       children: [
         NavCard(
           icon: Icons.groups,
-          title: 'Ancestries',
-          subtitle: 'Background origins and lineages',
+          title: StoryPageText.ancestriesTitle,
+          subtitle: StoryPageText.ancestriesSubtitle,
           accentColor: NavigationTheme.ancestriesColor,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const AncestriesPage()),
@@ -30,8 +31,8 @@ class StoryPage extends StatelessWidget {
         const SizedBox(height: 12),
         NavCard(
           icon: Icons.public,
-          title: 'Cultures',
-          subtitle: 'Peoples and societies of the world',
+          title: StoryPageText.culturesTitle,
+          subtitle: StoryPageText.culturesSubtitle,
           accentColor: NavigationTheme.culturesColor,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const CulturesPage()),
@@ -40,8 +41,8 @@ class StoryPage extends StatelessWidget {
         const SizedBox(height: 12),
         NavCard(
           icon: Icons.work_outline,
-          title: 'Careers',
-          subtitle: 'Occupations and life paths',
+          title: StoryPageText.careersTitle,
+          subtitle: StoryPageText.careersSubtitle,
           accentColor: NavigationTheme.careersColor,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const CareersPage()),
@@ -50,8 +51,8 @@ class StoryPage extends StatelessWidget {
         const SizedBox(height: 12),
         NavCard(
           icon: Icons.report_problem_outlined,
-          title: 'Complications',
-          subtitle: 'Entanglements and hardships',
+          title: StoryPageText.complicationsTitle,
+          subtitle: StoryPageText.complicationsSubtitle,
           accentColor: NavigationTheme.complicationsColor,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const ComplicationsPage()),
@@ -60,8 +61,8 @@ class StoryPage extends StatelessWidget {
         const SizedBox(height: 12),
         NavCard(
           icon: Icons.translate,
-          title: 'Languages',
-          subtitle: 'Tongues spoken across the lands',
+          title: StoryPageText.languagesTitle,
+          subtitle: StoryPageText.languagesSubtitle,
           accentColor: NavigationTheme.languagesColor,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const LanguagesPage()),
@@ -70,8 +71,8 @@ class StoryPage extends StatelessWidget {
         const SizedBox(height: 12),
         NavCard(
           icon: Icons.school_outlined,
-          title: 'Skills',
-          subtitle: 'Capabilities and training',
+          title: StoryPageText.skillsTitle,
+          subtitle: StoryPageText.skillsSubtitle,
           accentColor: NavigationTheme.skillsColor,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const SkillsPage()),
@@ -80,8 +81,8 @@ class StoryPage extends StatelessWidget {
         const SizedBox(height: 12),
         NavCard(
           icon: Icons.military_tech,
-          title: 'Titles',
-          subtitle: 'Ranks, honors, and renown',
+          title: StoryPageText.titlesTitle,
+          subtitle: StoryPageText.titlesSubtitle,
           accentColor: NavigationTheme.titlesColor,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const TitlesPage()),
@@ -90,8 +91,8 @@ class StoryPage extends StatelessWidget {
         const SizedBox(height: 12),
         NavCard(
           icon: Icons.auto_awesome,
-          title: 'Perks',
-          subtitle: 'Special boons and edges',
+          title: StoryPageText.perksTitle,
+          subtitle: StoryPageText.perksSubtitle,
           accentColor: NavigationTheme.perksColor,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const PerksPage()),
@@ -100,8 +101,8 @@ class StoryPage extends StatelessWidget {
         const SizedBox(height: 12),
         NavCard(
           icon: Icons.wb_sunny_outlined,
-          title: 'Deities',
-          subtitle: 'Gods, saints, and higher powers',
+          title: StoryPageText.deitiesTitle,
+          subtitle: StoryPageText.deitiesSubtitle,
           accentColor: NavigationTheme.deitiesColor,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const DeitiesPage()),

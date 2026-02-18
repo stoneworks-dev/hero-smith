@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../../core/models/component.dart';
+import '../../core/text/widgets/ability_widget_text.dart';
+import '../../core/theme/ability_colors.dart';
+import '../../core/theme/app_icon.dart';
+import '../../core/theme/app_icon_data.dart';
+import '../../core/theme/app_icons.dart';
 import '../../core/theme/semantic/semantic_tokens.dart';
+import '../../core/theme/form_theme.dart';
 import 'abilities_shared.dart';
 
 class AbilitySummary extends StatelessWidget {
@@ -20,8 +26,8 @@ class AbilitySummary extends StatelessWidget {
 
     final resourceColor = ability.resourceType != null
         ? HeroicResourceTokens.color(ability.resourceType!)
-        : Colors.grey.shade400;
-    final metadataColor = Colors.grey.shade500;
+        : FormTheme.textSecondary;
+    final metadataColor = FormTheme.textMuted;
     final resourceLabel = ability.resourceLabel;
     final costAmount = ability.costAmount;
 
@@ -77,8 +83,8 @@ class AbilitySummary extends StatelessWidget {
                 if (ability.level != null)
                   _buildBadge(
                     context,
-                    'Level ${ability.level}',
-                    Colors.grey.shade700,
+                    AbilityWidgetText.levelLabel(ability.level!),
+                    FormTheme.border,
                     Colors.grey.shade200,
                   ),
                 if (resourceLabel != null)
@@ -90,7 +96,7 @@ class AbilitySummary extends StatelessWidget {
                           ? '$resourceLabel $costAmount'
                           : resourceLabel,
                       resourceColor,
-                      Colors.white,
+                      FormTheme.textBright,
                     ),
                   ),
                 if (ability.actionType != null)
@@ -100,7 +106,7 @@ class AbilitySummary extends StatelessWidget {
                       context,
                       ability.actionType!,
                       ActionTokens.color(ability.actionType!),
-                      Colors.white,
+                      FormTheme.textBright,
                     ),
                   ),
               ],
@@ -110,21 +116,37 @@ class AbilitySummary extends StatelessWidget {
         if (ability.keywords.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 8),
-            child: Text(
-              ability.keywords.join(', '),
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 12,
-                color: Colors.grey.shade300,
-              ),
+            child: Wrap(
+              spacing: 2,
+              runSpacing: 4,
+              children: [
+                for (var i = 0; i < ability.keywords.length; i++) ...[
+                  Text(
+                    ability.keywords[i],
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 12,
+                      color: AbilityColors.getKeywordColor(ability.keywords[i]),
+                    ),
+                  ),
+                  if (i < ability.keywords.length - 1)
+                    Text(
+                      ', ',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                ],
+              ],
             ),
           ),
         if (ability.triggerText != null)
           Padding(
             padding: const EdgeInsets.only(top: 8),
-            child: _buildInfoRow(
+            child: _buildAppIconInfoRow(
               context,
-              Icons.bolt,
+              AppIcons.abilities.triggered,
               'Trigger: ${ability.triggerText}',
             ),
           ),
@@ -135,9 +157,9 @@ class AbilitySummary extends StatelessWidget {
             runSpacing: 8,
             children: [
               if (ability.rangeSummary != null)
-                _buildInfoRow(context, Icons.straighten, ability.rangeSummary!),
+                _buildColoredInfoRow(context, AppIcons.abilities.range, ability.rangeSummary!, const Color(0xFFFFB74D)),
               if (ability.targets != null)
-                _buildInfoRow(context, Icons.adjust, ability.targets!),
+                _buildColoredInfoRow(context, AppIcons.abilities.target, ability.targets!, const Color(0xFF4DD0E1)),
             ],
           ),
         ),
@@ -151,16 +173,25 @@ class AbilitySummary extends StatelessWidget {
     Color background,
     Color foreground,
   ) {
+    // Level badge (neutral grey) needs brighter text than colored badges
+    final isNeutral = background == FormTheme.border;
+    final textColor = isNeutral
+        ? Colors.grey.shade300
+        : background;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: background.withValues(alpha: 0.85),
+        color: background.withValues(alpha: 0.15),
+        border: Border.all(
+          color: background.withValues(alpha: 0.5),
+          width: 1,
+        ),
       ),
       child: Text(
         label,
         style: TextStyle(
-          color: foreground,
+          color: textColor,
           fontWeight: FontWeight.w700,
           fontSize: 11,
         ),
@@ -175,6 +206,29 @@ class AbilitySummary extends StatelessWidget {
         Icon(
           icon,
           size: 16,
+          color: FormTheme.textMuted,
+        ),
+        const SizedBox(width: 6),
+        Flexible(
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              color: FormTheme.textSecondary,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAppIconInfoRow(BuildContext context, AppIconData icon, String label) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        AppIcon(
+          icon,
+          size: 16,
           color: Colors.grey.shade500,
         ),
         const SizedBox(width: 6),
@@ -184,6 +238,30 @@ class AbilitySummary extends StatelessWidget {
             style: TextStyle(
               fontSize: 12,
               color: Colors.grey.shade400,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildColoredInfoRow(BuildContext context, AppIconData icon, String label, Color color) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        AppIcon(
+          icon,
+          size: 16,
+          color: color.withValues(alpha: 0.7),
+        ),
+        const SizedBox(width: 6),
+        Flexible(
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              color: color.withValues(alpha: 0.85),
+              fontWeight: FontWeight.w500,
             ),
           ),
         ),

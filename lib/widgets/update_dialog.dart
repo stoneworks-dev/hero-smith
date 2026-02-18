@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/services/update_provider.dart';
 import '../core/services/update_service.dart';
+import '../core/text/widgets/update_dialog_text.dart';
+import '../core/theme/form_theme.dart';
 import '../core/theme/navigation_theme.dart';
 
 /// Shows an update dialog when a new version is available on startup.
@@ -122,7 +124,7 @@ void showUpdateDialog(
                   style: TextStyle(
                     fontSize: 13,
                     height: 1.4,
-                    color: Colors.grey.shade300,
+                    color: FormTheme.textSecondary,
                   ),
                 ),
               ),
@@ -143,7 +145,7 @@ void showUpdateDialog(
           onPressed: () => Navigator.pop(ctx),
           child: Text(
             'Later',
-            style: TextStyle(color: Colors.grey.shade400),
+            style: TextStyle(color: FormTheme.textSecondary),
           ),
         ),
         if (update.downloadUrl != null)
@@ -155,7 +157,7 @@ void showUpdateDialog(
                   .downloadUpdate(update.downloadUrl!);
             },
             icon: const Icon(Icons.download, size: 18),
-            label: const Text('Download'),
+            label: Text(UpdateDialogText.download),
             style: FilledButton.styleFrom(
               backgroundColor: accent,
             ),
@@ -169,7 +171,7 @@ void showUpdateDialog(
                   .openReleasesPage(htmlUrl: update.htmlUrl);
             },
             icon: const Icon(Icons.open_in_new, size: 18),
-            label: const Text('View Release'),
+            label: Text(UpdateDialogText.viewRelease),
             style: FilledButton.styleFrom(
               backgroundColor: accent,
             ),
@@ -230,7 +232,7 @@ class _DontShowAgainCheckboxState
             "Don't remind me again",
             style: TextStyle(
               fontSize: 12,
-              color: Colors.grey.shade400,
+              color: FormTheme.textSecondary,
             ),
           ),
         ],

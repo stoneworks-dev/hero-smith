@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/db/providers.dart';
 import '../../../../core/models/component.dart' as model;
+import '../../../../core/theme/app_icon.dart';
+import '../../../../core/theme/app_icon_data.dart';
+import '../../../../core/theme/app_icons.dart';
 import '../../../../core/theme/creator_theme.dart';
 import '../../../../core/theme/navigation_theme.dart';
 import '../../../../core/theme/form_theme.dart';
@@ -32,10 +35,10 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
   required List<_SearchOption<T>> options,
   T? selected,
   Color? accent,
-  IconData? icon,
+  AppIconData? icon,
 }) {
   final accentColor = accent ?? CreatorTheme.ancestryAccent;
-  final effectiveIcon = icon ?? Icons.search;
+  final effectiveIcon = icon ?? const MaterialIcon(Icons.search);
   
   return showDialog<_PickerSelection<T>>(
     context: context,
@@ -107,7 +110,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                               color: accentColor.withValues(alpha: 0.4),
                             ),
                           ),
-                          child: Icon(effectiveIcon, color: accentColor, size: 20),
+                          child: AppIcon(effectiveIcon, color: accentColor, size: 20),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -122,7 +125,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                         ),
                         IconButton(
                           onPressed: () => Navigator.of(context).pop(),
-                          icon: Icon(Icons.close, color: Colors.grey.shade400),
+                          icon: Icon(Icons.close, color: FormTheme.textSecondary),
                           splashRadius: 20,
                         ),
                       ],
@@ -134,11 +137,11 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                     child: TextField(
                       controller: controller,
                       autofocus: false,
-                      style: const TextStyle(color: Colors.white),
+                      style: TextStyle(color: FormTheme.textBright),
                       decoration: InputDecoration(
                         hintText: StoryAncestrySectionText.searchHint,
-                        hintStyle: TextStyle(color: Colors.grey.shade500),
-                        prefixIcon: Icon(Icons.search, color: Colors.grey.shade500),
+                        hintStyle: TextStyle(color: FormTheme.textMuted),
+                        prefixIcon: Icon(Icons.search, color: FormTheme.textMuted),
                         filled: true,
                         fillColor: FormTheme.surface,
                         border: OutlineInputBorder(
@@ -147,7 +150,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: Colors.grey.shade700),
+                          borderSide: BorderSide(color: FormTheme.border),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -175,14 +178,14 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                               children: [
                                 Icon(
                                   Icons.search_off,
-                                  color: Colors.grey.shade600,
+                                  color: FormTheme.borderLight,
                                   size: 48,
                                 ),
                                 const SizedBox(height: 12),
                                 Text(
                                   StoryAncestrySectionText.noMatchesFound,
                                   style: TextStyle(
-                                    color: Colors.grey.shade500,
+                                    color: FormTheme.textMuted,
                                     fontSize: 14,
                                   ),
                                 ),
@@ -206,7 +209,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
                                   color: isNoneOption
-                                      ? Colors.grey.shade800.withValues(alpha: 0.4)
+                                      ? FormTheme.surfaceMuted
                                       : isSelected
                                           ? accentColor.withValues(alpha: 0.15)
                                           : Colors.transparent,
@@ -216,20 +219,20 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                                         )
                                       : isNoneOption
                                           ? Border.all(
-                                              color: Colors.grey.shade700,
+                                              color: FormTheme.border,
                                             )
                                           : null,
                                 ),
                                 child: ListTile(
                                   leading: isNoneOption
                                       ? Icon(Icons.remove_circle_outline,
-                                          size: 20, color: Colors.grey.shade500)
+                                          size: 20, color: FormTheme.textMuted)
                                       : null,
                                   title: Text(
                                     option.label,
                                     style: TextStyle(
                                       color: isNoneOption
-                                          ? Colors.grey.shade400
+                                          ? FormTheme.textSecondary
                                           : isSelected
                                               ? accentColor
                                               : Colors.grey.shade200,
@@ -245,7 +248,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                                       ? Text(
                                           option.subtitle!,
                                           style: TextStyle(
-                                            color: Colors.grey.shade500,
+                                            color: FormTheme.textMuted,
                                             fontSize: 12,
                                           ),
                                         )
@@ -270,15 +273,15 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       border: Border(
-                        top: BorderSide(color: Colors.grey.shade800),
+                        top: BorderSide(color: FormTheme.borderDim),
                       ),
                     ),
                     child: TextButton(
                       onPressed: () => Navigator.of(context).pop(),
                       style: TextButton.styleFrom(
-                        foregroundColor: Colors.grey.shade400,
+                        foregroundColor: FormTheme.textSecondary,
                       ),
-                      child: const Text('Cancel'),
+                      child: Text(StoryAncestrySectionText.cancel),
                     ),
                   ),
                 ],
@@ -326,7 +329,7 @@ class StoryAncestrySection extends ConsumerWidget {
           CreatorTheme.sectionHeader(
             title: StoryAncestrySectionText.sectionTitle,
             subtitle: StoryAncestrySectionText.sectionSubtitle,
-            icon: Icons.family_restroom,
+            appIcon: StoryIcons.ancestry,
             accent: _accent,
           ),
           Padding(
@@ -394,7 +397,7 @@ class StoryAncestrySection extends ConsumerWidget {
               options: options,
               selected: selectedAncestryId,
               accent: _accent,
-              icon: Icons.family_restroom,
+              icon: StoryIcons.ancestry,
             );
             if (result == null) return;
             onAncestryChanged(result.value);
@@ -415,8 +418,8 @@ class StoryAncestrySection extends ConsumerWidget {
               style: TextStyle(
                 fontSize: 16,
                 color: selectedAncestryId != null
-                    ? Colors.white
-                    : Colors.grey.shade500,
+                    ? FormTheme.textBright
+                    : FormTheme.textMuted,
               ),
             ),
           ),
@@ -530,7 +533,7 @@ class _AncestryDetails extends StatelessWidget {
         children: [
           if (shortDesc.isNotEmpty) ...[
             Text(shortDesc,
-                style: TextStyle(color: Colors.grey.shade300, height: 1.4)),
+                style: TextStyle(color: FormTheme.textSecondary, height: 1.4)),
             const SizedBox(height: 14),
           ],
           Wrap(
@@ -623,8 +626,8 @@ class _AncestryDetails extends StatelessWidget {
                     color: selected 
                         ? _accent.withValues(alpha: 0.4)
                         : isUnavailable
-                            ? Colors.grey.shade800
-                            : Colors.grey.shade700,
+                            ? FormTheme.borderDim
+                            : FormTheme.border,
                   ),
                 ),
                 child: Column(
@@ -635,18 +638,18 @@ class _AncestryDetails extends StatelessWidget {
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade800.withValues(alpha: 0.5),
+                          color: FormTheme.surfaceMuted,
                           borderRadius: const BorderRadius.vertical(top: Radius.circular(9)),
                         ),
                         child: Row(
                           children: [
-                            Icon(Icons.block, size: 14, color: Colors.grey.shade500),
+                            Icon(Icons.block, size: 14, color: FormTheme.textMuted),
                             const SizedBox(width: 6),
                             Text(
-                              'Not enough points',
+                              StoryAncestrySectionText.notEnoughPoints,
                               style: TextStyle(
                                 fontSize: 11,
-                                color: Colors.grey.shade500,
+                                color: FormTheme.textMuted,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -668,8 +671,8 @@ class _AncestryDetails extends StatelessWidget {
                           color: selected 
                               ? _accent 
                               : isUnavailable 
-                                  ? Colors.grey.shade600 
-                                  : Colors.grey.shade300,
+                                  ? FormTheme.borderLight 
+                                  : FormTheme.textSecondary,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -679,8 +682,8 @@ class _AncestryDetails extends StatelessWidget {
                           desc,
                           style: TextStyle(
                             color: isUnavailable 
-                                ? Colors.grey.shade600 
-                                : Colors.grey.shade400,
+                                ? FormTheme.borderLight 
+                                : FormTheme.textSecondary,
                             height: 1.4,
                           ),
                         ),
@@ -709,7 +712,7 @@ class _AncestryDetails extends StatelessWidget {
                           ),
                         ),
                       ),
-                      checkColor: Colors.white,
+                      checkColor: FormTheme.textBright,
                       activeColor: _accent,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                     ),
@@ -824,7 +827,7 @@ class _AncestryDetails extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(Icons.star, color: _accent, size: 18),
+                AppIcon(AbilityIcons.feature, color: _accent, size: 18),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
@@ -843,7 +846,7 @@ class _AncestryDetails extends StatelessWidget {
                 description,
                 style: TextStyle(
                   height: 1.4,
-                  color: Colors.grey.shade300,
+                  color: FormTheme.textSecondary,
                 ),
               ),
             ],
@@ -914,7 +917,7 @@ class _AncestryDetails extends StatelessWidget {
           options: options,
           selected: _formerAncestryId,
           accent: formerLifeAccent,
-          icon: Icons.history,
+          icon: StoryIcons.ancestry,
         );
 
         if (result != null) {
@@ -937,14 +940,14 @@ class _AncestryDetails extends StatelessWidget {
                   : StoryAncestrySectionText.formerLifeHint,
               style: TextStyle(
                 color: _formerAncestryId != null && selectedAncestry.id.isNotEmpty
-                    ? Colors.white
-                    : Colors.grey.shade500,
+                    ? FormTheme.textBright
+                    : FormTheme.textMuted,
                 fontSize: 14,
               ),
             ),
             Icon(
               Icons.arrow_drop_down,
-              color: Colors.grey.shade400,
+              color: FormTheme.textSecondary,
             ),
           ],
         ),
@@ -1034,13 +1037,13 @@ class _AncestryDetails extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Colors.grey.shade800.withValues(alpha: 0.3),
-          border: Border.all(color: Colors.grey.shade700),
+          color: FormTheme.surfaceMuted,
+          border: Border.all(color: FormTheme.border),
         ),
         child: Text(
-          'Choose a former ancestry first',
+          StoryAncestrySectionText.chooseFormerAncestryFirst,
           style: TextStyle(
-            color: Colors.grey.shade500,
+            color: FormTheme.textMuted,
             fontStyle: FontStyle.italic,
           ),
         ),
@@ -1079,7 +1082,7 @@ class _AncestryDetails extends StatelessWidget {
               options: options,
               selected: currentChoiceId,
               accent: previousLifeAccent,
-              icon: Icons.auto_awesome,
+              icon: AbilityIcons.ability,
             );
 
             if (result != null) {
@@ -1105,8 +1108,8 @@ class _AncestryDetails extends StatelessWidget {
                             : StoryAncestrySectionText.previousLifeTraitHint,
                     style: TextStyle(
                       color: selectedTraitName.isNotEmpty
-                          ? Colors.white
-                          : Colors.grey.shade500,
+                          ? FormTheme.textBright
+                          : FormTheme.textMuted,
                       fontSize: 14,
                     ),
                     overflow: TextOverflow.ellipsis,
@@ -1114,7 +1117,7 @@ class _AncestryDetails extends StatelessWidget {
                 ),
                 Icon(
                   Icons.arrow_drop_down,
-                  color: Colors.grey.shade400,
+                  color: FormTheme.textSecondary,
                 ),
               ],
             ),
@@ -1133,7 +1136,7 @@ class _AncestryDetails extends StatelessWidget {
             child: Text(
               (selectedTrait['description'] as String?) ?? '',
               style: TextStyle(
-                color: Colors.grey.shade300,
+                color: FormTheme.textSecondary,
                 fontSize: 13,
                 height: 1.4,
               ),
@@ -1279,7 +1282,7 @@ class _AncestryDetails extends StatelessWidget {
           options: options,
           selected: currentValue,
           accent: immunityAccent,
-          icon: Icons.shield,
+          icon: CombatIcons.damageResistances,
         );
 
         if (result != null) {
@@ -1301,14 +1304,14 @@ class _AncestryDetails extends StatelessWidget {
                   : StoryAncestrySectionText.immunityDropdownHint,
               style: TextStyle(
                 color: currentValue != null
-                    ? Colors.white
-                    : Colors.grey.shade500,
+                    ? FormTheme.textBright
+                    : FormTheme.textMuted,
                 fontSize: 14,
               ),
             ),
             Icon(
               Icons.arrow_drop_down,
-              color: Colors.grey.shade400,
+              color: FormTheme.textSecondary,
             ),
           ],
         ),
@@ -1346,7 +1349,7 @@ class _AncestryDetails extends StatelessWidget {
           options: pickerOptions,
           selected: currentValue,
           accent: abilityAccent,
-          icon: Icons.auto_awesome,
+          icon: AbilityIcons.ability,
         );
 
         if (result != null) {
@@ -1366,14 +1369,14 @@ class _AncestryDetails extends StatelessWidget {
               currentValue ?? StoryAncestrySectionText.abilityDropdownHint,
               style: TextStyle(
                 color: currentValue != null
-                    ? Colors.white
-                    : Colors.grey.shade500,
+                    ? FormTheme.textBright
+                    : FormTheme.textMuted,
                 fontSize: 14,
               ),
             ),
             Icon(
               Icons.arrow_drop_down,
-              color: Colors.grey.shade400,
+              color: FormTheme.textSecondary,
             ),
           ],
         ),

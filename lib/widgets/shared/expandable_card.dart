@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/form_theme.dart';
 import '../../core/theme/navigation_theme.dart';
 
 class ExpandableCard extends StatefulWidget {
   final String title;
+  final Widget? leading;
   final Widget? badge;
   final Widget expandedContent;
   final Color borderColor;
@@ -12,6 +14,7 @@ class ExpandableCard extends StatefulWidget {
   const ExpandableCard({
     super.key,
     required this.title,
+    this.leading,
     this.badge,
     required this.expandedContent,
     required this.borderColor,
@@ -89,11 +92,14 @@ class _ExpandableCardState extends State<ExpandableCard>
                 // Always visible header with title and badge
                 Row(
                   children: [
+                    if (widget.leading != null) ...[                      widget.leading!,
+                      const SizedBox(width: 8),
+                    ],
                     Expanded(
                       child: Text(
                         widget.title,
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: FormTheme.textBright,
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                         ),

@@ -313,30 +313,30 @@ class _FeaturesTabState extends ConsumerState<_FeaturesTab> {
 
     final subclassName = _subclassSelection?.subclassName;
     if (subclassName != null && subclassName.trim().isNotEmpty) {
-      chips.add(_buildCompactChip(theme, subclassName.trim(), Icons.star));
+      chips.add(_buildCompactChip(theme, subclassName.trim(), FeatureIcons.subclass));
     }
 
     if (_selectedDomains.isNotEmpty) {
       for (final domain in _selectedDomains) {
         if (domain.trim().isEmpty) continue;
-        chips.add(_buildCompactChip(theme, domain.trim(), Icons.account_tree));
+        chips.add(_buildCompactChip(theme, domain.trim(), FeatureIcons.domain));
       }
     }
 
     final deityDisplay = _selectedDeity?.name ?? _subclassSelection?.deityName;
     if (deityDisplay != null && deityDisplay.trim().isNotEmpty) {
-      chips.add(_buildCompactChip(theme, deityDisplay.trim(), Icons.church));
+      chips.add(_buildCompactChip(theme, deityDisplay.trim(), FeatureIcons.deity));
     }
 
     if (_characteristicArrayDescription != null &&
         _characteristicArrayDescription!.trim().isNotEmpty) {
-      chips.add(_buildCompactChip(theme, _characteristicArrayDescription!.trim(), Icons.view_module));
+      chips.add(_buildCompactChip(theme, _characteristicArrayDescription!.trim(), FeatureIcons.characteristics));
     }
 
     return chips;
   }
 
-  Widget _buildCompactChip(ThemeData theme, String label, IconData icon) {
+  Widget _buildCompactChip(ThemeData theme, String label, AppIconData icon) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
@@ -346,7 +346,7 @@ class _FeaturesTabState extends ConsumerState<_FeaturesTab> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: theme.colorScheme.onPrimaryContainer),
+          AppIcon(icon, size: 14, color: theme.colorScheme.onPrimaryContainer),
           const SizedBox(width: 4),
           Text(
             label,

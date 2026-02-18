@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../core/models/component.dart' as model;
+import '../../core/text/widgets/treasure_card_text.dart';
+import '../../core/theme/app_icon.dart';
+import '../../core/theme/app_icon_data.dart';
+import '../../core/theme/app_icons.dart';
 import '../../core/theme/navigation_theme.dart';
+import '../../core/theme/form_theme.dart';
 import '../../core/theme/treasure_theme.dart';
 
 /// Modern treasure card with clean, minimal styling.
@@ -112,7 +117,7 @@ class _TreasureCardState extends State<TreasureCard>
   /// Build the equip toggle button.
   Widget _buildEquipToggle(BuildContext context) {
     final isEquipped = widget.isEquipped;
-    final equipColor = isEquipped ? Colors.green.shade400 : Colors.grey.shade400;
+    final equipColor = isEquipped ? Colors.green.shade400 : FormTheme.textSecondary;
     
     return Material(
       color: Colors.transparent,
@@ -139,7 +144,7 @@ class _TreasureCardState extends State<TreasureCard>
               ),
               const SizedBox(width: 8),
               Text(
-                isEquipped ? 'EQUIPPED' : 'EQUIP',
+                isEquipped ? TreasureCardText.equipped : TreasureCardText.equip,
                 style: TextStyle(
                   color: equipColor,
                   fontSize: 12,
@@ -169,19 +174,16 @@ class _TreasureCardState extends State<TreasureCard>
     }
   }
 
-  IconData _getTypeIcon() {
-    switch (widget.component.type.toLowerCase()) {
-      case 'consumable':
-        return Icons.science_outlined;
-      case 'trinket':
-        return Icons.diamond_outlined;
-      case 'leveled_treasure':
-        return Icons.trending_up;
-      case 'artifact':
-        return Icons.auto_awesome;
-      default:
-        return Icons.inventory_2_outlined;
+  AppIconData _getTypeIcon() {
+    final type = widget.component.type.toLowerCase();
+    if (type == 'leveled_treasure') {
+      final leveledType = widget.component.data['leveled_type'] as String?;
+      return TreasureIcons.fromLeveledType(leveledType);
     }
+    if (type == 'artifact') {
+      return TreasureIcons.fromArtifactId(widget.component.id);
+    }
+    return TreasureIcons.fromType(type);
   }
 
   @override
@@ -270,7 +272,7 @@ class _TreasureCardState extends State<TreasureCard>
                 color: accentColor.withOpacity(0.15),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(
+              child: AppIcon(
                 _getTypeIcon(),
                 color: accentColor,
                 size: 22,
@@ -284,8 +286,8 @@ class _TreasureCardState extends State<TreasureCard>
                 children: [
                   Text(
                     widget.component.name,
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: FormTheme.textBright,
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.2,
@@ -301,7 +303,7 @@ class _TreasureCardState extends State<TreasureCard>
               turns: _rotationAnimation,
               child: Icon(
                 Icons.expand_more,
-                color: Colors.grey.shade500,
+                color: FormTheme.textMuted,
                 size: 24,
               ),
             ),
@@ -355,7 +357,7 @@ class _TreasureCardState extends State<TreasureCard>
             onTap: widget.quantity <= 1 ? widget.onRemove : widget.onDecrement,
             color: widget.quantity <= 1
                 ? Colors.red.shade400
-                : Colors.grey.shade400,
+                : FormTheme.textSecondary,
           ),
           const SizedBox(width: 4),
           // Increment button
@@ -417,7 +419,7 @@ class _TreasureCardState extends State<TreasureCard>
 
     // Leveled badge
     if (widget.component.data['leveled'] == true) {
-      badges.add(_buildBadge('LEVELED', NavigationTheme.leveledColor));
+      badges.add(_buildBadge(TreasureCardText.leveled, NavigationTheme.leveledColor));
     }
 
     return Wrap(
@@ -438,7 +440,7 @@ class _TreasureCardState extends State<TreasureCard>
       case 4:
         return NavigationTheme.echelon4Color;
       default:
-        return Colors.grey;
+        return FormTheme.icon;
     }
   }
 
@@ -473,7 +475,7 @@ class _TreasureCardState extends State<TreasureCard>
     return Text(
       description,
       style: TextStyle(
-        color: Colors.grey.shade400,
+        color: FormTheme.textSecondary,
         fontSize: 13,
         height: 1.4,
       ),
@@ -521,7 +523,7 @@ class _TreasureCardState extends State<TreasureCard>
     final isArtifact = widget.component.type.toLowerCase() == 'artifact';
 
     return TreasureSection(
-      title: isArtifact ? 'ARTIFACT POWERS' : 'EFFECT',
+      title: isArtifact ? TreasureCardText.artifactPowers : TreasureCardText.effect,
       icon: isArtifact ? Icons.auto_awesome : Icons.flash_on,
       accentColor: accentColor,
       child: isArtifact
@@ -529,7 +531,7 @@ class _TreasureCardState extends State<TreasureCard>
           : Text(
               effectDescription,
               style: TextStyle(
-                color: Colors.grey.shade300,
+                color: FormTheme.textSecondary,
                 fontSize: 13,
                 height: 1.5,
               ),
@@ -559,8 +561,8 @@ class _TreasureCardState extends State<TreasureCard>
               children: [
                 Text(
                   parts[0].trim(),
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: FormTheme.textBright,
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                   ),
@@ -569,7 +571,7 @@ class _TreasureCardState extends State<TreasureCard>
                 Text(
                   parts.sublist(1).join(':').trim(),
                   style: TextStyle(
-                    color: Colors.grey.shade300,
+                    color: FormTheme.textSecondary,
                     fontSize: 13,
                     height: 1.5,
                   ),
@@ -584,7 +586,7 @@ class _TreasureCardState extends State<TreasureCard>
           child: Text(
             paragraph,
             style: TextStyle(
-              color: Colors.grey.shade300,
+              color: FormTheme.textSecondary,
               fontSize: 13,
               height: 1.5,
             ),
@@ -620,7 +622,7 @@ class _TreasureCardState extends State<TreasureCard>
             Icon(Icons.trending_up, size: 16, color: accentColor),
             const SizedBox(width: 8),
             Text(
-              'LEVEL VARIANTS',
+              TreasureCardText.levelVariants,
               style: TextStyle(
                 color: accentColor,
                 fontSize: 12,
@@ -673,9 +675,9 @@ class _TreasureCardState extends State<TreasureCard>
             borderRadius: BorderRadius.circular(4),
           ),
           child: Text(
-            'LEVEL $level',
-            style: const TextStyle(
-              color: Colors.white,
+            TreasureCardText.levelLabel(level),
+            style: TextStyle(
+              color: FormTheme.textBright,
               fontSize: 11,
               fontWeight: FontWeight.w700,
               letterSpacing: 0.5,
@@ -687,7 +689,7 @@ class _TreasureCardState extends State<TreasureCard>
         Text(
           effectDescription,
           style: TextStyle(
-            color: Colors.grey.shade300,
+            color: FormTheme.textSecondary,
             fontSize: 13,
             height: 1.5,
           ),
@@ -727,17 +729,17 @@ class _TreasureCardState extends State<TreasureCard>
     if (prerequisite != null &&
         prerequisite.isNotEmpty &&
         prerequisite.toLowerCase() != 'unknown') {
-      craftingItems.add(_buildCraftingRow('Prerequisite', prerequisite));
+      craftingItems.add(_buildCraftingRow(TreasureCardText.prerequisite, prerequisite));
     }
 
     if (projectSource != null && projectSource.isNotEmpty) {
-      craftingItems.add(_buildCraftingRow('Source', projectSource));
+      craftingItems.add(_buildCraftingRow(TreasureCardText.source, projectSource));
     }
 
     if (projectRollCharacteristics != null) {
       final chars = List<String>.from(projectRollCharacteristics);
       if (chars.isNotEmpty) {
-        craftingItems.add(_buildCraftingRow('Roll', chars.join(' + ')));
+        craftingItems.add(_buildCraftingRow(TreasureCardText.roll, chars.join(' + ')));
       }
     }
 
@@ -746,7 +748,7 @@ class _TreasureCardState extends State<TreasureCard>
           projectGoalDescription != null && projectGoalDescription.isNotEmpty
               ? '$projectGoal ($projectGoalDescription)'
               : '$projectGoal';
-      craftingItems.add(_buildCraftingRow('Goal', goalText));
+      craftingItems.add(_buildCraftingRow(TreasureCardText.goal, goalText));
     }
 
     if (craftingItems.isEmpty) return const SizedBox.shrink();
@@ -755,7 +757,7 @@ class _TreasureCardState extends State<TreasureCard>
       children: [
         const SizedBox(height: 16),
         TreasureSection(
-          title: 'CRAFTING',
+          title: TreasureCardText.crafting,
           icon: Icons.construction,
           accentColor: accentColor,
           child: Column(
@@ -777,7 +779,7 @@ class _TreasureCardState extends State<TreasureCard>
             child: Text(
               '$label:',
               style: TextStyle(
-                color: Colors.grey.shade500,
+                color: FormTheme.textMuted,
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
               ),
@@ -787,7 +789,7 @@ class _TreasureCardState extends State<TreasureCard>
             child: Text(
               value,
               style: TextStyle(
-                color: Colors.grey.shade300,
+                color: FormTheme.textSecondary,
                 fontSize: 12,
               ),
             ),

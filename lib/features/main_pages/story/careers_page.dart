@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hero_smith/core/db/providers.dart';
+import 'package:hero_smith/core/text/main_pages/story/careers_page_text.dart';
 import 'package:hero_smith/widgets/careers/career_card.dart';
 
 class CareersPage extends ConsumerWidget {
@@ -12,7 +13,7 @@ class CareersPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Careers'),
+        title: Text(CareersPageText.appBarTitle),
         backgroundColor: Theme.of(context).colorScheme.surface,
         surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
       ),
@@ -31,7 +32,7 @@ class CareersPage extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                'Failed to load careers',
+                CareersPageText.failedToLoad,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
               const SizedBox(height: 8),
@@ -56,7 +57,7 @@ class CareersPage extends ConsumerWidget {
                   ),
                   SizedBox(height: 16),
                   Text(
-                    'No careers found',
+                    CareersPageText.noCareersFound,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
@@ -81,7 +82,7 @@ class CareersPage extends ConsumerWidget {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 24),
                   child: Text(
-                    '${sortedCareers.length} careers available',
+                    CareersPageText.countAvailable(sortedCareers.length),
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                     ),

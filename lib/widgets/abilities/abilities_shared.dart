@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../core/models/abilities_models.dart';
 import '../../core/models/component.dart';
 import '../../core/models/ability_simplified.dart';
+import '../../core/theme/app_icon.dart';
+import '../../core/theme/app_icons.dart';
 import '../../core/theme/semantic/semantic_tokens.dart';
 
 class AbilityTierLine {
@@ -55,7 +57,7 @@ class AbilityTextHighlighter {
     final theme = Theme.of(context);
     baseStyle ??= theme.textTheme.bodyMedium ?? const TextStyle();
 
-    final spans = <TextSpan>[];
+    final spans = <InlineSpan>[];
 
     // Build damage types pattern
     final damageTypesPattern = _damageTypes.join('|');
@@ -97,6 +99,11 @@ class AbilityTextHighlighter {
           text: text.substring(lastEnd, match.start),
           style: baseStyle,
         ));
+      }
+
+      // Helper to add a TextSpan (used by most branches)
+      void addTextSpan(String spanText, TextStyle style) {
+        spans.add(TextSpan(text: spanText, style: style));
       }
 
       // Potency without space: M<weak (groups 1-2)
@@ -165,14 +172,22 @@ class AbilityTextHighlighter {
           ),
         ));
       } else if (damageType != null) {
-        // Damage type highlighting with emoji and color
+        // Damage type highlighting with SVG icon and color (matches resistance tracker)
         final normalizedType = damageType.toLowerCase();
-        final emoji = DamageTokens.emoji(normalizedType);
         final color = DamageTokens.color(normalizedType);
+        final icon = DamageTypeIcons.fromName(normalizedType);
+        final iconSize = (baseStyle.fontSize ?? 14) * 1.05;
 
-        // Keep original case but add styling
+        // SVG icon inline with text
+        spans.add(WidgetSpan(
+          alignment: PlaceholderAlignment.middle,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 3),
+            child: AppIcon(icon, size: iconSize, color: color),
+          ),
+        ));
         spans.add(TextSpan(
-          text: emoji.isNotEmpty ? '$emoji $damageType' : damageType,
+          text: damageType,
           style: baseStyle.copyWith(
             color: color,
             fontWeight: FontWeight.bold,
@@ -206,7 +221,7 @@ class AbilityTextHighlighter {
   }
 
   static void _addPotencySpans(
-    List<TextSpan> spans,
+    List<InlineSpan> spans,
     TextStyle baseStyle,
     String characteristic,
     String potencyText,

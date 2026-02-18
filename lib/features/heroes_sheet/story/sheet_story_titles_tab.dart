@@ -70,7 +70,7 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
       if (!mounted) return;
       setState(() {
         _isLoading = false;
-        _errorMessage = 'Failed to load titles: $e';
+        _errorMessage = SheetStoryTitlesTabText.failedToLoadTitles(e);
       });
     }
   }
@@ -115,7 +115,7 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to add title: $e')),
+          SnackBar(content: Text(SheetStoryTitlesTabText.failedToAddTitle(e))),
         );
       }
     }
@@ -147,7 +147,7 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to remove title: $e')),
+          SnackBar(content: Text(SheetStoryTitlesTabText.failedToRemoveTitle(e))),
         );
       }
     }
@@ -186,7 +186,7 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
 
     showDialog(
       context: context,
-      builder: (context) => _AddTitleDialog(
+      builder: (context) => AddTitleDialog(
         availableTitles: unselectedTitles,
         onTitleSelected: (titleId, benefitIndex) {
           _addTitle(titleId, benefitIndex);
@@ -246,7 +246,7 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                 decoration: BoxDecoration(
                   color: NavigationTheme.cardBackgroundDark,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey.shade800),
+                  border: Border.all(color: FormTheme.borderDim),
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
@@ -264,7 +264,7 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                         color: _titlesColor.withAlpha(51),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Icon(Icons.military_tech, color: _titlesColor, size: 24),
+                      child: AppIcon(TitleIcons.tab, color: _titlesColor, size: 24),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -274,14 +274,14 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                           const Text(
                             SheetStoryTitlesTabText.titlesTitle,
                             style: TextStyle(
-                              color: Colors.white,
+                              color: FormTheme.textBright,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
-                            '${_selectedTitles.length} titles earned',
-                            style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+                            SheetStoryTitlesTabText.titlesEarned(_selectedTitles.length),
+                            style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
                           ),
                         ],
                       ),
@@ -296,11 +296,11 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                     padding: const EdgeInsets.all(32),
                     child: Column(
                       children: [
-                        Icon(Icons.emoji_events_outlined, size: 48, color: Colors.grey.shade600),
+                        Icon(Icons.emoji_events_outlined, size: 48, color: FormTheme.borderLight),
                         const SizedBox(height: 16),
                         Text(
                           SheetStoryTitlesTabText.noTitlesSelected,
-                          style: TextStyle(color: Colors.grey.shade400),
+                          style: TextStyle(color: FormTheme.textSecondary),
                           textAlign: TextAlign.center,
                         ),
                       ],
@@ -328,8 +328,10 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                               ),
                             ),
                             const SizedBox(width: 8),
+                            AppIcon(TitleIcons.fromEchelon(echelon), color: _titlesColor, size: 18),
+                            const SizedBox(width: 6),
                             Text(
-                              'Echelon $echelon',
+                              SheetStoryTitlesTabText.echelonLabel(echelon),
                               style: const TextStyle(
                                 color: _titlesColor,
                                 fontWeight: FontWeight.bold,
@@ -372,13 +374,14 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
     final title = data['title'] as Map<String, dynamic>;
     final selectedBenefitIndex = data['selectedBenefitIndex'] as int;
     final benefits = title['benefits'] as List? ?? [];
+    final echelon = title['echelon'] as int? ?? 1;
     
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: NavigationTheme.cardBackgroundDark,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade800),
+        border: Border.all(color: FormTheme.borderDim),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -393,7 +396,7 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                     color: _titlesColor.withAlpha(26),
                     borderRadius: BorderRadius.circular(6),
                   ),
-                  child: const Icon(Icons.military_tech, color: _titlesColor, size: 20),
+                  child: AppIcon(TitleIcons.fromEchelon(echelon), color: _titlesColor, size: 20),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -403,7 +406,7 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                       Text(
                         title['name'] as String? ?? SheetStoryTitlesTabText.unknown,
                         style: const TextStyle(
-                          color: Colors.white,
+                          color: FormTheme.textBright,
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
@@ -411,10 +414,10 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                       if (title['prerequisite'] != null) ...[
                         const SizedBox(height: 2),
                         Text(
-                          'Prerequisite: ${title['prerequisite']}',
+                          SheetStoryTitlesTabText.prerequisite(title['prerequisite'].toString()),
                           style: TextStyle(
                             fontStyle: FontStyle.italic,
-                            color: Colors.grey.shade500,
+                            color: FormTheme.textMuted,
                             fontSize: 12,
                           ),
                         ),
@@ -433,15 +436,15 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
               const SizedBox(height: 12),
               Text(
                 title['description_text'] as String,
-                style: TextStyle(color: Colors.grey.shade300, fontSize: 13),
+                style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
               ),
             ],
             const SizedBox(height: 16),
             Text(
-              'Selected Benefit:',
+              SheetStoryTitlesTabText.selectedBenefit,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Colors.grey.shade300,
+                color: FormTheme.textSecondary,
                 fontSize: 13,
               ),
             ),
@@ -487,8 +490,8 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        'Special: ${title['special']}',
-                        style: TextStyle(color: Colors.grey.shade300, fontSize: 12),
+                        SheetStoryTitlesTabText.special(title['special'].toString()),
+                        style: TextStyle(color: FormTheme.textSecondary, fontSize: 12),
                       ),
                     ),
                   ],
@@ -514,7 +517,7 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (description != null && description.isNotEmpty)
-          Text(description, style: TextStyle(color: Colors.grey.shade300, fontSize: 13)),
+          Text(description, style: TextStyle(color: FormTheme.textSecondary, fontSize: 13)),
         if (ability != null && ability.isNotEmpty) ...[
           const SizedBox(height: 8),
           _buildAbilityCard(ability),
@@ -533,7 +536,7 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                       Icon(Icons.card_giftcard, size: 16, color: Colors.teal.shade300),
                       const SizedBox(width: 4),
                       Text(
-                        'Grants: ${_formatGrant(type, value)}',
+                        SheetStoryTitlesTabText.grantsLabel(_formatGrant(type, value)),
                         style: TextStyle(
                           color: Colors.teal.shade300,
                           fontSize: 12,
@@ -554,17 +557,17 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
   String _formatGrant(String type, dynamic value) {
     switch (type) {
       case 'renown':
-        return '+$value Renown';
+        return SheetStoryTitlesTabText.plusRenown(value);
       case 'wealth':
-        return '+$value Wealth';
+        return SheetStoryTitlesTabText.plusWealth(value);
       case 'followers_cap':
-        return '+$value Followers Cap';
+        return SheetStoryTitlesTabText.plusFollowersCap(value);
       case 'skill_choice':
-        return 'Choose $value Skill';
+        return SheetStoryTitlesTabText.chooseSkill(value);
       case 'languages':
-        return 'Language: $value';
+        return SheetStoryTitlesTabText.language(value);
       default:
-        return '$type: $value';
+        return SheetStoryTitlesTabText.grantFallback(type, value);
     }
   }
 
@@ -581,7 +584,7 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                 Icon(Icons.flash_on, size: 16, color: Colors.purple.shade300),
                 const SizedBox(width: 4),
                 Text(
-                  'Ability: $abilityNameOrId',
+                  SheetStoryTitlesTabText.abilityLabel(abilityNameOrId),
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: Colors.purple.shade300,
@@ -605,7 +608,7 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
               child: CircularProgressIndicator(strokeWidth: 1.5, color: _titlesColor),
             ),
             const SizedBox(width: 8),
-            Text('Loading $abilityNameOrId...', style: TextStyle(fontSize: 10, color: Colors.grey.shade400)),
+            Text(SheetStoryTitlesTabText.loadingAbility(abilityNameOrId), style: TextStyle(fontSize: 10, color: FormTheme.textSecondary)),
           ],
         ),
       ),
@@ -616,7 +619,7 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
             Icon(Icons.flash_on, size: 16, color: Colors.purple.shade300),
             const SizedBox(width: 4),
             Text(
-              'Ability: $abilityNameOrId',
+              SheetStoryTitlesTabText.abilityLabel(abilityNameOrId),
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 color: Colors.purple.shade300,
@@ -671,7 +674,7 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                       child: Text(
                         SheetStoryTitlesTabText.changeBenefit,
                         style: TextStyle(
-                          color: Colors.white,
+                          color: FormTheme.textBright,
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
@@ -702,7 +705,7 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                             : StoryTheme.cardBackground,
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(
-                          color: isSelected ? _titlesColor : Colors.grey.shade800,
+                          color: isSelected ? _titlesColor : FormTheme.borderDim,
                           width: isSelected ? 2 : 1,
                         ),
                       ),
@@ -720,10 +723,10 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                               Row(
                                 children: [
                                   Text(
-                                    'Benefit ${index + 1}',
+                                    SheetStoryTitlesTabText.benefitLabel(index),
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      color: isSelected ? _titlesColor : Colors.white,
+                                      color: isSelected ? _titlesColor : FormTheme.textBright,
                                     ),
                                   ),
                                   if (isSelected) ...[
@@ -753,392 +756,3 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
     );
   }
 }
-
-// Add Title Dialog
-class _AddTitleDialog extends StatefulWidget {
-  final List<Map<String, dynamic>> availableTitles;
-  final Function(String, int) onTitleSelected;
-
-  const _AddTitleDialog({
-    required this.availableTitles,
-    required this.onTitleSelected,
-  });
-
-  @override
-  State<_AddTitleDialog> createState() => _AddTitleDialogState();
-}
-
-class _AddTitleDialogState extends State<_AddTitleDialog> {
-  String _searchQuery = '';
-  int? _selectedEchelon;
-  List<Map<String, dynamic>> _filteredTitles = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _filteredTitles = widget.availableTitles;
-  }
-
-  void _filterTitles() {
-    setState(() {
-      _filteredTitles = widget.availableTitles.where((title) {
-        final matchesSearch = _searchQuery.isEmpty ||
-            (title['name'] as String?)?.toLowerCase().contains(_searchQuery.toLowerCase()) == true ||
-            (title['description_text'] as String?)?.toLowerCase().contains(_searchQuery.toLowerCase()) == true;
-        
-        final matchesEchelon = _selectedEchelon == null ||
-            title['echelon'] == _selectedEchelon;
-        
-        return matchesSearch && matchesEchelon;
-      }).toList();
-    });
-  }
-
-  void _showBenefitSelectionDialog(Map<String, dynamic> title) {
-    final benefits = title['benefits'] as List? ?? [];
-    
-    if (benefits.isEmpty) {
-      widget.onTitleSelected(title['id'] as String, 0);
-      return;
-    }
-    
-    if (benefits.length == 1) {
-      widget.onTitleSelected(title['id'] as String, 0);
-      return;
-    }
-
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        backgroundColor: NavigationTheme.cardBackgroundDark,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: Container(
-          width: 400,
-          constraints: const BoxConstraints(maxHeight: 450),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Header
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      _titlesColor.withAlpha(51),
-                      _titlesColor.withAlpha(13),
-                    ],
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: _titlesColor.withAlpha(51),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Icon(Icons.star, color: _titlesColor, size: 24),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        'Select Benefit for ${title['name']}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close, color: Colors.white70),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ],
-                ),
-              ),
-              // Benefits list
-              Flexible(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.all(16),
-                  itemCount: benefits.length,
-                  itemBuilder: (context, index) {
-                    final benefit = benefits[index];
-                    
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 8),
-                      decoration: BoxDecoration(
-                        color: StoryTheme.cardBackground,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.grey.shade800),
-                      ),
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(10),
-                        onTap: () {
-                          widget.onTitleSelected(title['id'] as String, index);
-                          Navigator.of(context).pop();
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(4),
-                                    decoration: BoxDecoration(
-                                      color: _titlesColor.withAlpha(26),
-                                      borderRadius: BorderRadius.circular(6),
-                                    ),
-                                    child: const Icon(Icons.add_circle_outline, color: _titlesColor, size: 16),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    'Benefit ${index + 1}',
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
-                              if (benefit is Map<String, dynamic>) ...[
-                                if (benefit['description'] != null)
-                                  Text(
-                                    benefit['description'] as String,
-                                    style: TextStyle(
-                                      color: Colors.grey.shade400,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                              ],
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      backgroundColor: NavigationTheme.cardBackgroundDark,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Container(
-        width: 450,
-        height: MediaQuery.of(context).size.height * 0.75,
-        child: Column(
-          children: [
-            // Header
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    _titlesColor.withAlpha(51),
-                    _titlesColor.withAlpha(13),
-                  ],
-                ),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: _titlesColor.withAlpha(51),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(Icons.military_tech, color: _titlesColor, size: 24),
-                  ),
-                  const SizedBox(width: 12),
-                  const Expanded(
-                    child: Text(
-                      SheetStoryTitlesTabText.addTitleDialogTitle,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close, color: Colors.white70),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                ],
-              ),
-            ),
-            // Search and filters
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  TextField(
-                    style: const TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      labelText: SheetStoryTitlesTabText.searchTitlesLabel,
-                      labelStyle: TextStyle(color: Colors.grey.shade400),
-                      prefixIcon: Icon(Icons.search, color: Colors.grey.shade400),
-                      filled: true,
-                      fillColor: StoryTheme.cardBackground,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: _titlesColor, width: 2),
-                      ),
-                    ),
-                    onChanged: (value) {
-                      _searchQuery = value;
-                      _filterTitles();
-                    },
-                  ),
-                  const SizedBox(height: 12),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        _buildFilterChip(SheetStoryTitlesTabText.allFilter, null),
-                        const SizedBox(width: 8),
-                        ...List.generate(4, (index) {
-                          final echelon = index + 1;
-                          return Padding(
-                            padding: const EdgeInsets.only(right: 8),
-                            child: _buildFilterChip('Echelon $echelon', echelon),
-                          );
-                        }),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // Titles list
-            Expanded(
-              child: _filteredTitles.isEmpty
-                  ? Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(32),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.search_off, size: 48, color: Colors.grey.shade600),
-                            const SizedBox(height: 16),
-                            Text(
-                              SheetStoryTitlesTabText.noTitlesFound,
-                              style: TextStyle(color: Colors.grey.shade400),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  : ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      itemCount: _filteredTitles.length,
-                      itemBuilder: (context, index) {
-                        final title = _filteredTitles[index];
-                        
-                        return Container(
-                          margin: const EdgeInsets.only(bottom: 8),
-                          decoration: BoxDecoration(
-                            color: StoryTheme.cardBackground,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: Colors.grey.shade800),
-                          ),
-                          child: ListTile(
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                            leading: Container(
-                              padding: const EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                color: _titlesColor.withAlpha(26),
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              child: const Icon(Icons.add_circle_outline, color: _titlesColor, size: 18),
-                            ),
-                            title: Text(
-                              title['name'] as String? ?? SheetStoryTitlesTabText.unknown,
-                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                            ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (title['description_text'] != null)
-                                  Text(
-                                    title['description_text'] as String,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
-                                  ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Echelon ${title['echelon']} • ${(title['benefits'] as List?)?.length ?? 0} benefits',
-                                  style: const TextStyle(
-                                    color: _titlesColor,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            onTap: () => _showBenefitSelectionDialog(title),
-                          ),
-                        );
-                      },
-                    ),
-            ),
-            const SizedBox(height: 16),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFilterChip(String label, int? echelon) {
-    final isSelected = _selectedEchelon == echelon;
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _selectedEchelon = echelon;
-        });
-        _filterTitles();
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: isSelected ? _titlesColor.withAlpha(51) : StoryTheme.cardBackground,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: isSelected ? _titlesColor : Colors.grey.shade700,
-          ),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: isSelected ? _titlesColor : Colors.grey.shade400,
-            fontSize: 12,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-          ),
-        ),
-      ),
-    );
-  }
-}
-

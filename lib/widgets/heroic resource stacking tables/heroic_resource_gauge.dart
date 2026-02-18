@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../../core/models/heroic_resource_progression.dart';
+import '../../core/theme/ability_colors.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_icon.dart';
+import '../../core/theme/app_icon_data.dart';
+import '../../core/theme/app_icons.dart';
+import '../../core/theme/form_theme.dart';
 import '../../core/theme/heroic_resource_theme.dart';
 
 /// A gauge widget that displays heroic resource progression with a bar
@@ -61,7 +66,7 @@ class _HeroicResourceGaugeState extends State<HeroicResourceGauge>
       duration: const Duration(milliseconds: 200),
       curve: Curves.easeOutCubic,
       decoration: BoxDecoration(
-        color: isDark ? HeroicResourceTheme.surface : Colors.white,
+        color: isDark ? HeroicResourceTheme.surface : FormTheme.textBright,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: resourceColor.withOpacity(0.2),
@@ -94,7 +99,7 @@ class _HeroicResourceGaugeState extends State<HeroicResourceGauge>
             color: resourceColor.withOpacity(0.12),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(
+          child: AppIcon(
             _getResourceIcon(),
             color: resourceColor,
             size: showCompact ? 16 : 18,
@@ -107,7 +112,7 @@ class _HeroicResourceGaugeState extends State<HeroicResourceGauge>
             style: TextStyle(
               fontSize: showCompact ? 13 : 14,
               fontWeight: FontWeight.w600,
-              color: isDark ? Colors.white : Colors.grey.shade800,
+              color: isDark ? FormTheme.textBright : FormTheme.borderDim,
             ),
           ),
         ),
@@ -143,7 +148,7 @@ class _HeroicResourceGaugeState extends State<HeroicResourceGauge>
             style: TextStyle(
               fontSize: showCompact ? 10 : 11,
               fontWeight: FontWeight.w500,
-              color: isDark ? Colors.grey.shade500 : Colors.grey.shade600,
+              color: isDark ? FormTheme.textMuted : FormTheme.borderLight,
             ),
           ),
         ],
@@ -184,12 +189,12 @@ class _HeroicResourceGaugeState extends State<HeroicResourceGauge>
                             fontSize: 9,
                             fontWeight: FontWeight.w600,
                             color: !isUnlocked
-                                ? Colors.grey.shade500
+                                ? FormTheme.textMuted
                                 : isActive
                                     ? resourceColor
                                     : isDark
-                                        ? Colors.grey.shade500
-                                        : Colors.grey.shade600,
+                                        ? FormTheme.textMuted
+                                        : FormTheme.borderLight,
                           ),
                         ),
                       ],
@@ -205,7 +210,7 @@ class _HeroicResourceGaugeState extends State<HeroicResourceGauge>
         Container(
           height: showCompact ? 8 : 10,
           decoration: BoxDecoration(
-            color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+            color: isDark ? FormTheme.borderDim : Colors.grey.shade200,
             borderRadius: BorderRadius.circular(7),
           ),
           child: LayoutBuilder(
@@ -250,10 +255,10 @@ class _HeroicResourceGaugeState extends State<HeroicResourceGauge>
                         width: 2,
                         decoration: BoxDecoration(
                           color: !isUnlocked
-                              ? Colors.grey.shade600
+                              ? FormTheme.borderLight
                               : isDark
-                                  ? Colors.grey.shade600
-                                  : Colors.grey.shade400,
+                                  ? FormTheme.borderLight
+                                  : FormTheme.textSecondary,
                           borderRadius: BorderRadius.circular(1),
                         ),
                       ),
@@ -343,7 +348,7 @@ class _HeroicResourceGaugeState extends State<HeroicResourceGauge>
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w500,
-                color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                color: isDark ? FormTheme.textSecondary : FormTheme.borderLight,
               ),
             ),
             const SizedBox(width: 4),
@@ -353,7 +358,7 @@ class _HeroicResourceGaugeState extends State<HeroicResourceGauge>
               child: Icon(
                 Icons.expand_more,
                 size: 16,
-                color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                color: isDark ? FormTheme.textSecondary : FormTheme.borderLight,
               ),
             ),
           ],
@@ -365,23 +370,16 @@ class _HeroicResourceGaugeState extends State<HeroicResourceGauge>
   Color _getResourceColor() {
     switch (progression.resourceName.toLowerCase()) {
       case 'ferocity':
-        return AppColors.ferocityColor;
+        return AbilityColors.ferocity;
       case 'discipline':
-        return AppColors.disciplineColor;
+        return AbilityColors.discipline;
       default:
         return AppColors.primary;
     }
   }
 
-  IconData _getResourceIcon() {
-    switch (progression.resourceName.toLowerCase()) {
-      case 'ferocity':
-        return Icons.local_fire_department_rounded;
-      case 'discipline':
-        return Icons.psychology_rounded;
-      default:
-        return Icons.auto_awesome;
-    }
+  AppIconData _getResourceIcon() {
+    return HeroicResourceIcons.fromName(progression.resourceName);
   }
 }
 
@@ -415,17 +413,17 @@ class _TierBenefitItem extends StatelessWidget {
         padding: EdgeInsets.all(showCompact ? 10 : 12),
         decoration: BoxDecoration(
           color: isLocked
-              ? (isDark ? Colors.grey.shade900 : Colors.grey.shade100)
+              ? (isDark ? FormTheme.surfaceDark : Colors.grey.shade100)
               : isActive
                   ? resourceColor.withOpacity(isDark ? 0.15 : 0.1)
                   : (isDark ? HeroicResourceTheme.panel : Colors.grey.shade50),
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
             color: isLocked
-                ? Colors.grey.shade600
+                ? FormTheme.borderLight
                 : isActive
                     ? resourceColor.withOpacity(0.5)
-                    : (isDark ? Colors.grey.shade700 : Colors.grey.shade300),
+                    : (isDark ? FormTheme.border : FormTheme.textSecondary),
             width: isActive ? 1.5 : 1,
           ),
         ),
@@ -444,7 +442,7 @@ class _TierBenefitItem extends StatelessWidget {
                         Icon(
                           Icons.lock_outline_rounded,
                           size: 14,
-                          color: Colors.grey.shade500,
+                          color: FormTheme.textMuted,
                         ),
                         const SizedBox(width: 4),
                         Text(
@@ -452,7 +450,7 @@ class _TierBenefitItem extends StatelessWidget {
                           style: TextStyle(
                             fontSize: showCompact ? 10 : 11,
                             fontWeight: FontWeight.w600,
-                            color: Colors.grey.shade500,
+                            color: FormTheme.textMuted,
                             fontStyle: FontStyle.italic,
                           ),
                         ),
@@ -465,12 +463,12 @@ class _TierBenefitItem extends StatelessWidget {
                     style: TextStyle(
                       fontSize: showCompact ? 12 : 13,
                       color: isLocked
-                          ? Colors.grey.shade500
+                          ? FormTheme.textMuted
                           : isActive
-                              ? (isDark ? Colors.white : Colors.grey.shade900)
+                              ? (isDark ? FormTheme.textBright : FormTheme.surfaceDark)
                               : (isDark
-                                  ? Colors.grey.shade400
-                                  : Colors.grey.shade700),
+                                  ? FormTheme.textSecondary
+                                  : FormTheme.border),
                       fontWeight: isActive ? FontWeight.w500 : FontWeight.w400,
                       height: 1.4,
                     ),
@@ -499,10 +497,10 @@ class _TierBenefitItem extends StatelessWidget {
       height: showCompact ? 32 : 36,
       decoration: BoxDecoration(
         color: isLocked
-            ? Colors.grey.shade700
+            ? FormTheme.border
             : isActive
                 ? resourceColor
-                : (isDark ? Colors.grey.shade700 : Colors.grey.shade300),
+                : (isDark ? FormTheme.border : FormTheme.textSecondary),
         borderRadius: BorderRadius.circular(8),
         boxShadow: isActive
             ? [
@@ -519,7 +517,7 @@ class _TierBenefitItem extends StatelessWidget {
             ? Icon(
                 Icons.lock_rounded,
                 size: showCompact ? 14 : 16,
-                color: Colors.grey.shade500,
+                color: FormTheme.textMuted,
               )
             : Text(
                 tier.resourceThreshold.toString(),
@@ -527,8 +525,8 @@ class _TierBenefitItem extends StatelessWidget {
                   fontSize: showCompact ? 12 : 14,
                   fontWeight: FontWeight.w800,
                   color: isActive
-                      ? Colors.white
-                      : (isDark ? Colors.grey.shade400 : Colors.grey.shade600),
+                      ? FormTheme.textBright
+                      : (isDark ? FormTheme.textSecondary : FormTheme.borderLight),
                 ),
               ),
       ),

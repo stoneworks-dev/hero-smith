@@ -9,7 +9,9 @@ import '../../../../core/models/class_data.dart';
 import '../../../../core/models/component.dart' as model;
 import '../../../../core/models/perks_models.dart';
 import '../../../../core/services/perks_service.dart';
+import '../../../../core/theme/app_icons.dart';
 import '../../../../core/theme/creator_theme.dart';
+import '../../../../core/theme/form_theme.dart';
 import '../../../../core/text/creators/widgets/strife_creator/choose_perks_widget_text.dart';
 import '../../../../core/utils/selection_guard.dart';
 import '../../../../widgets/perks/perks_selection_widget.dart';
@@ -333,7 +335,7 @@ class _StartingPerksWidgetState extends ConsumerState<StartingPerksWidget>
           CreatorTheme.sectionHeader(
             title: ChoosePerksWidgetText.expansionTitle,
             subtitle: '${ChoosePerksWidgetText.selectionSubtitlePrefix}$assigned${ChoosePerksWidgetText.selectionSubtitleMiddle}$totalSlots${ChoosePerksWidgetText.selectionSubtitleSuffix}',
-            icon: Icons.star,
+            appIcon: PerkIcons.grant,
             accent: _accent,
           ),
           Padding(
@@ -365,7 +367,7 @@ class _StartingPerksWidgetState extends ConsumerState<StartingPerksWidget>
           CreatorTheme.sectionHeader(
             title: ChoosePerksWidgetText.expansionTitle,
             subtitle: ChoosePerksWidgetText.sectionSubtitle,
-            icon: Icons.star,
+            appIcon: PerkIcons.grant,
             accent: _accent,
           ),
           child,
@@ -405,16 +407,16 @@ class _StartingPerksWidgetState extends ConsumerState<StartingPerksWidget>
         children: [
           Text(
             allowance.label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: Colors.white,
+              color: FormTheme.textBright,
             ),
           ),
           const SizedBox(height: 4),
           Text(
             '${ChoosePerksWidgetText.allowancePickPrefix}${allowance.pickCount}${allowance.pickCount == 1 ? ChoosePerksWidgetText.allowancePickSingularSuffix : ChoosePerksWidgetText.allowancePickPluralSuffix}${ChoosePerksWidgetText.allowancePickFromPrefix}$allowedGroupsText',
-            style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+            style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
           ),
           const SizedBox(height: 8),
           PerksSelectionWidget(

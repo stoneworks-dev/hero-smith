@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'app_icon.dart';
+import 'app_icon_data.dart';
 import 'navigation_theme.dart';
 import 'form_theme.dart';
 
@@ -77,13 +79,13 @@ class CreatorTheme {
   // ============================================================
   
   /// Card/surface background color
-  static const Color cardBackground = Color(0xFF1E1E1E);
+  static const Color cardBackground = FormTheme.cardBackground;
   
   /// Primary text color
-  static const Color textPrimary = Color(0xFFF5F5F5);
+  static const Color textPrimary = FormTheme.textPrimary;
   
   /// Secondary/muted text color
-  static const Color textSecondary = Color(0xFFB0B0B0);
+  static const Color textSecondary = FormTheme.textSecondary;
 
   // ============================================================
   // DIMENSIONS
@@ -130,6 +132,7 @@ class CreatorTheme {
     required String title,
     String? subtitle,
     IconData? icon,
+    AppIconData? appIcon,
     required Color accent,
     Widget? trailing,
   }) {
@@ -153,7 +156,7 @@ class CreatorTheme {
       padding: const EdgeInsets.all(16),
       child: Row(
         children: [
-          if (icon != null) ...[
+          if (icon != null || appIcon != null) ...[
             Container(
               width: 44,
               height: 44,
@@ -165,7 +168,9 @@ class CreatorTheme {
                   width: 1.5,
                 ),
               ),
-              child: Icon(icon, color: accent, size: 22),
+              child: appIcon != null
+                  ? AppIcon(appIcon, color: accent, size: 22)
+                  : Icon(icon, color: accent, size: 22),
             ),
             const SizedBox(width: 14),
           ],
@@ -186,7 +191,7 @@ class CreatorTheme {
                   Text(
                     subtitle,
                     style: TextStyle(
-                      color: Colors.grey.shade400,
+                      color: FormTheme.textSecondary,
                       fontSize: 13,
                     ),
                   ),
@@ -263,18 +268,21 @@ class CreatorTheme {
     required String label,
     String? hint,
     IconData? prefixIcon,
+    AppIconData? appIcon,
     Widget? suffix,
     Color? accent,
   }) {
-    final color = accent ?? Colors.grey.shade400;
+    final color = accent ?? FormTheme.textSecondary;
     return InputDecoration(
       labelText: label,
-      labelStyle: TextStyle(color: Colors.grey.shade400),
+      labelStyle: TextStyle(color: FormTheme.textSecondary),
       hintText: hint,
-      hintStyle: TextStyle(color: Colors.grey.shade600),
-      prefixIcon: prefixIcon != null 
-          ? Icon(prefixIcon, color: Colors.grey.shade500)
-          : null,
+      hintStyle: TextStyle(color: FormTheme.textHint),
+      prefixIcon: appIcon != null
+          ? AppIcon(appIcon, color: FormTheme.iconMuted)
+          : prefixIcon != null 
+              ? Icon(prefixIcon, color: FormTheme.iconMuted)
+              : null,
       suffix: suffix,
       filled: true,
       fillColor: FormTheme.surface,
@@ -284,7 +292,7 @@ class CreatorTheme {
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(inputBorderRadius),
-        borderSide: BorderSide(color: Colors.grey.shade700),
+        borderSide: BorderSide(color: FormTheme.border),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(inputBorderRadius),
@@ -301,7 +309,7 @@ class CreatorTheme {
   }) {
     return InputDecoration(
       labelText: label,
-      labelStyle: TextStyle(color: Colors.grey.shade400),
+      labelStyle: TextStyle(color: FormTheme.textSecondary),
       filled: true,
       fillColor: FormTheme.surface,
       border: OutlineInputBorder(
@@ -310,11 +318,11 @@ class CreatorTheme {
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(inputBorderRadius),
-        borderSide: BorderSide(color: Colors.grey.shade700),
+        borderSide: BorderSide(color: FormTheme.border),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(inputBorderRadius),
-        borderSide: BorderSide(color: accent ?? Colors.grey.shade400, width: 2),
+        borderSide: BorderSide(color: accent ?? FormTheme.textSecondary, width: 2),
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     );
@@ -331,7 +339,7 @@ class CreatorTheme {
     Color? accent,
     IconData? icon,
   }) {
-    final color = accent ?? Colors.grey.shade400;
+    final color = accent ?? FormTheme.textSecondary;
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -383,7 +391,7 @@ class CreatorTheme {
         : Colors.transparent;
     final borderColor = isSelected 
         ? color.withValues(alpha: 0.6)
-        : Colors.grey.shade600;
+        : FormTheme.borderLight;
     
     return Material(
       color: Colors.transparent,
@@ -408,7 +416,7 @@ class CreatorTheme {
                 Icon(
                   icon, 
                   size: 16, 
-                  color: isSelected ? color : Colors.grey.shade500,
+                  color: isSelected ? color : FormTheme.iconMuted,
                 ),
                 const SizedBox(width: 6),
               ],
@@ -419,7 +427,7 @@ class CreatorTheme {
               Text(
                 label,
                 style: TextStyle(
-                  color: isSelected ? color : Colors.grey.shade400,
+                  color: isSelected ? color : FormTheme.textSecondary,
                   fontSize: 13,
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                 ),
@@ -462,27 +470,27 @@ class CreatorTheme {
   
   /// Info text style
   static TextStyle get infoTextStyle => TextStyle(
-    color: Colors.grey.shade500,
+    color: FormTheme.textMuted,
     fontSize: 12,
     fontStyle: FontStyle.italic,
   );
   
   /// Label text style
   static TextStyle get labelTextStyle => TextStyle(
-    color: Colors.grey.shade300,
+    color: FormTheme.textSecondary,
     fontSize: 14,
     fontWeight: FontWeight.w600,
   );
   
   /// Body text style
   static TextStyle get bodyTextStyle => TextStyle(
-    color: Colors.grey.shade300,
+    color: FormTheme.textSecondary,
     fontSize: 14,
   );
   
   /// Builds a styled divider
   static Widget divider({Color? color}) => Divider(
-    color: color?.withValues(alpha: 0.2) ?? Colors.grey.shade700,
+    color: color?.withValues(alpha: 0.2) ?? FormTheme.divider,
     height: 24,
     thickness: 1,
   );
@@ -500,7 +508,7 @@ class CreatorTheme {
   
   /// Error message widget
   static Widget errorMessage(String message, {VoidCallback? onRetry, Color? accent}) {
-    final color = accent ?? Colors.red.shade400;
+    final color = accent ?? errorColor;
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -540,7 +548,7 @@ class CreatorTheme {
   
   /// Builds a styled dialog title
   static Widget dialogTitle(String title, {IconData? icon, Color? accent}) {
-    final color = accent ?? Colors.grey.shade300;
+    final color = accent ?? FormTheme.textSecondary;
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
       child: Row(

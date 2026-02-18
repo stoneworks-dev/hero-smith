@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:hero_smith/core/db/providers.dart';
 import 'package:hero_smith/core/text/creators/hero_creators/hero_creator_page_text.dart';
+import 'package:hero_smith/core/theme/app_icon.dart';
+import 'package:hero_smith/core/theme/app_icons.dart';
+import 'package:hero_smith/core/theme/form_theme.dart';
 import 'package:hero_smith/core/theme/navigation_theme.dart';
 import 'package:hero_smith/features/creators/hero_creators/story_creator_page.dart';
 import 'package:hero_smith/features/creators/hero_creators/strife_creator_page.dart';
@@ -221,7 +224,7 @@ class _HeroCreatorPageState extends ConsumerState<HeroCreatorPage>
     await _clearImportFlag(storySaved: true);
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Saved!')),
+      const SnackBar(content: Text(HeroCreatorPageText.saved)),
     );
   }
 
@@ -283,9 +286,9 @@ class _HeroCreatorPageState extends ConsumerState<HeroCreatorPage>
     
     // Tab data with icons and colors
     const tabData = [
-      (icon: Icons.auto_stories, label: HeroCreatorPageText.tabLabelStory, color: NavigationTheme.storyColor),
-      (icon: Icons.local_fire_department, label: HeroCreatorPageText.tabLabelStrife, color: NavigationTheme.strifeColor),
-      (icon: Icons.fitness_center, label: HeroCreatorPageText.tabLabelStrength, color: NavigationTheme.featuresColor),
+      (icon: NavIcons.story, label: HeroCreatorPageText.tabLabelStory, color: NavigationTheme.storyColor),
+      (icon: NavIcons.strife, label: HeroCreatorPageText.tabLabelStrife, color: NavigationTheme.strifeColor),
+      (icon: AbilityIcons.progression, label: HeroCreatorPageText.tabLabelStrength, color: NavigationTheme.featuresColor),
     ];
     
     return PopScope(
@@ -305,13 +308,13 @@ class _HeroCreatorPageState extends ConsumerState<HeroCreatorPage>
             _heroTitle,
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w600,
-              color: Colors.white,
+              color: FormTheme.textBright,
             ),
           ),
           centerTitle: true,
           backgroundColor: NavigationTheme.navBarBackground,
           elevation: 0,
-          iconTheme: const IconThemeData(color: Colors.white),
+          iconTheme: IconThemeData(color: FormTheme.textBright),
           actions: [
             IconButton(
               onPressed: () async {
@@ -408,7 +411,7 @@ class _HeroCreatorPageState extends ConsumerState<HeroCreatorPage>
                             Stack(
                               clipBehavior: Clip.none,
                               children: [
-                                Icon(
+                                AppIcon(
                                   tab.icon,
                                   color: color,
                                   size: NavigationTheme.tabIconSize,

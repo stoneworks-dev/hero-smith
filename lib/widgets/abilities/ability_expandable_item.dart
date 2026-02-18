@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/models/component.dart';
+import '../../core/theme/form_theme.dart';
 import '../../core/theme/navigation_theme.dart';
 import '../../core/theme/semantic/semantic_tokens.dart';
 import 'abilities_shared.dart';
@@ -32,7 +33,7 @@ class _AbilityExpandableItemState extends State<AbilityExpandableItem> {
     // Use action type color for border, fallback to grey if no action type
     final borderColor = ability.actionType != null
         ? ActionTokens.color(ability.actionType!)
-        : Colors.grey.shade600;
+        : FormTheme.borderLight;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 220),

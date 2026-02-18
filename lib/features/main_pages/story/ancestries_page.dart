@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hero_smith/core/models/component.dart';
 import 'package:hero_smith/core/db/providers.dart';
 import 'package:hero_smith/widgets/ancestries/ancestry_card.dart';
+import 'package:hero_smith/core/text/main_pages/story/ancestries_page_text.dart';
 
 class AncestriesPage extends ConsumerWidget {
   const AncestriesPage({super.key});
@@ -14,19 +15,19 @@ class AncestriesPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ancestries'),
+        title: Text(AncestriesPageText.appBarTitle),
       ),
       body: ancestriesAsync.when(
         data: (ancestries) => ancestryTraitsAsync.when(
           data: (ancestryTraits) => _buildContent(context, ancestries, ancestryTraits),
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, stackTrace) => ErrorWidget(
-            'Failed to load ancestry traits: $error',
+            AncestriesPageText.failedToLoadTraits(error),
           ),
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => ErrorWidget(
-          'Failed to load ancestries: $error',
+          AncestriesPageText.failedToLoadAncestries(error),
         ),
       ),
     );
@@ -34,27 +35,27 @@ class AncestriesPage extends ConsumerWidget {
 
   Widget _buildContent(BuildContext context, List<Component> ancestries, List<Component> ancestryTraits) {
     if (ancestries.isEmpty) {
-      return const Center(
+      return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.family_restroom,
               size: 64,
               color: Colors.grey,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
-              'No Ancestries Available',
+              AncestriesPageText.noAncestriesAvailable,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
                 color: Colors.grey,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
-              'Ancestry data will appear here when loaded.',
+              AncestriesPageText.ancestryDataWillAppear,
               style: TextStyle(color: Colors.grey),
               textAlign: TextAlign.center,
             ),
@@ -81,7 +82,7 @@ class AncestriesPage extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '${ancestries.length} Available Ancestries',
+            AncestriesPageText.countAvailable(ancestries.length),
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,

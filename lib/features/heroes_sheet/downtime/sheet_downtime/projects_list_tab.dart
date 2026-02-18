@@ -3,7 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/db/providers.dart';
 import '../../../../core/models/downtime.dart';
 import '../../../../core/models/downtime_tracking.dart';
+import '../../../../core/theme/app_icon.dart';
+import '../../../../core/theme/app_icons.dart';
 import '../../../../core/theme/navigation_theme.dart';
+import '../../../../core/theme/form_theme.dart';
 import '../../../../core/text/heroes_sheet/downtime/projects_list_tab_text.dart';
 import '../../../../core/data/downtime_data_source.dart';
 import 'project_editor_dialog.dart';
@@ -127,7 +130,7 @@ class ProjectsListTab extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  Icon(Icons.work_outline, size: 18, color: _projectsColor),
+                  AppIcon(DowntimeIcons.activeProjects, size: 18, color: _projectsColor),
                   const SizedBox(width: 6),
                   Text(
                     ProjectsListTabText.activeProjectsHeader,
@@ -202,7 +205,7 @@ class ProjectsListTab extends ConsumerWidget {
                   Text(
                     ProjectsListTabText.completedProjectsHeader,
                     style: TextStyle(
-                      color: Colors.grey.shade500,
+                      color: FormTheme.textMuted,
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
@@ -308,18 +311,18 @@ class ProjectsListTab extends ConsumerWidget {
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey.shade700),
+                    border: Border.all(color: FormTheme.border),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.library_books,
-                          color: Colors.grey.shade400, size: 20),
+                      AppIcon(DowntimeIcons.browseTemplates,
+                          color: FormTheme.textSecondary, size: 20),
                       const SizedBox(width: 8),
                       Text(
                         ProjectsListTabText.browseProjectsButtonLabel,
                         style: TextStyle(
-                          color: Colors.grey.shade400,
+                          color: FormTheme.textSecondary,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -341,13 +344,13 @@ class ProjectsListTab extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.assignment_outlined,
-                size: 64, color: Colors.grey.shade600),
+            AppIcon(DowntimeIcons.emptyState,
+                size: 64, color: FormTheme.borderLight),
             const SizedBox(height: 16),
             Text(
               ProjectsListTabText.emptyTitle,
               style: TextStyle(
-                color: Colors.grey.shade400,
+                color: FormTheme.textSecondary,
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
               ),
@@ -357,7 +360,7 @@ class ProjectsListTab extends ConsumerWidget {
               ProjectsListTabText.emptySubtitle,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Colors.grey.shade600,
+                color: FormTheme.borderLight,
                 fontSize: 14,
               ),
             ),
@@ -390,8 +393,8 @@ class ProjectsListTab extends ConsumerWidget {
             const SizedBox(height: 16),
             Text(
               ProjectsListTabText.errorTitle,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: FormTheme.textBright,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
@@ -400,7 +403,7 @@ class ProjectsListTab extends ConsumerWidget {
             Text(
               error.toString(),
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey.shade400),
+              style: TextStyle(color: FormTheme.textSecondary),
             ),
             const SizedBox(height: 16),
             Material(
@@ -473,7 +476,7 @@ class ProjectsListTab extends ConsumerWidget {
       builder: (context) => AlertDialog(
         title: const Text(ProjectsListTabText.deleteDialogTitle),
         content: Text(
-          'Are you sure you want to remove "${project.name}"? This action cannot be undone.',
+          ProjectsListTabText.removeConfirmation(project.name),
         ),
         actions: [
           TextButton(
@@ -498,7 +501,7 @@ class ProjectsListTab extends ConsumerWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Removed "${project.name}"'),
+            content: Text(ProjectsListTabText.removedProject(project.name)),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
@@ -547,12 +550,12 @@ class ProjectsListTab extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Add points to: ${project.name}',
+              ProjectsListTabText.addPointsTo(project.name),
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 8),
             Text(
-              'Current: ${project.currentPoints} / ${project.projectGoal}',
+              ProjectsListTabText.currentPoints(project.currentPoints, project.projectGoal),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
@@ -599,7 +602,7 @@ class ProjectsListTab extends ConsumerWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Added $result points to ${project.name}'),
+            content: Text(ProjectsListTabText.addedPoints(result, project.name)),
             duration: const Duration(seconds: 2),
           ),
         );
@@ -631,7 +634,7 @@ class ProjectsListTab extends ConsumerWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Added $result points to ${project.name}'),
+            content: Text(ProjectsListTabText.addedPoints(result, project.name)),
             duration: const Duration(seconds: 2),
           ),
         );
@@ -663,7 +666,7 @@ class ProjectsListTab extends ConsumerWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('"${treasure.name}" is already in your gear!'),
+            content: Text(ProjectsListTabText.treasureAlreadyInGear(treasure.name)),
             backgroundColor: Colors.orange,
           ),
         );
@@ -682,7 +685,7 @@ class ProjectsListTab extends ConsumerWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Added "${treasure.name}" to your gear!'),
+            content: Text(ProjectsListTabText.treasureAdded(treasure.name)),
             backgroundColor: Colors.green,
           ),
         );
@@ -691,7 +694,7 @@ class ProjectsListTab extends ConsumerWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to add treasure: $e'),
+            content: Text(ProjectsListTabText.failedToAddTreasure(e)),
             backgroundColor: Colors.red,
           ),
         );
@@ -717,7 +720,7 @@ class ProjectsListTab extends ConsumerWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('"${imbuement.name}" is already in your gear!'),
+            content: Text(ProjectsListTabText.imbuementAlreadyInGear(imbuement.name)),
             backgroundColor: Colors.orange,
           ),
         );
@@ -736,7 +739,7 @@ class ProjectsListTab extends ConsumerWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Added "${imbuement.name}" to your gear!'),
+            content: Text(ProjectsListTabText.imbuementAdded(imbuement.name)),
             backgroundColor: Colors.green,
           ),
         );
@@ -745,7 +748,7 @@ class ProjectsListTab extends ConsumerWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to add imbuement: $e'),
+            content: Text(ProjectsListTabText.failedToAddImbuement(e)),
             backgroundColor: Colors.red,
           ),
         );

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/db/providers.dart';
 import '../../../core/models/component.dart';
+import '../../../core/text/main_pages/story/deities_page_text.dart';
+import '../../../core/theme/form_theme.dart';
 import '../../../widgets/deities/deity_card.dart';
 
 class DeitiesPage extends ConsumerWidget {
@@ -11,13 +13,13 @@ class DeitiesPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final deitiesAsync = ref.watch(componentsByTypeProvider('deity'));
     return Scaffold(
-      appBar: AppBar(title: const Text('Deities')),
+      appBar: AppBar(title: Text(DeitiesPageText.appBarTitle)),
       body: deitiesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Error: $e')),
+        error: (e, _) => Center(child: Text(DeitiesPageText.errorMessage(e))),
         data: (deities) {
           if (deities.isEmpty) {
-            return const Center(child: Text('No deities found.'));
+            return Center(child: Text(DeitiesPageText.noDeitiesFound));
           }
 
           // Group by category (e.g., god, saint)
@@ -53,9 +55,9 @@ class DeitiesPage extends ConsumerWidget {
   Widget _buildGroup(BuildContext context, String category, List<Component> items) {
     items.sort((a, b) => a.name.compareTo(b.name));
     final title = switch (category) {
-      'god' => 'Gods',
-      'saint' => 'Saints',
-      _ => 'Other',
+      'god' => DeitiesPageText.godsGroup,
+      'saint' => DeitiesPageText.saintsGroup,
+      _ => DeitiesPageText.otherGroup,
     };
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,7 +76,7 @@ class DeitiesPage extends ConsumerWidget {
                 ),
                 child: Text(
                   '${items.length}',
-                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white),
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: FormTheme.textBright),
                 ),
               ),
             ],

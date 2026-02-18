@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/db/providers.dart';
 import '../../../core/models/component.dart';
+import '../../../core/text/main_pages/story/perks_page_text.dart';
+import '../../../core/theme/form_theme.dart';
 import '../../../widgets/perks/perk_card.dart';
 
 class PerksPage extends ConsumerWidget {
@@ -10,13 +12,13 @@ class PerksPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final perksAsync = ref.watch(componentsByTypeProvider('perk'));
     return Scaffold(
-      appBar: AppBar(title: const Text('Perks')),
+      appBar: AppBar(title: Text(PerksPageText.appBarTitle)),
       body: perksAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Error: $e')),
+        error: (e, _) => Center(child: Text(PerksPageText.errorMessage(e))),
         data: (perks) {
           if (perks.isEmpty) {
-            return const Center(child: Text('No perks found.'));
+            return Center(child: Text(PerksPageText.noPerksFound));
           }
 
           // Group by 'group' field
@@ -64,11 +66,11 @@ class PerksPage extends ConsumerWidget {
       BuildContext context, String group, List<Component> perks) {
     perks.sort((a, b) => a.name.compareTo(b.name));
     final title = switch (group) {
-      'exploration' => 'Exploration',
-      'interpersonal' => 'Interpersonal',
-      'intrigue' => 'Intrigue',
-      'lore' => 'Lore',
-      'supernatural' => 'Supernatural',
+      'exploration' => PerksPageText.explorationGroup,
+      'interpersonal' => PerksPageText.interpersonalGroup,
+      'intrigue' => PerksPageText.intrigueGroup,
+      'lore' => PerksPageText.loreGroup,
+      'supernatural' => PerksPageText.supernaturalGroup,
       _ => _capitalize(group),
     };
 
@@ -93,10 +95,10 @@ class PerksPage extends ConsumerWidget {
                 ),
                 child: Text(
                   '${perks.length}',
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
-                      color: Colors.white),
+                      color: FormTheme.textBright),
                 ),
               ),
             ],

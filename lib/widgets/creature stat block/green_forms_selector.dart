@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../core/services/green_forms_service.dart';
+import '../../core/theme/app_icon.dart';
+import '../../core/theme/app_icons.dart';
 import '../../core/theme/creature_theme.dart';
 import 'creature_stat_block.dart';
 import 'green_animal_form.dart';
@@ -182,8 +184,10 @@ class _GreenFormsSelectorState extends State<GreenFormsSelector>
         ),
         child: Row(
           children: [
-            Icon(
-              Icons.pets,
+            AppIcon(
+              _selectedForm != null
+                  ? GreenFormIcons.fromId(_selectedForm!.id)
+                  : GreenFormIcons.widget,
               color: _accentColor,
               size: 20,
             ),
@@ -484,8 +488,8 @@ class _FormListItem extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      isLocked ? Icons.lock : Icons.pets,
+                    AppIcon(
+                      GreenFormIcons.fromId(form.id),
                       size: 20,
                       color: color,
                     ),
@@ -535,8 +539,6 @@ class _FormListItem extends StatelessWidget {
               // Selection indicator
               if (isSelected)
                 Icon(Icons.check_circle, color: color)
-              else if (isLocked)
-                Icon(Icons.lock, color: Colors.grey.withOpacity(0.5))
               else
                 Icon(Icons.circle_outlined, color: color.withOpacity(0.3)),
             ],

@@ -8,6 +8,8 @@ import '../../../../core/models/abilities_models.dart';
 import '../../../../core/models/characteristics_models.dart';
 import '../../../../core/services/ability_data_service.dart';
 import '../../../../core/services/abilities_service.dart';
+import '../../../../core/theme/app_icon.dart';
+import '../../../../core/theme/app_icons.dart';
 import '../../../../core/theme/creator_theme.dart';
 import '../../../../core/theme/navigation_theme.dart';
 import '../../../../core/theme/form_theme.dart';
@@ -491,7 +493,7 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
           padding: const EdgeInsets.all(16),
           child: Text(
             ChooseAbilitiesWidgetText.noAbilitiesMessage,
-            style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+            style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
           ),
         ),
       );
@@ -513,7 +515,7 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
           CreatorTheme.sectionHeader(
             title: ChooseAbilitiesWidgetText.expansionTitle,
             subtitle: '${ChooseAbilitiesWidgetText.selectionSubtitlePrefix}$selectedCount${ChooseAbilitiesWidgetText.selectionSubtitleMiddle}$totalSlots${ChooseAbilitiesWidgetText.selectionSubtitleSuffix}',
-            icon: Icons.auto_awesome,
+            appIcon: AbilityIcons.ability,
             accent: _accent,
           ),
           Padding(
@@ -538,7 +540,7 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
           CreatorTheme.sectionHeader(
             title: ChooseAbilitiesWidgetText.expansionTitle,
             subtitle: ChooseAbilitiesWidgetText.sectionSubtitle,
-            icon: Icons.auto_awesome,
+            appIcon: AbilityIcons.ability,
             accent: _accent,
           ),
           child,
@@ -562,19 +564,19 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: Colors.white,
+              color: FormTheme.textBright,
             ),
           ),
           const SizedBox(height: 4),
           Text(
             helper,
-            style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+            style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
           ),
           const SizedBox(height: 8),
           if (options.isEmpty)
             Text(
               ChooseAbilitiesWidgetText.noAllowanceOptionsMessage,
-              style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+              style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
             )
           else
             ...List.generate(slots.length, (index) {
@@ -613,16 +615,16 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
                         decoration: InputDecoration(
                           labelText:
                               '${ChooseAbilitiesWidgetText.choiceLabelPrefix}${index + 1}',
-                          labelStyle: TextStyle(color: Colors.grey.shade400),
+                          labelStyle: TextStyle(color: FormTheme.textSecondary),
                           filled: true,
                           fillColor: FormTheme.surface,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),
-                            borderSide: BorderSide(color: Colors.grey.shade700),
+                            borderSide: BorderSide(color: FormTheme.border),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),
-                            borderSide: BorderSide(color: Colors.grey.shade700),
+                            borderSide: BorderSide(color: FormTheme.border),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),
@@ -643,8 +645,8 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
                                     : ChooseAbilitiesWidgetText.unassignedLabel,
                                 style: TextStyle(
                                   color: selectedOption != null
-                                      ? Colors.white
-                                      : Colors.grey.shade400,
+                                      ? FormTheme.textBright
+                                      : FormTheme.textSecondary,
                                   fontSize: 14,
                                 ),
                                 overflow: TextOverflow.ellipsis,
@@ -652,7 +654,7 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
                             ),
                             Icon(
                               Icons.arrow_drop_down,
-                              color: Colors.grey.shade400,
+                              color: FormTheme.textSecondary,
                             ),
                           ],
                         ),
@@ -740,8 +742,8 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
                                 color: _accent.withValues(alpha: 0.4),
                               ),
                             ),
-                            child: Icon(
-                              Icons.auto_awesome,
+                            child: AppIcon(
+                              AbilityIcons.ability,
                               color: _accent,
                               size: 20,
                             ),
@@ -760,7 +762,7 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
                           IconButton(
                             icon: Icon(
                               Icons.close,
-                              color: Colors.grey.shade400,
+                              color: FormTheme.textSecondary,
                             ),
                             onPressed: () => Navigator.pop(dialogContext),
                             padding: EdgeInsets.zero,
@@ -774,13 +776,13 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
                       padding: const EdgeInsets.all(16),
                       child: TextField(
                         autofocus: false,
-                        style: const TextStyle(color: Colors.white),
+                        style: TextStyle(color: FormTheme.textBright),
                         decoration: InputDecoration(
                           hintText: ChooseAbilitiesWidgetText.searchHint,
-                          hintStyle: TextStyle(color: Colors.grey.shade500),
+                          hintStyle: TextStyle(color: FormTheme.textMuted),
                           prefixIcon: Icon(
                             Icons.search,
-                            color: Colors.grey.shade500,
+                            color: FormTheme.textMuted,
                           ),
                           filled: true,
                           fillColor: FormTheme.surface,
@@ -791,7 +793,7 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide(
-                              color: Colors.grey.shade700,
+                              color: FormTheme.border,
                             ),
                           ),
                           focusedBorder: OutlineInputBorder(
@@ -842,7 +844,7 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
                                     border: Border.all(
                                       color: currentValue == null
                                           ? _accent.withValues(alpha: 0.5)
-                                          : Colors.grey.shade700,
+                                          : FormTheme.border,
                                     ),
                                   ),
                                   child: Row(
@@ -853,7 +855,7 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
                                           style: TextStyle(
                                             color: currentValue == null
                                                 ? _accent
-                                                : Colors.grey.shade400,
+                                                : FormTheme.textSecondary,
                                             fontSize: 14,
                                             fontWeight: currentValue == null
                                                 ? FontWeight.bold
@@ -881,7 +883,7 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
                                 child: Text(
                                   ChooseAbilitiesWidgetText.noMatchesFound,
                                   style: TextStyle(
-                                    color: Colors.grey.shade500,
+                                    color: FormTheme.textMuted,
                                     fontSize: 14,
                                   ),
                                 ),
@@ -915,7 +917,7 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
                                         border: Border.all(
                                           color: isSelected
                                               ? _accent.withValues(alpha: 0.5)
-                                              : Colors.grey.shade700,
+                                              : FormTheme.border,
                                         ),
                                       ),
                                       child: Row(
@@ -930,7 +932,7 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
                                                   style: TextStyle(
                                                     color: isSelected
                                                         ? _accent
-                                                        : Colors.white,
+                                                        : FormTheme.textBright,
                                                     fontSize: 14,
                                                     fontWeight: isSelected
                                                         ? FontWeight.bold
@@ -943,7 +945,7 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
                                                   Text(
                                                     option.subclass!,
                                                     style: TextStyle(
-                                                      color: Colors.grey.shade400,
+                                                      color: FormTheme.textSecondary,
                                                       fontSize: 12,
                                                     ),
                                                   ),
@@ -972,7 +974,7 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
                       width: double.infinity,
                       decoration: BoxDecoration(
                         border: Border(
-                          top: BorderSide(color: Colors.grey.shade800),
+                          top: BorderSide(color: FormTheme.borderDim),
                         ),
                       ),
                       child: TextButton(
@@ -983,7 +985,7 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
                         child: Text(
                           ChooseAbilitiesWidgetText.cancelButton,
                           style: TextStyle(
-                            color: Colors.grey.shade400,
+                            color: FormTheme.textSecondary,
                             fontSize: 14,
                           ),
                         ),

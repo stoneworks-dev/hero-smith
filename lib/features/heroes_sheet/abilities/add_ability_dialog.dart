@@ -185,10 +185,10 @@ class _AddAbilityDialogState extends State<AddAbilityDialog> {
         child: Column(
           children: [
             AppBar(
-              title: const Text(AddAbilityDialogText.dialogTitle, style: TextStyle(color: Colors.white)),
+              title: const Text(AddAbilityDialogText.dialogTitle, style: TextStyle(color: FormTheme.textBright)),
               backgroundColor: NavigationTheme.navBarBackground,
               automaticallyImplyLeading: false,
-              actions: [IconButton(icon: const Icon(Icons.close, color: Colors.white), onPressed: () => Navigator.of(context).pop())],
+              actions: [IconButton(icon: const Icon(Icons.close, color: FormTheme.textBright), onPressed: () => Navigator.of(context).pop())],
             ),
             Expanded(
               child: CustomScrollView(
@@ -216,11 +216,11 @@ class _AddAbilityDialogState extends State<AddAbilityDialog> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center, 
                             children: [
-                              Icon(Icons.search, size: 64, color: Colors.grey.shade600), 
+                              Icon(Icons.search, size: 64, color: FormTheme.borderLight), 
                               const SizedBox(height: 16), 
                               Text(
                                 AddAbilityDialogText.searchPrompt, 
-                                style: TextStyle(color: Colors.grey.shade400), 
+                                style: TextStyle(color: FormTheme.textSecondary), 
                                 textAlign: TextAlign.center,
                               ),
                             ],
@@ -236,11 +236,11 @@ class _AddAbilityDialogState extends State<AddAbilityDialog> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center, 
                             children: [
-                              Icon(Icons.search_off, size: 64, color: Colors.grey.shade600), 
+                              Icon(Icons.search_off, size: 64, color: FormTheme.borderLight), 
                               const SizedBox(height: 16), 
                               Text(
                                 AddAbilityDialogText.noAbilitiesFound,
-                                style: TextStyle(color: Colors.grey.shade400),
+                                style: TextStyle(color: FormTheme.textSecondary),
                               ),
                             ],
                           ),
@@ -306,24 +306,24 @@ class _AddAbilityDialogState extends State<AddAbilityDialog> {
           crossAxisAlignment: CrossAxisAlignment.start, 
           children: [
             TextField(
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: FormTheme.textBright),
               decoration: InputDecoration(
                 hintText: AddAbilityDialogText.searchHint,
-                hintStyle: TextStyle(color: Colors.grey.shade500),
+                hintStyle: TextStyle(color: FormTheme.textMuted),
                 prefixIcon: Icon(Icons.search, color: NavigationTheme.abilitiesColor),
                 suffixIcon: _searchQuery.isNotEmpty 
                     ? IconButton(
-                        icon: Icon(Icons.clear, color: Colors.grey.shade400), 
+                        icon: Icon(Icons.clear, color: FormTheme.textSecondary), 
                         onPressed: () { setState(() => _searchQuery = ''); },
                       ) 
                     : null, 
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.grey.shade600),
+                  borderSide: BorderSide(color: FormTheme.borderLight),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.grey.shade600),
+                  borderSide: BorderSide(color: FormTheme.borderLight),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -338,7 +338,7 @@ class _AddAbilityDialogState extends State<AddAbilityDialog> {
             const SizedBox(height: 16), 
             Text(
               AddAbilityDialogText.filtersTitle,
-              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey.shade300),
+              style: TextStyle(fontWeight: FontWeight.bold, color: FormTheme.textSecondary),
             ), 
             const SizedBox(height: 12), 
             Wrap(

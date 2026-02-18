@@ -77,18 +77,18 @@ class FavoriteKitCardWrapper extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.shield,
                           size: 12,
-                          color: Colors.white,
+                          color: FormTheme.textBright,
                         ),
                         const SizedBox(width: 4),
                         Text(
                           equippedSlotLabel != null
                               ? '${KitWidgetsText.equippedBadgeWithSlotPrefix}$equippedSlotLabel'
                               : KitWidgetsText.equippedBadgeLabel,
-                          style: const TextStyle(
-                            color: Colors.white,
+                          style: TextStyle(
+                            color: FormTheme.textBright,
                             fontWeight: FontWeight.bold,
                             fontSize: 10,
                           ),
@@ -109,7 +109,7 @@ class FavoriteKitCardWrapper extends StatelessWidget {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(6),
                           border: Border.all(
-                            color: Colors.grey.shade600,
+                            color: FormTheme.borderLight,
                           ),
                         ),
                         child: Row(
@@ -118,13 +118,13 @@ class FavoriteKitCardWrapper extends StatelessWidget {
                             Icon(
                               Icons.published_with_changes,
                               size: 12,
-                              color: Colors.grey.shade300,
+                              color: FormTheme.textSecondary,
                             ),
                             const SizedBox(width: 4),
                             Text(
                               KitWidgetsText.swapButtonLabel,
                               style: TextStyle(
-                                color: Colors.grey.shade300,
+                                color: FormTheme.textSecondary,
                                 fontWeight: FontWeight.w500,
                                 fontSize: 10,
                               ),
@@ -168,7 +168,7 @@ class FavoriteKitCardWrapper extends StatelessWidget {
               border: Border.all(
                 color: isEquipped
                     ? NavigationTheme.kitsColor
-                    : Colors.grey.shade800,
+                    : FormTheme.borderDim,
                 width: isEquipped ? 2 : 1,
               ),
             ),

@@ -4,9 +4,11 @@ import '../../../../core/controllers/starting_characteristics_controller.dart';
 import '../../../../core/models/class_data.dart';
 import '../../../../core/models/characteristics_models.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_icons.dart';
 import '../../../../core/theme/creator_theme.dart';
 import '../../../../core/theme/navigation_theme.dart';
 import '../../../../core/theme/form_theme.dart';
+import '../../../../core/theme/semantic/semantic_tokens.dart';
 import '../../../../core/text/creators/widgets/strife_creator/starting_characteristics_widget_text.dart';
 
 // Helper classes for picker
@@ -221,7 +223,7 @@ class _StartingCharacteristicsWidgetState
           CreatorTheme.sectionHeader(
             title: StartingCharacteristicsWidgetText.title,
             subtitle: StartingCharacteristicsWidgetText.sectionSubtitle,
-            icon: Icons.bar_chart,
+            appIcon: CombatIcons.characteristics,
             accent: _accent,
           ),
           Padding(
@@ -290,7 +292,7 @@ class _StartingCharacteristicsWidgetState
   }
 
   Widget _buildCharacteristicCard(String stat, CharacteristicSummary summary) {
-    final color = AppColors.getCharacteristicColor(stat);
+    final color = CharacteristicTokens.color(stat);
     final isLocked = _controller.lockedStats.contains(stat);
     final total = summary.totals[stat] ?? 0;
     final assignedToken = _controller.assignments[stat];
@@ -340,10 +342,10 @@ class _StartingCharacteristicsWidgetState
               // Total value
               Text(
                 total.toString(),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: FormTheme.textBright,
                 ),
               ),
               const SizedBox(height: 4),
@@ -393,10 +395,10 @@ class _StartingCharacteristicsWidgetState
           const SizedBox(height: 2),
           Text(
             total.toString(),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: FormTheme.textBright,
             ),
           ),
           const SizedBox(height: 2),
@@ -404,7 +406,7 @@ class _StartingCharacteristicsWidgetState
             'Fixed',
             style: TextStyle(
               fontSize: 9,
-              color: Colors.grey.shade500,
+              color: FormTheme.textMuted,
             ),
           ),
         ],
@@ -429,7 +431,7 @@ class _StartingCharacteristicsWidgetState
       child: Text(
         hasArray ? 'Drop' : '?',
         style: TextStyle(
-          color: hasArray ? Colors.white70 : Colors.grey.shade600,
+          color: hasArray ? Colors.white70 : FormTheme.borderLight,
           fontSize: 10,
           fontStyle: FontStyle.italic,
         ),
@@ -451,7 +453,7 @@ class _StartingCharacteristicsWidgetState
         ),
         child: Text(
           StartingCharacteristicsWidgetText.allFixedMessage,
-          style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+          style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
         ),
       );
     }
@@ -466,13 +468,13 @@ class _StartingCharacteristicsWidgetState
       child: InputDecorator(
         decoration: InputDecoration(
           labelText: StartingCharacteristicsWidgetText.arrayLabel,
-          labelStyle: TextStyle(color: Colors.grey.shade400),
+          labelStyle: TextStyle(color: FormTheme.textSecondary),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),
-            borderSide: BorderSide(color: Colors.grey.shade700),
+            borderSide: BorderSide(color: FormTheme.border),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),
@@ -489,14 +491,14 @@ class _StartingCharacteristicsWidgetState
               currentPreview ?? StartingCharacteristicsWidgetText.arrayPlaceholder,
               style: TextStyle(
                 color: currentPreview != null
-                    ? Colors.white
-                    : Colors.grey.shade500,
+                    ? FormTheme.textBright
+                    : FormTheme.textMuted,
                 fontSize: 14,
               ),
             ),
             Icon(
               Icons.arrow_drop_down,
-              color: Colors.grey.shade400,
+              color: FormTheme.textSecondary,
             ),
           ],
         ),
@@ -595,7 +597,7 @@ class _StartingCharacteristicsWidgetState
                       IconButton(
                         icon: Icon(
                           Icons.close,
-                          color: Colors.grey.shade400,
+                          color: FormTheme.textSecondary,
                         ),
                         onPressed: () => Navigator.pop(context),
                         padding: EdgeInsets.zero,
@@ -640,7 +642,7 @@ class _StartingCharacteristicsWidgetState
                                 border: Border.all(
                                   color: isSelected
                                       ? _accent.withValues(alpha: 0.5)
-                                      : Colors.grey.shade700,
+                                      : FormTheme.border,
                                 ),
                               ),
                               child: Row(
@@ -651,7 +653,7 @@ class _StartingCharacteristicsWidgetState
                                       style: TextStyle(
                                         color: isSelected
                                             ? _accent
-                                            : Colors.white,
+                                            : FormTheme.textBright,
                                         fontSize: 14,
                                         fontWeight: isSelected
                                             ? FontWeight.bold
@@ -679,7 +681,7 @@ class _StartingCharacteristicsWidgetState
                   width: double.infinity,
                   decoration: BoxDecoration(
                     border: Border(
-                      top: BorderSide(color: Colors.grey.shade800),
+                      top: BorderSide(color: FormTheme.borderDim),
                     ),
                   ),
                   child: TextButton(
@@ -690,7 +692,7 @@ class _StartingCharacteristicsWidgetState
                     child: Text(
                       StartingCharacteristicsWidgetText.cancelButton,
                       style: TextStyle(
-                        color: Colors.grey.shade400,
+                        color: FormTheme.textSecondary,
                         fontSize: 14,
                       ),
                     ),
@@ -870,12 +872,12 @@ class _StartingCharacteristicsWidgetState
                   isActive
                       ? StartingCharacteristicsWidgetText.releaseToClearValue
                       : StartingCharacteristicsWidgetText.allValuesAssigned,
-                  style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+                  style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
                 )
               else ...[
                 Text(
                   StartingCharacteristicsWidgetText.holdAndDragToAssign,
-                  style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
+                  style: TextStyle(color: FormTheme.textMuted, fontSize: 13),
                 ),
                 const SizedBox(height: 12),
                 Row(
@@ -946,7 +948,7 @@ class _StartingCharacteristicsWidgetState
             children: order.map((strength) {
               final value = potencyValues[strength] ?? 0;
               final label = strength[0].toUpperCase() + strength.substring(1);
-              final color = AppColors.getPotencyColor(strength);
+              final color = PotencyTokens.color(strength);
               return _buildPotencyChip(label, value, color);
             }).toList(),
           ),
@@ -967,7 +969,7 @@ class _StartingCharacteristicsWidgetState
         '$label ${_formatSigned(value)}',
         style: TextStyle(
           fontWeight: FontWeight.w600,
-          color: Colors.white,
+          color: FormTheme.textBright,
           fontSize: 13,
         ),
       ),
@@ -1008,17 +1010,17 @@ class _StartingCharacteristicsWidgetState
       child: DropdownButtonFormField<String?>(
         value: current,
         dropdownColor: FormTheme.surface,
-        style: const TextStyle(color: Colors.white, fontSize: 14),
+        style: TextStyle(color: FormTheme.textBright, fontSize: 14),
         decoration: InputDecoration(
           labelText:
               '${StartingCharacteristicsWidgetText.levelBonusLabelPrefix}${choice.level}${StartingCharacteristicsWidgetText.levelBonusLabelSuffix}',
-          labelStyle: TextStyle(color: Colors.grey.shade400),
+          labelStyle: TextStyle(color: FormTheme.textSecondary),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),
-            borderSide: BorderSide(color: Colors.grey.shade700),
+            borderSide: BorderSide(color: FormTheme.border),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),

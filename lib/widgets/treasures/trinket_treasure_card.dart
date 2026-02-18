@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/models/component.dart' as model;
+import '../../core/text/widgets/treasure_card_text.dart';
 import 'base_treasure_card.dart';
 import '../../core/theme/treasure_theme.dart';
 
@@ -56,7 +57,7 @@ class TrinketTreasureCard extends StatelessWidget {
     }
 
     return EffectSection(
-      title: 'EFFECT',
+      title: TreasureCardText.effect,
       text: effectDescription,
       colorScheme: colorScheme,
     );

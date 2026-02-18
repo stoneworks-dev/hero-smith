@@ -1,3 +1,5 @@
+import '../../../common/common_text.dart';
+
 class StoryCultureSectionText {
   static const String sectionTitle = 'Culture';
   static const String sectionSubtitle = 'Your hero\'s upbringing and environment';
@@ -25,5 +27,11 @@ class StoryCultureSectionText {
   static const String chooseSkillPlaceholder = 'Choose skill';
   static const String searchHint = 'Search...';
   static const String noMatchesFound = 'No matches found';
-  static const String cancelLabel = 'Cancel';
+  static const String cancelLabel = CommonText.cancel;
+  static const String noneSelected = 'None selected';
+  static String regionSubtitle(String region) => 'Region: $region';
+  static String ancestrySubtitle(String ancestry) => 'Ancestry: $ancestry';
+  static String topicsSubtitle(String topics) => 'Topics: $topics';
+  static const String noneLabelText = CommonText.none;
+  static const String noSelection = 'No selection';
 }

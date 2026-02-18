@@ -1,3 +1,5 @@
+import '../../common/common_text.dart';
+
 class InventoryWidgetsText {
   static const String defaultContainerName = 'Container';
   static const String defaultItemName = 'Item';
@@ -10,6 +12,6 @@ class InventoryWidgetsText {
   static const String emptyItemsMessage = 'No items. Tap + to add one.';
   static const String quantityDialogTitle = 'Set Quantity';
   static const String quantityDialogLabel = 'Quantity (1-999)';
-  static const String quantityDialogCancelAction = 'Cancel';
+  static const String quantityDialogCancelAction = CommonText.cancel;
   static const String quantityDialogSetAction = 'Set';
 }

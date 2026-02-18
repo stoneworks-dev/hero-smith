@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/db/providers.dart';
 import '../../core/models/component.dart';
+import '../../core/text/widgets/title_card_text.dart';
+import '../../core/theme/app_icon.dart';
+import '../../core/theme/app_icons.dart';
 import '../../core/theme/ds_theme.dart';
 import '../abilities/ability_expandable_item.dart';
 import '../shared/section_widgets.dart';
@@ -28,6 +31,7 @@ class TitleCard extends ConsumerWidget {
     return ExpandableCard(
       title: titleComp.name,
       borderColor: borderColor,
+      leading: AppIcon(TitleIcons.fromEchelon(echelon), color: borderColor, size: 20),
       badge: Container(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
         decoration: BoxDecoration(
@@ -35,13 +39,20 @@ class TitleCard extends ConsumerWidget {
           border: Border.all(color: borderColor.withOpacity(0.3), width: 1),
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Text(
-          echelon > 0 ? 'E$echelon' : 'E?',
-          style: TextStyle(
-            fontSize: 9,
-            fontWeight: FontWeight.bold,
-            color: borderColor.withOpacity(0.8),
-          ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AppIcon(TitleIcons.fromEchelon(echelon), color: borderColor.withOpacity(0.8), size: 14),
+            const SizedBox(width: 4),
+            Text(
+              echelon > 0 ? 'E$echelon' : 'E?',
+              style: TextStyle(
+                fontSize: 9,
+                fontWeight: FontWeight.bold,
+                color: borderColor.withOpacity(0.8),
+              ),
+            ),
+          ],
         ),
       ),
       expandedContent: Column(
@@ -49,22 +60,22 @@ class TitleCard extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (prerequisite != null && prerequisite.isNotEmpty) ...[
-            SectionLabel('Prerequisite', emoji: '🗝️', color: borderColor),
+            SectionLabel('Prerequisite', icon: TitleIcons.prerequisite, color: borderColor),
             const SizedBox(height: 2),
             _buildIndentedText(prerequisite, neutralText),
           ],
           if (description != null && description.isNotEmpty) ...[
-            SectionLabel('Description', emoji: '📝', color: borderColor),
+            SectionLabel('Description', icon: TitleIcons.description, color: borderColor),
             const SizedBox(height: 2),
             _buildIndentedText(description, neutralText),
           ],
           if (benefits != null && benefits.isNotEmpty) ...[
-            SectionLabel('Benefits', emoji: '🎁', color: borderColor),
+            SectionLabel('Benefits', icon: TitleIcons.benefits, color: borderColor),
             const SizedBox(height: 2),
             _buildBenefits(benefits, neutralText, ref, borderColor),
           ],
           if (special != null && special.isNotEmpty) ...[
-            SectionLabel('Special', emoji: '✨', color: ds.specialSectionColor),
+            SectionLabel('Special', icon: TitleIcons.special, color: ds.specialSectionColor),
             const SizedBox(height: 2),
             _buildIndentedText(special, neutralText),
           ],
@@ -186,7 +197,7 @@ class TitleCard extends ConsumerWidget {
               child: CircularProgressIndicator(strokeWidth: 1.5, color: accentColor),
             ),
             const SizedBox(width: 8),
-            Text('Loading $abilityName...', style: TextStyle(fontSize: 10, color: textColor)),
+            Text(TitleCardText.loadingAbility(abilityName), style: TextStyle(fontSize: 10, color: textColor)),
           ],
         ),
       ),

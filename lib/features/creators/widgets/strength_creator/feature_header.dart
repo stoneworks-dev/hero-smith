@@ -60,7 +60,7 @@ class _FeatureHeader extends StatelessWidget {
                       width: 1,
                     ),
                   ),
-                  child: Icon(
+                  child: AppIcon(
                     featureStyle.icon,
                     size: 20,
                     color: featureStyle.borderColor,
@@ -110,7 +110,7 @@ class _FeatureHeader extends StatelessWidget {
                 children: [
                   if (feature.isSubclassFeature)
                     _SmallTag(
-                      icon: Icons.star_rounded,
+                      icon: AbilityIcons.feature,
                       label: widget.subclassLabel?.isNotEmpty == true
                           ? widget.subclassLabel!
                           : FeatureHeaderText.subclassLabelFallback,
@@ -118,13 +118,13 @@ class _FeatureHeader extends StatelessWidget {
                     ),
                   if (isDomainLinked)
                     _SmallTag(
-                      icon: Icons.account_tree_rounded,
+                      icon: AbilityIcons.subclass,
                       label: FeatureHeaderText.domainLabel,
                       color: Colors.teal,
                     ),
                   if (isDeityLinked)
                     _SmallTag(
-                      icon: Icons.auto_awesome,
+                      icon: AbilityIcons.ability,
                       label: FeatureHeaderText.deityLabel,
                       color: Colors.amber.shade700,
                     ),
@@ -145,7 +145,7 @@ class _SmallTag extends StatelessWidget {
     required this.color,
   });
 
-  final IconData icon;
+  final AppIconData icon;
   final String label;
   final Color color;
 
@@ -164,7 +164,7 @@ class _SmallTag extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: color),
+          AppIcon(icon, size: 14, color: color),
           const SizedBox(width: 5),
           Text(
             label,

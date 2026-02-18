@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../core/models/component.dart';
+import '../../core/text/widgets/language_card_text.dart';
+import '../../core/theme/app_icon.dart';
+import '../../core/theme/app_icons.dart';
 import '../../core/theme/ds_theme.dart';
+import '../../core/theme/form_theme.dart';
 import '../../core/theme/navigation_theme.dart';
 
 /// Compact ListTile-based language card used in both the hero sheet and main pages.
@@ -54,7 +58,7 @@ class LanguageCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: NavigationTheme.cardBackgroundDark,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey.shade800),
+        border: Border.all(color: FormTheme.borderDim),
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -64,16 +68,16 @@ class LanguageCard extends StatelessWidget {
             color: borderColor.withAlpha(26),
             borderRadius: BorderRadius.circular(6),
           ),
-          child: Icon(Icons.record_voice_over, color: borderColor, size: 18),
+          child: AppIcon(LanguageTypeIcons.fromType(langType ?? ''), color: borderColor, size: 18),
         ),
         title: Text(
           language.name,
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+          style: TextStyle(color: FormTheme.textBright, fontWeight: FontWeight.w500),
         ),
         subtitle: subtitle.isNotEmpty
             ? Text(
                 subtitle,
-                style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
+                style: TextStyle(color: FormTheme.textMuted, fontSize: 12),
               )
             : null,
         trailing: _buildTrailing(ds, langType, borderColor, onSurface),
@@ -94,13 +98,20 @@ class LanguageCard extends StatelessWidget {
               border: Border.all(color: borderColor.withAlpha(128), width: 1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Text(
-              '${ds.languageTypeEmoji[langType] ?? '\ud83d\udcac'} ${langType.toUpperCase()}',
-              style: TextStyle(
-                fontSize: 9,
-                fontWeight: FontWeight.bold,
-                color: onSurface.withAlpha(230),
-              ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AppIcon(LanguageTypeIcons.fromType(langType), color: onSurface.withAlpha(230), size: 12),
+                const SizedBox(width: 4),
+                Text(
+                  langType.toUpperCase(),
+                  style: TextStyle(
+                    fontSize: 9,
+                    fontWeight: FontWeight.bold,
+                    color: onSurface.withAlpha(230),
+                  ),
+                ),
+              ],
             ),
           ),
         if (onDelete != null) ...[
@@ -112,7 +123,7 @@ class LanguageCard extends StatelessWidget {
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
               icon: Icon(Icons.delete_outline, size: 16, color: Colors.red.shade400),
-              tooltip: 'Delete custom language',
+              tooltip: LanguageCardText.deleteCustomLanguage,
               onPressed: onDelete,
             ),
           ),
@@ -126,7 +137,7 @@ class LanguageCard extends StatelessWidget {
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
               icon: Icon(Icons.close, color: Colors.red.shade400, size: 20),
-              tooltip: 'Remove language',
+              tooltip: LanguageCardText.removeLanguage,
               onPressed: onRemove,
             ),
           ),

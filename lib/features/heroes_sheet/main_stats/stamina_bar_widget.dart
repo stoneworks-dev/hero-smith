@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/repositories/hero_repository.dart';
 import '../../../core/text/heroes_sheet/main_stats/stamina_bar_text.dart';
+import '../../../core/theme/form_theme.dart';
 import '../../../core/theme/main_stats_theme.dart';
 import 'hero_main_stats_models.dart';
 
@@ -259,7 +260,7 @@ class StaminaBarWidget extends StatelessWidget {
                           child: Container(
                             width: 4,
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: FormTheme.textBright,
                               borderRadius: BorderRadius.circular(2),
                               boxShadow: [
                                 BoxShadow(
@@ -313,7 +314,7 @@ class StaminaBarWidget extends StatelessWidget {
                                 style: theme.textTheme.labelSmall?.copyWith(
                                   fontSize: 8,
                                   fontWeight: FontWeight.w700,
-                                  color: Colors.white.withOpacity(0.9),
+                                  color: FormTheme.textBright.withOpacity(0.9),
                                   letterSpacing: 0.5,
                                 ),
                               ),

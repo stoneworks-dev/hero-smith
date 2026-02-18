@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/models/feature.dart';
+import '../../../core/text/main_pages/strife/strife_features_page_text.dart';
 import '../../../core/repositories/feature_repository.dart';
 import '../../../core/theme/feature_tokens.dart';
 import '../../../widgets/features/class_navigation_card.dart';
@@ -46,7 +47,7 @@ class _StrifeFeaturesPageState extends State<StrifeFeaturesPage> {
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
-        title: const Text('Class Features'),
+        title: Text(StrifeFeaturesPageText.appBarTitle),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -66,7 +67,7 @@ class _StrifeFeaturesPageState extends State<StrifeFeaturesPage> {
             ),
             const SizedBox(height: 24),
             Text(
-              'Loading class features...',
+              StrifeFeaturesPageText.loadingFeatures,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
@@ -90,7 +91,7 @@ class _StrifeFeaturesPageState extends State<StrifeFeaturesPage> {
               ),
               const SizedBox(height: 24),
               Text(
-                'Failed to load features',
+                StrifeFeaturesPageText.failedToLoad,
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
@@ -113,7 +114,7 @@ class _StrifeFeaturesPageState extends State<StrifeFeaturesPage> {
                   _loadFeatures();
                 },
                 icon: const Icon(Icons.refresh),
-                label: const Text('Retry'),
+                label: Text(StrifeFeaturesPageText.retry),
               ),
             ],
           ),
@@ -132,7 +133,7 @@ class _StrifeFeaturesPageState extends State<StrifeFeaturesPage> {
             ),
             SizedBox(height: 24),
             Text(
-              'No class features found',
+              StrifeFeaturesPageText.noFeaturesFound,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
             ),
           ],
@@ -171,7 +172,7 @@ class _StrifeFeaturesPageState extends State<StrifeFeaturesPage> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Choose Your Class',
+                  StrifeFeaturesPageText.chooseYourClass,
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.w700,
                     color: FeatureTokens.getClassColor('elementalist'),
@@ -179,7 +180,7 @@ class _StrifeFeaturesPageState extends State<StrifeFeaturesPage> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Explore features and abilities for each class',
+                  StrifeFeaturesPageText.exploreFeatures,
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),

@@ -1,11 +1,13 @@
+import '../../common/common_text.dart';
+
 class InventoryTabText {
   static const String loadInventoryFailedPrefix = 'Failed to load inventory: ';
   static const String createContainerFailedPrefix = 'Failed to create container: ';
   static const String deleteContainerDialogTitle = 'Delete Container';
   static const String deleteContainerDialogContent =
       'Delete this container and all items inside? This cannot be undone.';
-  static const String deleteContainerCancelAction = 'Cancel';
-  static const String deleteContainerConfirmAction = 'Delete';
+  static const String deleteContainerCancelAction = CommonText.cancel;
+  static const String deleteContainerConfirmAction = CommonText.delete;
   static const String deleteContainerFailedPrefix = 'Failed to delete container: ';
   static const String addItemFailedPrefix = 'Failed to add item: ';
   static const String deleteItemFailedPrefix = 'Failed to delete item: ';

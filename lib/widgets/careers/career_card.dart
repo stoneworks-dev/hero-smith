@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hero_smith/core/models/component.dart';
 import 'package:hero_smith/core/theme/ds_theme.dart';
+import 'package:hero_smith/core/theme/form_theme.dart';
 import 'package:hero_smith/widgets/shared/expandable_card.dart';
 
 class CareerCard extends StatelessWidget {
@@ -343,14 +344,14 @@ class CareerCard extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Colors.grey.shade900.withAlpha(80),
-          border: Border.all(color: Colors.grey.shade700, width: 1),
+          color: FormTheme.surfaceDark.withAlpha(80),
+          border: Border.all(color: FormTheme.border, width: 1),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Text(
           'No inciting incidents defined',
           style: TextStyle(
-            color: Colors.grey.shade500,
+            color: FormTheme.textMuted,
             fontStyle: FontStyle.italic,
           ),
         ),

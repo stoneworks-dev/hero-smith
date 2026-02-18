@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:hero_smith/core/text/heroes_sheet/story/sheet_story_token_tracker_text.dart';
+import 'package:hero_smith/core/theme/form_theme.dart';
 import 'package:hero_smith/core/theme/story_theme.dart';
 
 import '../../../../core/services/complication_grants_service.dart';
@@ -103,7 +104,7 @@ class _TokenTrackerWidgetState extends ConsumerState<TokenTrackerWidget> {
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
-                color: Colors.grey.shade300,
+                color: FormTheme.textSecondary,
               ),
             ),
             const Spacer(),

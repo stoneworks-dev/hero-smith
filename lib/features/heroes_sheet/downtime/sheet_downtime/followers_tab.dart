@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/db/providers.dart';
 import '../../../../core/models/downtime_tracking.dart';
+import '../../../../core/theme/app_icon.dart';
+import '../../../../core/theme/app_icons.dart';
 import '../../../../core/theme/navigation_theme.dart';
 import '../../../../core/theme/hero_sheet_theme.dart';
+import '../../../../core/theme/form_theme.dart';
 import '../../../../core/text/heroes_sheet/downtime/followers_tab_text.dart';
 import 'follower_editor_dialog.dart';
 
@@ -29,7 +32,7 @@ class FollowersTab extends ConsumerWidget {
           child: CircularProgressIndicator(color: HeroSheetTheme.followersAccent)),
       error: (error, stack) => Center(
         child: Text('Error: $error',
-            style: TextStyle(color: Colors.grey.shade400)),
+            style: TextStyle(color: FormTheme.textSecondary)),
       ),
     );
   }
@@ -79,11 +82,11 @@ class FollowersTab extends ConsumerWidget {
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: HeroSheetTheme.followersAccent),
             ),
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.person_add, color: HeroSheetTheme.followersAccent, size: 20),
-                SizedBox(width: 8),
+                AppIcon(DowntimeIcons.addFollower, color: HeroSheetTheme.followersAccent, size: 20),
+                const SizedBox(width: 8),
                 Text(
                   FollowersTabText.addFollowerButtonLabel,
                   style: TextStyle(
@@ -106,7 +109,7 @@ class FollowersTab extends ConsumerWidget {
       decoration: BoxDecoration(
         color: NavigationTheme.cardBackgroundDark,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade800),
+        border: Border.all(color: FormTheme.borderDim),
       ),
       child: Padding(
         padding: const EdgeInsets.all(12),
@@ -122,7 +125,7 @@ class FollowersTab extends ConsumerWidget {
                     color: HeroSheetTheme.followersAccent.withAlpha(38),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Icon(Icons.person,
+                  child: const AppIcon(DowntimeIcons.follower,
                       size: 20, color: HeroSheetTheme.followersAccent),
                 ),
                 const SizedBox(width: 12),
@@ -133,7 +136,7 @@ class FollowersTab extends ConsumerWidget {
                       Text(
                         follower.name,
                         style: const TextStyle(
-                          color: Colors.white,
+                          color: FormTheme.textBright,
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
                         ),
@@ -141,7 +144,7 @@ class FollowersTab extends ConsumerWidget {
                       Text(
                         follower.followerType,
                         style: TextStyle(
-                          color: Colors.grey.shade500,
+                          color: FormTheme.textMuted,
                           fontSize: 13,
                         ),
                       ),
@@ -150,7 +153,7 @@ class FollowersTab extends ConsumerWidget {
                 ),
                 PopupMenuButton(
                   iconSize: 20,
-                  iconColor: Colors.grey.shade500,
+                  iconColor: FormTheme.textMuted,
                   color: NavigationTheme.cardBackgroundDark,
                   itemBuilder: (context) => [
                     PopupMenuItem(
@@ -158,10 +161,10 @@ class FollowersTab extends ConsumerWidget {
                       child: Row(
                         children: [
                           Icon(Icons.edit,
-                              size: 18, color: Colors.grey.shade400),
+                              size: 18, color: FormTheme.textSecondary),
                           const SizedBox(width: 8),
                           Text(FollowersTabText.editMenuLabel,
-                              style: TextStyle(color: Colors.grey.shade300)),
+                              style: TextStyle(color: FormTheme.textSecondary)),
                         ],
                       ),
                     ),
@@ -215,7 +218,7 @@ class FollowersTab extends ConsumerWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.build_outlined,
+                  const AppIcon(DowntimeIcons.followerSkills,
                       size: 16, color: HeroSheetTheme.followersAccent),
                   const SizedBox(width: 6),
                   Expanded(
@@ -251,7 +254,7 @@ class FollowersTab extends ConsumerWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.translate, size: 16, color: Colors.amber.shade600),
+                  AppIcon(DowntimeIcons.followerLanguages, size: 16, color: Colors.amber.shade600),
                   const SizedBox(width: 6),
                   Expanded(
                     child: Wrap(
@@ -292,7 +295,7 @@ class FollowersTab extends ConsumerWidget {
         Text(
           label,
           style: TextStyle(
-            color: Colors.grey.shade500,
+            color: FormTheme.textMuted,
             fontWeight: FontWeight.w500,
             fontSize: 11,
           ),
@@ -317,12 +320,12 @@ class FollowersTab extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.people_outline, size: 64, color: Colors.grey.shade600),
+            AppIcon(DowntimeIcons.followers, size: 64, color: FormTheme.borderLight),
             const SizedBox(height: 16),
             Text(
               FollowersTabText.emptyTitle,
               style: TextStyle(
-                color: Colors.grey.shade400,
+                color: FormTheme.textSecondary,
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
               ),
@@ -332,7 +335,7 @@ class FollowersTab extends ConsumerWidget {
               FollowersTabText.emptySubtitle,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Colors.grey.shade600,
+                color: FormTheme.borderLight,
                 fontSize: 14,
               ),
             ),
@@ -353,7 +356,7 @@ class FollowersTab extends ConsumerWidget {
                   child: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.person_add, color: HeroSheetTheme.followersAccent, size: 18),
+                      AppIcon(DowntimeIcons.addFollower, color: HeroSheetTheme.followersAccent, size: 18),
                       SizedBox(width: 8),
                       Text(
                         FollowersTabText.emptyActionLabel,

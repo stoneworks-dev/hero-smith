@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/text/main_pages/gear/gear_page_text.dart';
 import '../../../core/theme/navigation_theme.dart';
 import '../../../widgets/shared/nav_card.dart';
 import 'items_page.dart';
@@ -15,8 +16,8 @@ class GearPage extends StatelessWidget {
       children: [
         NavCard(
           icon: Icons.backpack_outlined,
-          title: 'Kits',
-          subtitle: 'Preset equipment bundles by role',
+          title: GearPageText.kitsTitle,
+          subtitle: GearPageText.kitsSubtitle,
           accentColor: NavigationTheme.kitsColor,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const KitsPage()),
@@ -25,8 +26,8 @@ class GearPage extends StatelessWidget {
         const SizedBox(height: 12),
         NavCard(
           icon: Icons.handyman_outlined,
-          title: 'Items',
-          subtitle: 'All items (coming soon)',
+          title: GearPageText.itemsTitle,
+          subtitle: GearPageText.itemsSubtitle,
           accentColor: NavigationTheme.itemsColor,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const GearItemsPage()),
@@ -35,8 +36,8 @@ class GearPage extends StatelessWidget {
         const SizedBox(height: 12),
         NavCard(
           icon: Icons.diamond_outlined,
-          title: 'Treasure',
-          subtitle: 'Loot, valuables, and special finds',
+          title: GearPageText.treasureTitle,
+          subtitle: GearPageText.treasureSubtitle,
           accentColor: NavigationTheme.treasureColor,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const TreasurePage()),

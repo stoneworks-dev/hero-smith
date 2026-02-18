@@ -3,6 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/data/downtime_data_source.dart';
 import '../../../../core/db/providers.dart';
 import '../../../../core/models/downtime.dart';
+import '../../../../core/theme/app_icon.dart';
+import '../../../../core/theme/app_icon_data.dart';
+import '../../../../core/theme/app_icons.dart';
+import '../../../../core/theme/form_theme.dart';
 import '../../../../core/theme/navigation_theme.dart';
 import '../../../../core/text/heroes_sheet/downtime/project_template_browser_text.dart';
 
@@ -133,7 +137,7 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
         decoration: BoxDecoration(
           color: NavigationTheme.navBarBackground,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.grey.shade800),
+          border: Border.all(color: FormTheme.borderDim),
         ),
         child: Column(
           children: [
@@ -159,7 +163,7 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
                       color: _projectsColor.withAlpha(40),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Icon(Icons.source, size: 28, color: _projectsColor),
+                    child: AppIcon(DowntimeIcons.templateBrowser, size: 28, color: _projectsColor),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -167,19 +171,19 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
                         ? TextField(
                             controller: _searchController,
                             autofocus: true,
-                            style: const TextStyle(color: Colors.white),
+                            style: TextStyle(color: FormTheme.textBright),
                             decoration: InputDecoration(
                               hintText: ProjectTemplateBrowserText.searchHint,
-                              hintStyle: TextStyle(color: Colors.grey.shade500),
+                              hintStyle: TextStyle(color: FormTheme.textMuted),
                               filled: true,
                               fillColor: NavigationTheme.cardBackgroundDark,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
-                                borderSide: BorderSide(color: Colors.grey.shade700),
+                                borderSide: BorderSide(color: FormTheme.border),
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
-                                borderSide: BorderSide(color: Colors.grey.shade700),
+                                borderSide: BorderSide(color: FormTheme.border),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
@@ -191,7 +195,7 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
                               ),
                               suffixIcon: _searchQuery.isNotEmpty
                                   ? IconButton(
-                                      icon: Icon(Icons.clear, color: Colors.grey.shade500),
+                                      icon: Icon(Icons.clear, color: FormTheme.textMuted),
                                       onPressed: () {
                                         _searchController.clear();
                                       },
@@ -203,12 +207,12 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
                             ProjectTemplateBrowserText.dialogTitle,
                             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                                  color: FormTheme.textBright,
                                 ),
                           ),
                   ),
                   IconButton(
-                    icon: Icon(_isSearching ? Icons.close : Icons.search, color: Colors.grey.shade400),
+                    icon: Icon(_isSearching ? Icons.close : Icons.search, color: FormTheme.textSecondary),
                     onPressed: _toggleSearch,
                     tooltip: _isSearching
                         ? ProjectTemplateBrowserText.closeSearchTooltip
@@ -216,7 +220,7 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
                   ),
                   if (!_isSearching)
                     IconButton(
-                      icon: Icon(Icons.close, color: Colors.grey.shade400),
+                      icon: Icon(Icons.close, color: FormTheme.textSecondary),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                 ],
@@ -231,13 +235,13 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
               Container(
                 decoration: BoxDecoration(
                   border: Border(
-                    bottom: BorderSide(color: Colors.grey.shade800),
+                    bottom: BorderSide(color: FormTheme.borderDim),
                   ),
                 ),
                 child: TabBar(
                   controller: _tabController,
                   labelColor: _projectsColor,
-                  unselectedLabelColor: Colors.grey.shade500,
+                  unselectedLabelColor: FormTheme.textMuted,
                   indicatorColor: _projectsColor,
                   tabs: const [
                     Tab(text: ProjectTemplateBrowserText.tabProjectsLabel),
@@ -320,20 +324,20 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade800.withAlpha(80),
+                  color: FormTheme.surfaceMuted,
                   borderRadius: BorderRadius.circular(50),
                 ),
                 child: Icon(
                   Icons.search_off,
                   size: 48,
-                  color: Colors.grey.shade500,
+                  color: FormTheme.textMuted,
                 ),
               ),
               const SizedBox(height: 16),
               Text(
-                'No projects found for "$_searchQuery"',
+                ProjectTemplateBrowserText.noProjectsFound(_searchQuery),
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: Colors.grey.shade400,
+                  color: FormTheme.textSecondary,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -349,9 +353,9 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '${filteredProjects.length} results for "$_searchQuery"',
+            ProjectTemplateBrowserText.searchResults(filteredProjects.length, _searchQuery),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.grey.shade400,
+              color: FormTheme.textSecondary,
             ),
           ),
           const SizedBox(height: 16),
@@ -372,7 +376,7 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
   Widget _buildSearchResultCard(BuildContext context, SearchableProject project) {
     final theme = Theme.of(context);
     final categoryColor = _getCategoryColor(project.category);
-    final categoryIcon = _getCategoryIcon(project.category);
+    final categoryIcon = ProjectCategoryIcons.fromName(project.category);
     final categoryLabel = _getCategoryLabel(project.category);
     
     return Container(
@@ -380,7 +384,7 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
       decoration: BoxDecoration(
         color: NavigationTheme.cardBackgroundDark,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade800),
+        border: Border.all(color: FormTheme.borderDim),
       ),
       child: InkWell(
         onTap: () => _takeOnSearchableProject(context, ref, project),
@@ -403,7 +407,7 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(categoryIcon, size: 14, color: categoryColor),
+                        AppIcon(categoryIcon, size: 14, color: categoryColor),
                         const SizedBox(width: 4),
                         Text(
                           categoryLabel,
@@ -421,7 +425,7 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
                       project.name,
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                        color: FormTheme.textBright,
                       ),
                     ),
                   ),
@@ -433,7 +437,7 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
-                        'Goal: ${project.projectGoal}',
+                        ProjectTemplateBrowserText.goalBadge(project.projectGoal),
                         style: theme.textTheme.labelMedium?.copyWith(
                           color: _projectsColor,
                           fontWeight: FontWeight.w600,
@@ -448,7 +452,7 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
                 Text(
                   project.description,
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: Colors.grey.shade400,
+                    color: FormTheme.textSecondary,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -468,7 +472,7 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
                   ),
                   style: FilledButton.styleFrom(
                     backgroundColor: _projectsColor,
-                    foregroundColor: Colors.white,
+                    foregroundColor: FormTheme.textBright,
                   ),
                 ),
               ),
@@ -482,26 +486,13 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
   Color _getCategoryColor(String category) {
     switch (category) {
       case 'project':
-        return Colors.blue;
+        return NavigationTheme.projectsTabColor;
       case 'imbuement':
-        return Colors.purple;
+        return NavigationTheme.imbuementsTabColor;
       case 'treasure':
-        return Colors.amber.shade700;
+        return NavigationTheme.treasuresTabColor;
       default:
-        return Colors.grey;
-    }
-  }
-  
-  IconData _getCategoryIcon(String category) {
-    switch (category) {
-      case 'project':
-        return Icons.assignment;
-      case 'imbuement':
-        return Icons.build;
-      case 'treasure':
-        return Icons.diamond;
-      default:
-        return Icons.help_outline;
+        return FormTheme.textMuted;
     }
   }
   
@@ -541,7 +532,7 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
           Text(
             ProjectTemplateBrowserText.selectProjectPrompt,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey.shade400,
+                  color: FormTheme.textSecondary,
                 ),
           ),
           const SizedBox(height: 16),
@@ -570,7 +561,7 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
           Text(
             ProjectTemplateBrowserText.selectImbuementPrompt,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey.shade400,
+                  color: FormTheme.textSecondary,
                 ),
           ),
           const SizedBox(height: 16),
@@ -599,7 +590,7 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
           Text(
             ProjectTemplateBrowserText.selectTreasurePrompt,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey.shade400,
+                  color: FormTheme.textSecondary,
                 ),
           ),
           const SizedBox(height: 16),
@@ -629,16 +620,16 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.grey.shade800.withAlpha(80),
+                color: FormTheme.surfaceMuted,
                 borderRadius: BorderRadius.circular(50),
               ),
-              child: Icon(Icons.inbox, size: 48, color: Colors.grey.shade500),
+              child: AppIcon(DowntimeIcons.emptyState, size: 48, color: FormTheme.textMuted),
             ),
             const SizedBox(height: 16),
             Text(
               ProjectTemplateBrowserText.noCraftableTreasuresLabel,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: Colors.grey.shade400,
+                color: FormTheme.textSecondary,
               ),
             ),
           ],
@@ -696,49 +687,88 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
     }
     
     final sortedEchelons = byEchelon.keys.toList()..sort();
+    final typeColor = _getTreasureTypeColor(type);
     
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: ExpansionTile(
-        tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        childrenPadding: const EdgeInsets.only(bottom: 8),
-        backgroundColor: _getTreasureTypeColor(type).withValues(alpha: 0.05),
-        collapsedBackgroundColor: _getTreasureTypeColor(type).withValues(alpha: 0.1),
-        leading: Icon(
-          _getTreasureTypeIcon(type),
-          color: _getTreasureTypeColor(type),
-          size: 20,
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Container(
+        decoration: BoxDecoration(
+          color: NavigationTheme.cardBackgroundDark,
+          borderRadius: BorderRadius.circular(NavigationTheme.cardBorderRadius),
         ),
-        title: Text(
-          _getTreasureTypeName(type),
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: _getTreasureTypeColor(type),
+        clipBehavior: Clip.antiAlias,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Left accent stripe
+            Container(
+              width: NavigationTheme.cardAccentStripeWidth,
+              constraints: const BoxConstraints(minHeight: 72),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    typeColor.withAlpha(220),
+                    typeColor.withAlpha(140),
+                  ],
+                ),
               ),
-        ),
-        subtitle: Text(
-          '${treasures.length} items',
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
-        children: sortedEchelons.map((echelon) {
-          final items = byEchelon[echelon]!;
-          
-          return ExpansionTile(
-            tilePadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
-            childrenPadding: const EdgeInsets.symmetric(horizontal: 8),
-            iconColor: Colors.grey.shade500,
-            collapsedIconColor: Colors.grey.shade600,
-            title: Text(
-              _getEchelonName(echelon),
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade400,
-                  ),
             ),
-            trailing: Text('${items.length}', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey.shade500)),
-            children: items.map((treasure) => _buildTreasureCard(context, treasure)).toList(),
-          );
-        }).toList(),
+            // Main content
+            Expanded(
+              child: Theme(
+                data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                child: ExpansionTile(
+                  tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  childrenPadding: const EdgeInsets.only(bottom: 8),
+                  leading: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          typeColor.withAlpha(60),
+                          typeColor.withAlpha(30),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: typeColor.withAlpha(80), width: 1),
+                    ),
+                    child: AppIcon(_getTreasureTypeIcon(type), color: typeColor, size: 20),
+                  ),
+                  title: Text(
+                    _getTreasureTypeName(type),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: typeColor,
+                        ),
+                  ),
+                  subtitle: Text(
+                    ProjectTemplateBrowserText.itemCount(treasures.length),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: FormTheme.textMuted,
+                    ),
+                  ),
+                  iconColor: typeColor,
+                  collapsedIconColor: typeColor.withAlpha(160),
+                  children: sortedEchelons.map((echelon) {
+                    final items = byEchelon[echelon]!;
+                    return _buildSubGroupTile(
+                      context,
+                      title: _getEchelonName(echelon),
+                      count: items.length,
+                      accentColor: typeColor,
+                      children: items.map((treasure) => _buildTreasureCard(context, treasure)).toList(),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -766,50 +796,136 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
         return indexA.compareTo(indexB);
       });
     
+    const leveledColor = NavigationTheme.leveledColor;
+    
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: ExpansionTile(
-        tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        childrenPadding: const EdgeInsets.only(bottom: 8),
-        backgroundColor: Colors.deepPurple.withValues(alpha: 0.05),
-        collapsedBackgroundColor: Colors.deepPurple.withValues(alpha: 0.1),
-        leading: const Icon(
-          Icons.shield,
-          color: Colors.deepPurple,
-          size: 20,
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Container(
+        decoration: BoxDecoration(
+          color: NavigationTheme.cardBackgroundDark,
+          borderRadius: BorderRadius.circular(NavigationTheme.cardBorderRadius),
         ),
-        title: Text(
-          ProjectTemplateBrowserText.leveledTreasuresHeader,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Colors.deepPurple,
+        clipBehavior: Clip.antiAlias,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Left accent stripe
+            Container(
+              width: NavigationTheme.cardAccentStripeWidth,
+              constraints: const BoxConstraints(minHeight: 72),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    leveledColor.withAlpha(220),
+                    leveledColor.withAlpha(140),
+                  ],
+                ),
               ),
+            ),
+            // Main content
+            Expanded(
+              child: Theme(
+                data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                child: ExpansionTile(
+                  tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  childrenPadding: const EdgeInsets.only(bottom: 8),
+                  leading: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          leveledColor.withAlpha(60),
+                          leveledColor.withAlpha(30),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: leveledColor.withAlpha(80), width: 1),
+                    ),
+                    child: AppIcon(DowntimeIcons.leveledTreasure, color: leveledColor, size: 20),
+                  ),
+                  title: Text(
+                    ProjectTemplateBrowserText.leveledTreasuresHeader,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: leveledColor,
+                        ),
+                  ),
+                  subtitle: Text(
+                    ProjectTemplateBrowserText.itemCount(treasures.length),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: FormTheme.textMuted,
+                    ),
+                  ),
+                  iconColor: leveledColor,
+                  collapsedIconColor: leveledColor.withAlpha(160),
+                  children: sortedTypes.map((equipType) {
+                    final items = byEquipType[equipType]!;
+                    return _buildSubGroupTile(
+                      context,
+                      title: _getEquipmentTypeName(equipType),
+                      count: items.length,
+                      accentColor: leveledColor,
+                      children: items.map((treasure) => _buildTreasureCard(context, treasure)).toList(),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+          ],
         ),
-        subtitle: Text(
-          '${treasures.length} items',
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Colors.grey.shade500,
+      ),
+    );
+  }
+
+  /// Sub-group tile used inside both treasure type and imbuement level sections.
+  Widget _buildSubGroupTile(
+    BuildContext context, {
+    required String title,
+    required int count,
+    required Color accentColor,
+    required List<Widget> children,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        color: accentColor.withAlpha(12),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Theme(
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+          childrenPadding: const EdgeInsets.symmetric(horizontal: 4),
+          iconColor: accentColor.withAlpha(160),
+          collapsedIconColor: FormTheme.borderLight,
+          title: Text(
+            title,
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: FormTheme.textSecondary,
+                ),
           ),
-        ),
-        children: sortedTypes.map((equipType) {
-          final items = byEquipType[equipType]!;
-          
-          return ExpansionTile(
-            tilePadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
-            childrenPadding: const EdgeInsets.symmetric(horizontal: 8),
-            iconColor: Colors.grey.shade500,
-            collapsedIconColor: Colors.grey.shade600,
-            title: Text(
-              _getEquipmentTypeName(equipType),
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+          trailing: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            decoration: BoxDecoration(
+              color: accentColor.withAlpha(30),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Text(
+              '$count',
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: accentColor,
                     fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade400,
                   ),
             ),
-            trailing: Text('${items.length}', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey.shade500)),
-            children: items.map((treasure) => _buildTreasureCard(context, treasure)).toList(),
-          );
-        }).toList(),
+          ),
+          children: children,
+        ),
       ),
     );
   }
@@ -819,20 +935,36 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
     final typeColor = _getTreasureTypeColor(treasure.type);
     
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: NavigationTheme.cardBackgroundDark,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade800),
+        borderRadius: BorderRadius.circular(NavigationTheme.cardBorderRadius),
       ),
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () => _takeOnTreasureProject(context, ref, treasure),
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+        borderRadius: BorderRadius.circular(NavigationTheme.cardBorderRadius),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Left accent stripe
+            Container(
+              width: 4,
+              constraints: const BoxConstraints(minHeight: 80),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [typeColor, typeColor.withAlpha(140)],
+                ),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
               // Title and goal
               Row(
                 children: [
@@ -853,7 +985,7 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
-                        'Goal: ${treasure.projectGoal}',
+                        ProjectTemplateBrowserText.goalBadge(treasure.projectGoal),
                         style: theme.textTheme.labelMedium?.copyWith(
                           color: typeColor,
                           fontWeight: FontWeight.w600,
@@ -894,7 +1026,7 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
                 Text(
                   treasure.description,
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: Colors.grey.shade400,
+                    color: FormTheme.textSecondary,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -908,7 +1040,7 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
                   context,
                   ProjectTemplateBrowserText.prerequisitesLabel,
                   [treasure.itemPrerequisite!],
-                  Icons.inventory_2_outlined,
+                  DowntimeIcons.rewards,
                 ),
                 const SizedBox(height: 8),
               ],
@@ -918,11 +1050,11 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
                 Wrap(
                   spacing: 8,
                   children: [
-                    Icon(Icons.casino_outlined, size: 16, color: Colors.grey.shade500),
+                    AppIcon(DowntimeIcons.diceRoll, size: 16, color: FormTheme.textMuted),
                     Text(
-                      'Roll: ${treasure.projectRollCharacteristics.join(', ')}',
+                      ProjectTemplateBrowserText.rollLabel(treasure.projectRollCharacteristics.join(', ')),
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: Colors.grey.shade500,
+                        color: FormTheme.textMuted,
                       ),
                     ),
                   ],
@@ -942,12 +1074,15 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
                   ),
                   style: FilledButton.styleFrom(
                     backgroundColor: _projectsColor,
-                    foregroundColor: Colors.white,
+                    foregroundColor: FormTheme.textBright,
                   ),
                 ),
               ),
             ],
           ),
+        ),
+            ),
+          ],
         ),
       ),
     );
@@ -956,26 +1091,26 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
   Color _getTreasureTypeColor(String type) {
     switch (type) {
       case 'consumable':
-        return Colors.teal;
+        return NavigationTheme.consumablesColor;
       case 'trinket':
-        return Colors.amber.shade700;
+        return NavigationTheme.trinketsColor;
       case 'leveled_treasure':
-        return Colors.deepPurple;
+        return NavigationTheme.leveledColor;
       default:
-        return Colors.blueGrey;
+        return NavigationTheme.treasureColor;
     }
   }
 
-  IconData _getTreasureTypeIcon(String type) {
+  AppIconData _getTreasureTypeIcon(String type) {
     switch (type) {
       case 'consumable':
-        return Icons.local_drink;
+        return DowntimeIcons.consumable;
       case 'trinket':
-        return Icons.auto_awesome;
+        return DowntimeIcons.trinket;
       case 'leveled_treasure':
-        return Icons.shield;
+        return DowntimeIcons.leveledTreasure;
       default:
-        return Icons.diamond;
+        return DowntimeIcons.genericTreasure;
     }
   }
 
@@ -1005,7 +1140,7 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
       case 4:
         return ProjectTemplateBrowserText.echelon4Label;
       default:
-        return '${echelon}th Echelon';
+        return ProjectTemplateBrowserText.echelonFallback(echelon);
     }
   }
 
@@ -1052,7 +1187,7 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
         Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Added "${treasure.name}" crafting project'),
+            content: Text(ProjectTemplateBrowserText.addedCraftingProject(treasure.name)),
             backgroundColor: Colors.green,
           ),
         );
@@ -1061,7 +1196,7 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to add project: $e'),
+            content: Text(ProjectTemplateBrowserText.failedToAddProject(e)),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
@@ -1081,16 +1216,16 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.grey.shade800.withAlpha(80),
+                color: FormTheme.surfaceMuted,
                 borderRadius: BorderRadius.circular(50),
               ),
-              child: Icon(Icons.inbox, size: 48, color: Colors.grey.shade500),
+              child: AppIcon(DowntimeIcons.emptyState, size: 48, color: FormTheme.textMuted),
             ),
             const SizedBox(height: 16),
             Text(
               ProjectTemplateBrowserText.noImbuementsLabel,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: Colors.grey.shade400,
+                color: FormTheme.textSecondary,
               ),
             ),
           ],
@@ -1118,47 +1253,90 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
       itemBuilder: (context, index) {
         final level = sortedLevels[index];
         final typeGroups = grouped[level]!;
+        final imbuementColor = NavigationTheme.imbuementsTabColor;
+        final totalItems = typeGroups.values.fold<int>(0, (sum, list) => sum + list.length);
         
         return Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: ExpansionTile(
-            tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-            childrenPadding: const EdgeInsets.only(bottom: 8),
-            backgroundColor: Colors.purple.withAlpha(15),
-            collapsedBackgroundColor: Colors.purple.withAlpha(25),
-            iconColor: Colors.purple.shade300,
-            collapsedIconColor: Colors.purple.shade400,
-            leading: Icon(
-              Icons.star,
-              color: Colors.purple.shade300,
-              size: 20,
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Container(
+            decoration: BoxDecoration(
+              color: NavigationTheme.cardBackgroundDark,
+              borderRadius: BorderRadius.circular(NavigationTheme.cardBorderRadius),
             ),
-            title: Text(
-              _getLevelName(level),
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.purple.shade300,
+            clipBehavior: Clip.antiAlias,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Left accent stripe
+                Container(
+                  width: NavigationTheme.cardAccentStripeWidth,
+                  constraints: const BoxConstraints(minHeight: 72),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        imbuementColor.withAlpha(220),
+                        imbuementColor.withAlpha(140),
+                      ],
+                    ),
                   ),
-            ),
-            children: typeGroups.entries.map((entry) {
-              final type = entry.key;
-              final items = entry.value;
-              
-              return ExpansionTile(
-                tilePadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
-                childrenPadding: const EdgeInsets.symmetric(horizontal: 8),
-                iconColor: Colors.grey.shade500,
-                collapsedIconColor: Colors.grey.shade600,
-                title: Text(
-                  _getImbuementTypeName(type),
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: Colors.grey.shade400,
-                      ),
                 ),
-                children: items.map((imbuement) => _buildTemplateCard(context, imbuement)).toList(),
-              );
-            }).toList(),
+                // Main content
+                Expanded(
+                  child: Theme(
+                    data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                    child: ExpansionTile(
+                      tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      childrenPadding: const EdgeInsets.only(bottom: 8),
+                      leading: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              imbuementColor.withAlpha(60),
+                              imbuementColor.withAlpha(30),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: imbuementColor.withAlpha(80), width: 1),
+                        ),
+                        child: AppIcon(DowntimeIcons.enchantment, color: imbuementColor, size: 20),
+                      ),
+                      title: Text(
+                        _getLevelName(level),
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: imbuementColor,
+                            ),
+                      ),
+                      subtitle: Text(
+                        ProjectTemplateBrowserText.itemCount(totalItems),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: FormTheme.textMuted,
+                        ),
+                      ),
+                      iconColor: imbuementColor,
+                      collapsedIconColor: imbuementColor.withAlpha(160),
+                      children: typeGroups.entries.map((entry) {
+                        final type = entry.key;
+                        final items = entry.value;
+                        return _buildSubGroupTile(
+                          context,
+                          title: _getImbuementTypeName(type),
+                          count: items.length,
+                          accentColor: imbuementColor,
+                          children: items.map((imbuement) => _buildTemplateCard(context, imbuement)).toList(),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -1174,7 +1352,7 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
       case 9:
         return ProjectTemplateBrowserText.levelImbuements9Label;
       default:
-        return '${level}th Level Imbuements';
+        return ProjectTemplateBrowserText.levelImbuementsFallback(level);
     }
   }
 
@@ -1218,14 +1396,14 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
           Text(
             ProjectTemplateBrowserText.failedToLoadTemplatesLabel,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: Colors.grey.shade400,
+              color: FormTheme.textSecondary,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             error.toString(),
             textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.grey.shade500),
+            style: TextStyle(color: FormTheme.textMuted),
           ),
         ],
       ),
@@ -1244,16 +1422,16 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.grey.shade800.withAlpha(80),
+                color: FormTheme.surfaceMuted,
                 borderRadius: BorderRadius.circular(50),
               ),
-              child: Icon(Icons.inbox, size: 48, color: Colors.grey.shade500),
+              child: AppIcon(DowntimeIcons.emptyState, size: 48, color: FormTheme.textMuted),
             ),
             const SizedBox(height: 16),
             Text(
               ProjectTemplateBrowserText.noTemplatesFoundLabel,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: Colors.grey.shade400,
+                color: FormTheme.textSecondary,
               ),
             ),
           ],
@@ -1290,22 +1468,40 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
         : (projectGoalRaw is String ? int.tryParse(projectGoalRaw) : null) ?? 100;
     
     final description = template.raw['description'] as String? ?? '';
+    final imbuementType = template.raw['type'] as String? ?? '';
+    final accentColor = _getImbuementAccentColor(imbuementType);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: NavigationTheme.cardBackgroundDark,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade800),
+        borderRadius: BorderRadius.circular(NavigationTheme.cardBorderRadius),
       ),
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () => _takeOnProject(context, ref, template),
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+        borderRadius: BorderRadius.circular(NavigationTheme.cardBorderRadius),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Left accent stripe
+            Container(
+              width: 4,
+              constraints: const BoxConstraints(minHeight: 80),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [accentColor, accentColor.withAlpha(140)],
+                ),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
               // Title and goal
               Row(
                 children: [
@@ -1314,7 +1510,7 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
                       template.name,
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                        color: FormTheme.textBright,
                       ),
                     ),
                   ),
@@ -1325,7 +1521,7 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      'Goal: $projectGoal',
+                      ProjectTemplateBrowserText.goalBadge(projectGoal),
                       style: theme.textTheme.labelMedium?.copyWith(
                         color: _projectsColor,
                         fontWeight: FontWeight.w600,
@@ -1342,7 +1538,7 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
                 Text(
                   description,
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: Colors.grey.shade400,
+                    color: FormTheme.textSecondary,
                   ),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
@@ -1356,7 +1552,7 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
                   context,
                   ProjectTemplateBrowserText.itemPrerequisitesLabel,
                   itemPrereqs.map((p) => p['name'] as String? ?? '').toList(),
-                  Icons.inventory_2_outlined,
+                  DowntimeIcons.rewards,
                 ),
                 const SizedBox(height: 8),
               ],
@@ -1371,7 +1567,7 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
                     final lang = p['language'] as String? ?? '';
                     return lang.isNotEmpty ? '$name ($lang)' : name;
                   }).toList(),
-                  Icons.book_outlined,
+                  DowntimeIcons.lore,
                 ),
                 const SizedBox(height: 8),
               ],
@@ -1381,11 +1577,11 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
                 Wrap(
                   spacing: 8,
                   children: [
-                    Icon(Icons.casino_outlined, size: 16, color: Colors.grey.shade500),
+                    AppIcon(DowntimeIcons.diceRoll, size: 16, color: FormTheme.textMuted),
                     Text(
-                      'Roll: ${rollChars.map((c) => c['name'] as String? ?? '').join(', ')}',
+                      ProjectTemplateBrowserText.rollLabel(rollChars.map((c) => c['name'] as String? ?? '').join(', ')),
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: Colors.grey.shade500,
+                        color: FormTheme.textMuted,
                       ),
                     ),
                   ],
@@ -1405,22 +1601,41 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
                   ),
                   style: FilledButton.styleFrom(
                     backgroundColor: _projectsColor,
-                    foregroundColor: Colors.white,
+                    foregroundColor: FormTheme.textBright,
                   ),
                 ),
               ),
             ],
           ),
         ),
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  /// Get accent color for imbuement type.
+  Color _getImbuementAccentColor(String type) {
+    switch (type) {
+      case 'weapon_imbuement':
+        return NavigationTheme.weaponColor;
+      case 'implement_imbuement':
+        return NavigationTheme.implementColor;
+      case 'armor_imbuement':
+        return NavigationTheme.armorColor;
+      case 'shield_imbuement':
+        return NavigationTheme.shieldColor;
+      default:
+        return NavigationTheme.imbuementsTabColor;
+    }
   }
 
   Widget _buildSection(
     BuildContext context,
     String title,
     List<String> items,
-    IconData icon,
+    AppIconData icon,
   ) {
     final theme = Theme.of(context);
     return Column(
@@ -1428,13 +1643,13 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
       children: [
         Row(
           children: [
-            Icon(icon, size: 16, color: Colors.grey.shade500),
+            AppIcon(icon, size: 16, color: FormTheme.textMuted),
             const SizedBox(width: 8),
             Text(
               title,
               style: theme.textTheme.labelMedium?.copyWith(
                 fontWeight: FontWeight.w600,
-                color: Colors.grey.shade400,
+                color: FormTheme.textSecondary,
               ),
             ),
           ],
@@ -1445,7 +1660,7 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
               child: Text(
                 '• $item',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: Colors.grey.shade400,
+                  color: FormTheme.textSecondary,
                 ),
               ),
             )),
@@ -1517,7 +1732,7 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
         Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Added "${template.name}" to your projects'),
+            content: Text(ProjectTemplateBrowserText.addedToProjects(template.name)),
             backgroundColor: Colors.green,
           ),
         );
@@ -1526,7 +1741,7 @@ class _ProjectTemplateBrowserState extends ConsumerState<ProjectTemplateBrowser>
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to add project: $e'),
+            content: Text(ProjectTemplateBrowserText.failedToAddProject(e)),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );

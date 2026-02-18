@@ -1,3 +1,5 @@
+import '../../common/common_text.dart';
+
 class KitsTabText {
   static const String loadKitsFailedPrefix = 'Failed to load kits: ';
   static const String updateFavoritesFailedPrefix = 'Failed to update favorites: ';
@@ -8,7 +10,7 @@ class KitsTabText {
   static const String equipKitDialogTitle = 'Equip Kit';
   static const String equipKitDialogContentPrefix = 'Equip "';
   static const String equipKitDialogContentSuffix = '"?';
-  static const String equipKitDialogCancelAction = 'Cancel';
+  static const String equipKitDialogCancelAction = CommonText.cancel;
   static const String equipKitDialogConfirmAction = 'Equip';
   static const String swapKitDialogTitle = 'Swap Kit';
   static const String swapKitDialogReplacePrefix = 'Replace "';
@@ -16,12 +18,12 @@ class KitsTabText {
   static const String swapKitDialogReplaceSuffix = '"?';
   static const String swapKitDialogEquipPrefix = 'Equip "';
   static const String swapKitDialogEquipSuffix = '"?';
-  static const String swapKitDialogCancelAction = 'Cancel';
+  static const String swapKitDialogCancelAction = CommonText.cancel;
   static const String swapKitDialogConfirmAction = 'Swap';
   static const String selectKitToReplaceTitlePrefix = 'Replace which kit with "';
   static const String selectKitToReplaceTitleSuffix = '"?';
   static const String unknownKitLabel = 'Unknown Kit';
-  static const String selectKitToReplaceCancelAction = 'Cancel';
+  static const String selectKitToReplaceCancelAction = CommonText.cancel;
   static const String previousKitLabel = 'previous kit';
   static const String replacedKitSnackPrefix = 'Replaced ';
   static const String replacedKitSnackInfix = ' with ';

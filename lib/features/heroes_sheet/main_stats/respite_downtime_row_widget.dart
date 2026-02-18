@@ -6,7 +6,10 @@ library;
 import 'package:flutter/material.dart';
 
 import '../../../core/repositories/hero_repository.dart';
+import '../../../core/theme/app_icon.dart';
+import '../../../core/theme/app_icons.dart';
 import '../../../core/theme/navigation_theme.dart';
+import '../../../core/theme/form_theme.dart';
 import '../../../core/text/heroes_sheet/main_stats/hero_main_stats_view_text.dart';
 
 /// Callback for taking respite action.
@@ -35,7 +38,7 @@ class RespiteDowntimeRowWidget extends StatelessWidget {
         Expanded(
           child: OutlinedButton.icon(
             onPressed: onTakeRespite,
-            icon: const Icon(Icons.bedtime_outlined, size: 18),
+            icon: const AppIcon(CombatIcons.respite, size: 18),
             label: const Text(HeroMainStatsViewText.respiteButtonLabel),
             style: OutlinedButton.styleFrom(
               foregroundColor: Colors.blue.shade400,
@@ -48,7 +51,7 @@ class RespiteDowntimeRowWidget extends StatelessWidget {
         Expanded(
           child: OutlinedButton.icon(
             onPressed: onNavigateDowntime,
-            icon: const Icon(Icons.assignment_outlined, size: 18),
+            icon: const AppIcon(CombatIcons.downtime, size: 18),
             label: const Text(HeroMainStatsViewText.downtimeButtonLabel),
             style: OutlinedButton.styleFrom(
               foregroundColor: NavigationTheme.downtimeColor,
@@ -81,7 +84,7 @@ Future<bool?> showRespiteConfirmDialog(
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: BorderSide(color: Colors.grey.shade800),
+          side: BorderSide(color: FormTheme.borderDim),
         ),
         title: Row(
           children: [
@@ -91,12 +94,12 @@ Future<bool?> showRespiteConfirmDialog(
                 color: Colors.blue.withAlpha(40),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Icon(Icons.bedtime_outlined, color: Colors.blue.shade400),
+              child: AppIcon(CombatIcons.respite, color: Colors.blue.shade400),
             ),
             const SizedBox(width: 12),
             const Text(
               HeroMainStatsViewText.respiteDialogTitle,
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: FormTheme.textBright),
             ),
           ],
         ),
@@ -106,28 +109,28 @@ Future<bool?> showRespiteConfirmDialog(
           children: [
             Text(
               HeroMainStatsViewText.respiteDialogIntro,
-              style: TextStyle(color: Colors.grey.shade300),
+              style: TextStyle(color: FormTheme.textSecondary),
             ),
             const SizedBox(height: 12),
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.grey.shade800.withAlpha(100),
+                color: FormTheme.surfaceMuted,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade700),
+                border: Border.all(color: FormTheme.border),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.emoji_events,
+                      AppIcon(CombatIcons.victories,
                           size: 16, color: Colors.amber.shade400),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
                           '${HeroMainStatsViewText.respiteDialogConvertPrefix}$victories ${victories == 1 ? HeroMainStatsViewText.respiteDialogConvertSingular : HeroMainStatsViewText.respiteDialogConvertPlural}${HeroMainStatsViewText.respiteDialogConvertSuffix}',
-                          style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey.shade300),
+                          style: theme.textTheme.bodyMedium?.copyWith(color: FormTheme.textSecondary),
                         ),
                       ),
                     ],
@@ -135,7 +138,7 @@ Future<bool?> showRespiteConfirmDialog(
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      Icon(Icons.star,
+                      AppIcon(CombatIcons.experience,
                           size: 16, color: Colors.amber.shade400),
                       const SizedBox(width: 8),
                       Expanded(
@@ -143,7 +146,7 @@ Future<bool?> showRespiteConfirmDialog(
                           '${HeroMainStatsViewText.respiteDialogXpPrefix}$currentXp${HeroMainStatsViewText.respiteDialogArrowSeparator}$newXp',
                           style: theme.textTheme.bodyMedium?.copyWith(
                             fontWeight: FontWeight.w500,
-                            color: Colors.white,
+                            color: FormTheme.textBright,
                           ),
                         ),
                       ),
@@ -152,13 +155,13 @@ Future<bool?> showRespiteConfirmDialog(
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      Icon(Icons.favorite,
+                      AppIcon(CombatIcons.stamina,
                           size: 16, color: Colors.red.shade400),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
                           '${HeroMainStatsViewText.respiteDialogRecoveriesPrefix}${HeroMainStatsViewText.respiteDialogRecoveriesArrow}$recoveriesMax${HeroMainStatsViewText.respiteDialogRecoveriesSuffix}',
-                          style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey.shade300),
+                          style: theme.textTheme.bodyMedium?.copyWith(color: FormTheme.textSecondary),
                         ),
                       ),
                     ],
@@ -171,14 +174,14 @@ Future<bool?> showRespiteConfirmDialog(
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
-            style: TextButton.styleFrom(foregroundColor: Colors.grey.shade400),
+            style: TextButton.styleFrom(foregroundColor: FormTheme.textSecondary),
             child: const Text(HeroMainStatsViewText.respiteDialogCancelLabel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
             style: FilledButton.styleFrom(
               backgroundColor: Colors.blue.shade600,
-              foregroundColor: Colors.white,
+              foregroundColor: FormTheme.textBright,
             ),
             child:
                 const Text(HeroMainStatsViewText.respiteDialogConfirmLabel),

@@ -4,6 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import '../../../../core/db/providers.dart';
 import '../../../../core/models/downtime_tracking.dart';
 import '../../../../core/repositories/hero_repository.dart';
+import '../../../../core/theme/app_icon.dart';
+import '../../../../core/theme/app_icons.dart';
+import '../../../../core/theme/form_theme.dart';
 import '../../../../core/theme/navigation_theme.dart';
 import '../../../../core/text/heroes_sheet/downtime/project_roll_dialog_text.dart';
 import '../../main_stats/hero_main_stats_providers.dart';
@@ -225,7 +228,7 @@ class _ProjectRollDialogState extends ConsumerState<ProjectRollDialog> {
         decoration: BoxDecoration(
           color: NavigationTheme.navBarBackground,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.grey.shade800),
+          border: Border.all(color: FormTheme.borderDim),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -252,7 +255,7 @@ class _ProjectRollDialogState extends ConsumerState<ProjectRollDialog> {
                       color: _projectsColor.withAlpha(40),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Icon(Icons.casino, color: _projectsColor, size: 24),
+                    child: AppIcon(DowntimeIcons.diceRoll, color: _projectsColor, size: 24),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -263,13 +266,13 @@ class _ProjectRollDialogState extends ConsumerState<ProjectRollDialog> {
                           ProjectRollDialogText.dialogTitle,
                           style: theme.textTheme.titleLarge?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            color: FormTheme.textBright,
                           ),
                         ),
                         Text(
                           widget.project.name,
                           style: theme.textTheme.bodyMedium?.copyWith(
-                            color: Colors.grey.shade400,
+                            color: FormTheme.textSecondary,
                           ),
                         ),
                       ],
@@ -277,7 +280,7 @@ class _ProjectRollDialogState extends ConsumerState<ProjectRollDialog> {
                   ),
                   IconButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    icon: Icon(Icons.close, color: Colors.grey.shade400),
+                    icon: Icon(Icons.close, color: FormTheme.textSecondary),
                   ),
                 ],
               ),
@@ -294,14 +297,14 @@ class _ProjectRollDialogState extends ConsumerState<ProjectRollDialog> {
                     _buildHeroRollSection(context),
                     
                     const SizedBox(height: 16),
-                    Divider(color: Colors.grey.shade800),
+                    Divider(color: FormTheme.borderDim),
                     const SizedBox(height: 16),
                     
                     // Follower Contributions Section
                     _buildFollowerSection(context, followersAsync),
                     
                     const SizedBox(height: 16),
-                    Divider(color: Colors.grey.shade800),
+                    Divider(color: FormTheme.borderDim),
                     const SizedBox(height: 16),
                     
                     // Grand Total
@@ -315,7 +318,7 @@ class _ProjectRollDialogState extends ConsumerState<ProjectRollDialog> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                border: Border(top: BorderSide(color: Colors.grey.shade800)),
+                border: Border(top: BorderSide(color: FormTheme.borderDim)),
               ),
               child: Row(
                 children: [
@@ -323,8 +326,8 @@ class _ProjectRollDialogState extends ConsumerState<ProjectRollDialog> {
                     child: OutlinedButton(
                       onPressed: () => Navigator.of(context).pop(),
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.grey.shade400,
-                        side: BorderSide(color: Colors.grey.shade700),
+                        foregroundColor: FormTheme.textSecondary,
+                        side: BorderSide(color: FormTheme.border),
                       ),
                       child: const Text(ProjectRollDialogText.cancelButtonLabel),
                     ),
@@ -334,12 +337,12 @@ class _ProjectRollDialogState extends ConsumerState<ProjectRollDialog> {
                     child: FilledButton.icon(
                       onPressed: _grandTotal > 0 ? _confirmAndAddPoints : null,
                       icon: const Icon(Icons.add),
-                      label: Text('Add $_grandTotal Points'),
+                      label: Text(ProjectRollDialogText.addPointsButton(_grandTotal)),
                       style: FilledButton.styleFrom(
                         backgroundColor: _projectsColor,
-                        foregroundColor: Colors.white,
-                        disabledBackgroundColor: Colors.grey.shade700,
-                        disabledForegroundColor: Colors.grey.shade500,
+                        foregroundColor: FormTheme.textBright,
+                        disabledBackgroundColor: FormTheme.border,
+                        disabledForegroundColor: FormTheme.textMuted,
                       ),
                     ),
                   ),
@@ -359,7 +362,7 @@ class _ProjectRollDialogState extends ConsumerState<ProjectRollDialog> {
       decoration: BoxDecoration(
         color: NavigationTheme.cardBackgroundDark,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade800),
+        border: Border.all(color: FormTheme.borderDim),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -374,14 +377,14 @@ class _ProjectRollDialogState extends ConsumerState<ProjectRollDialog> {
                     color: _projectsColor.withAlpha(40),
                     borderRadius: BorderRadius.circular(6),
                   ),
-                  child: const Icon(Icons.person, color: _projectsColor, size: 20),
+                  child: AppIcon(DowntimeIcons.follower, color: _projectsColor, size: 20),
                 ),
                 const SizedBox(width: 8),
                 Text(
                   ProjectRollDialogText.heroSectionTitle,
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: FormTheme.textBright,
                   ),
                 ),
               ],
@@ -391,7 +394,7 @@ class _ProjectRollDialogState extends ConsumerState<ProjectRollDialog> {
             // Roll button
             FilledButton.icon(
               onPressed: _rollForHero,
-              icon: const Icon(Icons.casino),
+              icon: AppIcon(DowntimeIcons.diceRoll, size: 18),
               label: Text(
                 _heroHasRolled
                     ? ProjectRollDialogText.heroRerollButtonLabel
@@ -399,7 +402,7 @@ class _ProjectRollDialogState extends ConsumerState<ProjectRollDialog> {
               ),
               style: FilledButton.styleFrom(
                 backgroundColor: _projectsColor,
-                foregroundColor: Colors.white,
+                foregroundColor: FormTheme.textBright,
               ),
             ),
             
@@ -421,32 +424,32 @@ class _ProjectRollDialogState extends ConsumerState<ProjectRollDialog> {
                     decoration: BoxDecoration(
                       color: isBreakthroughRoll 
                           ? Colors.amber.withAlpha(50)
-                          : Colors.grey.shade800.withAlpha(100),
+                          : FormTheme.surfaceMuted,
                       borderRadius: BorderRadius.circular(8),
                       border: isBreakthroughRoll 
                           ? Border.all(color: Colors.amber, width: 2)
-                          : Border.all(color: Colors.grey.shade700),
+                          : Border.all(color: FormTheme.border),
                     ),
                     child: Row(
                       children: [
                         if (isBreakthrough) ...[
-                          Icon(Icons.bolt, size: 18, color: Colors.amber.shade600),
+                          AppIcon(DowntimeIcons.surge, size: 18, color: Colors.amber.shade600),
                           const SizedBox(width: 6),
                           Text(
-                            'Breakthrough ${index}:',
+                            ProjectRollDialogText.breakthroughLabel(index),
                             style: theme.textTheme.bodyMedium?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: Colors.amber.shade600,
                             ),
                           ),
                         ] else ...[
-                          const Icon(Icons.casino, size: 18, color: _projectsColor),
+                          AppIcon(DowntimeIcons.diceRoll, size: 18, color: _projectsColor),
                           const SizedBox(width: 6),
                           Text(
                             ProjectRollDialogText.heroInitialRollLabel,
                             style: theme.textTheme.bodyMedium?.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: Colors.grey.shade300,
+                              color: FormTheme.textSecondary,
                             ),
                           ),
                         ],
@@ -455,7 +458,7 @@ class _ProjectRollDialogState extends ConsumerState<ProjectRollDialog> {
                           '${roll.d1} + ${roll.d2} = ${roll.total}',
                           style: theme.textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: isBreakthroughRoll ? Colors.amber.shade600 : Colors.white,
+                            color: isBreakthroughRoll ? Colors.amber.shade600 : FormTheme.textBright,
                           ),
                         ),
                         if (isBreakthroughRoll) ...[
@@ -488,7 +491,7 @@ class _ProjectRollDialogState extends ConsumerState<ProjectRollDialog> {
                   width: double.infinity,
                   child: FilledButton.icon(
                     onPressed: _rollBreakthrough,
-                    icon: const Icon(Icons.bolt),
+                    icon: AppIcon(DowntimeIcons.surge, size: 18),
                     label: const Text(
                       ProjectRollDialogText.heroBreakthroughButtonLabel,
                     ),
@@ -518,14 +521,14 @@ class _ProjectRollDialogState extends ConsumerState<ProjectRollDialog> {
                         Text(
                           ProjectRollDialogText.heroRollTotalLabel,
                           style: theme.textTheme.bodyLarge?.copyWith(
-                            color: Colors.grey.shade300,
+                            color: FormTheme.textSecondary,
                           ),
                         ),
                         Text(
                           '$_heroRollTotal',
                           style: theme.textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            color: FormTheme.textBright,
                           ),
                         ),
                         if (_heroModifierTotal != 0) ...[
@@ -610,7 +613,7 @@ class _ProjectRollDialogState extends ConsumerState<ProjectRollDialog> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Characteristic${_characteristicMultiplier > 1 ? ' (x$_characteristicMultiplier)' : ''}:',
+          ProjectRollDialogText.characteristicLabel(_characteristicMultiplier),
           style: theme.textTheme.bodyMedium,
         ),
         const SizedBox(height: 8),
@@ -666,14 +669,14 @@ class _ProjectRollDialogState extends ConsumerState<ProjectRollDialog> {
                 color: Colors.purple.withAlpha(40),
                 borderRadius: BorderRadius.circular(6),
               ),
-              child: Icon(Icons.group, color: Colors.purple.shade300, size: 20),
+              child: AppIcon(DowntimeIcons.followerGroup, color: Colors.purple.shade300, size: 20),
             ),
             const SizedBox(width: 8),
             Text(
               ProjectRollDialogText.followerSectionTitle,
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: FormTheme.textBright,
               ),
             ),
           ],
@@ -686,21 +689,21 @@ class _ProjectRollDialogState extends ConsumerState<ProjectRollDialog> {
               return Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade800.withAlpha(80),
+                  color: FormTheme.surfaceMuted,
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey.shade700),
+                  border: Border.all(color: FormTheme.border),
                 ),
                 child: Row(
                   children: [
                     Icon(
                       Icons.info_outline,
-                      color: Colors.grey.shade500,
+                      color: FormTheme.textMuted,
                     ),
                     const SizedBox(width: 12),
                     Text(
                       ProjectRollDialogText.noFollowersLabel,
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey.shade400,
+                        color: FormTheme.textSecondary,
                       ),
                     ),
                   ],
@@ -715,7 +718,7 @@ class _ProjectRollDialogState extends ConsumerState<ProjectRollDialog> {
             );
           },
           loading: () => const Center(child: CircularProgressIndicator(color: _projectsColor)),
-          error: (e, _) => Text('Error loading followers: $e', style: TextStyle(color: Colors.red.shade400)),
+          error: (e, _) => Text(ProjectRollDialogText.errorLoadingFollowers(e), style: TextStyle(color: Colors.red.shade400)),
         ),
       ],
     );
@@ -730,7 +733,7 @@ class _ProjectRollDialogState extends ConsumerState<ProjectRollDialog> {
       decoration: BoxDecoration(
         color: NavigationTheme.cardBackgroundDark,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey.shade800),
+        border: Border.all(color: FormTheme.borderDim),
       ),
       child: Padding(
         padding: const EdgeInsets.all(12),
@@ -742,7 +745,7 @@ class _ProjectRollDialogState extends ConsumerState<ProjectRollDialog> {
                 CircleAvatar(
                   radius: 14,
                   backgroundColor: Colors.purple.withAlpha(50),
-                  child: Icon(Icons.person, size: 16, color: Colors.purple.shade300),
+                  child: AppIcon(DowntimeIcons.follower, size: 16, color: Colors.purple.shade300),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -750,13 +753,13 @@ class _ProjectRollDialogState extends ConsumerState<ProjectRollDialog> {
                     follower.name,
                     style: theme.textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: FormTheme.textBright,
                     ),
                   ),
                 ),
                 OutlinedButton.icon(
                   onPressed: () => _rollForFollower(follower),
-                  icon: const Icon(Icons.casino, size: 16),
+                  icon: AppIcon(DowntimeIcons.diceRoll, size: 16),
                   label: Text(
                     rollState.hasRolled
                         ? ProjectRollDialogText.followerRerollButtonLabel
@@ -789,11 +792,11 @@ class _ProjectRollDialogState extends ConsumerState<ProjectRollDialog> {
                     decoration: BoxDecoration(
                       color: isBreakthroughRoll 
                           ? Colors.amber.withAlpha(40)
-                          : Colors.grey.shade800.withAlpha(80),
+                          : FormTheme.surfaceMuted,
                       borderRadius: BorderRadius.circular(4),
                       border: isBreakthroughRoll 
                           ? Border.all(color: Colors.amber, width: 1)
-                          : Border.all(color: Colors.grey.shade700),
+                          : Border.all(color: FormTheme.border),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -804,19 +807,19 @@ class _ProjectRollDialogState extends ConsumerState<ProjectRollDialog> {
                               : ProjectRollDialogText.followerRollPrefixLabel,
                           style: theme.textTheme.bodySmall?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: isBreakthrough ? Colors.amber.shade600 : Colors.grey.shade400,
+                            color: isBreakthrough ? Colors.amber.shade600 : FormTheme.textSecondary,
                           ),
                         ),
                         Text(
                           '${roll.d1}+${roll.d2}=${roll.total}',
                           style: theme.textTheme.bodySmall?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            color: FormTheme.textBright,
                           ),
                         ),
                         if (isBreakthroughRoll) ...[
                           const SizedBox(width: 4),
-                          Icon(Icons.bolt, size: 12, color: Colors.amber.shade700),
+                          AppIcon(DowntimeIcons.surge, size: 12, color: Colors.amber.shade700),
                         ],
                       ],
                     ),
@@ -831,7 +834,7 @@ class _ProjectRollDialogState extends ConsumerState<ProjectRollDialog> {
                   width: double.infinity,
                   child: OutlinedButton.icon(
                     onPressed: () => _rollFollowerBreakthrough(follower.id),
-                    icon: Icon(Icons.bolt, size: 14, color: Colors.amber.shade300),
+                    icon: AppIcon(DowntimeIcons.surge, size: 14, color: Colors.amber.shade300),
                     label: const Text(
                       ProjectRollDialogText.followerBreakthroughButtonLabel,
                       style: TextStyle(fontSize: 12),
@@ -863,7 +866,7 @@ class _ProjectRollDialogState extends ConsumerState<ProjectRollDialog> {
                       '${rollState.rollTotal}',
                       style: theme.textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: FormTheme.textBright,
                       ),
                     ),
                     if (rollState.modifierTotal != 0) ...[
@@ -955,15 +958,15 @@ class _ProjectRollDialogState extends ConsumerState<ProjectRollDialog> {
     return DropdownButtonFormField<String?>(
       value: rollState.selectedCharacteristic,
       dropdownColor: NavigationTheme.cardBackgroundDark,
-      style: const TextStyle(color: Colors.white),
+      style: TextStyle(color: FormTheme.textBright),
       decoration: InputDecoration(
-        border: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade700)),
-        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade700)),
+        border: OutlineInputBorder(borderSide: BorderSide(color: FormTheme.border)),
+        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: FormTheme.border)),
         focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.purple.shade400)),
         contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         isDense: true,
-        labelText: 'Characteristic${multiplier > 1 ? ' (x$multiplier)' : ''}',
-        labelStyle: TextStyle(color: Colors.grey.shade400),
+        labelText: ProjectRollDialogText.followerCharacteristicLabel(multiplier),
+        labelStyle: TextStyle(color: FormTheme.textSecondary),
       ),
       items: [
         const DropdownMenuItem<String?>(
@@ -1091,7 +1094,7 @@ class _ProjectRollDialogState extends ConsumerState<ProjectRollDialog> {
             ProjectRollDialogText.totalPointsLabel,
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w500,
-              color: Colors.white,
+              color: FormTheme.textBright,
             ),
           ),
           Text(
@@ -1223,10 +1226,10 @@ class _ModifierButton extends StatelessWidget {
     
     return Container(
       decoration: BoxDecoration(
-        color: count > 0 ? color.withAlpha(30) : Colors.grey.shade800.withAlpha(50),
+        color: count > 0 ? color.withAlpha(30) : FormTheme.surfaceMuted,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: count > 0 ? color : Colors.grey.shade700,
+          color: count > 0 ? color : FormTheme.border,
         ),
       ),
       child: Row(
@@ -1234,7 +1237,7 @@ class _ModifierButton extends StatelessWidget {
         children: [
           IconButton(
             onPressed: count > 0 ? onRemove : null,
-            icon: Icon(Icons.remove, size: 18, color: count > 0 ? Colors.white : Colors.grey.shade600),
+            icon: Icon(Icons.remove, size: 18, color: count > 0 ? FormTheme.textBright : FormTheme.borderLight),
             visualDensity: VisualDensity.compact,
             padding: const EdgeInsets.all(4),
             constraints: const BoxConstraints(),
@@ -1248,14 +1251,14 @@ class _ModifierButton extends StatelessWidget {
                   '$label ($modifier)',
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
-                    color: count > 0 ? color : Colors.grey.shade400,
+                    color: count > 0 ? color : FormTheme.textSecondary,
                   ),
                 ),
                 Text(
                   '$count / $maxCount',
                   style: TextStyle(
                     fontSize: 11,
-                    color: count > 0 ? color : Colors.grey.shade500,
+                    color: count > 0 ? color : FormTheme.textMuted,
                   ),
                 ),
               ],
@@ -1263,7 +1266,7 @@ class _ModifierButton extends StatelessWidget {
           ),
           IconButton(
             onPressed: count < maxCount ? onAdd : null,
-            icon: Icon(Icons.add, size: 18, color: count < maxCount ? Colors.white : Colors.grey.shade600),
+            icon: Icon(Icons.add, size: 18, color: count < maxCount ? FormTheme.textBright : FormTheme.borderLight),
             visualDensity: VisualDensity.compact,
             padding: const EdgeInsets.all(4),
             constraints: const BoxConstraints(),
@@ -1299,10 +1302,10 @@ class _SmallModifierButton extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
       decoration: BoxDecoration(
-        color: count > 0 ? color.withAlpha(30) : Colors.grey.shade800.withAlpha(50),
+        color: count > 0 ? color.withAlpha(30) : FormTheme.surfaceMuted,
         borderRadius: BorderRadius.circular(6),
         border: Border.all(
-          color: count > 0 ? color : Colors.grey.shade700,
+          color: count > 0 ? color : FormTheme.border,
         ),
       ),
       child: Row(
@@ -1313,7 +1316,7 @@ class _SmallModifierButton extends StatelessWidget {
             child: Icon(
               Icons.remove,
               size: 14,
-              color: count > 0 ? color : Colors.grey.shade600,
+              color: count > 0 ? color : FormTheme.borderLight,
             ),
           ),
           Padding(
@@ -1323,7 +1326,7 @@ class _SmallModifierButton extends StatelessWidget {
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
-                color: count > 0 ? color : Colors.grey.shade400,
+                color: count > 0 ? color : FormTheme.textSecondary,
               ),
             ),
           ),
@@ -1332,7 +1335,7 @@ class _SmallModifierButton extends StatelessWidget {
             child: Icon(
               Icons.add,
               size: 14,
-              color: count < maxCount ? color : Colors.grey.shade600,
+              color: count < maxCount ? color : FormTheme.borderLight,
             ),
           ),
         ],

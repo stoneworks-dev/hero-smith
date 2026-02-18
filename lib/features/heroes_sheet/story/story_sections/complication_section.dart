@@ -5,6 +5,7 @@ import 'package:hero_smith/core/text/heroes_sheet/story/sheet_story_complication
 import 'package:hero_smith/core/theme/navigation_theme.dart';
 import 'package:hero_smith/core/theme/story_theme.dart';
 
+import '../../../../core/theme/form_theme.dart';
 import '../../../../core/db/providers.dart';
 import '../../../../core/models/component.dart' as model;
 import '../../../../widgets/shared/story_display_widgets.dart';
@@ -19,7 +20,7 @@ final _componentByIdProvider =
     orElse: () => model.Component(
       id: '',
       type: '',
-      name: 'Not found',
+      name: SheetStoryComplicationSectionText.notFound,
       data: const {},
       source: '',
     ),
@@ -52,7 +53,7 @@ class ComplicationSection extends ConsumerWidget {
       decoration: BoxDecoration(
         color: NavigationTheme.cardBackgroundDark,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade800),
+        border: Border.all(color: FormTheme.borderDim),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -76,10 +77,10 @@ class ComplicationSection extends ConsumerWidget {
                 const SizedBox(width: 12),
                 Text(
                   SheetStoryComplicationSectionText.sectionTitle,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: FormTheme.textBright,
                   ),
                 ),
               ],
@@ -95,7 +96,7 @@ class ComplicationSection extends ConsumerWidget {
                 if (comp == null) {
                   return Text(
                     SheetStoryComplicationSectionText.complicationNotFound,
-                    style: TextStyle(color: Colors.grey.shade400),
+                    style: TextStyle(color: FormTheme.textSecondary),
                   );
                 }
 
@@ -134,24 +135,24 @@ class _ComplicationDetails extends ConsumerWidget {
       decoration: BoxDecoration(
         color: StoryTheme.cardBackgroundDark,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade700),
+        border: Border.all(color: FormTheme.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             complication.name,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: FormTheme.textBright,
             ),
           ),
           const SizedBox(height: 12),
           if (data['description'] != null) ...[
             Text(
               data['description'].toString(),
-              style: TextStyle(color: Colors.grey.shade400, fontSize: 14),
+              style: TextStyle(color: FormTheme.textSecondary, fontSize: 14),
             ),
             const SizedBox(height: 16),
           ],
@@ -204,7 +205,7 @@ class _EffectsDisplay extends StatelessWidget {
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 16,
-            color: Colors.grey.shade300,
+            color: FormTheme.textSecondary,
           ),
         ),
         const SizedBox(height: 8),
@@ -269,7 +270,7 @@ class _GrantsDisplay extends ConsumerWidget {
           final choice = treasure['choice'] == true;
 
           final text = choice
-              ? '${type.replaceAll('_', ' ')}${echelon != null ? ' (echelon $echelon)' : ''} of your choice'
+              ? '${type.replaceAll('_', ' ')}${echelon != null ? ' (echelon $echelon)' : ''} ${SheetStoryComplicationSectionText.ofYourChoice}'
               : '${type.replaceAll('_', ' ')}${echelon != null ? ' (echelon $echelon)' : ''}';
 
           items.add(GrantItemDisplay(text: text, icon: Icons.diamond_outlined));
@@ -284,7 +285,7 @@ class _GrantsDisplay extends ConsumerWidget {
         items.add(
           GrantItemDisplay(
             text:
-                '$value ${key.toString().replaceAll('_', ' ')} token${value == 1 ? '' : 's'}',
+                '$value ${key.toString().replaceAll('_', ' ')} ${SheetStoryComplicationSectionText.tokenSuffix(value is int ? value : 1)}',
             icon: Icons.token_outlined,
           ),
         );
@@ -371,14 +372,14 @@ class _GrantsDisplay extends ConsumerWidget {
       final abilities = grantsData['abilities'] as List;
       for (final ability in abilities) {
         items.add(GrantItemDisplay(
-          text: 'Ability: $ability',
+          text: SheetStoryComplicationSectionText.abilityGrant(ability.toString()),
           icon: Icons.auto_awesome_outlined,
         ));
       }
     }
     if (grantsData['ability'] != null) {
       items.add(GrantItemDisplay(
-        text: 'Ability: ${grantsData['ability']}',
+        text: SheetStoryComplicationSectionText.abilityGrant(grantsData['ability'].toString()),
         icon: Icons.auto_awesome_outlined,
       ));
     }
@@ -388,7 +389,7 @@ class _GrantsDisplay extends ConsumerWidget {
       final skills = grantsData['skills'] as List;
       for (final skill in skills) {
         items.add(GrantItemDisplay(
-          text: 'Skill: $skill',
+          text: SheetStoryComplicationSectionText.skillGrant(skill.toString()),
           icon: Icons.psychology_outlined,
         ));
       }
@@ -404,7 +405,7 @@ class _GrantsDisplay extends ConsumerWidget {
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 16,
-            color: Colors.grey.shade300,
+            color: FormTheme.textSecondary,
           ),
         ),
         const SizedBox(height: 8),
@@ -436,9 +437,9 @@ class _LanguageGrantsDisplay extends ConsumerWidget {
 
     return languagesAsync.when(
       loading: () =>
-          GrantItemDisplay(text: '${label}s: Loading...', icon: icon),
+          GrantItemDisplay(text: SheetStoryComplicationSectionText.loadingLabel(label), icon: icon),
       error: (e, _) =>
-          GrantItemDisplay(text: '${label}s: Error loading', icon: icon),
+          GrantItemDisplay(text: SheetStoryComplicationSectionText.errorLoadingLabel(label), icon: icon),
       data: (allLanguages) {
         final selectedNames = <String>[];
         for (int i = 0; i < count; i++) {
@@ -456,7 +457,7 @@ class _LanguageGrantsDisplay extends ConsumerWidget {
 
         if (selectedNames.isEmpty) {
           return GrantItemDisplay(
-            text: 'Choose $count $label${count == 1 ? '' : 's'}',
+            text: SheetStoryComplicationSectionText.chooseLabel(count, label),
             icon: icon,
           );
         }
@@ -553,19 +554,18 @@ class _AncestryTraitsDisplay extends ConsumerWidget {
 
     if (selectedIds.isEmpty) {
       return GrantItemDisplay(
-        text:
-            'Choose $points ${_formatAncestryName(ancestry)} ancestry trait point${points == 1 ? '' : 's'}',
+        text: SheetStoryComplicationSectionText.chooseTraitPoints(points, _formatAncestryName(ancestry)),
         icon: Icons.person_outline,
       );
     }
 
     return ancestryTraitsAsync.when(
       loading: () => const GrantItemDisplay(
-        text: 'Ancestry Traits: Loading...',
+        text: SheetStoryComplicationSectionText.ancestryTraitsLoading,
         icon: Icons.person_outline,
       ),
       error: (e, _) => GrantItemDisplay(
-        text: 'Ancestry Traits: ${selectedIds.length} selected',
+        text: SheetStoryComplicationSectionText.ancestryTraitsSelected(selectedIds.length),
         icon: Icons.person_outline,
       ),
       data: (allAncestryTraits) {
@@ -606,11 +606,11 @@ class _AncestryTraitsDisplay extends ConsumerWidget {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      '${_formatAncestryName(ancestry)} Traits',
-                      style: const TextStyle(
+                      SheetStoryComplicationSectionText.ancestryTraits(_formatAncestryName(ancestry)),
+                      style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: FormTheme.textBright,
                       ),
                     ),
                   ),
@@ -637,7 +637,7 @@ class _AncestryTraitsDisplay extends ConsumerWidget {
         decoration: BoxDecoration(
           color: StoryTheme.cardBackground,
           borderRadius: BorderRadius.circular(6),
-          border: Border.all(color: Colors.grey.shade700),
+          border: Border.all(color: FormTheme.border),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -647,10 +647,10 @@ class _AncestryTraitsDisplay extends ConsumerWidget {
                 Expanded(
                   child: Text(
                     name,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                      color: FormTheme.textBright,
                     ),
                   ),
                 ),
@@ -676,7 +676,7 @@ class _AncestryTraitsDisplay extends ConsumerWidget {
               const SizedBox(height: 6),
               Text(
                 description,
-                style: TextStyle(color: Colors.grey.shade400, fontSize: 12),
+                style: TextStyle(color: FormTheme.textSecondary, fontSize: 12),
               ),
             ],
           ],
@@ -738,10 +738,10 @@ class _PickOneDisplay extends StatelessWidget {
           Expanded(
             child: Text(
               description,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: Colors.white,
+                color: FormTheme.textBright,
               ),
             ),
           ),

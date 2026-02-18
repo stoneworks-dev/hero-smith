@@ -1,3 +1,5 @@
+import '../../common/common_text.dart';
+
 class ConditionsTrackerText {
   static const String saveErrorPrefix = 'Error saving conditions: ';
   static const String saveEndsEditTitle = 'Edit Save Ends Modifier';
@@ -5,13 +7,13 @@ class ConditionsTrackerText {
   static const String saveEndsTotalLabelPrefix = 'Total: ';
   static const String saveEndsModifierLabel = 'Modifier';
   static const String saveEndsHelperText = 'Adjustments (-99 to +99)';
-  static const String saveEndsCancelLabel = 'Cancel';
-  static const String saveEndsSaveLabel = 'Save';
+  static const String saveEndsCancelLabel = CommonText.cancel;
+  static const String saveEndsSaveLabel = CommonText.save;
 
   static const String addConditionDialogTitle = 'Add Condition';
   static const String addConditionCustomOptionLabel = 'Create Custom Condition';
   static const String addConditionErrorPrefix = 'Error loading conditions: ';
-  static const String addConditionCancelLabel = 'Cancel';
+  static const String addConditionCancelLabel = CommonText.cancel;
 
   static const String customConditionDialogTitle = 'Create Custom Condition';
   static const String customConditionNameLabel = 'Condition Name *';
@@ -21,8 +23,8 @@ class ConditionsTrackerText {
   static const String customConditionLongDescLabel = 'Detailed Description';
   static const String customConditionLongDescHint =
       'Full details and effects';
-  static const String customConditionCancelLabel = 'Cancel';
-  static const String customConditionCreateLabel = 'Create';
+  static const String customConditionCancelLabel = CommonText.cancel;
+  static const String customConditionCreateLabel = CommonText.create;
   static const String customConditionCreatedPrefix = 'Custom condition "';
   static const String customConditionCreatedSuffix = '" created';
   static const String customConditionErrorPrefix = 'Error creating condition: ';
@@ -30,7 +32,7 @@ class ConditionsTrackerText {
   static const String conditionDetailsSummaryTitle = 'Summary';
   static const String conditionDetailsTitle = 'Details';
   static const String conditionDetailsError = 'Could not load condition details';
-  static const String conditionDetailsCloseLabel = 'Close';
+  static const String conditionDetailsCloseLabel = CommonText.close;
 
   static const String conditionsHeaderTitle = 'Conditions';
   static const String saveEndsLabelPrefix = 'Save ';
@@ -41,9 +43,9 @@ class ConditionsTrackerText {
   static const String conditionImmunitiesUnknownSource = 'Unknown source';
 
   static const String endTypeEotLabel = 'EoT';
-  static const String endTypeSaveLabel = 'Save';
+  static const String endTypeSaveLabel = CommonText.save;
   static const String endTypeEoeLabel = 'EoE';
-  static const String conditionRemoveTooltip = 'Remove';
+  static const String conditionRemoveTooltip = CommonText.remove;
 
   static const String immunitySourceFeaturePrefix = 'Feature: ';
   static const String immunitySourceAncestry = 'Ancestry Trait';

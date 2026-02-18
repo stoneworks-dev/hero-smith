@@ -10,6 +10,10 @@ import '../../../core/repositories/hero_entry_repository.dart';
 import '../../../core/services/ability_data_service.dart';
 import '../../../core/text/heroes_sheet/abilities/ability_list_view_text.dart';
 import '../../../core/theme/ability_colors.dart';
+import '../../../core/theme/app_icon.dart';
+import '../../../core/theme/app_icon_data.dart';
+import '../../../core/theme/app_icons.dart';
+import '../../../core/theme/form_theme.dart';
 import '../../../core/theme/navigation_theme.dart';
 import '../../../widgets/abilities/ability_expandable_item.dart';
 
@@ -32,14 +36,14 @@ extension ActionCategoryLabel on ActionCategory {
     }
   }
   
-  IconData get icon {
+  AppIconData get icon {
     switch (this) {
       case ActionCategory.actions:
-        return Icons.flash_on;
+        return AppIcons.abilities.actions;
       case ActionCategory.maneuvers:
-        return Icons.directions_run;
+        return AppIcons.abilities.maneuvers;
       case ActionCategory.triggered:
-        return Icons.bolt;
+        return AppIcons.abilities.triggered;
     }
   }
   
@@ -141,13 +145,13 @@ class _AbilityListViewState extends ConsumerState<AbilityListView>
                   Text(
                     AbilityListViewText.errorTitle,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: Colors.white,
+                      color: FormTheme.textBright,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     snapshot.error.toString(),
-                    style: TextStyle(color: Colors.grey.shade500),
+                    style: TextStyle(color: FormTheme.textMuted),
                     textAlign: TextAlign.center,
                   ),
                 ],
@@ -164,7 +168,7 @@ class _AbilityListViewState extends ConsumerState<AbilityListView>
               padding: const EdgeInsets.all(24.0),
               child: Text(
                 AbilityListViewText.emptyDetailsMessage,
-                style: TextStyle(color: Colors.grey.shade500),
+                style: TextStyle(color: FormTheme.textMuted),
               ),
             ),
           );
@@ -222,7 +226,7 @@ class _AbilityListViewState extends ConsumerState<AbilityListView>
                               mainAxisAlignment: MainAxisAlignment.center,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(
+                                AppIcon(
                                   category.icon,
                                   color: color,
                                   size: 16,
@@ -253,7 +257,7 @@ class _AbilityListViewState extends ConsumerState<AbilityListView>
                                       style: const TextStyle(
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.white,
+                                        color: FormTheme.textBright,
                                       ),
                                     ),
                                   ),
@@ -296,19 +300,19 @@ class _AbilityListViewState extends ConsumerState<AbilityListView>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(category.icon, size: 48, color: category.color.withValues(alpha: 0.5)),
+                AppIcon(category.icon, size: 48, color: category.color.withValues(alpha: 0.5)),
                 const SizedBox(height: 12),
                 Text(
                   '${AbilityListViewText.emptyCategoryPrefix}${category.label}',
                   style: theme.textTheme.titleMedium?.copyWith(
-                    color: Colors.grey.shade400,
+                    color: FormTheme.textSecondary,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   AbilityListViewText.emptyCategorySubtitle,
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: Colors.grey.shade500,
+                    color: FormTheme.textMuted,
                   ),
                 ),
               ],

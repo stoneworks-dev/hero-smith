@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/db/providers.dart';
 import '../../../../core/models/component.dart' as model;
+import '../../../../core/theme/app_icon.dart';
+import '../../../../core/theme/app_icon_data.dart';
+import '../../../../core/theme/app_icons.dart';
 import '../../../../core/theme/creator_theme.dart';
 import '../../../../core/theme/navigation_theme.dart';
 import '../../../../core/theme/form_theme.dart';
@@ -33,8 +36,10 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
   required List<_SearchOption<T>> options,
   T? selected,
   Color? accent,
+  AppIconData? icon,
 }) {
   final accentColor = accent ?? CreatorTheme.cultureAccent;
+  final effectiveIcon = icon ?? const MaterialIcon(Icons.search);
   
   return showDialog<_PickerSelection<T>>(
     context: context,
@@ -106,7 +111,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                               color: accentColor.withValues(alpha: 0.4),
                             ),
                           ),
-                          child: Icon(Icons.search, color: accentColor, size: 20),
+                          child: AppIcon(effectiveIcon, color: accentColor, size: 20),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -121,7 +126,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                         ),
                         IconButton(
                           onPressed: () => Navigator.of(context).pop(),
-                          icon: Icon(Icons.close, color: Colors.grey.shade400),
+                          icon: Icon(Icons.close, color: FormTheme.textSecondary),
                           splashRadius: 20,
                         ),
                       ],
@@ -133,11 +138,11 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                     child: TextField(
                       controller: controller,
                       autofocus: false,
-                      style: const TextStyle(color: Colors.white),
+                      style: TextStyle(color: FormTheme.textBright),
                       decoration: InputDecoration(
                         hintText: StoryCultureSectionText.searchHint,
-                        hintStyle: TextStyle(color: Colors.grey.shade500),
-                        prefixIcon: Icon(Icons.search, color: Colors.grey.shade500),
+                        hintStyle: TextStyle(color: FormTheme.textMuted),
+                        prefixIcon: Icon(Icons.search, color: FormTheme.textMuted),
                         filled: true,
                         fillColor: FormTheme.surface,
                         border: OutlineInputBorder(
@@ -146,7 +151,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: Colors.grey.shade700),
+                          borderSide: BorderSide(color: FormTheme.border),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -174,14 +179,14 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                               children: [
                                 Icon(
                                   Icons.search_off,
-                                  color: Colors.grey.shade600,
+                                  color: FormTheme.borderLight,
                                   size: 48,
                                 ),
                                 const SizedBox(height: 12),
                                 Text(
                                   StoryCultureSectionText.noMatchesFound,
                                   style: TextStyle(
-                                    color: Colors.grey.shade500,
+                                    color: FormTheme.textMuted,
                                     fontSize: 14,
                                   ),
                                 ),
@@ -205,7 +210,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
                                   color: isNoneOption
-                                      ? Colors.grey.shade800.withValues(alpha: 0.4)
+                                      ? FormTheme.surfaceMuted
                                       : isSelected
                                           ? accentColor.withValues(alpha: 0.15)
                                           : Colors.transparent,
@@ -215,20 +220,20 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                                         )
                                       : isNoneOption
                                           ? Border.all(
-                                              color: Colors.grey.shade700,
+                                              color: FormTheme.border,
                                             )
                                           : null,
                                 ),
                                 child: ListTile(
                                   leading: isNoneOption
                                       ? Icon(Icons.remove_circle_outline,
-                                          size: 20, color: Colors.grey.shade500)
+                                          size: 20, color: FormTheme.textMuted)
                                       : null,
                                   title: Text(
                                     option.label,
                                     style: TextStyle(
                                       color: isNoneOption
-                                          ? Colors.grey.shade400
+                                          ? FormTheme.textSecondary
                                           : isSelected
                                               ? accentColor
                                               : Colors.grey.shade200,
@@ -244,7 +249,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                                       ? Text(
                                           option.subtitle!,
                                           style: TextStyle(
-                                            color: Colors.grey.shade500,
+                                            color: FormTheme.textMuted,
                                             fontSize: 12,
                                           ),
                                         )
@@ -268,13 +273,13 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       border: Border(
-                        top: BorderSide(color: Colors.grey.shade800),
+                        top: BorderSide(color: FormTheme.borderDim),
                       ),
                     ),
                     child: TextButton(
                       onPressed: () => Navigator.of(context).pop(),
                       style: TextButton.styleFrom(
-                        foregroundColor: Colors.grey.shade400,
+                        foregroundColor: FormTheme.textSecondary,
                       ),
                       child: const Text(StoryCultureSectionText.cancelLabel),
                     ),
@@ -351,7 +356,7 @@ class StoryCultureSection extends ConsumerWidget {
           CreatorTheme.sectionHeader(
             title: StoryCultureSectionText.sectionTitle,
             subtitle: StoryCultureSectionText.sectionSubtitle,
-            icon: Icons.public,
+            appIcon: StoryIcons.culture,
             accent: accent,
           ),
           Padding(
@@ -392,7 +397,7 @@ class StoryCultureSection extends ConsumerWidget {
                     children: [
                       _CultureDropdown(
                         label: StoryCultureSectionText.environmentLabel,
-                        icon: Icons.park,
+                        icon: SkillGroupIcons.exploration,
                         asyncList: envAsync,
                         selectedId: environmentId,
                         accent: const Color(0xFF66BB6A),
@@ -445,7 +450,7 @@ class StoryCultureSection extends ConsumerWidget {
                     children: [
                       _CultureDropdown(
                         label: StoryCultureSectionText.organizationLabel,
-                        icon: Icons.apartment,
+                        icon: StoryIcons.culture,
                         asyncList: orgAsync,
                         selectedId: organisationId,
                         accent: const Color(0xFFFFB74D),
@@ -498,7 +503,7 @@ class StoryCultureSection extends ConsumerWidget {
                     children: [
                       _CultureDropdown(
                         label: StoryCultureSectionText.upbringingLabel,
-                        icon: Icons.family_restroom,
+                        icon: StoryIcons.ancestry,
                         asyncList: upAsync,
                         selectedId: upbringingId,
                         accent: const Color(0xFFAB47BC),
@@ -595,7 +600,7 @@ class _LanguageDropdown extends StatelessWidget {
         _SearchOption<String?>(
           label: StoryCultureSectionText.chooseLanguageOption,
           value: null,
-          subtitle: 'None selected',
+          subtitle: StoryCultureSectionText.noneSelected,
         ),
       ];
 
@@ -644,7 +649,7 @@ class _LanguageDropdown extends StatelessWidget {
                   color: _accent.withValues(alpha: 0.2),
                   border: Border.all(color: _accent.withValues(alpha: 0.4)),
                 ),
-                child: const Icon(Icons.language, color: _accent, size: 18),
+                child: const AppIcon(StoryIcons.languages, color: _accent, size: 18),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -668,7 +673,7 @@ class _LanguageDropdown extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: FormTheme.surface,
-                border: Border.all(color: Colors.grey.shade700),
+                border: Border.all(color: FormTheme.border),
               ),
               child: Row(
                 children: [
@@ -680,12 +685,12 @@ class _LanguageDropdown extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 15,
                         color: selected != null
-                            ? Colors.grey.shade200
-                            : Colors.grey.shade500,
+                            ? FormTheme.textSecondary
+                            : FormTheme.textMuted,
                       ),
                     ),
                   ),
-                  Icon(Icons.search, color: Colors.grey.shade500, size: 20),
+                  Icon(Icons.search, color: FormTheme.textMuted, size: 20),
                 ],
               ),
             ),
@@ -716,19 +721,19 @@ class _LanguageDropdown extends StatelessWidget {
     // Add region if available
     final region = data['region'] as String?;
     if (region != null && region.isNotEmpty) {
-      parts.add('Region: $region');
+      parts.add(StoryCultureSectionText.regionSubtitle(region));
     }
     
     // Add ancestry if available
     final ancestry = data['ancestry'] as String?;
     if (ancestry != null && ancestry.isNotEmpty) {
-      parts.add('Ancestry: $ancestry');
+      parts.add(StoryCultureSectionText.ancestrySubtitle(ancestry));
     }
     
     // Add common topics if available
     final topics = (data['common_topics'] as List?)?.cast<String>();
     if (topics != null && topics.isNotEmpty) {
-      parts.add('Topics: ${topics.take(3).join(', ')}${topics.length > 3 ? '...' : ''}');
+      parts.add(StoryCultureSectionText.topicsSubtitle('${topics.take(3).join(', ')}${topics.length > 3 ? '...' : ''}'));
     }
     
     return parts.join(' • ');
@@ -746,7 +751,7 @@ class _CultureDropdown extends StatelessWidget {
   });
 
   final String label;
-  final IconData icon;
+  final AppIconData icon;
   final AsyncValue<List<model.Component>> asyncList;
   final String? selectedId;
   final ValueChanged<String?> onChanged;
@@ -774,9 +779,9 @@ class _CultureDropdown extends StatelessWidget {
         Future<void> openSearch() async {
           final options = <_SearchOption<String?>>[
             _SearchOption<String?>(
-              label: 'None',
+              label: StoryCultureSectionText.noneLabelText,
               value: null,
-              subtitle: 'No selection',
+              subtitle: StoryCultureSectionText.noSelection,
             ),
             ...items.map(
               (item) => _SearchOption<String?>(
@@ -806,7 +811,7 @@ class _CultureDropdown extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(icon, color: accent, size: 18),
+                  AppIcon(icon, color: accent, size: 18),
                   const SizedBox(width: 8),
                   Text(
                     label,
@@ -830,7 +835,7 @@ class _CultureDropdown extends StatelessWidget {
                     border: Border.all(
                       color: validSelected != null 
                           ? accent.withValues(alpha: 0.5) 
-                          : Colors.grey.shade700,
+                          : FormTheme.border,
                     ),
                   ),
                   child: Row(
@@ -843,12 +848,12 @@ class _CultureDropdown extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 15,
                             color: selectedItem != null
-                                ? Colors.grey.shade200
-                                : Colors.grey.shade500,
+                                ? FormTheme.textSecondary
+                                : FormTheme.textMuted,
                           ),
                         ),
                       ),
-                      Icon(Icons.search, color: Colors.grey.shade500, size: 20),
+                      Icon(Icons.search, color: FormTheme.textMuted, size: 20),
                     ],
                   ),
                 ),
@@ -864,7 +869,7 @@ class _CultureDropdown extends StatelessWidget {
                   child: Text(
                     (selectedItem.data['description'] as String?) ?? '',
                     style: TextStyle(
-                      color: Colors.grey.shade400,
+                      color: FormTheme.textSecondary,
                       fontSize: 12,
                       height: 1.4,
                     ),
@@ -1013,7 +1018,7 @@ class _CultureSkillChooser extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            color: Colors.grey.shade400,
+            color: FormTheme.textSecondary,
             fontSize: 12,
             fontWeight: FontWeight.w500,
           ),
@@ -1030,12 +1035,12 @@ class _CultureSkillChooser extends StatelessWidget {
               border: Border.all(
                 color: validSelected != null 
                     ? accent.withValues(alpha: 0.5) 
-                    : Colors.grey.shade700,
+                    : FormTheme.border,
               ),
             ),
             child: Row(
               children: [
-                Icon(Icons.school, color: Colors.grey.shade500, size: 18),
+                AppIcon(SkillGroupIcons.lore, color: FormTheme.textMuted, size: 18),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
@@ -1045,12 +1050,12 @@ class _CultureSkillChooser extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14,
                       color: validSelected != null
-                          ? Colors.grey.shade200
-                          : Colors.grey.shade500,
+                          ? FormTheme.textSecondary
+                          : FormTheme.textMuted,
                     ),
                   ),
                 ),
-                Icon(Icons.search, color: Colors.grey.shade500, size: 18),
+                Icon(Icons.search, color: FormTheme.textMuted, size: 18),
               ],
             ),
           ),
@@ -1060,7 +1065,7 @@ class _CultureSkillChooser extends StatelessWidget {
           Text(
             helper,
             style: TextStyle(
-              color: Colors.grey.shade600,
+              color: FormTheme.borderLight,
               fontSize: 11,
               height: 1.3,
               fontStyle: FontStyle.italic,

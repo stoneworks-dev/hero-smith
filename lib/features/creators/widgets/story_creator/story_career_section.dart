@@ -6,6 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/db/providers.dart';
 import '../../../../core/models/component.dart' as model;
+import '../../../../core/theme/app_icon.dart';
+import '../../../../core/theme/app_icon_data.dart';
+import '../../../../core/theme/app_icons.dart';
 import '../../../../core/theme/creator_theme.dart';
 import '../../../../core/theme/navigation_theme.dart';
 import '../../../../core/theme/form_theme.dart';
@@ -74,7 +77,7 @@ class StoryCareerSection extends ConsumerWidget {
           CreatorTheme.sectionHeader(
             title: StoryCareerSectionText.sectionTitle,
             subtitle: StoryCareerSectionText.sectionSubtitle,
-            icon: Icons.work,
+            appIcon: StoryIcons.career,
             accent: accent,
           ),
           Padding(
@@ -312,10 +315,10 @@ class _CareerContentState extends State<_CareerContent> {
             widget.onDirty();
           },
           child: InputDecorator(
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: StoryCareerSectionText.careerLabel,
-              prefixIcon: Icon(Icons.work_outline),
-              suffixIcon: Icon(Icons.search),
+              prefixIcon: AppIcon(StoryIcons.career),
+              suffixIcon: const Icon(Icons.search),
             ),
             child: Text(
               widget.careerId != null
@@ -324,8 +327,8 @@ class _CareerContentState extends State<_CareerContent> {
               style: TextStyle(
                 fontSize: 16,
                 color: widget.careerId != null
-                    ? Colors.white
-                    : Colors.grey.shade500,
+                    ? FormTheme.textBright
+                    : FormTheme.textMuted,
               ),
             ),
           ),
@@ -335,7 +338,7 @@ class _CareerContentState extends State<_CareerContent> {
           if ((data['description'] as String?)?.isNotEmpty == true) ...[
             Text(
               data['description'] as String,
-              style: TextStyle(color: Colors.grey.shade300, height: 1.3),
+              style: TextStyle(color: FormTheme.textSecondary, height: 1.3),
             ),
             const SizedBox(height: 12),
           ],
@@ -346,19 +349,19 @@ class _CareerContentState extends State<_CareerContent> {
               if (renown > 0)
                 _buildStatChip(
                   '${StoryCareerSectionText.renownChipPrefix}${renown.toString()}${StoryCareerSectionText.renownChipSuffix}',
-                  Icons.stars,
+                  CombatIcons.renown,
                   accent,
                 ),
               if (wealth > 0)
                 _buildStatChip(
                   '${StoryCareerSectionText.wealthChipPrefix}${wealth.toString()}${StoryCareerSectionText.wealthChipSuffix}',
-                  Icons.attach_money,
+                  CombatIcons.wealth,
                   accent,
                 ),
               if (projectPoints > 0)
                 _buildStatChip(
                   '${StoryCareerSectionText.projectPointsChipPrefix}${projectPoints.toString()}${StoryCareerSectionText.projectPointsChipSuffix}',
-                  Icons.engineering,
+                  DowntimeIcons.projects,
                   accent,
                 ),
             ],
@@ -404,7 +407,7 @@ class _CareerContentState extends State<_CareerContent> {
             Text(
               skillGrantDescription,
               style: TextStyle(
-                color: Colors.grey.shade600,
+                color: FormTheme.borderLight,
                 fontStyle: FontStyle.italic,
               ),
             ),
@@ -585,7 +588,7 @@ class _CareerContentState extends State<_CareerContent> {
                 final latestSlots = currentSlots();
                 final result = await _showSearchablePicker<String?>(
                   context: context,
-                  title: 'Select Skill',
+                  title: StoryCareerSectionText.selectSkill,
                   options: buildSearchOptionsForIndex(index, latestSlots),
                   selected: latestSlots[index],
                 );
@@ -609,7 +612,7 @@ class _CareerContentState extends State<_CareerContent> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8),
                       child: Text(
-                        'Career grants already assigned elsewhere: ${grantedConflictNames.join(', ')}',
+                        StoryCareerSectionText.careerGrantsConflict(grantedConflictNames.join(', ')),
                         style: const TextStyle(
                           color: Colors.orange,
                           fontSize: 13,
@@ -621,7 +624,7 @@ class _CareerContentState extends State<_CareerContent> {
                     '${StoryCareerSectionText.skillPickInstructionPrefix}$picksNeeded'
                     '${picksNeeded == 1 ? StoryCareerSectionText.skillPickInstructionSingularSuffix : StoryCareerSectionText.skillPickInstructionPluralSuffix}'
                     '${StoryCareerSectionText.skillPickInstructionSuffix}',
-                    style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
+                    style: TextStyle(fontWeight: FontWeight.w600, color: FormTheme.textBright),
                   ),
                   const SizedBox(height: 6),
                   for (var index = 0; index < picksNeeded; index++) ...[
@@ -646,8 +649,8 @@ class _CareerContentState extends State<_CareerContent> {
                           style: TextStyle(
                             fontSize: 16,
                             color: slots[index] != null
-                                ? Colors.white
-                                : Colors.grey.shade500,
+                                ? FormTheme.textBright
+                                : FormTheme.textMuted,
                           ),
                         ),
                       ),
@@ -659,7 +662,7 @@ class _CareerContentState extends State<_CareerContent> {
                         '${StoryCareerSectionText.remainingPicksPrefix}$remaining'
                         '${remaining == 1 ? StoryCareerSectionText.remainingPicksSingularSuffix : StoryCareerSectionText.remainingPicksPluralSuffix}'
                         '${StoryCareerSectionText.remainingPicksSuffix}',
-                        style: TextStyle(color: Colors.grey.shade400)),
+                        style: TextStyle(color: FormTheme.textSecondary)),
                 ],
               );
             },
@@ -741,10 +744,10 @@ class _CareerContentState extends State<_CareerContent> {
                 widget.onDirty();
               },
               child: InputDecorator(
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: StoryCareerSectionText.incitingIncidentLabel,
-                  prefixIcon: Icon(Icons.auto_fix_high_outlined),
-                  suffixIcon: Icon(Icons.search),
+                  prefixIcon: AppIcon(KitIcons.enchantment),
+                  suffixIcon: const Icon(Icons.search),
                 ),
                 child: Text(
                   widget.incidentName ??
@@ -752,8 +755,8 @@ class _CareerContentState extends State<_CareerContent> {
                   style: TextStyle(
                     fontSize: 16,
                     color: widget.incidentName != null
-                        ? Colors.white
-                        : Colors.grey.shade500,
+                        ? FormTheme.textBright
+                        : FormTheme.textMuted,
                   ),
                 ),
               ),
@@ -770,7 +773,7 @@ class _CareerContentState extends State<_CareerContent> {
                         ?.toString() ??
                     '',
                 style: TextStyle(
-                  color: Colors.grey.shade300,
+                  color: FormTheme.textSecondary,
                   height: 1.35,
                   fontWeight: FontWeight.w500,
                 ),
@@ -781,7 +784,7 @@ class _CareerContentState extends State<_CareerContent> {
     );
   }
 
-  Widget _buildStatChip(String label, IconData icon, Color accent) {
+  Widget _buildStatChip(String label, AppIconData icon, Color accent) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
@@ -792,7 +795,7 @@ class _CareerContentState extends State<_CareerContent> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16, color: accent),
+          AppIcon(icon, size: 16, color: accent),
           const SizedBox(width: 6),
           Text(
             label,
@@ -850,7 +853,7 @@ class _CareerLanguageDropdown extends StatelessWidget {
         _SearchOption<String?>(
           label: StoryCareerSectionText.chooseLanguageOption,
           value: null,
-          subtitle: 'None selected',
+          subtitle: StoryCareerSectionText.noneSelected,
         ),
       ];
 
@@ -895,8 +898,8 @@ class _CareerLanguageDropdown extends StatelessWidget {
           style: TextStyle(
             fontSize: 16,
             color: validValue != null
-                ? Colors.white
-                : Colors.grey.shade500,
+                ? FormTheme.textBright
+                : FormTheme.textMuted,
           ),
         ),
       ),
@@ -924,7 +927,7 @@ class _CareerLanguageDropdown extends StatelessWidget {
     // Add region if available
     final region = data['region'] as String?;
     if (region != null && region.isNotEmpty) {
-      parts.add('Region: $region');
+      parts.add(StoryCareerSectionText.regionSubtitle(region));
     }
     
     // Add ancestry if available
@@ -1055,7 +1058,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                         ),
                         IconButton(
                           onPressed: () => Navigator.of(context).pop(),
-                          icon: Icon(Icons.close, color: Colors.grey.shade400),
+                          icon: Icon(Icons.close, color: FormTheme.textSecondary),
                           splashRadius: 20,
                         ),
                       ],
@@ -1067,11 +1070,11 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                     child: TextField(
                       controller: controller,
                       autofocus: false,
-                      style: const TextStyle(color: Colors.white),
+                      style: TextStyle(color: FormTheme.textBright),
                       decoration: InputDecoration(
                         hintText: StoryCareerSectionText.searchHint,
-                        hintStyle: TextStyle(color: Colors.grey.shade500),
-                        prefixIcon: Icon(Icons.search, color: Colors.grey.shade500),
+                        hintStyle: TextStyle(color: FormTheme.textMuted),
+                        prefixIcon: Icon(Icons.search, color: FormTheme.textMuted),
                         filled: true,
                         fillColor: FormTheme.surface,
                         border: OutlineInputBorder(
@@ -1080,7 +1083,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: Colors.grey.shade700),
+                          borderSide: BorderSide(color: FormTheme.border),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -1108,14 +1111,14 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                               children: [
                                 Icon(
                                   Icons.search_off,
-                                  color: Colors.grey.shade600,
+                                  color: FormTheme.borderLight,
                                   size: 48,
                                 ),
                                 const SizedBox(height: 12),
                                 Text(
                                   StoryCareerSectionText.noMatchesFound,
                                   style: TextStyle(
-                                    color: Colors.grey.shade500,
+                                    color: FormTheme.textMuted,
                                     fontSize: 14,
                                   ),
                                 ),
@@ -1139,7 +1142,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
                                   color: isNoneOption
-                                      ? Colors.grey.shade800.withValues(alpha: 0.4)
+                                      ? FormTheme.surfaceMuted
                                       : isSelected
                                           ? accentColor.withValues(alpha: 0.15)
                                           : Colors.transparent,
@@ -1149,20 +1152,20 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                                         )
                                       : isNoneOption
                                           ? Border.all(
-                                              color: Colors.grey.shade700,
+                                              color: FormTheme.border,
                                             )
                                           : null,
                                 ),
                                 child: ListTile(
                                   leading: isNoneOption
                                       ? Icon(Icons.remove_circle_outline,
-                                          size: 20, color: Colors.grey.shade500)
+                                          size: 20, color: FormTheme.textMuted)
                                       : null,
                                   title: Text(
                                     option.label,
                                     style: TextStyle(
                                       color: isNoneOption
-                                          ? Colors.grey.shade400
+                                          ? FormTheme.textSecondary
                                           : isSelected
                                               ? accentColor
                                               : Colors.grey.shade200,
@@ -1178,7 +1181,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                                       ? Text(
                                           option.subtitle!,
                                           style: TextStyle(
-                                            color: Colors.grey.shade500,
+                                            color: FormTheme.textMuted,
                                             fontSize: 12,
                                           ),
                                         )
@@ -1202,13 +1205,13 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       border: Border(
-                        top: BorderSide(color: Colors.grey.shade800),
+                        top: BorderSide(color: FormTheme.borderDim),
                       ),
                     ),
                     child: TextButton(
                       onPressed: () => Navigator.of(context).pop(),
                       style: TextButton.styleFrom(
-                        foregroundColor: Colors.grey.shade400,
+                        foregroundColor: FormTheme.textSecondary,
                       ),
                       child: const Text(StoryCareerSectionText.cancelLabel),
                     ),

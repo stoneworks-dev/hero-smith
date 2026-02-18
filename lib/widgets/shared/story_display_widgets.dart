@@ -32,17 +32,17 @@ class InfoRow extends StatelessWidget {
                   label,
                   style: TextStyle(
                     fontSize: 12,
-                    color: Colors.grey.shade500,
+                    color: FormTheme.textMuted,
                   ),
                 ),
                 const SizedBox(height: 2),
               ],
               Text(
                 value,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  color: Colors.white,
+                  color: FormTheme.textBright,
                 ),
               ),
             ],
@@ -97,7 +97,7 @@ class EffectItemDisplay extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   text,
-                  style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+                  style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
                 ),
               ],
             ),
@@ -134,10 +134,10 @@ class GrantItemDisplay extends StatelessWidget {
           Expanded(
             child: Text(
               text,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: Colors.white,
+                color: FormTheme.textBright,
               ),
             ),
           ),
@@ -178,10 +178,10 @@ class AbilityReferenceDisplay extends StatelessWidget {
           Expanded(
             child: Text(
               'Ability: ${ability.toString()}',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
-                color: Colors.white,
+                color: FormTheme.textBright,
               ),
             ),
           ),
@@ -222,10 +222,10 @@ class FeatureReferenceDisplay extends StatelessWidget {
           Expanded(
             child: Text(
               'Feature: ${feature.toString()}',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
-                color: Colors.white,
+                color: FormTheme.textBright,
               ),
             ),
           ),
@@ -251,24 +251,24 @@ class SelectedTraitCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: FormTheme.surfaceDark,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey.shade700),
+        border: Border.all(color: FormTheme.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             trait['name']?.toString() ?? 'Unknown Trait',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: FormTheme.textBright,
             ),
           ),
           if (trait['description'] != null) ...[
             const SizedBox(height: 4),
             Text(
               trait['description'].toString(),
-              style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+              style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
             ),
           ],
           if (trait['cost'] != null) ...[
@@ -316,7 +316,7 @@ class IncitingIncidentDisplay extends StatelessWidget {
     final incidents = careerData['inciting_incidents'] as List?;
 
     if (incidents == null) {
-      return Text(incidentName, style: const TextStyle(color: Colors.white));
+      return Text(incidentName, style: TextStyle(color: FormTheme.textBright));
     }
 
     final incident = incidents.cast<Map<String, dynamic>>().firstWhere(
@@ -325,7 +325,7 @@ class IncitingIncidentDisplay extends StatelessWidget {
         );
 
     if (incident.isEmpty) {
-      return Text(incidentName, style: const TextStyle(color: Colors.white));
+      return Text(incidentName, style: TextStyle(color: FormTheme.textBright));
     }
 
     return Container(
@@ -349,10 +349,10 @@ class IncitingIncidentDisplay extends StatelessWidget {
               Expanded(
                 child: Text(
                   incident['name']?.toString() ?? incidentName,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: FormTheme.textBright,
                   ),
                 ),
               ),
@@ -362,7 +362,7 @@ class IncitingIncidentDisplay extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               incident['description'].toString(),
-              style: TextStyle(color: Colors.grey.shade400, fontSize: 14),
+              style: TextStyle(color: FormTheme.textSecondary, fontSize: 14),
             ),
           ],
         ],

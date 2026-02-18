@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../core/models/feature.dart';
 import '../../core/models/component.dart';
+import '../../core/text/widgets/feature_widget_text.dart';
+import '../../core/theme/form_theme.dart';
 import '../../core/theme/feature_tokens.dart';
 import '../abilities/abilities_shared.dart';
 import '../abilities/ability_expandable_item.dart';
@@ -126,9 +128,9 @@ class FeatureCard extends StatelessWidget {
         ),
       ),
       child: Text(
-        'Level ${feature.level}',
+        FeatureWidgetText.levelLabel(feature.level),
         style: theme.textTheme.labelSmall?.copyWith(
-          color: Colors.white,
+          color: FormTheme.textBright,
           fontWeight: FontWeight.w600,
           fontSize: 11,
         ),

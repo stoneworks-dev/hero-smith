@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/db/providers.dart';
+import '../../../core/text/main_pages/gear/echelon_treasure_detail_page_text.dart';
 import '../../../core/models/component.dart' as model;
 import '../../../widgets/treasures/treasures.dart';
 
@@ -20,7 +21,7 @@ class EchelonTreasureDetailPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${_getEchelonName(echelon)} $displayName'),
+        title: Text('${EchelonTreasureDetailPageText.echelonName(echelon)} $displayName'),
       ),
       body: _TreasureList(
         stream: ref.watch(componentsByTypeProvider(treasureType)),
@@ -36,18 +37,7 @@ class EchelonTreasureDetailPage extends ConsumerWidget {
   }
 
   String _getEchelonName(int echelon) {
-    switch (echelon) {
-      case 1:
-        return '1st Echelon';
-      case 2:
-        return '2nd Echelon';
-      case 3:
-        return '3rd Echelon';
-      case 4:
-        return '4th Echelon';
-      default:
-        return '${echelon}th Echelon';
-    }
+    return EchelonTreasureDetailPageText.echelonName(echelon);
   }
 }
 
@@ -72,7 +62,7 @@ class _TreasureList extends StatelessWidget {
             .toList();
         
         if (filteredItems.isEmpty) {
-          return const Center(child: Text('No treasures available for this echelon'));
+          return Center(child: Text(EchelonTreasureDetailPageText.noTreasuresForEchelon));
         }
         
         return ListView.separated(
@@ -83,7 +73,7 @@ class _TreasureList extends StatelessWidget {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, st) => Center(child: Text('Error: $e')),
+      error: (e, st) => Center(child: Text(EchelonTreasureDetailPageText.errorMessage(e))),
     );
   }
 }

@@ -1,3 +1,5 @@
+import '../../common/common_text.dart';
+
 class HeroMainStatsViewText {
   static const String updateNumberFieldErrorPrefix = 'Failed to update ';
   static const String updateNumberFieldErrorSuffix = ': ';
@@ -26,7 +28,7 @@ class HeroMainStatsViewText {
   static const String respiteDialogRecoveriesPrefix = 'Regain all recoveries (';
   static const String respiteDialogRecoveriesArrow = '\u2192 ';
   static const String respiteDialogRecoveriesSuffix = ')';
-  static const String respiteDialogCancelLabel = 'Cancel';
+  static const String respiteDialogCancelLabel = CommonText.cancel;
   static const String respiteDialogConfirmLabel = 'Take Respite';
   static const String respiteCompletePrefix = 'Respite complete: +';
   static const String respiteCompleteSuffix =
@@ -70,8 +72,8 @@ class HeroMainStatsViewText {
 
   static const String vitalItemEditTitlePrefix = 'Edit ';
   static const String vitalItemValueLabel = 'Value';
-  static const String vitalItemCancelLabel = 'Cancel';
-  static const String vitalItemSaveLabel = 'Save';
+  static const String vitalItemCancelLabel = CommonText.cancel;
+  static const String vitalItemSaveLabel = CommonText.save;
 
   static const String maxVitalBreakdownTitleSuffix = ' Breakdown';
   static const String breakdownClassBaseLabel = 'Class (Base + Level)';
@@ -83,7 +85,7 @@ class HeroMainStatsViewText {
   static const String breakdownTotalLabel = 'Total';
   static const String breakdownEditHint =
       'Tap "Edit Modifier" to adjust manual modifications.';
-  static const String breakdownCloseLabel = 'Close';
+  static const String breakdownCloseLabel = CommonText.close;
   static const String breakdownEditModifierLabel = 'Edit Modifier';
   static const String breakdownModifierSuffix = ' Modifier';
 
@@ -101,7 +103,7 @@ class HeroMainStatsViewText {
   static const String diceRollValuesTitle = 'Roll Values';
   static const String diceAcceptPrompt =
       'Accept this roll or choose a different value:';
-  static const String diceCancelLabel = 'Cancel';
+  static const String diceCancelLabel = CommonText.cancel;
   static const String diceAcceptPrefix = 'Accept +';
 
   static const String resourceAddedPrefix = '+';
@@ -163,7 +165,7 @@ class HeroMainStatsViewText {
   static const String resourceDetailsInCombatFallback = 'In Combat';
   static const String resourceDetailsOutCombatFallback = 'Out of Combat';
   static const String resourceDetailsStrainFallback = 'Strain';
-  static const String resourceDetailsCloseLabel = 'Close';
+  static const String resourceDetailsCloseLabel = CommonText.close;
 
   static const String surgesCardTitle = 'Surges';
   static const String surgesCardTotalPrefix = 'Total: ';
@@ -174,30 +176,30 @@ class HeroMainStatsViewText {
   static const String surgesCardPotencyLabel = 'Potency +1';
 
   static const String numberEditTitlePrefix = 'Edit ';
-  static const String numberEditCancelLabel = 'Cancel';
-  static const String numberEditSaveLabel = 'Save';
+  static const String numberEditCancelLabel = CommonText.cancel;
+  static const String numberEditSaveLabel = CommonText.save;
 
   static const String xpEditTitle = 'Edit XP';
   static const String xpEditCurrentLevelPrefix = 'Current Level: ';
   static const String xpEditExperienceLabel = 'Experience Points';
   static const String xpEditInsightsTitle = 'Heroic Advancement';
-  static const String xpEditCancelLabel = 'Cancel';
-  static const String xpEditSaveLabel = 'Save';
+  static const String xpEditCancelLabel = CommonText.cancel;
+  static const String xpEditSaveLabel = CommonText.save;
   static const String xpEditSpeedLabel = 'Leveling Speed:';
 
   static const String modEditTitlePrefix = 'Edit ';
   static const String modEditBasePrefix = 'Base: ';
   static const String modEditModificationLabel = 'Modification';
   static const String modEditHelperText = 'Enter modifier (-99 to +99)';
-  static const String modEditCancelLabel = 'Cancel';
-  static const String modEditSaveLabel = 'Save';
+  static const String modEditCancelLabel = CommonText.cancel;
+  static const String modEditSaveLabel = CommonText.save;
 
   static const String compactSizeLabel = 'Size';
 
   static const String compactVitalEditTitlePrefix = 'Edit ';
   static const String compactVitalValueLabel = 'Value';
-  static const String compactVitalCancelLabel = 'Cancel';
-  static const String compactVitalSaveLabel = 'Save';
+  static const String compactVitalCancelLabel = CommonText.cancel;
+  static const String compactVitalSaveLabel = CommonText.save;
 
   static const String statEditFromEquipmentSuffix = ' from equipment';
   static const String statEditFromFeaturesSuffix = ' from features';
@@ -206,8 +208,8 @@ class HeroMainStatsViewText {
   static const String statEditBasePrefix = 'Base: ';
   static const String statEditModificationLabel = 'Modification';
   static const String statEditHelperText = 'Enter modifier (-99 to +99)';
-  static const String statEditCancelLabel = 'Cancel';
-  static const String statEditSaveLabel = 'Save';
+  static const String statEditCancelLabel = CommonText.cancel;
+  static const String statEditSaveLabel = CommonText.save;
 
   static const String sizeCategoryTiny = 'Tiny';
   static const String sizeCategorySmall = 'Small';
@@ -218,8 +220,8 @@ class HeroMainStatsViewText {
   static const String sizeEditModificationLabel = 'Size Modification';
   static const String sizeEditHelperText =
       'Enter modifier (affects numeric portion)';
-  static const String sizeEditCancelLabel = 'Cancel';
-  static const String sizeEditSaveLabel = 'Save';
+  static const String sizeEditCancelLabel = CommonText.cancel;
+  static const String sizeEditSaveLabel = CommonText.save;
 
   static const String noRecoveriesRemainingMessage = 'No recoveries remaining.';
   static const String cannotSpendRecoveryMessage =
@@ -237,7 +239,7 @@ class HeroMainStatsViewText {
   static const String applyHealingErrorPrefix = 'Failed to apply healing: ';
 
   static const String promptAmountLabel = 'Amount';
-  static const String promptCancelLabel = 'Cancel';
+  static const String promptCancelLabel = CommonText.cancel;
   static const String promptApplyLabel = 'Stamina';
   static const String promptApplyTempLabel = 'Temp';
 
@@ -248,4 +250,6 @@ class HeroMainStatsViewText {
   static const String psiBoostUsedSuffix = ')';
 
   static const String modSourceEquipmentSuffix = ' from equipment';
+
+  static const String modifyWealthTitle = 'Modify Wealth';
 }

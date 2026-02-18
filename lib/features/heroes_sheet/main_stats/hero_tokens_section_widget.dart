@@ -10,6 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../core/repositories/hero_repository.dart';
+import '../../../core/text/heroes_sheet/hero_tokens_section_text.dart';
+import '../../../core/theme/app_icon.dart';
+import '../../../core/theme/app_icons.dart';
 import 'hero_main_stats_models.dart';
 import '../../../core/theme/main_stats_theme.dart';
 
@@ -79,12 +82,12 @@ class HeroTokensSectionWidget extends StatelessWidget {
           // Header row with title and info button
           Row(
             children: [
-              const Icon(Icons.stars_outlined,
+              const AppIcon(CombatIcons.heroTokens,
                   size: 16, color: HeroTokenColors.primary),
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
-                  'Hero Tokens',
+                  HeroTokensSectionText.heroTokens,
                   style: theme.textTheme.labelMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                     color: HeroTokenColors.primary,
@@ -108,7 +111,7 @@ class HeroTokensSectionWidget extends StatelessWidget {
             children: [
               InkWell(
                 onTap: () => onEditNumberField(
-                  'Hero Tokens',
+                  HeroTokensSectionText.heroTokens,
                   NumericField.heroTokensCurrent,
                 ),
                 borderRadius: BorderRadius.circular(6),
@@ -132,7 +135,7 @@ class HeroTokensSectionWidget extends StatelessWidget {
           const SizedBox(height: 8),
           // Spend options
           Text(
-            'Spend Tokens:',
+            HeroTokensSectionText.spendTokens,
             style: theme.textTheme.labelSmall?.copyWith(
               color: theme.colorScheme.onSurface.withOpacity(0.7),
             ),
@@ -144,28 +147,28 @@ class HeroTokensSectionWidget extends StatelessWidget {
             children: [
               _buildSpendButton(
                 context,
-                label: '+2 Surges',
+                label: HeroTokensSectionText.plusTwoSurges,
                 cost: 1,
                 enabled: value >= 1,
                 onPressed: () => onSpendForSurges(1, 2),
               ),
               _buildSpendButton(
                 context,
-                label: 'Succeed Save',
+                label: HeroTokensSectionText.succeedSave,
                 cost: 1,
                 enabled: value >= 1,
                 onPressed: () => onSpendHeroTokens(1),
               ),
               _buildSpendButton(
                 context,
-                label: 'Reroll Test',
+                label: HeroTokensSectionText.rerollTest,
                 cost: 1,
                 enabled: value >= 1,
                 onPressed: () => onSpendHeroTokens(1),
               ),
               _buildSpendButton(
                 context,
-                label: '+$recoveryValue Stamina',
+                label: HeroTokensSectionText.plusStamina(recoveryValue),
                 cost: 2,
                 enabled: value >= 2,
                 onPressed: () => onSpendForStamina(2, recoveryValue),
@@ -200,8 +203,8 @@ class HeroTokensSectionWidget extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.add_circle_outline,
+            AppIcon(
+              CombatIcons.heroTokens,
               size: 14,
               color: canGain
                   ? HeroTokenColors.primary
@@ -209,7 +212,7 @@ class HeroTokensSectionWidget extends StatelessWidget {
             ),
             const SizedBox(width: 4),
             Text(
-              'Gain Token',
+              HeroTokensSectionText.gainToken,
               style: theme.textTheme.labelSmall?.copyWith(
                 fontWeight: FontWeight.w600,
                 color: canGain
@@ -289,7 +292,7 @@ class HeroTokensSectionWidget extends StatelessWidget {
 
 /// Shows the hero tokens info dialog with content from JSON.
 Future<void> showHeroTokensInfoDialog(BuildContext context) async {
-  String description = 'Hero tokens allow your party to perform heroic feats.';
+  String description = HeroTokensSectionText.defaultDescription;
   
   try {
     final jsonString = await rootBundle.loadString(
@@ -315,7 +318,7 @@ Future<void> showHeroTokensInfoDialog(BuildContext context) async {
           children: [
             const Icon(Icons.stars_outlined, color: HeroTokenColors.primary),
             const SizedBox(width: 8),
-            const Text('Hero Tokens'),
+            Text(HeroTokensSectionText.heroTokens),
           ],
         ),
         content: SingleChildScrollView(
@@ -327,7 +330,7 @@ Future<void> showHeroTokensInfoDialog(BuildContext context) async {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(),
-            child: const Text('Close'),
+            child: Text(HeroTokensSectionText.close),
           ),
         ],
       );

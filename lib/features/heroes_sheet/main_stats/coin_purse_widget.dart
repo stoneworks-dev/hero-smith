@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../core/text/heroes_sheet/main_stats/coin_purse_text.dart';
+import '../../../core/theme/app_icon.dart';
+import '../../../core/theme/app_icons.dart';
+import '../../../core/theme/form_theme.dart';
 import '../../../core/theme/navigation_theme.dart';
 import '../../../core/theme/main_stats_theme.dart';
 import 'coin_purse_model.dart';
@@ -64,7 +67,7 @@ class _CoinPurseWidgetState extends State<CoinPurseWidget> {
               surfaceTintColor: Colors.transparent,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
-                side: BorderSide(color: Colors.grey.shade800),
+                side: BorderSide(color: FormTheme.borderDim),
               ),
               title: Row(
                 children: [
@@ -77,9 +80,9 @@ class _CoinPurseWidgetState extends State<CoinPurseWidget> {
                     child: Icon(Icons.add_circle, color: Color(selectedColor)),
                   ),
                   const SizedBox(width: 12),
-                  const Text(
+                  Text(
                     CoinPurseText.addCoinTitle,
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: FormTheme.textBright),
                   ),
                 ],
               ),
@@ -89,17 +92,17 @@ class _CoinPurseWidgetState extends State<CoinPurseWidget> {
                   TextField(
                     controller: nameController,
                     autofocus: true,
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(color: FormTheme.textBright),
                     decoration: InputDecoration(
                       labelText: CoinPurseText.coinNameLabel,
-                      labelStyle: TextStyle(color: Colors.grey.shade400),
+                      labelStyle: TextStyle(color: FormTheme.textSecondary),
                       hintText: CoinPurseText.coinNameHint,
-                      hintStyle: TextStyle(color: Colors.grey.shade600),
+                      hintStyle: TextStyle(color: FormTheme.borderLight),
                       border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade700),
+                        borderSide: BorderSide(color: FormTheme.border),
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade700),
+                        borderSide: BorderSide(color: FormTheme.border),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Color(selectedColor)),
@@ -113,17 +116,17 @@ class _CoinPurseWidgetState extends State<CoinPurseWidget> {
                         child: TextField(
                           controller: quantityController,
                           keyboardType: TextInputType.number,
-                          style: const TextStyle(color: Colors.white),
+                          style: TextStyle(color: FormTheme.textBright),
                           decoration: InputDecoration(
                             labelText: CoinPurseText.quantityLabel,
-                            labelStyle: TextStyle(color: Colors.grey.shade400),
+                            labelStyle: TextStyle(color: FormTheme.textSecondary),
                             hintText: CoinPurseText.quantityHint,
-                            hintStyle: TextStyle(color: Colors.grey.shade600),
+                            hintStyle: TextStyle(color: FormTheme.borderLight),
                             border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey.shade700),
+                              borderSide: BorderSide(color: FormTheme.border),
                             ),
                             enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey.shade700),
+                              borderSide: BorderSide(color: FormTheme.border),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Color(selectedColor)),
@@ -140,17 +143,17 @@ class _CoinPurseWidgetState extends State<CoinPurseWidget> {
                         child: TextField(
                           controller: multiplierController,
                           keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                          style: const TextStyle(color: Colors.white),
+                          style: TextStyle(color: FormTheme.textBright),
                           decoration: InputDecoration(
                             labelText: CoinPurseText.valueLabel,
-                            labelStyle: TextStyle(color: Colors.grey.shade400),
+                            labelStyle: TextStyle(color: FormTheme.textSecondary),
                             hintText: CoinPurseText.valueHint,
-                            hintStyle: TextStyle(color: Colors.grey.shade600),
+                            hintStyle: TextStyle(color: FormTheme.borderLight),
                             border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey.shade700),
+                              borderSide: BorderSide(color: FormTheme.border),
                             ),
                             enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey.shade700),
+                              borderSide: BorderSide(color: FormTheme.border),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Color(selectedColor)),
@@ -165,7 +168,7 @@ class _CoinPurseWidgetState extends State<CoinPurseWidget> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  Text(CoinPurseText.colorLabel, style: TextStyle(color: Colors.grey.shade400, fontSize: 12)),
+                  Text(CoinPurseText.colorLabel, style: TextStyle(color: FormTheme.textSecondary, fontSize: 12)),
                   const SizedBox(height: 8),
                   Wrap(
                     spacing: 8,
@@ -181,7 +184,7 @@ class _CoinPurseWidgetState extends State<CoinPurseWidget> {
                             color: Color(colorValue),
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: isSelected ? Colors.white : Colors.transparent,
+                              color: isSelected ? FormTheme.textBright : Colors.transparent,
                               width: 2,
                             ),
                             boxShadow: isSelected
@@ -201,7 +204,7 @@ class _CoinPurseWidgetState extends State<CoinPurseWidget> {
                 TextButton(
                   onPressed: () => Navigator.of(dialogContext).pop(),
                   style: TextButton.styleFrom(
-                    foregroundColor: Colors.grey.shade400,
+                    foregroundColor: FormTheme.textSecondary,
                   ),
                   child: const Text(CoinPurseText.cancel),
                 ),
@@ -250,7 +253,7 @@ class _CoinPurseWidgetState extends State<CoinPurseWidget> {
               surfaceTintColor: Colors.transparent,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
-                side: BorderSide(color: Colors.grey.shade800),
+                side: BorderSide(color: FormTheme.borderDim),
               ),
               title: Row(
                 children: [
@@ -263,9 +266,9 @@ class _CoinPurseWidgetState extends State<CoinPurseWidget> {
                     child: Icon(Icons.edit, color: Color(selectedColor)),
                   ),
                   const SizedBox(width: 12),
-                  const Text(
+                  Text(
                     CoinPurseText.editCoinTitle,
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: FormTheme.textBright),
                   ),
                 ],
               ),
@@ -275,15 +278,15 @@ class _CoinPurseWidgetState extends State<CoinPurseWidget> {
                   TextField(
                     controller: nameController,
                     autofocus: true,
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(color: FormTheme.textBright),
                     decoration: InputDecoration(
                       labelText: CoinPurseText.coinNameLabel,
-                      labelStyle: TextStyle(color: Colors.grey.shade400),
+                      labelStyle: TextStyle(color: FormTheme.textSecondary),
                       border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade700),
+                        borderSide: BorderSide(color: FormTheme.border),
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade700),
+                        borderSide: BorderSide(color: FormTheme.border),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Color(selectedColor)),
@@ -297,15 +300,15 @@ class _CoinPurseWidgetState extends State<CoinPurseWidget> {
                         child: TextField(
                           controller: quantityController,
                           keyboardType: TextInputType.number,
-                          style: const TextStyle(color: Colors.white),
+                          style: TextStyle(color: FormTheme.textBright),
                           decoration: InputDecoration(
                             labelText: CoinPurseText.quantityLabel,
-                            labelStyle: TextStyle(color: Colors.grey.shade400),
+                            labelStyle: TextStyle(color: FormTheme.textSecondary),
                             border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey.shade700),
+                              borderSide: BorderSide(color: FormTheme.border),
                             ),
                             enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey.shade700),
+                              borderSide: BorderSide(color: FormTheme.border),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Color(selectedColor)),
@@ -322,15 +325,15 @@ class _CoinPurseWidgetState extends State<CoinPurseWidget> {
                         child: TextField(
                           controller: multiplierController,
                           keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                          style: const TextStyle(color: Colors.white),
+                          style: TextStyle(color: FormTheme.textBright),
                           decoration: InputDecoration(
                             labelText: CoinPurseText.valueLabel,
-                            labelStyle: TextStyle(color: Colors.grey.shade400),
+                            labelStyle: TextStyle(color: FormTheme.textSecondary),
                             border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey.shade700),
+                              borderSide: BorderSide(color: FormTheme.border),
                             ),
                             enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey.shade700),
+                              borderSide: BorderSide(color: FormTheme.border),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Color(selectedColor)),
@@ -345,7 +348,7 @@ class _CoinPurseWidgetState extends State<CoinPurseWidget> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  Text(CoinPurseText.colorLabel, style: TextStyle(color: Colors.grey.shade400, fontSize: 12)),
+                  Text(CoinPurseText.colorLabel, style: TextStyle(color: FormTheme.textSecondary, fontSize: 12)),
                   const SizedBox(height: 8),
                   Wrap(
                     spacing: 8,
@@ -361,7 +364,7 @@ class _CoinPurseWidgetState extends State<CoinPurseWidget> {
                             color: Color(colorValue),
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: isSelected ? Colors.white : Colors.transparent,
+                              color: isSelected ? FormTheme.textBright : Colors.transparent,
                               width: 2,
                             ),
                             boxShadow: isSelected
@@ -381,7 +384,7 @@ class _CoinPurseWidgetState extends State<CoinPurseWidget> {
                 TextButton(
                   onPressed: () => Navigator.of(dialogContext).pop(),
                   style: TextButton.styleFrom(
-                    foregroundColor: Colors.grey.shade400,
+                    foregroundColor: FormTheme.textSecondary,
                   ),
                   child: const Text(CoinPurseText.cancel),
                 ),
@@ -455,7 +458,7 @@ class _CoinPurseWidgetState extends State<CoinPurseWidget> {
           side: BorderSide(
             color: onPressed != null
                 ? accentColor.withAlpha(180)
-                : Colors.grey.shade700,
+                : FormTheme.border,
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(4),
@@ -466,7 +469,7 @@ class _CoinPurseWidgetState extends State<CoinPurseWidget> {
           size: 14,
           color: onPressed != null
               ? accentColor
-              : Colors.grey.shade600,
+              : FormTheme.borderLight,
         ),
       ),
     );
@@ -477,7 +480,7 @@ class _CoinPurseWidgetState extends State<CoinPurseWidget> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.grey.shade900.withAlpha(150),
+        color: FormTheme.surfaceDark.withAlpha(150),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.amber.shade800.withAlpha(100)),
       ),
@@ -487,7 +490,7 @@ class _CoinPurseWidgetState extends State<CoinPurseWidget> {
         children: [
           Row(
             children: [
-              Icon(Icons.account_balance_wallet, 
+              AppIcon(CombatIcons.coinPurse, 
                 size: 20, 
                 color: Colors.amber.shade400,
               ),
@@ -517,7 +520,7 @@ class _CoinPurseWidgetState extends State<CoinPurseWidget> {
                 child: Text(
                   CoinPurseText.emptyState,
                   style: TextStyle(
-                    color: Colors.grey.shade500,
+                    color: FormTheme.textMuted,
                     fontStyle: FontStyle.italic,
                   ),
                 ),
@@ -592,7 +595,7 @@ class _CoinPurseWidgetState extends State<CoinPurseWidget> {
                                     const SizedBox(height: 2),
                                     Text(
                                       '${coin.quantity} × ${_formatMultiplier(coin.multiplier)} = ${coin.totalValue.toStringAsFixed(2).replaceAll(RegExp(r'\.?0+$'), '')}',
-                                      style: TextStyle(color: Colors.grey.shade500, fontSize: 11),
+                                      style: TextStyle(color: FormTheme.textMuted, fontSize: 11),
                                     ),
                                   ],
                                 ),
@@ -638,11 +641,11 @@ class _CoinPurseWidgetState extends State<CoinPurseWidget> {
                               PopupMenuButton<String>(
                                 padding: EdgeInsets.zero,
                                 iconSize: 18,
-                                icon: Icon(Icons.more_vert, size: 18, color: Colors.grey.shade500),
+                                icon: Icon(Icons.more_vert, size: 18, color: FormTheme.textMuted),
                                 color: NavigationTheme.cardBackgroundDark,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
-                                  side: BorderSide(color: Colors.grey.shade700),
+                                  side: BorderSide(color: FormTheme.border),
                                 ),
                                 onSelected: (value) {
                                   if (value == 'edit') {
@@ -657,9 +660,9 @@ class _CoinPurseWidgetState extends State<CoinPurseWidget> {
                                     height: 36,
                                     child: Row(
                                       children: [
-                                        Icon(Icons.edit, size: 16, color: Colors.grey.shade400),
+                                        Icon(Icons.edit, size: 16, color: FormTheme.textSecondary),
                                         const SizedBox(width: 8),
-                                        const Text(CoinPurseText.edit, style: TextStyle(color: Colors.white, fontSize: 13)),
+                                        Text(CoinPurseText.edit, style: TextStyle(color: FormTheme.textBright, fontSize: 13)),
                                       ],
                                     ),
                                   ),
@@ -697,7 +700,7 @@ class _CoinPurseWidgetState extends State<CoinPurseWidget> {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey.shade300,
+                    color: FormTheme.textSecondary,
                   ),
                 ),
                 Text(

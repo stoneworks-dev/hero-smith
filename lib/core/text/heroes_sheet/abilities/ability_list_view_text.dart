@@ -1,4 +1,6 @@
-﻿class AbilityListViewText {
+﻿import '../../common/common_text.dart';
+
+class AbilityListViewText {
   static const String actionLabelActions = 'Actions';
   static const String actionLabelManeuvers = 'Maneuvers';
   static const String actionLabelTriggered = 'Triggered';
@@ -11,8 +13,8 @@
   static const String removeDialogTitle = 'Remove Ability';
   static const String removeDialogContent =
       'Are you sure you want to remove this ability from your hero?';
-  static const String removeDialogCancel = 'Cancel';
-  static const String removeDialogConfirm = 'Remove';
+  static const String removeDialogCancel = CommonText.cancel;
+  static const String removeDialogConfirm = CommonText.remove;
   static const String snackAbilityRemoved = 'Ability removed';
   static const String snackRemoveFailedPrefix = 'Failed to remove ability: ';
 }

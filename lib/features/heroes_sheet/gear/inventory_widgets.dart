@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/text/heroes_sheet/gear/inventory_widgets_text.dart';
+import '../../../core/theme/app_icon.dart';
+import '../../../core/theme/app_icons.dart';
 import '../../../core/theme/navigation_theme.dart';
 import '../../../core/theme/form_theme.dart';
 
@@ -57,7 +59,7 @@ class _ContainerCardState extends State<ContainerCard> {
       decoration: BoxDecoration(
         color: NavigationTheme.cardBackgroundDark,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade800),
+        border: Border.all(color: FormTheme.borderDim),
       ),
       child: Column(
         children: [
@@ -74,10 +76,10 @@ class _ContainerCardState extends State<ContainerCard> {
             child: Row(
               children: [
                 // Fantasy chest/bag icon
-                Icon(
-                  _isExpanded ? Icons.card_travel : Icons.inventory_2,
+                AppIcon(
+                  AppIcons.gear.container,
                   color: NavigationTheme.itemsColor,
-                  size: 24,
+                  size: 26,
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -86,8 +88,8 @@ class _ContainerCardState extends State<ContainerCard> {
                     children: [
                       Text(
                         name,
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: FormTheme.textBright,
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
                         ),
@@ -95,7 +97,7 @@ class _ContainerCardState extends State<ContainerCard> {
                       Text(
                         '${items.length}${InventoryWidgetsText.containerItemsSuffix}',
                         style: TextStyle(
-                          color: Colors.grey.shade400,
+                          color: FormTheme.textSecondary,
                           fontSize: 12,
                         ),
                       ),
@@ -112,7 +114,7 @@ class _ContainerCardState extends State<ContainerCard> {
                 ),
                 IconButton(
                   icon: Icon(Icons.edit_outlined,
-                      color: Colors.grey.shade400, size: 20),
+                      color: FormTheme.textSecondary, size: 20),
                   onPressed: widget.onEditContainer,
                   tooltip: InventoryWidgetsText.editContainerTooltip,
                   visualDensity: VisualDensity.compact,
@@ -127,7 +129,7 @@ class _ContainerCardState extends State<ContainerCard> {
                 IconButton(
                   icon: Icon(
                     _isExpanded ? Icons.expand_less : Icons.expand_more,
-                    color: Colors.grey.shade400,
+                    color: FormTheme.textSecondary,
                   ),
                   onPressed: () => setState(() => _isExpanded = !_isExpanded),
                   visualDensity: VisualDensity.compact,
@@ -155,7 +157,7 @@ class _ContainerCardState extends State<ContainerCard> {
                     decoration: BoxDecoration(
                       color: FormTheme.surfaceDark,
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.grey.shade800),
+                      border: Border.all(color: FormTheme.borderDim),
                     ),
                     child: Row(
                       children: [
@@ -166,10 +168,10 @@ class _ContainerCardState extends State<ContainerCard> {
                             color: NavigationTheme.itemsColor.withAlpha(26),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: const Icon(
-                            Icons.diamond_outlined, // Fantasy gem/item icon
+                          child: AppIcon(
+                            AppIcons.gear.item,
                             color: NavigationTheme.itemsColor,
-                            size: 18,
+                            size: 20,
                           ),
                         ),
                         const SizedBox(width: 10),
@@ -181,8 +183,8 @@ class _ContainerCardState extends State<ContainerCard> {
                               Text(
                                 itemMap['name'] as String? ??
                                     InventoryWidgetsText.defaultItemName,
-                                style: const TextStyle(
-                                  color: Colors.white,
+                                style: TextStyle(
+                                  color: FormTheme.textBright,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -190,7 +192,7 @@ class _ContainerCardState extends State<ContainerCard> {
                                 Text(
                                   description,
                                   style: TextStyle(
-                                    color: Colors.grey.shade500,
+                                    color: FormTheme.textMuted,
                                     fontSize: 12,
                                   ),
                                   maxLines: 1,
@@ -222,7 +224,7 @@ class _ContainerCardState extends State<ContainerCard> {
                                     size: 14,
                                     color: quantity > 1
                                         ? NavigationTheme.itemsColor
-                                        : Colors.grey.shade600,
+                                        : FormTheme.borderLight,
                                   ),
                                 ),
                               ),
@@ -234,8 +236,8 @@ class _ContainerCardState extends State<ContainerCard> {
                                       horizontal: 10.0),
                                   child: Text(
                                     '$quantity',
-                                    style: const TextStyle(
-                                      color: Colors.white,
+                                    style: TextStyle(
+                                      color: FormTheme.textBright,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 13,
                                     ),
@@ -256,7 +258,7 @@ class _ContainerCardState extends State<ContainerCard> {
                                     size: 14,
                                     color: quantity < 999
                                         ? NavigationTheme.itemsColor
-                                        : Colors.grey.shade600,
+                                        : FormTheme.borderLight,
                                   ),
                                 ),
                               ),
@@ -267,7 +269,7 @@ class _ContainerCardState extends State<ContainerCard> {
                         // Edit button
                         IconButton(
                           icon: Icon(Icons.edit_outlined,
-                              size: 18, color: Colors.grey.shade400),
+                              size: 18, color: FormTheme.textSecondary),
                           onPressed: () => widget.onEditItem(itemId, itemMap),
                           tooltip: InventoryWidgetsText.editItemTooltip,
                           constraints: const BoxConstraints(),
@@ -295,7 +297,7 @@ class _ContainerCardState extends State<ContainerCard> {
               padding: const EdgeInsets.all(16.0),
               child: Text(
                 InventoryWidgetsText.emptyItemsMessage,
-                style: TextStyle(color: Colors.grey.shade500),
+                style: TextStyle(color: FormTheme.textMuted),
               ),
             ),
         ],
@@ -363,7 +365,7 @@ class _QuantityInputDialogState extends State<_QuantityInputDialog> {
             const Text(
               InventoryWidgetsText.quantityDialogTitle,
               style: TextStyle(
-                color: Colors.white,
+                color: FormTheme.textBright,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
@@ -373,11 +375,11 @@ class _QuantityInputDialogState extends State<_QuantityInputDialog> {
               controller: _controller,
               focusNode: _focusNode,
               keyboardType: TextInputType.number,
-              style: const TextStyle(color: Colors.white, fontSize: 18),
+              style: TextStyle(color: FormTheme.textBright, fontSize: 18),
               textAlign: TextAlign.center,
               decoration: InputDecoration(
                 labelText: InventoryWidgetsText.quantityDialogLabel,
-                labelStyle: TextStyle(color: Colors.grey.shade400),
+                labelStyle: TextStyle(color: FormTheme.textSecondary),
                 filled: true,
                 fillColor: FormTheme.surface,
                 border: OutlineInputBorder(
@@ -386,7 +388,7 @@ class _QuantityInputDialogState extends State<_QuantityInputDialog> {
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.grey.shade700),
+                  borderSide: BorderSide(color: FormTheme.border),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -404,14 +406,14 @@ class _QuantityInputDialogState extends State<_QuantityInputDialog> {
                   onPressed: () => Navigator.of(context).pop(),
                   child: Text(
                     InventoryWidgetsText.quantityDialogCancelAction,
-                    style: TextStyle(color: Colors.grey.shade400),
+                    style: TextStyle(color: FormTheme.textSecondary),
                   ),
                 ),
                 const SizedBox(width: 12),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: NavigationTheme.itemsColor,
-                    foregroundColor: Colors.white,
+                    foregroundColor: FormTheme.textBright,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8)),
                   ),

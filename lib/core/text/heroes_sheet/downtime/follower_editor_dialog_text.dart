@@ -1,3 +1,5 @@
+import '../../common/common_text.dart';
+
 class FollowerEditorDialogText {
   static const String titleAddFollower = 'Add Follower';
   static const String titleEditFollower = 'Edit Follower';
@@ -16,6 +18,6 @@ class FollowerEditorDialogText {
   static const String skillsHint = 'Comma-separated';
   static const String languagesLabel = 'Languages';
   static const String languagesHint = 'Comma-separated';
-  static const String cancelButtonLabel = 'Cancel';
-  static const String saveButtonLabel = 'Save';
+  static const String cancelButtonLabel = CommonText.cancel;
+  static const String saveButtonLabel = CommonText.save;
 }

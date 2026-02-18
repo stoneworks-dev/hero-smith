@@ -1840,7 +1840,7 @@ class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Saved!'),
+          content: const Text(StrifeCreatorPageText.saved),
           duration: const Duration(seconds: 3),
           backgroundColor: Colors.green,
         ),

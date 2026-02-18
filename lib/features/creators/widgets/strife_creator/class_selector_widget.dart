@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/models/class_data.dart';
+import '../../../../core/theme/app_icon.dart';
+import '../../../../core/theme/app_icon_data.dart';
+import '../../../../core/theme/app_icons.dart';
 import '../../../../core/theme/creator_theme.dart';
 import '../../../../core/theme/navigation_theme.dart';
 import '../../../../core/theme/form_theme.dart';
@@ -40,7 +43,7 @@ Future<_PickerSelection?> _showSearchablePicker({
   required String title,
   String? currentValue,
   Color accentColor = _accent,
-  IconData icon = Icons.auto_awesome,
+  AppIconData icon = StoryIcons.heroClass,
 }) async {
   String searchQuery = '';
 
@@ -102,7 +105,7 @@ Future<_PickerSelection?> _showSearchablePicker({
                               color: accentColor.withValues(alpha: 0.4),
                             ),
                           ),
-                          child: Icon(
+                          child: AppIcon(
                             icon,
                             color: accentColor,
                             size: 20,
@@ -122,7 +125,7 @@ Future<_PickerSelection?> _showSearchablePicker({
                         IconButton(
                           icon: Icon(
                             Icons.close,
-                            color: Colors.grey.shade400,
+                            color: FormTheme.textSecondary,
                           ),
                           onPressed: () => Navigator.pop(context),
                           padding: EdgeInsets.zero,
@@ -136,13 +139,13 @@ Future<_PickerSelection?> _showSearchablePicker({
                     padding: const EdgeInsets.all(16),
                     child: TextField(
                       autofocus: false,
-                      style: const TextStyle(color: Colors.white),
+                      style: const TextStyle(color: FormTheme.textBright),
                       decoration: InputDecoration(
                         hintText: ClassSelectorWidgetText.searchHint,
-                        hintStyle: TextStyle(color: Colors.grey.shade500),
+                        hintStyle: TextStyle(color: FormTheme.textMuted),
                         prefixIcon: Icon(
                           Icons.search,
-                          color: Colors.grey.shade500,
+                          color: FormTheme.textMuted,
                         ),
                         filled: true,
                         fillColor: FormTheme.surface,
@@ -153,7 +156,7 @@ Future<_PickerSelection?> _showSearchablePicker({
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide(
-                            color: Colors.grey.shade700,
+                            color: FormTheme.border,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
@@ -184,7 +187,7 @@ Future<_PickerSelection?> _showSearchablePicker({
                               child: Text(
                                 ClassSelectorWidgetText.noMatchesFound,
                                 style: TextStyle(
-                                  color: Colors.grey.shade500,
+                                  color: FormTheme.textMuted,
                                   fontSize: 14,
                                 ),
                               ),
@@ -224,7 +227,7 @@ Future<_PickerSelection?> _showSearchablePicker({
                                         border: Border.all(
                                           color: isSelected
                                               ? accentColor.withValues(alpha: 0.5)
-                                              : Colors.grey.shade700,
+                                              : FormTheme.border,
                                         ),
                                       ),
                                       child: Row(
@@ -239,7 +242,7 @@ Future<_PickerSelection?> _showSearchablePicker({
                                                   style: TextStyle(
                                                     color: isSelected
                                                         ? accentColor
-                                                        : Colors.white,
+                                                        : FormTheme.textBright,
                                                     fontSize: 14,
                                                     fontWeight: isSelected
                                                         ? FontWeight.bold
@@ -251,7 +254,7 @@ Future<_PickerSelection?> _showSearchablePicker({
                                                   Text(
                                                     option.subtitle!,
                                                     style: TextStyle(
-                                                      color: Colors.grey.shade400,
+                                                      color: FormTheme.textSecondary,
                                                       fontSize: 12,
                                                     ),
                                                   ),
@@ -279,7 +282,7 @@ Future<_PickerSelection?> _showSearchablePicker({
                     width: double.infinity,
                     decoration: BoxDecoration(
                       border: Border(
-                        top: BorderSide(color: Colors.grey.shade800),
+                        top: BorderSide(color: FormTheme.borderDim),
                       ),
                     ),
                     child: TextButton(
@@ -290,7 +293,7 @@ Future<_PickerSelection?> _showSearchablePicker({
                       child: Text(
                         ClassSelectorWidgetText.cancelButton,
                         style: TextStyle(
-                          color: Colors.grey.shade400,
+                          color: FormTheme.textSecondary,
                           fontSize: 14,
                         ),
                       ),
@@ -334,7 +337,7 @@ class ClassSelectorWidget extends StatelessWidget {
           CreatorTheme.sectionHeader(
             title: ClassSelectorWidgetText.title,
             subtitle: ClassSelectorWidgetText.subtitle,
-            icon: Icons.school,
+            appIcon: StoryIcons.heroClass,
             accent: _accent,
           ),
           Padding(
@@ -358,7 +361,7 @@ class ClassSelectorWidget extends StatelessWidget {
                       title: ClassSelectorWidgetText.selectClassTitle,
                       currentValue: selectedClass?.name,
                       accentColor: _accent,
-                      icon: Icons.school,
+                      icon: StoryIcons.heroClass,
                     );
 
                     if (result?.value != null) {
@@ -381,14 +384,14 @@ class ClassSelectorWidget extends StatelessWidget {
                           selectedClass?.name ?? ClassSelectorWidgetText.selectClassHint,
                           style: TextStyle(
                             color: selectedClass != null
-                                ? Colors.white
-                                : Colors.grey.shade500,
+                                ? FormTheme.textBright
+                                : FormTheme.textMuted,
                             fontSize: 14,
                           ),
                         ),
                         Icon(
                           Icons.arrow_drop_down,
-                          color: Colors.grey.shade400,
+                          color: FormTheme.textSecondary,
                         ),
                       ],
                     ),
@@ -418,8 +421,8 @@ class ClassSelectorWidget extends StatelessWidget {
                                 color: _accent.withValues(alpha: 0.2),
                                 border: Border.all(color: _accent.withValues(alpha: 0.4)),
                               ),
-                              child: const Icon(
-                                Icons.auto_awesome,
+                              child: const AppIcon(
+                                StoryIcons.heroClass,
                                 color: _accent,
                                 size: 16,
                               ),
@@ -442,7 +445,7 @@ class ClassSelectorWidget extends StatelessWidget {
                           Text(
                             selectedClass!.startingCharacteristics.motto!,
                             style: TextStyle(
-                              color: Colors.grey.shade400,
+                              color: FormTheme.textSecondary,
                               fontSize: 13,
                               fontStyle: FontStyle.italic,
                             ),
@@ -497,7 +500,7 @@ class ClassSelectorWidget extends StatelessWidget {
           Text(
             '$label${ClassSelectorWidgetText.statLabelSuffix}',
             style: TextStyle(
-              color: Colors.grey.shade400,
+              color: FormTheme.textSecondary,
               fontSize: 12,
               fontWeight: FontWeight.w600,
             ),
@@ -505,7 +508,7 @@ class ClassSelectorWidget extends StatelessWidget {
           Text(
             value,
             style: const TextStyle(
-              color: Colors.white,
+              color: FormTheme.textBright,
               fontSize: 12,
             ),
           ),

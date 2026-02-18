@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../core/models/feature.dart';
+import '../../core/text/widgets/feature_widget_text.dart';
+import '../../core/theme/app_icon.dart';
+import '../../core/theme/app_icons.dart';
 import '../../core/theme/feature_tokens.dart';
 import 'feature_card.dart';
 
@@ -42,14 +45,14 @@ class FeatureLevelSection extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(
-                _getLevelIcon(level),
+              AppIcon(
+                LevelIcons.fromLevel(level),
                 color: levelColor,
                 size: 20,
               ),
               const SizedBox(width: 8),
               Text(
-                'Level $level',
+                FeatureWidgetText.levelLabelDynamic(level),
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w700,
                   color: levelColor,
@@ -82,10 +85,4 @@ class FeatureLevelSection extends StatelessWidget {
     );
   }
 
-  IconData _getLevelIcon(int level) {
-    if (level <= 3) return Icons.star_outline;
-    if (level <= 6) return Icons.star_half;
-    if (level <= 9) return Icons.star;
-    return Icons.auto_awesome;
-  }
 }

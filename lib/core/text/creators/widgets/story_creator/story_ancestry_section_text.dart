@@ -45,4 +45,8 @@ class StoryAncestrySectionText {
   static const String selectPreviousLifeTraitTitle = 'Select Trait';
   static const String noTraitsAvailable = 'No matching traits available';
   static const String chosenTraitPrefix = 'Chosen: ';
+  static const String cancel = 'Cancel';
+  static const String notEnoughPoints = 'Not enough points';
+  static const String chooseFormerAncestryFirst =
+      'Choose a former ancestry first';
 }

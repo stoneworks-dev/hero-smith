@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/db/providers.dart';
+import '../../../core/text/main_pages/strife/conditions_page_text.dart';
 import '../../../widgets/conditions/condition_card.dart';
 
 class ConditionsPage extends ConsumerWidget {
@@ -11,19 +12,19 @@ class ConditionsPage extends ConsumerWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Delete Condition'),
-          content: Text('Are you sure you want to delete "$conditionName"? This action cannot be undone.'),
+          title: Text(ConditionsPageText.deleteConditionTitle),
+          content: Text(ConditionsPageText.deleteConfirmation(conditionName)),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancel'),
+              child: Text(ConditionsPageText.cancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(true),
               style: FilledButton.styleFrom(
                 backgroundColor: Colors.red,
               ),
-              child: const Text('Delete'),
+              child: Text(ConditionsPageText.delete),
             ),
           ],
         );
@@ -38,7 +39,7 @@ class ConditionsPage extends ConsumerWidget {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Condition "$conditionName" deleted'),
+              content: Text(ConditionsPageText.conditionDeleted(conditionName)),
               backgroundColor: Colors.green,
             ),
           );
@@ -47,7 +48,7 @@ class ConditionsPage extends ConsumerWidget {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Error deleting condition: $e'),
+              content: Text(ConditionsPageText.errorDeletingCondition(e)),
               backgroundColor: Colors.red,
             ),
           );
@@ -62,13 +63,13 @@ class ConditionsPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Conditions'),
+        title: Text(ConditionsPageText.appBarTitle),
       ),
       body: conditionsAsync.when(
         data: (conditions) {
           if (conditions.isEmpty) {
-            return const Center(
-              child: Text('No conditions available'),
+            return Center(
+              child: Text(ConditionsPageText.noConditionsAvailable),
             );
           }
 
@@ -78,7 +79,7 @@ class ConditionsPage extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${conditions.length} conditions available',
+                  ConditionsPageText.countAvailable(conditions.length),
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                   ),
@@ -110,7 +111,7 @@ class ConditionsPage extends ConsumerWidget {
             children: [
               const Icon(Icons.error, size: 64, color: Colors.red),
               const SizedBox(height: 16),
-              Text('Error loading conditions: $error'),
+              Text(ConditionsPageText.errorLoading(error)),
             ],
           ),
         ),

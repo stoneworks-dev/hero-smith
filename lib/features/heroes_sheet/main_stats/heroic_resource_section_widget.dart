@@ -11,6 +11,8 @@ import '../../../core/repositories/hero_repository.dart';
 import '../../../core/services/resource_generation_service.dart';
 import '../../../core/text/heroes_sheet/main_stats/hero_main_stats_view_text.dart';
 import '../../../core/theme/ability_colors.dart';
+import '../../../core/theme/app_icon.dart';
+import '../../../core/theme/app_icons.dart';
 import 'hero_main_stats_models.dart';
 
 /// Callback for editing a number field.
@@ -92,7 +94,7 @@ class HeroicResourceSectionWidget extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(Icons.bolt_outlined,
+                    AppIcon(CombatIcons.heroicResource,
                       size: 14, color: resourceColor),
                   const SizedBox(width: 4),
                   Expanded(
@@ -291,7 +293,7 @@ class HeroicResourceSectionWidget extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.bolt_outlined,
+              AppIcon(CombatIcons.heroicResource,
                   size: 14, color: resourceColor),
               const SizedBox(width: 4),
               Text(

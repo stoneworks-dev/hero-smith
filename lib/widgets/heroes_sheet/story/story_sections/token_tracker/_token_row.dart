@@ -26,7 +26,7 @@ class _TokenRow extends StatelessWidget {
       decoration: BoxDecoration(
         color: StoryTheme.cardBackgroundDark,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey.shade700),
+        border: Border.all(color: FormTheme.border),
       ),
       child: Row(
         children: [
@@ -39,14 +39,14 @@ class _TokenRow extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
-                    color: Colors.white,
+                    color: FormTheme.textBright,
                   ),
                 ),
                 Text(
                   '$current / $max',
                   style: TextStyle(
                     fontSize: 12,
-                    color: Colors.grey.shade500,
+                    color: FormTheme.textMuted,
                   ),
                 ),
               ],
@@ -58,7 +58,7 @@ class _TokenRow extends StatelessWidget {
             iconSize: 28,
             color: canDecrement
                 ? Colors.red.shade400
-                : Colors.grey.shade700,
+                : FormTheme.border,
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
           ),
@@ -74,7 +74,7 @@ class _TokenRow extends StatelessWidget {
                     ? Colors.red.shade400
                     : current == max
                         ? storyColor
-                        : Colors.white,
+                        : FormTheme.textBright,
               ),
             ),
           ),
@@ -84,7 +84,7 @@ class _TokenRow extends StatelessWidget {
             iconSize: 28,
             color: canIncrement
                 ? storyColor
-                : Colors.grey.shade700,
+                : FormTheme.border,
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
           ),

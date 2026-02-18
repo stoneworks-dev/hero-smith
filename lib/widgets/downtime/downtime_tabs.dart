@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import '../../core/text/widgets/downtime_tabs_text.dart';
+import '../../core/theme/app_icon.dart';
+import '../../core/theme/app_icon_data.dart';
 import '../../core/theme/app_icons.dart';
+import '../../core/theme/form_theme.dart';
 import '../../core/theme/navigation_theme.dart';
 import '../../core/models/downtime.dart';
 import '../../core/data/downtime_data_source.dart';
@@ -106,7 +110,7 @@ class _ProjectsTabState extends State<ProjectsTab> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
+                  AppIcon(
                     AppIcons.projects,
                     size: 64,
                     color: Theme.of(context).colorScheme.outline,
@@ -264,8 +268,8 @@ class _ProjectCategoryCard extends StatelessWidget {
                 width: NavigationTheme.cardIconContainerSize,
                 height: NavigationTheme.cardIconContainerSize,
                 decoration: NavigationTheme.cardIconDecoration(color, isDark: isDark),
-                child: Icon(
-                  _getCategoryIcon(category),
+                child: AppIcon(
+                  ProjectCategoryIcons.fromTier(category),
                   color: color,
                   size: NavigationTheme.cardIconSize,
                 ),
@@ -287,7 +291,7 @@ class _ProjectCategoryCard extends StatelessWidget {
                       Text(
                         _getCategoryDescription(category),
                         style: NavigationTheme.cardSubtitleStyle(
-                          isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                          isDark ? FormTheme.textSecondary : FormTheme.borderLight,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -321,20 +325,6 @@ class _ProjectCategoryCard extends StatelessWidget {
     );
   }
 
-  IconData _getCategoryIcon(int category) {
-    switch (category) {
-      case 4:
-        return Icons.stars; // Epic
-      case 3:
-        return Icons.assignment_ind; // Major
-      case 2:
-        return Icons.assignment; // Medium
-      case 1:
-        return Icons.assignment_outlined; // Small
-      default:
-        return Icons.help_outline; // Other
-    }
-  }
 }
 
 
@@ -367,7 +357,7 @@ class _ImbuementsTabState extends State<ImbuementsTab> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
+                  AppIcon(
                     AppIcons.imbuements,
                     size: 64,
                     color: Theme.of(context).colorScheme.outline,
@@ -564,7 +554,7 @@ class _EchelonNavigationCard extends StatelessWidget {
                       Text(
                         _getEchelonDescription(echelonLevel),
                         style: NavigationTheme.cardSubtitleStyle(
-                          isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                          isDark ? FormTheme.textSecondary : FormTheme.borderLight,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -692,7 +682,7 @@ class _TreasuresTabState extends State<TreasuresTab> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
+                  AppIcon(
                     AppIcons.treasures,
                     size: 64,
                     color: Theme.of(context).colorScheme.outline,
@@ -865,7 +855,7 @@ class _TreasureTypeCard extends StatelessWidget {
                       Text(
                         description,
                         style: NavigationTheme.cardSubtitleStyle(
-                          isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                          isDark ? FormTheme.textSecondary : FormTheme.borderLight,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -941,10 +931,10 @@ class _DowntimeTabsScaffoldState extends State<DowntimeTabsScaffold>
   late TabController _tabController;
 
   static const _tabData = [
-    (icon: AppIcons.projects, label: 'Projects', color: NavigationTheme.projectsTabColor),
-    (icon: AppIcons.imbuements, label: 'Imbuements', color: NavigationTheme.imbuementsTabColor),
-    (icon: AppIcons.treasures, label: 'Treasures', color: NavigationTheme.treasuresTabColor),
-    (icon: Icons.event_note, label: 'Events', color: NavigationTheme.eventsTabColor),
+    (icon: AppIcons.projects, label: DowntimeTabsText.projects, color: NavigationTheme.projectsTabColor),
+    (icon: AppIcons.imbuements, label: DowntimeTabsText.imbuements, color: NavigationTheme.imbuementsTabColor),
+    (icon: AppIcons.treasures, label: DowntimeTabsText.treasures, color: NavigationTheme.treasuresTabColor),
+    (icon: MaterialIcon(Icons.event_note), label: DowntimeTabsText.events, color: NavigationTheme.eventsTabColor),
   ];
 
   @override
@@ -996,7 +986,7 @@ class _DowntimeTabsScaffoldState extends State<DowntimeTabsScaffold>
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
+                        AppIcon(
                           tab.icon,
                           color: color,
                           size: NavigationTheme.tabIconSize,
@@ -1055,10 +1045,10 @@ class _EventsTabState extends State<EventsTab> {
         }
         final eventTables = snap.data ?? const [];
         if (eventTables.isEmpty) {
-          return const Center(
+          return Center(
             child: Padding(
-              padding: EdgeInsets.all(24.0),
-              child: Text('No event tables found'),
+              padding: const EdgeInsets.all(24.0),
+              child: Text(DowntimeTabsText.noEventTablesFound),
             ),
           );
         }
@@ -1104,7 +1094,7 @@ class _SuggestedMilestonesCard extends StatelessWidget {
               children: [
                 Icon(Icons.event_available, color: cs.primary),
                 const SizedBox(width: 8),
-                Text('Suggested Event Milestones',
+                Text(DowntimeTabsText.suggestedEventMilestones,
                     style: Theme.of(context)
                         .textTheme
                         .titleMedium
@@ -1341,7 +1331,7 @@ class EventsPageScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Downtime Events'),
+        title: Text(DowntimeTabsText.downtimeEvents),
         backgroundColor: Theme.of(context).colorScheme.surface,
       ),
       body: const EventsTab(),
@@ -1414,8 +1404,8 @@ class _EventTableDetailPage extends StatelessWidget {
                             children: [
                               Text(
                                 table.name,
-                                style: const TextStyle(
-                                  color: Colors.white,
+                                style: TextStyle(
+                                  color: FormTheme.textBright,
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -1424,7 +1414,7 @@ class _EventTableDetailPage extends StatelessWidget {
                               Text(
                                 '${table.events.length} events available',
                                 style: TextStyle(
-                                  color: Colors.grey.shade400,
+                                  color: FormTheme.textSecondary,
                                   fontSize: 13,
                                 ),
                               ),
@@ -1564,7 +1554,7 @@ class _EventCardState extends State<_EventCard>
                       turns: _rotationAnimation,
                       child: Icon(
                         Icons.expand_more,
-                        color: Colors.grey.shade500,
+                        color: FormTheme.textMuted,
                         size: 24,
                       ),
                     ),
@@ -1592,7 +1582,7 @@ class _EventCardState extends State<_EventCard>
                       child: Text(
                         widget.description,
                         style: TextStyle(
-                          color: Colors.grey.shade300,
+                          color: FormTheme.textSecondary,
                           fontSize: 14,
                           height: 1.5,
                         ),

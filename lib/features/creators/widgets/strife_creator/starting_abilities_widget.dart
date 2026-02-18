@@ -8,6 +8,7 @@ import '../../../../core/models/abilities_models.dart';
 import '../../../../core/models/characteristics_models.dart';
 import '../../../../core/services/ability_data_service.dart';
 import '../../../../core/services/abilities_service.dart';
+import '../../../../core/theme/app_icons.dart';
 import '../../../../core/theme/creator_theme.dart';
 import '../../../../core/theme/form_theme.dart';
 import '../../../../core/text/creators/widgets/strife_creator/starting_abilities_widget_text.dart';
@@ -436,7 +437,7 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget> {
           padding: const EdgeInsets.all(16),
           child: Text(
             StartingAbilitiesWidgetText.noAbilitiesMessage,
-            style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+            style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
           ),
         ),
       );
@@ -458,7 +459,7 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget> {
           CreatorTheme.sectionHeader(
             title: StartingAbilitiesWidgetText.expansionTitle,
             subtitle: '${StartingAbilitiesWidgetText.selectionSubtitlePrefix}$selectedCount${StartingAbilitiesWidgetText.selectionSubtitleMiddle}$totalSlots${StartingAbilitiesWidgetText.selectionSubtitleSuffix}',
-            icon: Icons.auto_awesome,
+            appIcon: AbilityIcons.ability,
             accent: _accent,
           ),
           Padding(
@@ -483,7 +484,7 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget> {
           CreatorTheme.sectionHeader(
             title: StartingAbilitiesWidgetText.expansionTitle,
             subtitle: StartingAbilitiesWidgetText.sectionSubtitle,
-            icon: Icons.auto_awesome,
+            appIcon: AbilityIcons.ability,
             accent: _accent,
           ),
           child,
@@ -504,22 +505,22 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget> {
         children: [
           Text(
             allowance.label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: Colors.white,
+              color: FormTheme.textBright,
             ),
           ),
           const SizedBox(height: 4),
           Text(
             helper,
-            style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+            style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
           ),
           const SizedBox(height: 8),
           if (options.isEmpty)
             Text(
               StartingAbilitiesWidgetText.noAllowanceOptionsMessage,
-              style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+              style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
             )
           else
             ...List.generate(slots.length, (index) {
@@ -541,17 +542,17 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget> {
                     DropdownButtonFormField<String?>(
                       value: current,
                       dropdownColor: FormTheme.surface,
-                      style: const TextStyle(color: Colors.white, fontSize: 14),
+                      style: TextStyle(color: FormTheme.textBright, fontSize: 14),
                       decoration: InputDecoration(
                         labelText:
                             '${StartingAbilitiesWidgetText.choiceLabelPrefix}${index + 1}',
-                        labelStyle: TextStyle(color: Colors.grey.shade400),
+                        labelStyle: TextStyle(color: FormTheme.textSecondary),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),
-                          borderSide: BorderSide(color: Colors.grey.shade700),
+                          borderSide: BorderSide(color: FormTheme.border),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),

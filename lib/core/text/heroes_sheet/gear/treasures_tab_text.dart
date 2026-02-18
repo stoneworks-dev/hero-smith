@@ -1,3 +1,5 @@
+import '../../common/common_text.dart';
+
 class TreasuresTabText {
   static const String watchTreasuresFailedPrefix = 'Failed to watch treasures: ';
   static const String loadTreasuresFailedPrefix = 'Failed to load treasures: ';
@@ -12,7 +14,7 @@ class TreasuresTabText {
   static const String treasuresAndImbuementsHeaderPrefix =
       'Treasures & Imbuements (';
   static const String treasuresAndImbuementsHeaderSuffix = ')';
-  static const String addButtonLabel = 'Add';
+  static const String addButtonLabel = CommonText.add;
   static const String emptyStateMessage =
       'No treasures or imbuements yet.\nTap "Add" to begin or complete a downtime project.';
   static const String itemImbuementsHeader = 'Item Imbuements';
@@ -20,7 +22,7 @@ class TreasuresTabText {
   static const String updateQuantityFailedPrefix = 'Failed to update quantity: ';
   static const String imbuementsInfoDialogTitle = 'Imbued Items';
   static const String imbuementsInfoTooltip = 'About imbued items';
-  static const String closeButtonLabel = 'Close';
+  static const String closeButtonLabel = CommonText.close;
   
   // Equip/Unequip messages
   static const String treasureEquippedSnack = 'Treasure equipped';

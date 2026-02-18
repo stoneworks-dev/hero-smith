@@ -1,5 +1,8 @@
 ﻿import 'package:flutter/material.dart';
 
+import 'package:hero_smith/core/theme/app_icon.dart';
+import 'package:hero_smith/core/theme/app_icon_data.dart';
+import 'package:hero_smith/core/theme/app_icons.dart';
 import 'package:hero_smith/core/models/feature.dart';
 import 'package:hero_smith/core/models/component.dart';
 import 'package:hero_smith/core/models/heroic_resource_progression.dart';

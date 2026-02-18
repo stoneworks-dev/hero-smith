@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import '../../core/models/component.dart';
 import '../../core/services/ability_data_service.dart';
+import '../../core/theme/app_icon.dart';
+import '../../core/theme/app_icon_data.dart';
+import '../../core/theme/app_icons.dart';
 import '../../core/theme/navigation_theme.dart';
 import '../../core/theme/kit_page_theme.dart';
+import '../../core/theme/form_theme.dart';
+import '../../core/text/widgets/equipment_card_text.dart';
 import '../abilities/ability_expandable_item.dart';
 
 /// Modern equipment card with clean styling matching the TreasureCard design.
@@ -119,24 +124,9 @@ class _EquipmentCardState extends State<EquipmentCard>
     return KitPageTheme.accentForType(type);
   }
 
-  IconData _getTypeIcon() {
+  AppIconData _getTypeIcon() {
     final type = widget.component.type.toLowerCase();
-    switch (type) {
-      case 'kit':
-        return Icons.backpack_outlined;
-      case 'stormwight_kit':
-        return Icons.bolt;
-      case 'psionic_augmentation':
-        return Icons.psychology_outlined;
-      case 'enchantment':
-        return Icons.auto_fix_high;
-      case 'prayer':
-        return Icons.auto_awesome;
-      case 'ward':
-        return Icons.shield_outlined;
-      default:
-        return Icons.inventory_2_outlined;
-    }
+    return KitIcons.fromType(type);
   }
 
   String _getTypeLabel() {
@@ -227,7 +217,7 @@ class _EquipmentCardState extends State<EquipmentCard>
             color: accentColor.withOpacity(0.15),
             borderRadius: BorderRadius.circular(10),
           ),
-          child: Icon(
+          child: AppIcon(
             _getTypeIcon(),
             color: accentColor,
             size: 22,
@@ -242,7 +232,7 @@ class _EquipmentCardState extends State<EquipmentCard>
               Text(
                 widget.component.name,
                 style: const TextStyle(
-                  color: Colors.white,
+                  color: FormTheme.textBright,
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   letterSpacing: 0.2,
@@ -258,7 +248,7 @@ class _EquipmentCardState extends State<EquipmentCard>
           turns: _rotationAnimation,
           child: Icon(
             Icons.expand_more,
-            color: Colors.grey.shade500,
+            color: FormTheme.textMuted,
             size: 24,
           ),
         ),
@@ -378,8 +368,9 @@ class _EquipmentCardState extends State<EquipmentCard>
 
     for (final entry in armor.entries) {
       if (entry.value == true) {
-        chips.add(_buildEquipmentChip(
-          '🛡️ ${_humanReadableEquipment(entry.key)}',
+        chips.add(_buildEquipmentIconChip(
+          KitEquipmentIcons.fromArmorType(entry.key),
+          _humanReadableEquipment(entry.key),
           KitPageTheme.statColors['SPD']!,
         ));
       }
@@ -387,8 +378,9 @@ class _EquipmentCardState extends State<EquipmentCard>
 
     for (final entry in weapons.entries) {
       if (entry.value == true) {
-        chips.add(_buildEquipmentChip(
-          '⚔️ ${_humanReadableEquipment(entry.key)}',
+        chips.add(_buildEquipmentIconChip(
+          KitEquipmentIcons.fromWeaponType(entry.key),
+          _humanReadableEquipment(entry.key),
           KitPageTheme.statColors['STM']!,
         ));
       }
@@ -418,6 +410,73 @@ class _EquipmentCardState extends State<EquipmentCard>
     );
   }
 
+  Widget _buildEquipmentIconChip(AppIconData icon, String text, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(
+          color: color.withOpacity(0.25),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AppIcon(icon, size: 14, color: color),
+          const SizedBox(width: 4),
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+              color: color,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildIconTierRow(AppIconData icon, String label, Map<String, dynamic> data, bool isTier) {
+    final key1 = isTier ? '1st_tier' : '1st_echelon';
+    final key2 = isTier ? '2nd_tier' : '2nd_echelon';
+    final key3 = isTier ? '3rd_tier' : '3rd_echelon';
+
+    final v1 = data[key1];
+    final v2 = data[key2];
+    final v3 = data[key3];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            AppIcon(icon, size: 14, color: FormTheme.textSecondary),
+            const SizedBox(width: 4),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: FormTheme.textSecondary,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        Row(
+          children: [
+            if (v1 != null) _buildTierBox(isTier ? 'T1' : 'E1', '+$v1', isTier ? '≤11' : '1st'),
+            if (v2 != null) _buildTierBox(isTier ? 'T2' : 'E2', '+$v2', isTier ? '12-16' : '2nd'),
+            if (v3 != null) _buildTierBox(isTier ? 'T3' : 'E3', '+$v3', isTier ? '17+' : '3rd'),
+          ],
+        ),
+      ],
+    );
+  }
+
   Widget _buildExpandedContent(BuildContext context, Color accentColor) {
     final data = widget.component.data;
 
@@ -429,13 +488,13 @@ class _EquipmentCardState extends State<EquipmentCard>
         // Description
         if (data['description'] != null) ...[
           _buildSection(
-            title: 'DESCRIPTION',
-            icon: Icons.description_outlined,
+            title: EquipmentCardText.description,
+            icon: KitIcons.fromType(widget.component.type.toLowerCase()),
             accentColor: accentColor,
             content: Text(
               data['description'] as String,
               style: TextStyle(
-                color: Colors.grey.shade300,
+                color: FormTheme.textSecondary,
                 fontSize: 13,
                 height: 1.5,
               ),
@@ -459,13 +518,13 @@ class _EquipmentCardState extends State<EquipmentCard>
         // Ward-specific: characteristic and effect
         if (data['ward_effect'] != null)
           _buildSection(
-            title: 'WARD EFFECT',
-            icon: Icons.shield_outlined,
+            title: EquipmentCardText.wardEffect,
+            icon: KitIcons.ward,
             accentColor: accentColor,
             content: Text(
               data['ward_effect'] as String,
               style: TextStyle(
-                color: Colors.grey.shade300,
+                color: FormTheme.textSecondary,
                 fontSize: 13,
                 height: 1.5,
               ),
@@ -475,13 +534,13 @@ class _EquipmentCardState extends State<EquipmentCard>
         // Modifier-specific: effect
         if (data['effect'] != null)
           _buildSection(
-            title: 'EFFECT',
-            icon: Icons.auto_awesome,
+            title: EquipmentCardText.effect,
+            icon: KitIcons.enchantment,
             accentColor: accentColor,
             content: Text(
               data['effect'] as String,
               style: TextStyle(
-                color: Colors.grey.shade300,
+                color: FormTheme.textSecondary,
                 fontSize: 13,
                 height: 1.5,
               ),
@@ -499,7 +558,7 @@ class _EquipmentCardState extends State<EquipmentCard>
 
   Widget _buildSection({
     required String title,
-    required IconData icon,
+    required AppIconData icon,
     required Color accentColor,
     required Widget content,
   }) {
@@ -520,7 +579,7 @@ class _EquipmentCardState extends State<EquipmentCard>
           // Header
           Row(
             children: [
-              Icon(icon, size: 14, color: accentColor),
+              AppIcon(icon, size: 14, color: accentColor),
               const SizedBox(width: 6),
               Text(
                 title,
@@ -552,8 +611,8 @@ class _EquipmentCardState extends State<EquipmentCard>
     final equipmentChips = equipment != null ? _buildEquipmentChips(equipment, accentColor) : <Widget>[];
 
     return _buildSection(
-      title: 'EQUIPMENT',
-      icon: Icons.inventory_2_outlined,
+      title: EquipmentCardText.equipment,
+      icon: AppIcons.gear.kitsTab,
       accentColor: accentColor,
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -562,7 +621,7 @@ class _EquipmentCardState extends State<EquipmentCard>
             Text(
               equipmentDescription,
               style: TextStyle(
-                color: Colors.grey.shade300,
+                color: FormTheme.textSecondary,
                 fontSize: 13,
                 height: 1.5,
               ),
@@ -586,17 +645,17 @@ class _EquipmentCardState extends State<EquipmentCard>
     }
 
     return _buildSection(
-      title: 'DAMAGE BONUSES',
-      icon: Icons.trending_up,
+      title: EquipmentCardText.damageBonuses,
+      icon: KitEquipmentIcons.meleeDamage,
       accentColor: accentColor,
       content: Column(
         children: [
           if (meleeDamage != null && _hasNonNullValues(meleeDamage))
-            _buildTierRow('⚔️ Melee', meleeDamage, true),
+            _buildIconTierRow(KitEquipmentIcons.meleeDamage, 'Melee', meleeDamage, true),
           if (rangedDamage != null && _hasNonNullValues(rangedDamage)) ...[
             if (meleeDamage != null && _hasNonNullValues(meleeDamage))
               const SizedBox(height: 10),
-            _buildTierRow('🏹 Ranged', rangedDamage, true),
+            _buildIconTierRow(KitEquipmentIcons.rangedDamage, 'Ranged', rangedDamage, true),
           ],
         ],
       ),
@@ -613,17 +672,17 @@ class _EquipmentCardState extends State<EquipmentCard>
     }
 
     return _buildSection(
-      title: 'DISTANCE BONUSES',
-      icon: Icons.straighten,
+      title: EquipmentCardText.distanceBonuses,
+      icon: KitEquipmentIcons.meleeRange,
       accentColor: accentColor,
       content: Column(
         children: [
           if (meleeDistance != null && _hasNonNullValues(meleeDistance))
-            _buildEchelonRow('📏 Melee', meleeDistance),
+            _buildIconTierRow(KitEquipmentIcons.meleeRange, 'Melee', meleeDistance, false),
           if (rangedDistance != null && _hasNonNullValues(rangedDistance)) ...[
             if (meleeDistance != null && _hasNonNullValues(meleeDistance))
               const SizedBox(height: 10),
-            _buildEchelonRow('🎯 Ranged', rangedDistance),
+            _buildIconTierRow(KitEquipmentIcons.rangedRange, 'Ranged', rangedDistance, false),
           ],
         ],
       ),
@@ -637,8 +696,8 @@ class _EquipmentCardState extends State<EquipmentCard>
     }
 
     return _buildSection(
-      title: 'LIGHTNING DAMAGE',
-      icon: Icons.bolt,
+      title: EquipmentCardText.lightningDamage,
+      icon: KitIcons.stormwightKit,
       accentColor: accentColor,
       content: _buildTierRow('⚡ Damage', lightningDamage, false),
     );
@@ -661,7 +720,7 @@ class _EquipmentCardState extends State<EquipmentCard>
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w600,
-            color: Colors.grey.shade300,
+            color: FormTheme.textSecondary,
           ),
         ),
         const SizedBox(height: 6),
@@ -686,10 +745,10 @@ class _EquipmentCardState extends State<EquipmentCard>
         margin: const EdgeInsets.only(right: 6),
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
         decoration: BoxDecoration(
-          color: Colors.grey.shade800.withOpacity(0.5),
+          color: FormTheme.surfaceMuted,
           borderRadius: BorderRadius.circular(6),
           border: Border.all(
-            color: Colors.grey.shade700,
+            color: FormTheme.border,
             width: 1,
           ),
         ),
@@ -700,7 +759,7 @@ class _EquipmentCardState extends State<EquipmentCard>
               style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w800,
-                color: Colors.white,
+                color: FormTheme.textBright,
               ),
             ),
             const SizedBox(height: 2),
@@ -709,7 +768,7 @@ class _EquipmentCardState extends State<EquipmentCard>
               style: TextStyle(
                 fontSize: 9,
                 fontWeight: FontWeight.w500,
-                color: Colors.grey.shade500,
+                color: FormTheme.textMuted,
               ),
             ),
           ],
@@ -723,8 +782,8 @@ class _EquipmentCardState extends State<EquipmentCard>
     if (keywords == null || keywords.isEmpty) return const SizedBox.shrink();
 
     return _buildSection(
-      title: 'KEYWORDS',
-      icon: Icons.label_outline,
+      title: EquipmentCardText.keywords,
+      icon: KitIcons.fromType(widget.component.type.toLowerCase()),
       accentColor: accentColor,
       content: Wrap(
         spacing: 6,
@@ -771,7 +830,7 @@ class _EquipmentCardState extends State<EquipmentCard>
             // Header
             Row(
               children: [
-                Icon(Icons.auto_awesome, size: 14, color: accentColor),
+                AppIcon(KitIcons.fromType(widget.component.type.toLowerCase()), size: 14, color: accentColor),
                 const SizedBox(width: 6),
                 Text(
                   _signatureAbilities.length > 1 ? 'SIGNATURE ABILITIES' : 'SIGNATURE ABILITY',
@@ -820,7 +879,7 @@ class _EquipmentCardState extends State<EquipmentCard>
 
       return _buildSection(
         title: abilityNames.length > 1 ? 'SIGNATURE ABILITIES' : 'SIGNATURE ABILITY',
-        icon: Icons.auto_awesome,
+        icon: KitIcons.fromType(widget.component.type.toLowerCase()),
         accentColor: accentColor,
         content: Column(
           children: abilityNames.map((name) => Container(

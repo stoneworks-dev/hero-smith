@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../../core/models/downtime.dart';
+import '../../../core/text/main_pages/downtime/project_category_detail_page_text.dart';
+import '../../../core/theme/app_icon.dart';
+import '../../../core/theme/app_icons.dart';
+import '../../../core/theme/form_theme.dart';
 import '../../../core/theme/navigation_theme.dart';
 import '../../../widgets/shared/expandable_card.dart';
 
@@ -85,9 +89,9 @@ class ProjectCategoryDetailPage extends StatelessWidget {
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              '${projects.length} projects in this category',
+                              ProjectCategoryDetailPageText.projectCount(projects.length),
                               style: TextStyle(
-                                color: Colors.grey.shade300,
+                                color: FormTheme.textSecondary,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -162,7 +166,7 @@ class _EntryDetails extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Project Details',
+                    ProjectCategoryDetailPageText.projectDetails,
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
@@ -172,8 +176,8 @@ class _EntryDetails extends StatelessWidget {
                   if (projectGoal != null) ...[
                     _InfoChip(
                       icon: Icons.flag,
-                      label: 'Goal',
-                      value: '$projectGoal points',
+                      label: ProjectCategoryDetailPageText.goal,
+                      value: ProjectCategoryDetailPageText.goalPoints(projectGoal),
                       color: _getProjectGoalColor(projectGoal),
                     ),
                     const SizedBox(height: 8),
@@ -181,7 +185,7 @@ class _EntryDetails extends StatelessWidget {
                   
                   if (rollCharacteristics != null && rollCharacteristics.isNotEmpty) ...[
                     Text(
-                      'Roll Characteristics:',
+                      ProjectCategoryDetailPageText.rollCharacteristics,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             fontWeight: FontWeight.w500,
                           ),
@@ -225,7 +229,7 @@ class _EntryDetails extends StatelessWidget {
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        'Prerequisites',
+                        ProjectCategoryDetailPageText.prerequisites,
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
                               color: Theme.of(context).colorScheme.primary,
                               fontWeight: FontWeight.w600,
@@ -282,8 +286,8 @@ class _EntryDetails extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Icon(
-                          _getPrerequisiteIcon(key),
+                        AppIcon(
+                          PrerequisiteIcons.fromKey(key),
                           color: Theme.of(context).colorScheme.primary,
                           size: 16,
                         ),
@@ -305,7 +309,7 @@ class _EntryDetails extends StatelessWidget {
                         children: names.map((name) => Padding(
                           padding: const EdgeInsets.only(bottom: 2),
                           child: Text(
-                            '• $name',
+                            ProjectCategoryDetailPageText.bulletItem(name),
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         )).toList(),
@@ -334,8 +338,8 @@ class _EntryDetails extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    _getPrerequisiteIcon(key),
+                  AppIcon(
+                    PrerequisiteIcons.fromKey(key),
                     color: Theme.of(context).colorScheme.primary,
                     size: 16,
                   ),
@@ -346,7 +350,7 @@ class _EntryDetails extends StatelessWidget {
                         style: Theme.of(context).textTheme.bodySmall,
                         children: [
                           TextSpan(
-                            text: '$label: ',
+                            text: ProjectCategoryDetailPageText.labelPrefix(label),
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
                               color: Theme.of(context).colorScheme.primary,
@@ -371,44 +375,23 @@ class _EntryDetails extends StatelessWidget {
   String _getPrerequisiteLabel(String key) {
     switch (key.toLowerCase()) {
       case 'item_prerequisite':
-        return 'Required Items';
+        return ProjectCategoryDetailPageText.requiredItems;
       case 'project_source':
-        return 'Knowledge Source';
+        return ProjectCategoryDetailPageText.knowledgeSource;
       case 'location':
-        return 'Location Required';
+        return ProjectCategoryDetailPageText.locationRequired;
       case 'skill':
-        return 'Skill Required';
+        return ProjectCategoryDetailPageText.skillRequired;
       case 'level':
-        return 'Level Required';
+        return ProjectCategoryDetailPageText.levelRequired;
       case 'class':
-        return 'Class Required';
+        return ProjectCategoryDetailPageText.classRequired;
       case 'feature':
-        return 'Feature Required';
+        return ProjectCategoryDetailPageText.featureRequired;
       default:
         return key.replaceAll('_', ' ').split(' ')
             .map((word) => word[0].toUpperCase() + word.substring(1))
             .join(' ');
-    }
-  }
-
-  IconData _getPrerequisiteIcon(String key) {
-    switch (key.toLowerCase()) {
-      case 'item_prerequisite':
-        return Icons.inventory_2;
-      case 'project_source':
-        return Icons.menu_book;
-      case 'location':
-        return Icons.place;
-      case 'skill':
-        return Icons.build;
-      case 'level':
-        return Icons.bar_chart;
-      case 'class':
-        return Icons.person;
-      case 'feature':
-        return Icons.star;
-      default:
-        return Icons.arrow_right;
     }
   }
 
@@ -449,8 +432,8 @@ class _CharacteristicChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            _getCharacteristicIcon(characteristic),
+          AppIcon(
+            CharacteristicIcons.fromName(characteristic),
             size: 14,
             color: _getCharacteristicColor(characteristic),
           ),
@@ -484,22 +467,6 @@ class _CharacteristicChip extends StatelessWidget {
     }
   }
 
-  IconData _getCharacteristicIcon(String characteristic) {
-    switch (characteristic.toLowerCase()) {
-      case 'might':
-        return Icons.fitness_center;
-      case 'agility':
-        return Icons.directions_run;
-      case 'reason':
-        return Icons.psychology;
-      case 'intuition':
-        return Icons.lightbulb_outline;
-      case 'presence':
-        return Icons.person;
-      default:
-        return Icons.help_outline;
-    }
-  }
 }
 
 class _InfoChip extends StatelessWidget {

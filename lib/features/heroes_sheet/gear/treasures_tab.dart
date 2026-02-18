@@ -7,12 +7,15 @@ import '../../../core/data/downtime_data_source.dart';
 import '../../../core/db/providers.dart';
 import '../../../core/models/component.dart' as model;
 import '../../../core/models/downtime.dart';
+import '../../../core/theme/app_icon.dart';
+import '../../../core/theme/app_icons.dart';
+import '../../../core/theme/form_theme.dart';
 import '../../../core/theme/navigation_theme.dart';
 import '../../../core/text/heroes_sheet/gear/treasures_tab_text.dart';
 import '../../../widgets/treasures/treasures.dart';
+import '../../../widgets/treasures/imbuement_card.dart';
 import 'gear_dialogs.dart';
 import 'gear_utils.dart';
-import 'gear_widgets.dart';
 
 /// Treasures tab for the gear sheet.
 class TreasuresTab extends ConsumerStatefulWidget {
@@ -497,7 +500,7 @@ class _TreasuresTabState extends ConsumerState<TreasuresTab> {
                   Text(
                     '${TreasuresTabText.treasuresAndImbuementsHeaderPrefix}$totalCount${TreasuresTabText.treasuresAndImbuementsHeaderSuffix}',
                     style: TextStyle(
-                      color: Colors.grey.shade300,
+                      color: FormTheme.textSecondary,
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),
@@ -511,16 +514,16 @@ class _TreasuresTabState extends ConsumerState<TreasuresTab> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
-                            Icons.auto_awesome,
+                          AppIcon(
+                            TreasureIcons.treasuresTab,
                             size: 64,
-                            color: Colors.grey.shade600,
+                            color: FormTheme.borderLight,
                           ),
                           const SizedBox(height: 16),
                           Text(
                             TreasuresTabText.emptyStateMessage,
                             textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.grey.shade400),
+                            style: TextStyle(color: FormTheme.textSecondary),
                           ),
                         ],
                       ),
@@ -561,26 +564,10 @@ class _TreasuresTabState extends ConsumerState<TreasuresTab> {
                           ...heroImbuements.map((imbuement) {
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 12),
-                              child: Stack(
-                                children: [
-                                  ImbuementCard(imbuement: imbuement),
-                                  Positioned(
-                                    top: 8,
-                                    right: 8,
-                                    child: IconButton(
-                                      icon: const Icon(Icons.delete_outline,
-                                          color: Colors.white70, size: 20),
-                                      onPressed: () =>
-                                          _removeImbuement(imbuement.id),
-                                      style: IconButton.styleFrom(
-                                        backgroundColor:
-                                            Colors.black.withValues(alpha: 0.6),
-                                        padding: const EdgeInsets.all(6),
-                                        minimumSize: const Size(32, 32),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                              child: ImbuementCard(
+                                imbuement: imbuement,
+                                onRemove: () =>
+                                    _removeImbuement(imbuement.id),
                               ),
                             );
                           }),
@@ -641,8 +628,8 @@ class _TreasuresTabState extends ConsumerState<TreasuresTab> {
               side:
                   BorderSide(color: NavigationTheme.treasureColor, width: 1.5),
             ),
-            child:
-                Icon(Icons.add, color: NavigationTheme.treasureColor, size: 20),
+            child: AppIcon(TreasureIcons.treasuresTab,
+                color: NavigationTheme.treasureColor, size: 20),
           ),
         ),
       ],

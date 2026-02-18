@@ -6,89 +6,126 @@ import '../ability_colors.dart';
 /// Semantic tokens provide cross-domain mappings (inputs like "fire", "maneuver")
 /// to visual tokens (colors/emojis) while centralizing actual color values.
 /// Use these in widgets instead of calling color classes directly.
+
+// ─── Damage ────────────────────────────────────────────────────────────────
+
 class DamageTokens {
   DamageTokens._();
 
   static Color color(String element) {
-    // Use enhanced ability colors for better distinction
     return AbilityColors.getDamageTypeColor(element);
   }
 
   static String emoji(String element) {
-    // Enhanced emoji mapping with more visual distinction
-    return _getDamageTypeEmoji(element);
-  }
-  
-  static String _getDamageTypeEmoji(String damageType) {
-    switch (damageType.toLowerCase()) {
+    switch (element.toLowerCase()) {
       case 'acid':
-        return '🧪'; // test tube for acid
+        return '🧪';
       case 'poison':
-        return '☠️'; // skull and crossbones for poison
+        return '☠️';
       case 'fire':
-        return '🔥'; // fire emoji
+        return '🔥';
       case 'cold':
-        return '❄️'; // snowflake for cold
+        return '❄️';
       case 'sonic':
-        return '🔊'; // speaker for sonic
+        return '🔊';
       case 'holy':
-        return '✨'; // sparkles for holy/radiant
+        return '✨';
       case 'corruption':
-        return '💀'; // skull for corruption/necrotic
+        return '💀';
       case 'psychic':
-        return '🧠'; // brain for psychic
+        return '🧠';
       case 'lightning':
-        return '⚡'; // lightning bolt
+        return '⚡';
       default:
-        return ''; // no emoji for unknown types
+        return '';
     }
   }
 }
+
+// ─── Characteristics ───────────────────────────────────────────────────────
 
 class CharacteristicTokens {
   CharacteristicTokens._();
 
   static Color color(String characteristic) {
-    return AppColors.getCharacteristicColor(characteristic);
+    switch (characteristic.toLowerCase()) {
+      case 'might':
+      case 'm':
+        return AppColors.mightColor;
+      case 'agility':
+      case 'a':
+        return AppColors.agilityColor;
+      case 'reason':
+      case 'r':
+        return AppColors.reasonColor;
+      case 'intuition':
+      case 'i':
+        return AppColors.intuitionColor;
+      case 'presence':
+      case 'p':
+        return AppColors.presenceColor;
+      default:
+        return Colors.grey;
+    }
   }
 }
+
+// ─── Potency ───────────────────────────────────────────────────────────────
 
 class PotencyTokens {
   PotencyTokens._();
 
   static Color color(String strength) {
-    return AppColors.getPotencyColor(strength);
+    switch (strength.toLowerCase()) {
+      case 'w':
+      case 'weak':
+        return AppColors.weakPotencyColor;
+      case 'a':
+      case 'average':
+        return AppColors.averagePotencyColor;
+      case 's':
+      case 'strong':
+        return AppColors.strongPotencyColor;
+      default:
+        return AppColors.potencyFallback;
+    }
   }
 }
+
+// ─── Keywords ──────────────────────────────────────────────────────────────
 
 class KeywordTokens {
   KeywordTokens._();
 
   static Color color(String keyword) {
-    // Use enhanced ability colors for better semantic grouping
     return AbilityColors.getKeywordColor(keyword);
   }
 }
+
+// ─── Actions ───────────────────────────────────────────────────────────────
 
 class ActionTokens {
   ActionTokens._();
 
   static Color color(String actionType) {
-    // Use enhanced ability colors for better action type distinction
     return AbilityColors.getActionTypeColor(actionType);
   }
-  
+
   static Color lightColor(String actionType) {
-    // Get light variant for backgrounds
     return AbilityColors.getActionTypeLightColor(actionType);
   }
 }
+
+// ─── Heroic Resources ──────────────────────────────────────────────────────
 
 class HeroicResourceTokens {
   HeroicResourceTokens._();
 
   static Color color(String resource) {
-    // Use enhanced ability colors for better resource distinction
     return AbilityColors.getHeroicResourceColor(resource);
+  }
+
+  static Color lightColor(String resource) {
+    return AbilityColors.getHeroicResourceLightColor(resource);
   }
 }

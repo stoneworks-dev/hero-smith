@@ -1,43 +1,30 @@
 import 'package:flutter/material.dart';
+import '../../../core/models/component.dart' as model;
+import '../../../core/text/heroes_sheet/gear_utils_text.dart';
+import '../../../core/theme/app_icon_data.dart';
+import '../../../core/theme/app_icons.dart';
 
 /// Display name for a kit type identifier.
 String kitTypeDisplayName(String type) {
   switch (type) {
     case 'psionic_augmentation':
-      return 'Psionic Augmentation';
+      return GearUtilsText.psionicAugmentation;
     case 'enchantment':
-      return 'Enchantment';
+      return GearUtilsText.enchantment;
     case 'prayer':
-      return 'Prayer';
+      return GearUtilsText.prayer;
     case 'ward':
-      return 'Ward';
+      return GearUtilsText.ward;
     case 'stormwight_kit':
-      return 'Stormwight Kit';
+      return GearUtilsText.stormwightKit;
     default:
-      if (type.isEmpty) return 'Kit';
+      if (type.isEmpty) return GearUtilsText.kit;
       return type[0].toUpperCase() + type.substring(1);
   }
 }
 
 /// Icon for a kit type identifier.
-IconData kitTypeIcon(String type) {
-  switch (type) {
-    case 'kit':
-      return Icons.shield;
-    case 'stormwight_kit':
-      return Icons.flash_on;
-    case 'psionic_augmentation':
-      return Icons.psychology;
-    case 'ward':
-      return Icons.security;
-    case 'prayer':
-      return Icons.auto_fix_high;
-    case 'enchantment':
-      return Icons.auto_awesome;
-    default:
-      return Icons.category;
-  }
-}
+AppIconData kitTypeIcon(String type) => KitIcons.fromType(type);
 
 /// Configuration for an equipment slot.
 class EquipmentSlotConfig {
@@ -75,38 +62,31 @@ const List<String> kitTypePriority = [
 ];
 
 /// Labels for kit type dropdown items.
-const Map<String, String> kitTypeLabels = {
-  'kit': 'Kits',
-  'stormwight_kit': 'Stormwight Kits',
-  'psionic_augmentation': 'Augmentations',
-  'ward': 'Wards',
-  'prayer': 'Prayers',
-  'enchantment': 'Enchantments',
+final Map<String, String> kitTypeLabels = {
+  'kit': GearUtilsText.kits,
+  'stormwight_kit': GearUtilsText.stormwightKits,
+  'psionic_augmentation': GearUtilsText.augmentations,
+  'ward': GearUtilsText.wards,
+  'prayer': GearUtilsText.prayers,
+  'enchantment': GearUtilsText.enchantments,
 };
 
 /// Icons for kit type dropdown items.
-const Map<String, IconData> kitTypeIcons = {
-  'kit': Icons.shield,
-  'stormwight_kit': Icons.flash_on,
-  'psionic_augmentation': Icons.psychology,
-  'ward': Icons.security,
-  'prayer': Icons.auto_fix_high,
-  'enchantment': Icons.auto_awesome,
-};
+const Map<String, AppIconData> kitTypeIcons = KitIcons.byType;
 
 /// Get display name for treasure type.
 String getTreasureGroupName(String type) {
   switch (type) {
     case 'consumable':
-      return 'Consumables';
+      return GearUtilsText.consumables;
     case 'trinket':
-      return 'Trinkets';
+      return GearUtilsText.trinkets;
     case 'artifact':
-      return 'Artifacts';
+      return GearUtilsText.artifacts;
     case 'leveled_treasure':
-      return 'Leveled Equipment';
+      return GearUtilsText.leveledEquipment;
     default:
-      return 'Other';
+      return GearUtilsText.other;
   }
 }
 
@@ -114,32 +94,32 @@ String getTreasureGroupName(String type) {
 String getTreasureTypeName(String type) {
   switch (type) {
     case 'consumable':
-      return 'Consumable';
+      return GearUtilsText.consumable;
     case 'trinket':
-      return 'Trinket';
+      return GearUtilsText.trinket;
     case 'artifact':
-      return 'Artifact';
+      return GearUtilsText.artifact;
     case 'leveled_treasure':
-      return 'Leveled Equipment';
+      return GearUtilsText.leveledEquipment;
     default:
       return type;
   }
 }
 
 /// Get icon for treasure type.
-IconData getTreasureIcon(String type) {
-  switch (type) {
-    case 'consumable':
-      return Icons.local_drink;
-    case 'trinket':
-      return Icons.diamond;
-    case 'artifact':
-      return Icons.auto_awesome;
-    case 'leveled_treasure':
-      return Icons.shield;
-    default:
-      return Icons.category;
+AppIconData getTreasureIcon(String type) => TreasureIcons.fromType(type);
+
+/// Get icon for a treasure component, resolving leveled subtypes and artifacts.
+AppIconData getComponentTreasureIcon(model.Component component) {
+  final type = component.type.toLowerCase();
+  if (type == 'leveled_treasure') {
+    final leveledType = component.data['leveled_type'] as String?;
+    return TreasureIcons.fromLeveledType(leveledType);
   }
+  if (type == 'artifact') {
+    return TreasureIcons.fromArtifactId(component.id);
+  }
+  return TreasureIcons.fromType(type);
 }
 
 /// Get color based on item level.

@@ -6,6 +6,8 @@ import '../../../../core/models/skills_models.dart';
 import '../../../../core/models/subclass_models.dart';
 import '../../../../core/services/skill_data_service.dart';
 import '../../../../core/services/skills_service.dart';
+import '../../../../core/theme/app_icon.dart';
+import '../../../../core/theme/app_icons.dart';
 import '../../../../core/theme/creator_theme.dart';
 import '../../../../core/theme/navigation_theme.dart';
 import '../../../../core/theme/form_theme.dart';
@@ -107,7 +109,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                               color: accent.withValues(alpha: 0.4),
                             ),
                           ),
-                          child: Icon(Icons.psychology, color: accent, size: 20),
+                          child: AppIcon(StoryIcons.skills, color: accent, size: 20),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -122,7 +124,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                         ),
                         IconButton(
                           onPressed: () => Navigator.of(context).pop(),
-                          icon: Icon(Icons.close, color: Colors.grey.shade400),
+                          icon: Icon(Icons.close, color: FormTheme.textSecondary),
                           splashRadius: 20,
                         ),
                       ],
@@ -134,11 +136,11 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                     child: TextField(
                       controller: controller,
                       autofocus: false,
-                      style: const TextStyle(color: Colors.white),
+                      style: TextStyle(color: FormTheme.textBright),
                       decoration: InputDecoration(
                         hintText: ChooseSkillsWidgetText.searchHint,
-                        hintStyle: TextStyle(color: Colors.grey.shade500),
-                        prefixIcon: Icon(Icons.search, color: Colors.grey.shade500),
+                        hintStyle: TextStyle(color: FormTheme.textMuted),
+                        prefixIcon: Icon(Icons.search, color: FormTheme.textMuted),
                         filled: true,
                         fillColor: FormTheme.surface,
                         border: OutlineInputBorder(
@@ -147,7 +149,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: Colors.grey.shade700),
+                          borderSide: BorderSide(color: FormTheme.border),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -175,13 +177,13 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                               children: [
                                 Icon(
                                   Icons.search_off,
-                                  color: Colors.grey.shade600,
+                                  color: FormTheme.borderLight,
                                   size: 48,
                                 ),
                                 const SizedBox(height: 12),
                                 Text(
                                   ChooseSkillsWidgetText.noMatchesFound,
-                                  style: TextStyle(color: Colors.grey.shade500),
+                                  style: TextStyle(color: FormTheme.textMuted),
                                 ),
                               ],
                             ),
@@ -222,7 +224,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                                       ? Text(
                                           option.subtitle!,
                                           style: TextStyle(
-                                            color: Colors.grey.shade500,
+                                          color: FormTheme.textMuted,
                                             fontSize: 12,
                                           ),
                                         )
@@ -246,13 +248,13 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       border: Border(
-                        top: BorderSide(color: Colors.grey.shade800),
+                        top: BorderSide(color: FormTheme.borderDim),
                       ),
                     ),
                     child: TextButton(
                       onPressed: () => Navigator.of(context).pop(),
                       style: TextButton.styleFrom(
-                        foregroundColor: Colors.grey.shade400,
+                        foregroundColor: FormTheme.textSecondary,
                       ),
                       child: const Text(ChooseSkillsWidgetText.cancelLabel),
                     ),
@@ -737,7 +739,7 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
           padding: const EdgeInsets.all(16),
           child: Text(
             ChooseSkillsWidgetText.noSkillsMessage,
-            style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+            style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
           ),
         ),
       );
@@ -759,7 +761,7 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
           CreatorTheme.sectionHeader(
             title: ChooseSkillsWidgetText.expansionTitle,
             subtitle: '${ChooseSkillsWidgetText.selectionSubtitlePrefix}$assigned${ChooseSkillsWidgetText.selectionSubtitleMiddle}$totalSlots${ChooseSkillsWidgetText.selectionSubtitleSuffix}',
-            icon: Icons.psychology,
+            appIcon: StoryIcons.skills,
             accent: _accent,
           ),
           Padding(
@@ -790,7 +792,7 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
           CreatorTheme.sectionHeader(
             title: ChooseSkillsWidgetText.expansionTitle,
             subtitle: ChooseSkillsWidgetText.sectionSubtitle,
-            icon: Icons.psychology,
+            appIcon: StoryIcons.skills,
             accent: _accent,
           ),
           child,
@@ -865,7 +867,7 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
             ChooseSkillsWidgetText.quickBuildTitle,
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: Colors.grey.shade300,
+              color: FormTheme.textSecondary,
               fontSize: 13,
             ),
           ),
@@ -884,7 +886,7 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
                     ),
                     child: Text(
                       skill,
-                      style: TextStyle(color: Colors.grey.shade300, fontSize: 13),
+                      style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
                     ),
                   ),
                 )
@@ -912,16 +914,16 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
         children: [
           Text(
             allowance.label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: Colors.white,
+              color: FormTheme.textBright,
             ),
           ),
           const SizedBox(height: 4),
           Text(
             '${ChooseSkillsWidgetText.allowancePickPrefix}${allowance.pickCount}${allowance.pickCount == 1 ? ChooseSkillsWidgetText.allowancePickSingularSuffix : ChooseSkillsWidgetText.allowancePickPluralSuffix}${ChooseSkillsWidgetText.allowancePickFromPrefix}$allowedGroupsText',
-            style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+            style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
           ),
           const SizedBox(height: 8),
           ...List.generate(slots.length, (index) {
@@ -999,7 +1001,7 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
                   decoration: BoxDecoration(
                     color: FormTheme.surface,
                     borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),
-                    border: Border.all(color: Colors.grey.shade700),
+                    border: Border.all(color: FormTheme.border),
                   ),
                   child: Row(
                     children: [
@@ -1011,7 +1013,7 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
                               '${ChooseSkillsWidgetText.choiceLabelPrefix}${index + 1}',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: Colors.grey.shade400,
+                                color: FormTheme.textSecondary,
                               ),
                             ),
                             const SizedBox(height: 4),
@@ -1022,14 +1024,14 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
                               style: TextStyle(
                                 fontSize: 16,
                                 color: selectedOption != null
-                                    ? Colors.white
-                                    : Colors.grey.shade500,
+                                    ? FormTheme.textBright
+                                    : FormTheme.textMuted,
                               ),
                             ),
                           ],
                         ),
                       ),
-                      Icon(Icons.search, color: Colors.grey.shade400),
+                      Icon(Icons.search, color: FormTheme.textSecondary),
                     ],
                   ),
                 ),

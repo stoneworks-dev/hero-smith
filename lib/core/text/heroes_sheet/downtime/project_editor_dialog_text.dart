@@ -1,3 +1,5 @@
+import '../../common/common_text.dart';
+
 class ProjectEditorDialogText {
   static const String titleCreateProject = 'Create Project';
   static const String titleEditProject = 'Edit Project';
@@ -17,8 +19,8 @@ class ProjectEditorDialogText {
   static const String eventMilestonesLabel = 'Event Milestones';
   static const String notesLabel = 'Notes';
   static const String notesHint = 'Personal notes, ideas, progress tracking...';
-  static const String cancelButtonLabel = 'Cancel';
-  static const String saveButtonLabel = 'Save';
+  static const String cancelButtonLabel = CommonText.cancel;
+  static const String saveButtonLabel = CommonText.save;
   static const String eventTriggeredLabel = 'Triggered';
   static const String eventNotesHint = 'Add event notes or outcome...';
 }

@@ -5,7 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/db/providers.dart';
 import '../../../../core/models/component.dart' as model;
+import '../../../../core/theme/app_icon.dart';
+import '../../../../core/theme/app_icons.dart';
 import '../../../../core/theme/creator_theme.dart';
+import '../../../../core/theme/form_theme.dart';
 import '../../../../core/text/creators/widgets/story_creator/story_name_section_text.dart';
 
 class StoryNameSection extends ConsumerStatefulWidget {
@@ -52,8 +55,8 @@ class _StoryNameSectionState extends ConsumerState<StoryNameSection> {
           children: [
             CreatorTheme.sectionHeader(
               title: StoryNameSectionText.heroNameLabel,
-              subtitle: 'Give your hero an identity',
-              icon: Icons.person_outline,
+              subtitle: StoryNameSectionText.identitySubtitle,
+              appIcon: StoryIcons.heroName,
               accent: _accent,
             ),
             Padding(
@@ -64,15 +67,15 @@ class _StoryNameSectionState extends ConsumerState<StoryNameSection> {
                   TextField(
                     controller: widget.nameController,
                     focusNode: _focusNode,
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(color: FormTheme.textBright),
                     decoration: CreatorTheme.inputDecoration(
                       label: StoryNameSectionText.heroNameLabel,
                       hint: StoryNameSectionText.heroNameHint,
-                      prefixIcon: Icons.badge_outlined,
+                      appIcon: StoryIcons.heroName,
                       accent: _accent,
                     ).copyWith(
                       suffixIcon: IconButton(
-                        icon: const Icon(Icons.casino_outlined),
+                        icon: const AppIcon(AppIcons.dice),
                         color: _accent,
                         tooltip: StoryNameSectionText.randomNameTooltip,
                         onPressed: _pickRandomName,
@@ -202,7 +205,7 @@ class _ExampleNameGroups extends StatelessWidget {
               child: Text(
                 StoryNameSectionText.revenantNote,
                 style: TextStyle(
-                  color: Colors.grey.shade300,
+                  color: FormTheme.textSecondary,
                   fontStyle: FontStyle.italic,
                 ),
               ),
@@ -270,7 +273,7 @@ class _ExampleNameGroups extends StatelessWidget {
                   groupLabel,
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
-                    color: Colors.grey.shade400,
+                    color: FormTheme.textSecondary,
                     fontSize: 12,
                   ),
                 ),

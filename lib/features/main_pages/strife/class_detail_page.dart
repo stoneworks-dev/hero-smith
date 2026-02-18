@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../../core/models/feature.dart';
+import '../../../core/text/main_pages/strife/class_detail_page_text.dart';
 import '../../../core/repositories/feature_repository.dart';
+import '../../../core/theme/app_icon.dart';
+import '../../../core/theme/app_icons.dart';
 import '../../../core/theme/feature_tokens.dart';
 import '../../../widgets/features/level_dropdown_card.dart';
 import '../../../widgets/features/feature_search_delegate.dart';
@@ -25,7 +28,7 @@ class ClassDetailPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
-        title: Text('${FeatureRepository.formatClassName(className)} Features'),
+        title: Text(ClassDetailPageText.appBarTitle(FeatureRepository.formatClassName(className))),
         backgroundColor: classColor.withValues(alpha: 0.1),
         foregroundColor: classColor,
         actions: [
@@ -93,8 +96,8 @@ class ClassDetailPage extends StatelessWidget {
                             width: 2,
                           ),
                         ),
-                        child: Icon(
-                          _getClassIcon(className),
+                        child: AppIcon(
+                          ClassIcons.fromName(className),
                           color: classColor,
                           size: 40,
                         ),
@@ -113,7 +116,7 @@ class ClassDetailPage extends StatelessWidget {
                             ),
                             const SizedBox(height: 6),
                             Text(
-                              'Class Features & Abilities',
+                              ClassDetailPageText.classFeaturesAndAbilities,
                               style: theme.textTheme.titleMedium?.copyWith(
                                 color: classColor.withValues(alpha: 0.8),
                                 fontWeight: FontWeight.w600,
@@ -175,10 +178,10 @@ class ClassDetailPage extends StatelessWidget {
       mainAxisSpacing: 12,
       crossAxisSpacing: 12,
       children: [
-        _buildStatCard(context, 'Total', '$totalFeatures', Icons.auto_stories, classColor),
-        _buildStatCard(context, 'Levels', levelRange, Icons.trending_up, FeatureTokens.levelMid),
-        _buildStatCard(context, 'Core', '$coreFeatures', Icons.star, FeatureTokens.coreFeature),
-        _buildStatCard(context, 'Subclass', '$subclassFeatures', Icons.diamond, FeatureTokens.subclassFeature),
+        _buildStatCard(context, ClassDetailPageText.totalStat, '$totalFeatures', Icons.auto_stories, classColor),
+        _buildStatCard(context, ClassDetailPageText.levelsStat, levelRange, Icons.trending_up, FeatureTokens.levelMid),
+        _buildStatCard(context, ClassDetailPageText.coreStat, '$coreFeatures', Icons.star, FeatureTokens.coreFeature),
+        _buildStatCard(context, ClassDetailPageText.subclassStat, '$subclassFeatures', Icons.diamond, FeatureTokens.subclassFeature),
       ],
     );
   }
@@ -243,18 +246,4 @@ class ClassDetailPage extends StatelessWidget {
     );
   }
 
-  IconData _getClassIcon(String className) {
-    switch (className.toLowerCase()) {
-      case 'censor': return Icons.gavel;
-      case 'conduit': return Icons.flash_on;
-      case 'elementalist': return Icons.whatshot;
-      case 'fury': return Icons.psychology;
-      case 'null': return Icons.radio_button_unchecked;
-      case 'shadow': return Icons.visibility_off;
-      case 'tactician': return Icons.military_tech;
-      case 'talent': return Icons.diamond;
-      case 'troubadour': return Icons.music_note;
-      default: return Icons.person;
-    }
-  }
 }

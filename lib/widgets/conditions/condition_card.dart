@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hero_smith/core/models/component.dart';
+import 'package:hero_smith/core/text/widgets/condition_card_text.dart';
 import 'package:hero_smith/widgets/shared/expandable_card.dart';
 
 class ConditionCard extends StatelessWidget {
@@ -43,7 +44,7 @@ class ConditionCard extends StatelessWidget {
             const SizedBox(width: 8),
             IconButton(
               icon: const Icon(Icons.delete, size: 18),
-              tooltip: 'Delete custom condition',
+              tooltip: ConditionCardText.deleteCustomCondition,
               color: Colors.red,
               onPressed: onDelete,
             ),

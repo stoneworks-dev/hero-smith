@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hero_smith/core/models/component.dart';
+import 'package:hero_smith/core/text/widgets/ancestry_card_text.dart';
 import 'package:hero_smith/core/theme/ds_theme.dart';
+import 'package:hero_smith/core/theme/form_theme.dart';
 import 'package:hero_smith/widgets/shared/expandable_card.dart';
 
 class AncestryCard extends StatelessWidget {
@@ -160,7 +162,7 @@ class AncestryCard extends StatelessWidget {
     final exampleNames = data['exampleNames'] as Map<String, dynamic>?;
     
     if (exampleNames == null) {
-      return const Text('No example names available.');
+      return Text(AncestryCardText.noExampleNames);
     }
 
     final notes = exampleNames['notes'] as String?;
@@ -179,7 +181,7 @@ class AncestryCard extends StatelessWidget {
             notes,
             style: TextStyle(
               fontStyle: FontStyle.italic,
-              color: Colors.grey.shade600,
+              color: FormTheme.borderLight,
               height: 1.4,
             ),
           ),
@@ -258,7 +260,7 @@ class AncestryCard extends StatelessWidget {
     final signatureData = traitsData['signature'];
     
     if (signatureData == null) {
-      return const Text('No signature ability available.');
+      return Text(AncestryCardText.noSignatureAbility);
     }
 
     // Handle both single signature (Map) and multiple signatures (List)
@@ -268,7 +270,7 @@ class AncestryCard extends StatelessWidget {
     } else if (signatureData is Map<String, dynamic>) {
       signatures = [signatureData];
     } else {
-      return const Text('No signature ability available.');
+      return Text(AncestryCardText.noSignatureAbility);
     }
 
     return Column(
@@ -318,7 +320,7 @@ class AncestryCard extends StatelessWidget {
     final points = traitsData['points'] as int? ?? 0;
     
     if (traits == null || traits.isEmpty) {
-      return const Text('No optional traits available.');
+      return Text(AncestryCardText.noOptionalTraits);
     }
 
     return Column(
@@ -327,15 +329,15 @@ class AncestryCard extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
-            color: Colors.grey.shade700,
+            color: FormTheme.border,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
             'Available Points: $points',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: Colors.white,
+              color: FormTheme.textBright,
             ),
           ),
         ),
@@ -403,9 +405,9 @@ class _AncestryTraitDropdownState extends State<_AncestryTraitDropdown> {
                         Expanded(
                           child: Text(
                             widget.name,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontWeight: FontWeight.w600,
-                              color: Colors.white,
+                              color: FormTheme.textBright,
                             ),
                           ),
                         ),
@@ -417,10 +419,10 @@ class _AncestryTraitDropdownState extends State<_AncestryTraitDropdown> {
                           ),
                           child: Text(
                             '${widget.cost} pt${widget.cost != 1 ? 's' : ''}',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
-                              color: Colors.white,
+                              color: FormTheme.textBright,
                             ),
                           ),
                         ),
@@ -430,7 +432,7 @@ class _AncestryTraitDropdownState extends State<_AncestryTraitDropdown> {
                   const SizedBox(width: 8),
                   Icon(
                     _isExpanded ? Icons.expand_less : Icons.expand_more,
-                    color: Colors.white,
+                    color: FormTheme.textBright,
                   ),
                 ],
               ),
@@ -441,8 +443,8 @@ class _AncestryTraitDropdownState extends State<_AncestryTraitDropdown> {
               padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
               child: Text(
                 widget.description,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: FormTheme.textBright,
                   height: 1.4,
                 ),
               ),

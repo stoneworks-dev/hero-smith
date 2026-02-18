@@ -14,4 +14,5 @@ class StoryNameSectionText {
   static const String groupLabelEpithets = 'Epithets';
   static const String groupLabelSurnames = 'Surnames';
   static const String exampleNamesTitlePrefix = 'Example names from ';
+  static const String identitySubtitle = 'Give your hero an identity';
 }

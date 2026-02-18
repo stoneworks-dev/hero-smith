@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:hero_smith/core/text/heroes_sheet/story/sheet_story_career_section_text.dart';
+import 'package:hero_smith/core/theme/form_theme.dart';
 import 'package:hero_smith/core/theme/navigation_theme.dart';
 import 'package:hero_smith/core/theme/story_theme.dart';
 
@@ -68,7 +69,7 @@ class CareerSection extends ConsumerWidget {
       decoration: BoxDecoration(
         color: NavigationTheme.cardBackgroundDark,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade800),
+        border: Border.all(color: FormTheme.borderDim),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -86,10 +87,10 @@ class CareerSection extends ConsumerWidget {
                   child: const Icon(Icons.work, color: StoryTheme.storyAccent, size: 20),
                 ),
                 const SizedBox(width: 12),
-                const Text(
+                Text(
                   SheetStoryCareerSectionText.sectionTitle,
                   style: TextStyle(
-                    color: Colors.white,
+                    color: FormTheme.textBright,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
@@ -107,7 +108,7 @@ class CareerSection extends ConsumerWidget {
                 if (careerComp == null) {
                   return Text(
                     SheetStoryCareerSectionText.careerNotFound,
-                    style: TextStyle(color: Colors.grey.shade400),
+                    style: TextStyle(color: FormTheme.textSecondary),
                   );
                 }
 
@@ -154,7 +155,7 @@ class _CareerContent extends ConsumerWidget {
             padding: const EdgeInsets.only(left: 32),
             child: Text(
               careerComponent.data['description'].toString(),
-              style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+              style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
             ),
           ),
         ],
@@ -172,7 +173,7 @@ class _CareerContent extends ConsumerWidget {
             SheetStoryCareerSectionText.incitingIncidentTitle,
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: Colors.grey.shade300,
+              color: FormTheme.textSecondary,
               fontSize: 14,
             ),
           ),
@@ -188,7 +189,7 @@ class _CareerContent extends ConsumerWidget {
             SheetStoryCareerSectionText.careerSkillsTitle,
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: Colors.grey.shade300,
+              color: FormTheme.textSecondary,
               fontSize: 14,
             ),
           ),
@@ -210,7 +211,7 @@ class _CareerContent extends ConsumerWidget {
             SheetStoryCareerSectionText.careerPerksTitle,
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: Colors.grey.shade300,
+              color: FormTheme.textSecondary,
               fontSize: 14,
             ),
           ),
@@ -250,7 +251,7 @@ class _ComponentDisplay extends ConsumerWidget {
           Text('Error: $e', style: TextStyle(color: Colors.red.shade300)),
       data: (component) {
         if (component == null) {
-          return Text('$label not found', style: TextStyle(color: Colors.grey.shade400));
+          return Text('$label not found', style: TextStyle(color: FormTheme.textSecondary));
         }
 
         final description = component.data['description']?.toString();
@@ -268,7 +269,7 @@ class _ComponentDisplay extends ConsumerWidget {
                 padding: const EdgeInsets.only(left: 32),
                 child: Text(
                   description,
-                  style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+                  style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
                 ),
               ),
             ],
@@ -321,7 +322,7 @@ class _HeroPerkCard extends ConsumerWidget {
             padding: const EdgeInsets.only(bottom: 8),
             child: Text(
                 '${SheetStoryCareerSectionText.perkNotFoundPrefix}$perkId',
-                style: TextStyle(color: Colors.grey.shade400)),
+                style: TextStyle(color: FormTheme.textSecondary)),
           );
         }
         return Padding(
@@ -399,7 +400,7 @@ class _ProjectPointsDisplayState extends ConsumerState<_ProjectPointsDisplay> {
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: _isUsed
-              ? Colors.grey.shade700
+              ? FormTheme.border
               : StoryTheme.storyAccent.withAlpha(77),
         ),
       ),
@@ -409,7 +410,7 @@ class _ProjectPointsDisplayState extends ConsumerState<_ProjectPointsDisplay> {
             Icons.build_circle,
             size: 24,
             color: _isUsed
-                ? Colors.grey.shade600
+                ? FormTheme.borderLight
                 : StoryTheme.storyAccent,
           ),
           const SizedBox(width: 12),
@@ -423,8 +424,8 @@ class _ProjectPointsDisplayState extends ConsumerState<_ProjectPointsDisplay> {
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
                     color: _isUsed
-                        ? Colors.grey.shade500
-                        : Colors.white,
+                        ? FormTheme.textMuted
+                        : FormTheme.textBright,
                     decoration: _isUsed ? TextDecoration.lineThrough : null,
                   ),
                 ),
@@ -433,8 +434,8 @@ class _ProjectPointsDisplayState extends ConsumerState<_ProjectPointsDisplay> {
                   style: TextStyle(
                     fontSize: 12,
                     color: _isUsed
-                        ? Colors.grey.shade600
-                        : Colors.grey.shade400,
+                        ? FormTheme.borderLight
+                        : FormTheme.textSecondary,
                   ),
                 ),
               ],
@@ -451,8 +452,8 @@ class _ProjectPointsDisplayState extends ConsumerState<_ProjectPointsDisplay> {
               value: _isUsed,
               onChanged: (_) => _toggleUsed(),
               activeColor: StoryTheme.storyAccent,
-              checkColor: Colors.white,
-              side: BorderSide(color: Colors.grey.shade600),
+              checkColor: FormTheme.textBright,
+              side: BorderSide(color: FormTheme.borderLight),
             ),
           Text(
             _isUsed
@@ -461,7 +462,7 @@ class _ProjectPointsDisplayState extends ConsumerState<_ProjectPointsDisplay> {
             style: TextStyle(
               fontSize: 12,
               color: _isUsed
-                  ? Colors.grey.shade500
+                  ? FormTheme.textMuted
                   : StoryTheme.storyAccent,
               fontWeight: FontWeight.w500,
             ),

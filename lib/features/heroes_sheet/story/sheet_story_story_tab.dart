@@ -30,7 +30,7 @@ extension _StoryTabBuilders on _SheetStoryState {
                 label: const Text(SheetStoryCommonText.retry),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: StoryTheme.storyAccent,
-                  foregroundColor: Colors.white,
+                  foregroundColor: FormTheme.textBright,
                 ),
               ),
             ],
@@ -43,7 +43,7 @@ extension _StoryTabBuilders on _SheetStoryState {
       return Center(
         child: Text(
           SheetStoryStoryTabText.noStoryDataAvailable,
-          style: TextStyle(color: Colors.grey.shade400),
+          style: TextStyle(color: FormTheme.textSecondary),
         ),
       );
     }
@@ -121,7 +121,7 @@ extension _StoryTabBuilders on _SheetStoryState {
       decoration: BoxDecoration(
         color: NavigationTheme.cardBackgroundDark,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade800),
+        border: Border.all(color: FormTheme.borderDim),
       ),
       child: Column(
         children: [
@@ -147,7 +147,7 @@ extension _StoryTabBuilders on _SheetStoryState {
                     color: StoryTheme.storyAccent.withAlpha(51),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.person, color: StoryTheme.storyAccent, size: 24),
+                  child: AppIcon(StoryIcons.heroName, color: StoryTheme.storyAccent, size: 24),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -157,13 +157,13 @@ extension _StoryTabBuilders on _SheetStoryState {
                       Text(
                         hero.name,
                         style: const TextStyle(
-                          color: Colors.white,
+                          color: FormTheme.textBright,
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
-                        'Level ${hero.level}',
+                        SheetStoryStoryTabText.heroLevel(hero.level),
                         style: TextStyle(
                           color: StoryTheme.storyAccent.withAlpha(200),
                           fontWeight: FontWeight.w500,
@@ -187,9 +187,9 @@ extension _StoryTabBuilders on _SheetStoryState {
                       width: 20,
                       child: CircularProgressIndicator(strokeWidth: 2, color: StoryTheme.storyAccent),
                     ),
-                    error: (e, _) => Text('Error: $e', style: const TextStyle(color: Colors.red)),
+                    error: (e, _) => Text(SheetStoryStoryTabText.error(e), style: const TextStyle(color: Colors.red)),
                     data: (classComp) => _buildInfoRow(
-                      Icons.shield,
+                      StoryIcons.heroClass,
                       SheetStoryStoryTabText.classLabel,
                       classComp?.name ?? SheetStoryStoryTabText.unknown,
                     ),
@@ -202,9 +202,9 @@ extension _StoryTabBuilders on _SheetStoryState {
                       width: 20,
                       child: CircularProgressIndicator(strokeWidth: 2, color: StoryTheme.storyAccent),
                     ),
-                    error: (e, _) => Text('Error: $e', style: const TextStyle(color: Colors.red)),
+                    error: (e, _) => Text(SheetStoryStoryTabText.error(e), style: const TextStyle(color: Colors.red)),
                     data: (subclassComp) => _buildInfoRow(
-                      Icons.bolt,
+                      StoryIcons.subclass,
                       SheetStoryStoryTabText.subclassLabel,
                       subclassComp?.name ?? SheetStoryStoryTabText.unknown,
                     ),
@@ -218,18 +218,18 @@ extension _StoryTabBuilders on _SheetStoryState {
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String label, String value) {
+  Widget _buildInfoRow(AppIconData icon, String label, String value) {
     return Row(
       children: [
-        Icon(icon, size: 18, color: StoryTheme.storyAccent),
+        AppIcon(icon, size: 18, color: StoryTheme.storyAccent),
         const SizedBox(width: 8),
         Text(
           '$label: ',
-          style: TextStyle(color: Colors.grey.shade400, fontSize: 14),
+          style: TextStyle(color: FormTheme.textSecondary, fontSize: 14),
         ),
         Text(
           value,
-          style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
+          style: const TextStyle(color: FormTheme.textBright, fontSize: 14, fontWeight: FontWeight.w500),
         ),
       ],
     );

@@ -641,7 +641,7 @@ class _SkillGroupPickerState extends State<_SkillGroupPicker> {
       options: options,
       selected: currentSkillId,
       accentColor: CreatorTheme.skillsAccent,
-      icon: Icons.psychology_alt,
+      icon: StoryIcons.skills,
     );
 
     if (result == null) return;
@@ -734,8 +734,8 @@ class _SkillGroupPickerState extends State<_SkillGroupPicker> {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.psychology_alt,
+              AppIcon(
+                StoryIcons.skills,
                 size: 18,
                 color: needsSelection ? Colors.orange : scheme.primary,
               ),
@@ -944,10 +944,10 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
   required List<_SearchOption<T>> options,
   T? selected,
   Color? accentColor,
-  IconData? icon,
+  AppIconData? icon,
 }) {
   final color = accentColor ?? CreatorTheme.strengthAccent; // Use strength accent by default
-  final dialogIcon = icon ?? Icons.search;
+  final dialogIcon = icon ?? const MaterialIcon(Icons.search);
 
   return showDialog<_PickerSelection<T>>(
     context: context,
@@ -1002,7 +1002,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                       ),
                       border: Border(
                         bottom: BorderSide(
-                          color: Colors.grey.shade800,
+                          color: FormTheme.borderDim,
                           width: 1,
                         ),
                       ),
@@ -1019,7 +1019,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                               color: color.withAlpha(100),
                             ),
                           ),
-                          child: Icon(dialogIcon, color: color, size: 20),
+                          child: AppIcon(dialogIcon, color: color, size: 20),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -1034,7 +1034,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                         ),
                         IconButton(
                           onPressed: () => Navigator.of(context).pop(),
-                          icon: Icon(Icons.close, color: Colors.grey.shade400),
+                          icon: Icon(Icons.close, color: FormTheme.textSecondary),
                           splashRadius: 20,
                         ),
                       ],
@@ -1046,12 +1046,12 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                     child: TextField(
                       controller: controller,
                       autofocus: false,
-                      style: const TextStyle(color: Colors.white),
+                      style: const TextStyle(color: FormTheme.textBright),
                       decoration: InputDecoration(
                         hintText: OptionsSectionText.searchHint,
-                        hintStyle: TextStyle(color: Colors.grey.shade500),
+                        hintStyle: TextStyle(color: FormTheme.textMuted),
                         prefixIcon:
-                            Icon(Icons.search, color: Colors.grey.shade500),
+                            Icon(Icons.search, color: FormTheme.textMuted),
                         filled: true,
                         fillColor: FormTheme.surface,
                         border: OutlineInputBorder(
@@ -1060,7 +1060,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: Colors.grey.shade700),
+                          borderSide: BorderSide(color: FormTheme.border),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -1088,14 +1088,14 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                               children: [
                                 Icon(
                                   Icons.search_off,
-                                  color: Colors.grey.shade600,
+                                  color: FormTheme.borderLight,
                                   size: 48,
                                 ),
                                 const SizedBox(height: 12),
                                 Text(
                                   OptionsSectionText.noMatchesFound,
                                   style: TextStyle(
-                                    color: Colors.grey.shade500,
+                                    color: FormTheme.textMuted,
                                     fontSize: 14,
                                   ),
                                 ),
@@ -1142,7 +1142,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                                       ? Text(
                                           option.subtitle!,
                                           style: TextStyle(
-                                            color: Colors.grey.shade500,
+                                            color: FormTheme.textMuted,
                                             fontSize: 12,
                                           ),
                                         )
@@ -1167,13 +1167,13 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       border: Border(
-                        top: BorderSide(color: Colors.grey.shade800),
+                        top: BorderSide(color: FormTheme.borderDim),
                       ),
                     ),
                     child: TextButton(
                       onPressed: () => Navigator.of(context).pop(),
                       style: TextButton.styleFrom(
-                        foregroundColor: Colors.grey.shade400,
+                        foregroundColor: FormTheme.textSecondary,
                       ),
                       child: const Text(OptionsSectionText.cancelLabel),
                     ),
@@ -1448,7 +1448,7 @@ class _OptionTileState extends State<_OptionTile>
         ),
       ),
       child: widget.isSelected
-          ? const Icon(Icons.check, size: 18, color: Colors.white)
+          ? const Icon(Icons.check, size: 18, color: FormTheme.textBright)
           : null,
     );
   }

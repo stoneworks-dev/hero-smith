@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/text/heroes_sheet/gear/sheet_gear_text.dart';
+import '../../../core/theme/app_icon.dart';
+import '../../../core/theme/app_icon_data.dart';
+import '../../../core/theme/app_icons.dart';
 import '../../../core/theme/navigation_theme.dart';
 import 'inventory_tab.dart';
 import 'kits_tab.dart';
@@ -10,7 +13,6 @@ import 'treasures_tab.dart';
 // Re-export utilities and widgets for external use
 export 'gear_dialogs.dart';
 export 'gear_utils.dart';
-export 'gear_widgets.dart';
 export 'inventory_widgets.dart';
 export 'kit_widgets.dart';
 
@@ -32,19 +34,19 @@ class _SheetGearState extends ConsumerState<SheetGear>
   late TabController _tabController;
 
   // Tab data with icons and colors
-  static const _tabData = [
+  final _tabData = [
     (
-      icon: Icons.shield,
+      icon: AppIcons.gear.kitsTab,
       label: SheetGearText.tabKitsLabel,
       color: NavigationTheme.kitsColor
     ),
     (
-      icon: Icons.auto_awesome,
+      icon: AppIcons.gear.treasuresTab,
       label: SheetGearText.tabTreasuresLabel,
       color: NavigationTheme.treasureColor
     ),
     (
-      icon: Icons.inventory_2,
+      icon: AppIcons.gear.inventoryTab,
       label: SheetGearText.tabInventoryLabel,
       color: NavigationTheme.itemsColor
     ),
@@ -98,10 +100,10 @@ class _SheetGearState extends ConsumerState<SheetGear>
                           mainAxisAlignment: MainAxisAlignment.center,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(
+                            AppIcon(
                               tab.icon,
                               color: color,
-                              size: 16,
+                              size: 18,
                             ),
                             const SizedBox(width: 6),
                             Flexible(

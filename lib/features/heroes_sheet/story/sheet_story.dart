@@ -16,12 +16,18 @@ import '../../../core/services/complication_grants_service.dart';
 import '../../../core/services/story_creator_service.dart';
 import '../../../core/services/subclass_data_service.dart';
 
+import '../../../core/theme/form_theme.dart';
 import '../../../core/theme/navigation_theme.dart';
 import '../../../core/theme/story_theme.dart';
+import '../../../core/theme/app_icon.dart';
+import '../../../core/theme/app_icon_data.dart';
+import '../../../core/theme/app_icons.dart';
 import '../../../core/text/heroes_sheet/story/sheet_story_text.dart';
 import '../../creators/widgets/strength_creator/class_features_section.dart';
 
 import '../../../widgets/perks/perks_selection_widget.dart';
+import '../../../widgets/perks/add_perk_dialog.dart';
+import '../../../widgets/titles/add_title_dialog.dart';
 import '../../../widgets/abilities/ability_expandable_item.dart';
 import '../../../widgets/skills/skill_card.dart';
 import '../../../widgets/languages/language_card.dart';
@@ -133,17 +139,17 @@ class _SheetStoryState extends ConsumerState<SheetStory>
                     ),
                   ),
                 ),
-                labelColor: Colors.white,
-                unselectedLabelColor: Colors.grey.shade500,
+                labelColor: FormTheme.textBright,
+                unselectedLabelColor: FormTheme.textMuted,
                 labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                 unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.normal, fontSize: 13),
                 tabs: [
-                  _buildTab(SheetStoryTabsText.features, Icons.auto_awesome, 0, NavigationTheme.kitsColor),
-                  _buildTab(SheetStoryTabsText.story, Icons.menu_book, 1, StoryTheme.storyAccent),
-                  _buildTab(SheetStoryTabsText.skills, Icons.psychology, 2, StoryTheme.skillsAccent),
-                  _buildTab(SheetStoryTabsText.languages, Icons.translate, 3, StoryTheme.languagesAccent),
-                  _buildTab(SheetStoryTabsText.perks, Icons.star, 4, StoryTheme.perksAccent),
-                  _buildTab(SheetStoryTabsText.titles, Icons.military_tech, 5, StoryTheme.titlesAccent),
+                  _buildTab(SheetStoryTabsText.features, AbilityIcons.feature, 0, NavigationTheme.kitsColor),
+                  _buildTab(SheetStoryTabsText.story, StoryIcons.yourHeroes, 1, StoryTheme.storyAccent),
+                  _buildTab(SheetStoryTabsText.skills, SkillGroupIcons.crafting, 2, StoryTheme.skillsAccent),
+                  _buildTab(SheetStoryTabsText.languages, LanguageTypeIcons.tab, 3, StoryTheme.languagesAccent),
+                  _buildTab(SheetStoryTabsText.perks, PerkGroupIcons.tab, 4, StoryTheme.perksAccent),
+                  _buildTab(SheetStoryTabsText.titles, TitleIcons.tab, 5, StoryTheme.titlesAccent),
                 ],
               );
             },
@@ -178,16 +184,16 @@ class _SheetStoryState extends ConsumerState<SheetStory>
     return colors[index.clamp(0, colors.length - 1)];
   }
 
-  Widget _buildTab(String label, IconData icon, int index, Color color) {
+  Widget _buildTab(String label, AppIconData icon, int index, Color color) {
     final isSelected = _tabController.index == index;
     return Tab(
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
+          AppIcon(
             icon,
             size: 16,
-            color: isSelected ? color : Colors.grey.shade500,
+            color: isSelected ? color : FormTheme.textMuted,
           ),
           const SizedBox(width: 6),
           Text(label),

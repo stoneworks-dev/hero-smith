@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../../core/models/downtime_tracking.dart';
+import '../../../../core/theme/app_icon.dart';
+import '../../../../core/theme/app_icons.dart';
+import '../../../../core/theme/form_theme.dart';
 import '../../../../core/theme/navigation_theme.dart';
 import '../../../../core/text/heroes_sheet/downtime/project_detail_card_text.dart';
 import '../../../../widgets/downtime/downtime_tabs.dart';
@@ -56,7 +59,7 @@ class _ProjectDetailCardState extends State<ProjectDetailCard> {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color:
-              isCompleted ? Colors.green.withAlpha(128) : Colors.grey.shade800,
+              isCompleted ? Colors.green.withAlpha(128) : FormTheme.borderDim,
         ),
       ),
       child: Column(
@@ -76,19 +79,19 @@ class _ProjectDetailCardState extends State<ProjectDetailCard> {
                     Icon(
                       _isExpanded ? Icons.expand_less : Icons.expand_more,
                       size: 24,
-                      color: Colors.grey.shade500,
+                      color: FormTheme.textMuted,
                     ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         widget.project.name,
                         style: TextStyle(
-                          color: Colors.white,
+                          color: FormTheme.textBright,
                           fontWeight: FontWeight.w600,
                           fontSize: 16,
                           decoration:
                               isCompleted ? TextDecoration.lineThrough : null,
-                          decorationColor: Colors.grey.shade500,
+                          decorationColor: FormTheme.textMuted,
                         ),
                       ),
                     ),
@@ -113,7 +116,7 @@ class _ProjectDetailCardState extends State<ProjectDetailCard> {
                       const SizedBox(width: 8),
                       IconButton(
                         icon: Icon(Icons.edit_outlined,
-                            color: Colors.grey.shade500),
+                            color: FormTheme.textMuted),
                         onPressed: widget.onTap,
                         iconSize: 20,
                         constraints: const BoxConstraints(),
@@ -125,7 +128,7 @@ class _ProjectDetailCardState extends State<ProjectDetailCard> {
                       const SizedBox(width: 8),
                       IconButton(
                         icon: Icon(Icons.delete_outline,
-                            color: Colors.grey.shade500),
+                            color: FormTheme.textMuted),
                         onPressed: widget.onDelete,
                         iconSize: 20,
                         constraints: const BoxConstraints(),
@@ -152,7 +155,7 @@ class _ProjectDetailCardState extends State<ProjectDetailCard> {
                     Text(
                       widget.project.description,
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey.shade400,
+                        color: FormTheme.textSecondary,
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -174,7 +177,7 @@ class _ProjectDetailCardState extends State<ProjectDetailCard> {
                     child: LinearProgressIndicator(
                       value: progress,
                       minHeight: 8,
-                      backgroundColor: Colors.grey.shade800,
+                      backgroundColor: FormTheme.surfaceMuted,
                       valueColor: AlwaysStoppedAnimation<Color>(
                         isCompleted ? Colors.green : _projectsColor,
                       ),
@@ -190,7 +193,7 @@ class _ProjectDetailCardState extends State<ProjectDetailCard> {
                       Text(
                         '${widget.project.currentPoints} / ${widget.project.projectGoal} points',
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: Colors.grey.shade400,
+                          color: FormTheme.textSecondary,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -240,8 +243,8 @@ class _ProjectDetailCardState extends State<ProjectDetailCard> {
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Icon(
-                                      Icons.event_note,
+                                    AppIcon(
+                                      DowntimeIcons.events,
                                       size: 16,
                                       color: Colors.amber.shade400,
                                     ),
@@ -264,7 +267,7 @@ class _ProjectDetailCardState extends State<ProjectDetailCard> {
                                             event.eventDescription!,
                                             style: theme.textTheme.bodySmall
                                                 ?.copyWith(
-                                              color: Colors.grey.shade300,
+                                              color: FormTheme.textSecondary,
                                             ),
                                           ),
                                         ],
@@ -283,19 +286,19 @@ class _ProjectDetailCardState extends State<ProjectDetailCard> {
                       width: double.infinity,
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade800.withAlpha(80),
+                        color: FormTheme.surfaceMuted,
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
-                          color: Colors.grey.shade700,
+                          color: FormTheme.border,
                         ),
                       ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(
-                            Icons.note,
+                          AppIcon(
+                            DowntimeIcons.notes,
                             size: 16,
-                            color: Colors.grey.shade500,
+                            color: FormTheme.textMuted,
                           ),
                           const SizedBox(width: 8),
                           Expanded(
@@ -305,7 +308,7 @@ class _ProjectDetailCardState extends State<ProjectDetailCard> {
                                 Text(
                                   ProjectDetailCardText.notesLabel,
                                   style: theme.textTheme.labelSmall?.copyWith(
-                                    color: Colors.grey.shade400,
+                                    color: FormTheme.textSecondary,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -313,7 +316,7 @@ class _ProjectDetailCardState extends State<ProjectDetailCard> {
                                 Text(
                                   widget.project.notes,
                                   style: theme.textTheme.bodySmall?.copyWith(
-                                    color: Colors.grey.shade300,
+                                    color: FormTheme.textSecondary,
                                   ),
                                 ),
                               ],
@@ -334,11 +337,11 @@ class _ProjectDetailCardState extends State<ProjectDetailCard> {
                           label: Text(
                             char.toUpperCase(),
                             style: theme.textTheme.bodySmall?.copyWith(
-                              color: Colors.grey.shade300,
+                              color: FormTheme.textSecondary,
                             ),
                           ),
-                          backgroundColor: Colors.grey.shade800,
-                          side: BorderSide(color: Colors.grey.shade700),
+                          backgroundColor: FormTheme.surfaceMuted,
+                          side: BorderSide(color: FormTheme.border),
                           visualDensity: VisualDensity.compact,
                           padding: EdgeInsets.zero,
                           labelPadding:
@@ -363,7 +366,7 @@ class _ProjectDetailCardState extends State<ProjectDetailCard> {
                                 ProjectDetailCardText.addPointsButtonLabel),
                             style: FilledButton.styleFrom(
                               backgroundColor: _projectsColor,
-                              foregroundColor: Colors.white,
+                              foregroundColor: FormTheme.textBright,
                               padding: const EdgeInsets.symmetric(vertical: 8),
                             ),
                           ),
@@ -373,7 +376,7 @@ class _ProjectDetailCardState extends State<ProjectDetailCard> {
                           Expanded(
                             child: OutlinedButton.icon(
                               onPressed: widget.onRoll,
-                              icon: const Icon(Icons.casino, size: 20),
+                              icon: const AppIcon(DowntimeIcons.diceRoll, size: 20),
                               label: const Text(
                                   ProjectDetailCardText.rollButtonLabel),
                               style: OutlinedButton.styleFrom(
@@ -397,7 +400,7 @@ class _ProjectDetailCardState extends State<ProjectDetailCard> {
                       width: double.infinity,
                       child: FilledButton.icon(
                         onPressed: widget.onAddToGear,
-                        icon: const Icon(Icons.backpack, size: 20),
+                        icon: const AppIcon(DowntimeIcons.collectTreasure, size: 20),
                         label: const Text(
                           ProjectDetailCardText.addCraftedItemToGearLabel,
                         ),
@@ -417,13 +420,13 @@ class _ProjectDetailCardState extends State<ProjectDetailCard> {
                       width: double.infinity,
                       child: FilledButton.icon(
                         onPressed: widget.onAddToGear,
-                        icon: const Icon(Icons.auto_fix_high, size: 20),
+                        icon: const AppIcon(DowntimeIcons.collectImbuement, size: 20),
                         label: const Text(
                           ProjectDetailCardText.addImbuementToGearLabel,
                         ),
                         style: FilledButton.styleFrom(
                           backgroundColor: Colors.deepPurple.shade800,
-                          foregroundColor: Colors.grey.shade300,
+                          foregroundColor: FormTheme.textSecondary,
                           padding: const EdgeInsets.symmetric(vertical: 8),
                         ),
                       ),
@@ -468,8 +471,8 @@ class _ProjectDetailCardState extends State<ProjectDetailCard> {
               children: [
                 Row(
                   children: [
-                    Icon(
-                      Icons.auto_awesome,
+                    AppIcon(
+                      DowntimeIcons.treasureEffect,
                       size: 16,
                       color: Colors.deepPurple.shade400,
                     ),
@@ -489,7 +492,7 @@ class _ProjectDetailCardState extends State<ProjectDetailCard> {
                   effectDescription,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     height: 1.5,
-                    color: Colors.grey.shade300,
+                    color: FormTheme.textSecondary,
                   ),
                 ),
               ],
@@ -598,8 +601,8 @@ class _ProjectDetailCardState extends State<ProjectDetailCard> {
               children: [
                 Row(
                   children: [
-                    Icon(
-                      Icons.auto_fix_high,
+                    AppIcon(
+                      DowntimeIcons.imbuementEffect,
                       size: 16,
                       color: Colors.deepPurple.shade400,
                     ),
@@ -619,7 +622,7 @@ class _ProjectDetailCardState extends State<ProjectDetailCard> {
                   description,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     height: 1.5,
-                    color: Colors.grey.shade300,
+                    color: FormTheme.textSecondary,
                   ),
                 ),
               ],
@@ -649,7 +652,7 @@ class _ProjectDetailCardState extends State<ProjectDetailCard> {
         Text(
           ProjectDetailCardText.levelVariantsLabel,
           style: theme.textTheme.labelSmall?.copyWith(
-            color: Colors.grey.shade400,
+            color: FormTheme.textSecondary,
             fontWeight: FontWeight.bold,
             letterSpacing: 1.2,
           ),
@@ -705,7 +708,7 @@ class _ProjectDetailCardState extends State<ProjectDetailCard> {
             child: Text(
               'LEVEL $level',
               style: theme.textTheme.labelSmall?.copyWith(
-                color: Colors.white,
+                color: FormTheme.textBright,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.2,
               ),
@@ -717,7 +720,7 @@ class _ProjectDetailCardState extends State<ProjectDetailCard> {
               effectDescription,
               style: theme.textTheme.bodySmall?.copyWith(
                 height: 1.4,
-                color: Colors.grey.shade300,
+                color: FormTheme.textSecondary,
               ),
             ),
           ),
@@ -735,7 +738,7 @@ class _ProjectDetailCardState extends State<ProjectDetailCard> {
       case 9:
         return Colors.purple.shade600;
       default:
-        return Colors.grey.shade600;
+        return FormTheme.borderLight;
     }
   }
 }
@@ -769,7 +772,7 @@ class _EventChip extends StatelessWidget {
           Text(
             'Event at ${event.pointThreshold} pts',
             style: theme.textTheme.bodySmall?.copyWith(
-              color: triggered ? Colors.amber.shade300 : Colors.grey.shade300,
+              color: triggered ? Colors.amber.shade300 : FormTheme.textSecondary,
             ),
           ),
           if (triggered) ...[
@@ -784,11 +787,11 @@ class _EventChip extends StatelessWidget {
       ),
       backgroundColor: triggered
           ? Colors.amber.withAlpha(40)
-          : Colors.grey.shade800,
+          : FormTheme.surfaceMuted,
       side: BorderSide(
         color: triggered
             ? Colors.amber.shade600
-            : Colors.grey.shade700,
+            : FormTheme.border,
       ),
       visualDensity: VisualDensity.compact,
       padding: EdgeInsets.zero,

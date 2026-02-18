@@ -130,9 +130,9 @@ class AbilityColors {
   
   static const Color fire = Color(0xFFFF3D00);         // Bright Red-Orange
   static const Color cold = Color(0xFF0288D1);         // Clear Blue
-  static const Color lightning = Color(0xFFFFD600);    // Electric Yellow
-  static const Color acid = Color(0xFF8BC34A);         // Acidic Green
-  static const Color poison = Color(0xFF4CAF50);       // Toxic Green
+  static const Color lightning = Color(0xFF4FC3F7);    // Light Blue
+  static const Color acid = Color(0xFF76FF03);         // Electric Lime Green
+  static const Color poison = Color(0xFF2E7D32);       // Deep Forest Green
   static const Color sonic = Color(0xFF9E9E9E);        // Sound Grey
   static const Color holy = Color(0xFFFFB300);         // Divine Gold
   static const Color corruption = Color(0xFF6A1B9A);   // Dark Purple
@@ -267,6 +267,10 @@ class AbilityColors {
         default: return buffKeyword;
       }
     }
+
+    // Damage-type keywords (fire, cold, lightning, etc.)
+    final dmg = getDamageTypeColor(normalized);
+    if (dmg != const Color(0xFF9E9E9E)) return dmg;
     
     // Default keyword color
     return const Color(0xFF607D8B);
@@ -332,6 +336,7 @@ class AbilityColors {
       case 'holy': return holy;
       case 'corruption': return corruption;
       case 'psychic': return psychic;
+      case 'damage': return const Color.fromARGB(255, 215, 30, 27); // All-damage Red
       default: return const Color(0xFF9E9E9E);
     }
   }

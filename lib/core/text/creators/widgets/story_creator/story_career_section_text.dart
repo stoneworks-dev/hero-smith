@@ -43,4 +43,9 @@ class StoryCareerSectionText {
   static const String searchHint = 'Search...';
   static const String noMatchesFound = 'No matches found';
   static const String cancelLabel = 'Cancel';
+  static const String selectSkill = 'Select Skill';
+  static String careerGrantsConflict(String conflicts) =>
+      'Career grants already assigned elsewhere: $conflicts';
+  static const String noneSelected = 'None selected';
+  static String regionSubtitle(String region) => 'Region: $region';
 }

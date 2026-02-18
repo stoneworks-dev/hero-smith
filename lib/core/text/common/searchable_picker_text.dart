@@ -15,4 +15,6 @@ class SearchablePickerText {
 
   static String duplicateDescription(String itemType) =>
       'Multiple features grant the same $itemType. Discuss with your Director to choose an alternative.';
+
+  static const cancel = 'Cancel';
 }

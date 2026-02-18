@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_icon.dart';
+import '../../../../core/theme/app_icon_data.dart';
+import '../../../../core/theme/app_icons.dart';
 import '../../../../core/theme/creator_theme.dart';
 import '../../../../core/theme/navigation_theme.dart';
 import '../../../../core/theme/form_theme.dart';
@@ -35,7 +38,7 @@ Future<_PickerSelection?> _showSearchablePicker({
   required String title,
   String? currentValue,
   Color accentColor = _accent,
-  IconData icon = Icons.trending_up,
+  AppIconData icon = AbilityIcons.progression,
 }) async {
   return showDialog<_PickerSelection>(
     context: context,
@@ -87,7 +90,7 @@ Future<_PickerSelection?> _showSearchablePicker({
                           color: accentColor.withValues(alpha: 0.4),
                         ),
                       ),
-                      child: Icon(
+                      child: AppIcon(
                         icon,
                         color: accentColor,
                         size: 20,
@@ -107,7 +110,7 @@ Future<_PickerSelection?> _showSearchablePicker({
                     IconButton(
                       icon: Icon(
                         Icons.close,
-                        color: Colors.grey.shade400,
+                        color: FormTheme.textSecondary,
                       ),
                       onPressed: () => Navigator.pop(context),
                       padding: EdgeInsets.zero,
@@ -151,7 +154,7 @@ Future<_PickerSelection?> _showSearchablePicker({
                               border: Border.all(
                                 color: isSelected
                                     ? accentColor.withValues(alpha: 0.5)
-                                    : Colors.grey.shade700,
+                                    : FormTheme.border,
                               ),
                             ),
                             child: Row(
@@ -162,7 +165,7 @@ Future<_PickerSelection?> _showSearchablePicker({
                                     style: TextStyle(
                                       color: isSelected
                                           ? accentColor
-                                          : Colors.white,
+                                          : FormTheme.textBright,
                                       fontSize: 14,
                                       fontWeight: isSelected
                                           ? FontWeight.bold
@@ -190,7 +193,7 @@ Future<_PickerSelection?> _showSearchablePicker({
                 width: double.infinity,
                 decoration: BoxDecoration(
                   border: Border(
-                    top: BorderSide(color: Colors.grey.shade800),
+                    top: BorderSide(color: FormTheme.borderDim),
                   ),
                 ),
                 child: TextButton(
@@ -201,7 +204,7 @@ Future<_PickerSelection?> _showSearchablePicker({
                   child: Text(
                     LevelSelectorWidgetText.cancelButton,
                     style: TextStyle(
-                      color: Colors.grey.shade400,
+                      color: FormTheme.textSecondary,
                       fontSize: 14,
                     ),
                   ),
@@ -237,7 +240,7 @@ class LevelSelectorWidget extends StatelessWidget {
           CreatorTheme.sectionHeader(
             title: LevelSelectorWidgetText.heroLevelLabel,
             subtitle: LevelSelectorWidgetText.levelSubtitle,
-            icon: Icons.trending_up,
+            appIcon: AbilityIcons.progression,
             accent: const Color.fromARGB(255, 53, 126, 229),
           ),
           Padding(
@@ -257,7 +260,7 @@ class LevelSelectorWidget extends StatelessWidget {
                   title: LevelSelectorWidgetText.selectLevelTitle,
                   currentValue: selectedLevel.toString(),
                   accentColor: const Color.fromARGB(255, 53, 120, 229),
-                  icon: Icons.trending_up,
+                  icon: AbilityIcons.progression,
                 );
 
                 if (result?.value != null) {
@@ -276,13 +279,13 @@ class LevelSelectorWidget extends StatelessWidget {
                     Text(
                       '${LevelSelectorWidgetText.levelOptionPrefix}$selectedLevel',
                       style: const TextStyle(
-                        color: Colors.white,
+                        color: FormTheme.textBright,
                         fontSize: 14,
                       ),
                     ),
                     Icon(
                       Icons.arrow_drop_down,
-                      color: Colors.grey.shade400,
+                      color: FormTheme.textSecondary,
                     ),
                   ],
                 ),

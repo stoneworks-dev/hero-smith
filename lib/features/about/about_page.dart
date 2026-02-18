@@ -3,10 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../core/theme/form_theme.dart';
 import '../../core/theme/navigation_theme.dart';
 import '../../core/services/update_provider.dart';
 import '../../core/services/update_service.dart';
 import '../../widgets/update_dialog.dart';
+import '../../core/text/about/about_page_text.dart';
 
 /// About page with legal notices and attribution as required by
 /// the Draw Steel Creator License.
@@ -18,11 +20,11 @@ class AboutPage extends ConsumerStatefulWidget {
 }
 
 class _AboutPageState extends ConsumerState<AboutPage> {
-  static const String _appName = 'Hero Smith';
-  static const String _copyright = '© 2026 stoneworks-dev';
-  static const String _sourceUrl = 'https://github.com/stoneworks-dev/hero-smith';
-  static const String _issuesUrl = 'https://github.com/stoneworks-dev/hero-smith/issues';
-  static const String _supportEmail = 'support@stoneworks-software.com';
+  static const String _appName = AboutPageText.appName;
+  static const String _copyright = AboutPageText.copyright;
+  static const String _sourceUrl = AboutPageText.sourceUrl;
+  static const String _issuesUrl = AboutPageText.issuesUrl;
+  static const String _supportEmail = AboutPageText.supportEmail;
 
   String _version = '';
   bool _checkingForUpdate = false;
@@ -51,13 +53,13 @@ class _AboutPageState extends ConsumerState<AboutPage> {
         showUpdateDialog(context, ref, update);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('You are on the latest version!')),
+          SnackBar(content: Text(AboutPageText.latestVersion)),
         );
       }
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not check for updates: $e')),
+        SnackBar(content: Text(AboutPageText.updateCheckError(e))),
       );
     } finally {
       if (mounted) setState(() => _checkingForUpdate = false);
@@ -71,7 +73,7 @@ class _AboutPageState extends ConsumerState<AboutPage> {
     return Scaffold(
       backgroundColor: NavigationTheme.navBarBackground,
       appBar: AppBar(
-        title: const Text('About'),
+        title: Text(AboutPageText.aboutTitle),
         backgroundColor: NavigationTheme.cardBackgroundDark,
       ),
       body: SingleChildScrollView(
@@ -85,13 +87,10 @@ class _AboutPageState extends ConsumerState<AboutPage> {
 
             // Legal Notice
             _buildSection(
-              title: 'Legal Notice',
+              title: AboutPageText.legalNotice,
               accent: accent,
               child: const Text(
-                '$_appName is an independent product published under the '
-                'DRAW STEEL Creator License and is not affiliated with '
-                'MCDM Productions, LLC.\n\n'
-                'DRAW STEEL © 2024 MCDM Productions, LLC.',
+                AboutPageText.legalNoticeBody,
                 style: TextStyle(fontSize: 15, height: 1.5),
               ),
             ),
@@ -99,13 +98,13 @@ class _AboutPageState extends ConsumerState<AboutPage> {
 
             // Support
             _buildSection(
-              title: 'Support',
+              title: AboutPageText.support,
               accent: accent,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'To suggest a new feature, improvement, or to report a bug:',
+                    AboutPageText.supportBody,
                     style: TextStyle(fontSize: 15, height: 1.5),
                   ),
                   const SizedBox(height: 8),
@@ -143,7 +142,7 @@ class _AboutPageState extends ConsumerState<AboutPage> {
 
             // Updates section
             _buildSection(
-              title: 'Updates',
+              title: AboutPageText.updates,
               accent: accent,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -165,7 +164,7 @@ class _AboutPageState extends ConsumerState<AboutPage> {
                             )
                           : Icon(Icons.refresh, color: accent),
                       label: Text(
-                        _checkingForUpdate ? 'Checking...' : 'Check for Updates',
+                        _checkingForUpdate ? AboutPageText.checking : AboutPageText.checkForUpdates,
                       ),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: accent,
@@ -180,13 +179,13 @@ class _AboutPageState extends ConsumerState<AboutPage> {
 
             // Source code link
             _buildSection(
-              title: 'Source Code',
+              title: AboutPageText.sourceCode,
               accent: accent,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'If you wish to contribute or help:',
+                    AboutPageText.contributeBody,
                     style: TextStyle(fontSize: 15, height: 1.5),
                   ),
                   const SizedBox(height: 8),
@@ -208,11 +207,10 @@ class _AboutPageState extends ConsumerState<AboutPage> {
 
             // Privacy
             _buildSection(
-              title: 'Privacy',
+              title: AboutPageText.privacy,
               accent: accent,
               child: const Text(
-                'Hero Smith does not collect any personal data. '
-                'All hero data is stored locally on your device.',
+                AboutPageText.privacyBody,
                 style: TextStyle(fontSize: 15, height: 1.5),
               ),
             ),
@@ -220,21 +218,30 @@ class _AboutPageState extends ConsumerState<AboutPage> {
 
             // License
             _buildSection(
-              title: 'License',
+              title: AboutPageText.license,
               accent: accent,
               child: const Text(
-                'Open-source software licensed under the Apache License 2.0.',
+                AboutPageText.licenseBody,
                 style: TextStyle(fontSize: 15, height: 1.5),
               ),
-            ),
-            const SizedBox(height: 24),
+            ),            const SizedBox(height: 16),
+
+            // Icon Attribution
+            _buildSection(
+              title: AboutPageText.iconAttribution,
+              accent: accent,
+              child: const Text(
+                AboutPageText.iconAttributionBody,
+                style: TextStyle(fontSize: 15, height: 1.5),
+              ),
+            ),            const SizedBox(height: 24),
 
             // View full licenses
             Center(
               child: OutlinedButton.icon(
                 onPressed: () => _showLicensePage(context),
                 icon: const Icon(Icons.description_outlined),
-                label: const Text('View Open Source Licenses'),
+                label: Text(AboutPageText.viewOpenSourceLicenses),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: accent,
                   side: BorderSide(color: accent.withValues(alpha: 0.5)),
@@ -284,15 +291,15 @@ class _AboutPageState extends ConsumerState<AboutPage> {
                   _copyright,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey.shade400,
+                    color: FormTheme.textSecondary,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'Version $_version',
+                  AboutPageText.versionLabel(_version),
                   style: TextStyle(
                     fontSize: 12,
-                    color: Colors.grey.shade500,
+                    color: FormTheme.textMuted,
                   ),
                 ),
               ],
@@ -345,10 +352,10 @@ class _AboutPageState extends ConsumerState<AboutPage> {
       children: [
         Expanded(
           child: Text(
-            'Show update prompts on startup',
+            AboutPageText.showUpdatePrompts,
             style: TextStyle(
               fontSize: 14,
-              color: showPrompts ? Colors.white : Colors.grey.shade500,
+              color: showPrompts ? FormTheme.textBright : FormTheme.textMuted,
             ),
           ),
         ),
@@ -385,7 +392,7 @@ class _AboutPageState extends ConsumerState<AboutPage> {
     await Clipboard.setData(ClipboardData(text: text));
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Copied to clipboard')),
+      SnackBar(content: Text(AboutPageText.copiedToClipboard)),
     );
   }
 
@@ -394,12 +401,7 @@ class _AboutPageState extends ConsumerState<AboutPage> {
       context: context,
       applicationName: _appName,
       applicationVersion: _version,
-      applicationLegalese: '$_copyright\n\n'
-          '$_appName is an independent product published under the '
-          'DRAW STEEL Creator License and is not affiliated with '
-          'MCDM Productions, LLC.\n\n'
-          'DRAW STEEL © 2024 MCDM Productions, LLC.\n\n'
-          'Support: $_supportEmail',
+      applicationLegalese: AboutPageText.licenseLegalese(_version),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'app_text_styles.dart';
+import 'form_theme.dart';
 
 /// Treasure-specific theming constants for colors, emojis, and component styling
 class TreasureTheme {
@@ -100,7 +101,7 @@ class TreasureTheme {
   static final TextStyle levelHeaderStyle = AppTextStyles.caption.copyWith(
     fontWeight: FontWeight.w600,
     fontSize: 13,
-    color: Colors.white,
+    color: FormTheme.textBright,
   );
 
   static final TextStyle prerequisiteStyle = AppTextStyles.caption.copyWith(
@@ -117,7 +118,7 @@ class TreasureTheme {
   static Color getCardBackgroundColor(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? const Color.fromARGB(255, 37, 36, 36)
-        : Colors.white;
+        : FormTheme.textBright;
   }
 
   static Color getCardBorderColor(
@@ -163,14 +164,14 @@ class TreasureTheme {
   }
 
   static Color getLevelBackgroundColor(BuildContext context, int level) {
-    final baseColor = levelColors[level] ?? Colors.grey;
+    final baseColor = levelColors[level] ?? FormTheme.icon;
     return Theme.of(context).brightness == Brightness.dark
         ? baseColor.withOpacity(0.8)
         : baseColor;
   }
 
   static Color getEchelonBadgeColor(BuildContext context, int echelon) {
-    final baseColor = echelonColors[echelon] ?? Colors.grey;
+    final baseColor = echelonColors[echelon] ?? FormTheme.icon;
     return Theme.of(context).brightness == Brightness.dark
         ? baseColor.withOpacity(0.8)
         : baseColor;
@@ -179,13 +180,13 @@ class TreasureTheme {
   static Color getTextColor(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? Colors.grey.shade200
-        : Colors.grey.shade800;
+        : FormTheme.surfaceMuted;
   }
 
   static Color getSecondaryTextColor(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
-        ? Colors.grey.shade400
-        : Colors.grey.shade600;
+        ? FormTheme.textSecondary
+        : FormTheme.borderLight;
   }
 
   // Get emoji for treasure type

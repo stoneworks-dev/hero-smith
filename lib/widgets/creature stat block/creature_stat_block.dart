@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/text/widgets/creature_stat_block_text.dart';
 import 'green_animal_form.dart';
 
 /// A reusable widget to display creature statistics in a stat block format.
@@ -225,7 +226,7 @@ class CreatureStatBlock extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      'Level $level',
+                      CreatureStatBlockText.levelLabel(level),
                       style: theme.textTheme.labelMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: color,

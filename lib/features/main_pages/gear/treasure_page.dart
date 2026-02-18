@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/db/providers.dart';
 import '../../../core/models/component.dart' as model;
 import '../../../core/theme/navigation_theme.dart';
+import '../../../core/text/main_pages/gear/treasure_page_text.dart';
 import '../../../widgets/shared/nav_card.dart';
 import '../../../widgets/treasures/treasures.dart';
 import 'echelon_treasure_detail_page.dart';
@@ -47,7 +48,7 @@ class _TreasurePageState extends ConsumerState<TreasurePage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Treasures'),
+        title: Text(TreasurePageText.appBarTitle),
         backgroundColor: NavigationTheme.navBarBackground,
       ),
       body: Column(
@@ -129,8 +130,8 @@ class _EchelonGroupsTab extends StatelessWidget {
       children: [
         NavCard(
           icon: Icons.looks_one_outlined,
-          title: '1st Echelon $displayName',
-          subtitle: 'Basic $displayName for starting adventurers',
+          title: TreasurePageText.echelonTitle(1, displayName),
+          subtitle: TreasurePageText.echelonSubtitle(1, displayName),
           accentColor: NavigationTheme.echelon1Color,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
@@ -145,8 +146,8 @@ class _EchelonGroupsTab extends StatelessWidget {
         const SizedBox(height: 12),
         NavCard(
           icon: Icons.looks_two_outlined,
-          title: '2nd Echelon $displayName',
-          subtitle: 'Intermediate $displayName for experienced heroes',
+          title: TreasurePageText.echelonTitle(2, displayName),
+          subtitle: TreasurePageText.echelonSubtitle(2, displayName),
           accentColor: NavigationTheme.echelon2Color,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
@@ -161,8 +162,8 @@ class _EchelonGroupsTab extends StatelessWidget {
         const SizedBox(height: 12),
         NavCard(
           icon: Icons.looks_3_outlined,
-          title: '3rd Echelon $displayName',
-          subtitle: 'Advanced $displayName for seasoned adventurers',
+          title: TreasurePageText.echelonTitle(3, displayName),
+          subtitle: TreasurePageText.echelonSubtitle(3, displayName),
           accentColor: NavigationTheme.echelon3Color,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
@@ -177,8 +178,8 @@ class _EchelonGroupsTab extends StatelessWidget {
         const SizedBox(height: 12),
         NavCard(
           icon: Icons.looks_4_outlined,
-          title: '4th Echelon $displayName',
-          subtitle: 'Master-level $displayName for legendary heroes',
+          title: TreasurePageText.echelonTitle(4, displayName),
+          subtitle: TreasurePageText.echelonSubtitle(4, displayName),
           accentColor: NavigationTheme.echelon4Color,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
@@ -205,8 +206,8 @@ class _LeveledTreasureTypesTab extends StatelessWidget {
       children: [
         NavCard(
           icon: Icons.shield_outlined,
-          title: 'Armor & Shields',
-          subtitle: 'Protective equipment and defensive gear',
+          title: TreasurePageText.armorAndShieldsNavTitle,
+          subtitle: TreasurePageText.armorAndShieldsNavSubtitle,
           accentColor: NavigationTheme.armorColor,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
@@ -217,8 +218,8 @@ class _LeveledTreasureTypesTab extends StatelessWidget {
         const SizedBox(height: 12),
         NavCard(
           icon: Icons.auto_fix_high,
-          title: 'Implements',
-          subtitle: 'Magical focuses and casting tools',
+          title: TreasurePageText.implementsNavTitle,
+          subtitle: TreasurePageText.implementsNavSubtitle,
           accentColor: NavigationTheme.implementColor,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
@@ -232,14 +233,29 @@ class _LeveledTreasureTypesTab extends StatelessWidget {
         const SizedBox(height: 12),
         NavCard(
           icon: Icons.gavel,
-          title: 'Weapons',
-          subtitle: 'Combat weapons and martial equipment',
+          title: TreasurePageText.weaponsNavTitle,
+          subtitle: TreasurePageText.weaponsNavSubtitle,
           accentColor: NavigationTheme.weaponColor,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => const LeveledTreasureTypePage(
                 leveledType: 'weapon',
                 displayName: 'Weapons',
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        NavCard(
+          icon: Icons.category,
+          title: TreasurePageText.otherNavTitle,
+          subtitle: TreasurePageText.otherNavSubtitle,
+          accentColor: NavigationTheme.otherLeveledColor,
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const LeveledTreasureTypePage(
+                leveledType: 'other',
+                displayName: 'Other',
               ),
             ),
           ),
@@ -286,7 +302,7 @@ class _ArmorShieldPageState extends ConsumerState<_ArmorShieldPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Armor & Shields'),
+        title: Text(TreasurePageText.armorShieldsTitle),
         backgroundColor: NavigationTheme.navBarBackground,
       ),
       body: Column(
@@ -367,7 +383,7 @@ class _LeveledTreasureTypeList extends StatelessWidget {
             .toList();
         
         if (filteredItems.isEmpty) {
-          return const Center(child: Text('No treasures available for this type'));
+          return Center(child: Text(TreasurePageText.noTreasuresForType));
         }
         
         return ListView.separated(
@@ -378,7 +394,7 @@ class _LeveledTreasureTypeList extends StatelessWidget {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, st) => Center(child: Text('Error: $e')),
+      error: (e, st) => Center(child: Text(TreasurePageText.errorMessage(e))),
     );
   }
 }
@@ -397,7 +413,7 @@ class _TreasureList extends StatelessWidget {
     return stream.when(
       data: (items) {
         if (items.isEmpty) {
-          return const Center(child: Text('None available'));
+          return Center(child: Text(TreasurePageText.noneAvailable));
         }
         return ListView.separated(
           padding: const EdgeInsets.all(16),
@@ -407,7 +423,7 @@ class _TreasureList extends StatelessWidget {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, st) => Center(child: Text('Error: $e')),
+      error: (e, st) => Center(child: Text(TreasurePageText.errorMessage(e))),
     );
   }
 }

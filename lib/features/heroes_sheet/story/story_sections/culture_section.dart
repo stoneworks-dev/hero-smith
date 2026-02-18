@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:hero_smith/core/text/heroes_sheet/story/sheet_story_culture_section_text.dart';
+import 'package:hero_smith/core/theme/form_theme.dart';
 import 'package:hero_smith/core/theme/navigation_theme.dart';
 import 'package:hero_smith/core/theme/story_theme.dart';
 
@@ -68,7 +69,7 @@ class CultureSection extends ConsumerWidget {
       decoration: BoxDecoration(
         color: NavigationTheme.cardBackgroundDark,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade800),
+        border: Border.all(color: FormTheme.borderDim),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -89,7 +90,7 @@ class CultureSection extends ConsumerWidget {
                 const Text(
                   SheetStoryCultureSectionText.sectionTitle,
                   style: TextStyle(
-                    color: Colors.white,
+                    color: FormTheme.textBright,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
@@ -130,7 +131,7 @@ class CultureSection extends ConsumerWidget {
                 SheetStoryCultureSectionText.cultureSkillsTitle,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: Colors.grey.shade300,
+                  color: FormTheme.textSecondary,
                   fontSize: 14,
                 ),
               ),
@@ -191,7 +192,7 @@ class _ComponentDisplay extends ConsumerWidget {
           Text('Error: $e', style: TextStyle(color: Colors.red.shade300)),
       data: (component) {
         if (component == null) {
-          return Text('$label not found', style: TextStyle(color: Colors.grey.shade400));
+          return Text('$label not found', style: TextStyle(color: FormTheme.textSecondary));
         }
 
         final description = component.data['description']?.toString();
@@ -209,7 +210,7 @@ class _ComponentDisplay extends ConsumerWidget {
                 padding: const EdgeInsets.only(left: 32),
                 child: Text(
                   description,
-                  style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+                  style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
                 ),
               ),
             ],

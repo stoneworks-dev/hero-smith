@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../core/models/component.dart';
+import '../../core/text/widgets/ability_widget_text.dart';
+import '../../core/theme/form_theme.dart';
 import '../../core/theme/semantic/semantic_tokens.dart';
 import 'abilities_shared.dart';
 
@@ -26,7 +28,7 @@ class AbilityFullView extends StatelessWidget {
 
     // Show effect text (non-tier based effects)
     if (ability.effect != null && ability.effect!.isNotEmpty) {
-      sections.add(_buildLabeledText(context, 'Effect', ability.effect!));
+      sections.add(_buildLabeledText(context, AbilityWidgetText.effect, ability.effect!));
     }
 
     // Show special effect text
@@ -68,7 +70,7 @@ class AbilityFullView extends StatelessWidget {
         style: TextStyle(
           fontWeight: FontWeight.w600,
           fontSize: 14,
-          color: Colors.grey.shade300,
+          color: FormTheme.textSecondary,
         ),
       ));
       headerChildren.add(const SizedBox(width: 6));
@@ -86,7 +88,7 @@ class AbilityFullView extends StatelessWidget {
         style: TextStyle(
           fontWeight: FontWeight.w600,
           fontSize: 14,
-          color: Colors.grey.shade300,
+          color: FormTheme.textSecondary,
         ),
       ));
     }
@@ -102,14 +104,14 @@ class AbilityFullView extends StatelessWidget {
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
-                      color: Colors.grey.shade800,
+                      color: FormTheme.surfaceMuted,
                     ),
                     child: Text(
                       tier.label,
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 11,
-                        color: Colors.grey.shade300,
+                        color: FormTheme.textSecondary,
                       ),
                     ),
                   ),
@@ -136,7 +138,7 @@ class AbilityFullView extends StatelessWidget {
                               context,
                               baseStyle: TextStyle(
                                 fontSize: 12,
-                                color: Colors.grey.shade400,
+                                color: FormTheme.textSecondary,
                               ),
                             ),
                           ),
@@ -208,7 +210,7 @@ class AbilityFullView extends StatelessWidget {
           context,
           baseStyle: TextStyle(
             fontSize: 14,
-            color: Colors.grey.shade300,
+            color: FormTheme.textSecondary,
           ),
         ),
       ],

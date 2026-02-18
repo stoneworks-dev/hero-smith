@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/models/feature.dart';
+import '../../core/text/widgets/feature_widget_text.dart';
 
 class FeatureSearchDelegate extends SearchDelegate<Feature?> {
   final List<Feature> features;
@@ -9,7 +10,7 @@ class FeatureSearchDelegate extends SearchDelegate<Feature?> {
     required this.features,
     required this.className,
   }) : super(
-    searchFieldLabel: 'Search $className features...',
+    searchFieldLabel: FeatureWidgetText.searchFeatures(className),
     searchFieldStyle: const TextStyle(fontSize: 16),
   );
 
@@ -88,7 +89,7 @@ class FeatureSearchDelegate extends SearchDelegate<Feature?> {
               Row(
                 children: [
                   Chip(
-                    label: Text('Level ${feature.level}'),
+                    label: Text(FeatureWidgetText.levelLabel(feature.level)),
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
                   const SizedBox(width: 8),

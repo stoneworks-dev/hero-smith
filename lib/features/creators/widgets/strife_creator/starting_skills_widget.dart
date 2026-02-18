@@ -5,6 +5,7 @@ import '../../../../core/models/class_data.dart';
 import '../../../../core/models/skills_models.dart';
 import '../../../../core/services/skill_data_service.dart';
 import '../../../../core/services/skills_service.dart';
+import '../../../../core/theme/app_icons.dart';
 import '../../../../core/theme/creator_theme.dart';
 import '../../../../core/theme/form_theme.dart';
 import '../../../../core/text/creators/widgets/strife_creator/starting_skills_widget_text.dart';
@@ -356,7 +357,7 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget> {
           padding: const EdgeInsets.all(16),
           child: Text(
             StartingSkillsWidgetText.noSkillsMessage,
-            style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+            style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
           ),
         ),
       );
@@ -378,7 +379,7 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget> {
           CreatorTheme.sectionHeader(
             title: StartingSkillsWidgetText.expansionTitle,
             subtitle: '${StartingSkillsWidgetText.selectionSubtitlePrefix}$assigned${StartingSkillsWidgetText.selectionSubtitleMiddle}$totalSlots${StartingSkillsWidgetText.selectionSubtitleSuffix}',
-            icon: Icons.psychology,
+            appIcon: StoryIcons.skills,
             accent: _accent,
           ),
           Padding(
@@ -409,7 +410,7 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget> {
           CreatorTheme.sectionHeader(
             title: StartingSkillsWidgetText.expansionTitle,
             subtitle: StartingSkillsWidgetText.sectionSubtitle,
-            icon: Icons.psychology,
+            appIcon: StoryIcons.skills,
             accent: _accent,
           ),
           child,
@@ -501,7 +502,7 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget> {
             StartingSkillsWidgetText.quickBuildTitle,
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: Colors.grey.shade300,
+              color: FormTheme.textSecondary,
               fontSize: 13,
             ),
           ),
@@ -520,7 +521,7 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget> {
                     ),
                     child: Text(
                       skill,
-                      style: TextStyle(color: Colors.grey.shade300, fontSize: 13),
+                      style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
                     ),
                   ),
                 )
@@ -551,13 +552,13 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget> {
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: Colors.white,
+              color: FormTheme.textBright,
             ),
           ),
           const SizedBox(height: 4),
           Text(
             '${StartingSkillsWidgetText.allowancePickPrefix}${allowance.pickCount}${allowance.pickCount == 1 ? StartingSkillsWidgetText.allowancePickSingularSuffix : StartingSkillsWidgetText.allowancePickPluralSuffix}${StartingSkillsWidgetText.allowancePickFromPrefix}$allowedGroupsText',
-            style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+            style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
           ),
           const SizedBox(height: 8),
           ...List.generate(slots.length, (index) {
@@ -585,17 +586,17 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget> {
               child: DropdownButtonFormField<String?>(
                 value: current,
                 dropdownColor: FormTheme.surface,
-                style: const TextStyle(color: Colors.white, fontSize: 14),
+                style: const TextStyle(color: FormTheme.textBright, fontSize: 14),
                 decoration: InputDecoration(
                   labelText:
                       '${StartingSkillsWidgetText.choiceLabelPrefix}${index + 1}',
-                  labelStyle: TextStyle(color: Colors.grey.shade400),
+                  labelStyle: TextStyle(color: FormTheme.textSecondary),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),
-                    borderSide: BorderSide(color: Colors.grey.shade700),
+                    borderSide: BorderSide(color: FormTheme.border),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),

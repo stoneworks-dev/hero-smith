@@ -1,6 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'core/text/main_text.dart';
+import 'core/theme/app_icon.dart';
+import 'core/theme/app_icon_data.dart';
+import 'core/theme/app_icons.dart';
 import 'core/theme/navigation_theme.dart';
 import 'core/theme/app_colors.dart';
 import 'features/main_pages/heroes_page.dart';
@@ -22,7 +26,7 @@ class HeroSmithApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Hero Smith',
+      title: MainText.appTitle,
       theme: ThemeData(
         colorSchemeSeed: AppColors.primary,
         useMaterial3: true,
@@ -169,36 +173,41 @@ class _RootNavPageState extends ConsumerState<RootNavPage> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _NavItem(
-                  icon: Icons.person,
-                  label: 'Heroes',
+                  icon: NavIcons.heroes,
+                  activeIcon: NavIcons.heroesActive,
+                  label: MainText.heroes,
                   color: NavigationTheme.heroesColor,
                   isSelected: _index == 0,
                   onTap: () => setState(() => _index = 0),
                 ),
                 _NavItem(
-                  icon: Icons.flash_on,
-                  label: 'Strife',
+                  icon: NavIcons.strife,
+                  activeIcon: NavIcons.strifeActive,
+                  label: MainText.strife,
                   color: NavigationTheme.strifeColor,
                   isSelected: _index == 1,
                   onTap: () => setState(() => _index = 1),
                 ),
                 _NavItem(
-                  icon: Icons.menu_book,
-                  label: 'Story',
+                  icon: NavIcons.story,
+                  activeIcon: NavIcons.storyActive,
+                  label: MainText.story,
                   color: NavigationTheme.storyColor,
                   isSelected: _index == 2,
                   onTap: () => setState(() => _index = 2),
                 ),
                 _NavItem(
-                  icon: Icons.handyman,
-                  label: 'Gear',
+                  icon: NavIcons.gear,
+                  activeIcon: NavIcons.gearActive,
+                  label: MainText.gear,
                   color: NavigationTheme.gearColor,
                   isSelected: _index == 3,
                   onTap: () => setState(() => _index = 3),
                 ),
                 _NavItem(
-                  icon: Icons.timer,
-                  label: 'Downtime',
+                  icon: NavIcons.downtime,
+                  activeIcon: NavIcons.downtimeActive,
+                  label: MainText.downtime,
                   color: NavigationTheme.downtimeColor,
                   isSelected: _index == 4,
                   onTap: () => setState(() => _index = 4),
@@ -213,7 +222,8 @@ class _RootNavPageState extends ConsumerState<RootNavPage> {
 }
 
 class _NavItem extends StatelessWidget {
-  final IconData icon;
+  final AppIconData icon;
+  final AppIconData activeIcon;
   final String label;
   final Color color;
   final bool isSelected;
@@ -221,6 +231,7 @@ class _NavItem extends StatelessWidget {
 
   const _NavItem({
     required this.icon,
+    required this.activeIcon,
     required this.label,
     required this.color,
     required this.isSelected,
@@ -230,6 +241,7 @@ class _NavItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final activeColor = isSelected ? color : NavigationTheme.inactiveColor;
+    final displayIcon = isSelected ? activeIcon : icon;
     
     return GestureDetector(
       onTap: onTap,
@@ -244,8 +256,8 @@ class _NavItem extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
+            AppIcon(
+              displayIcon,
               color: activeColor,
               size: NavigationTheme.navBarIconSize,
             ),

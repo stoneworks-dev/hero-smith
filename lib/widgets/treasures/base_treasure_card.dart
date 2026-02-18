@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/models/component.dart' as model;
+import '../../core/text/widgets/treasure_card_text.dart';
 import '../../core/theme/treasure_theme.dart';
 
 /// Base treasure card widget with common styling and layout
@@ -172,7 +173,7 @@ class _BaseTreasureCardState extends State<BaseTreasureCard>
       chips.add(_buildChip(
         context,
         colorScheme,
-        'LEVELED',
+        TreasureCardText.leveled,
         backgroundColor: TreasureTheme.getLevelBackgroundColor(context, 1),
       ));
     }
@@ -357,17 +358,17 @@ class PrerequisiteSection extends StatelessWidget {
     final sections = <Widget>[];
 
     if (prerequisite != null && prerequisite!.isNotEmpty) {
-      sections.add(_buildPrerequisiteItem(context, 'Prerequisite', prerequisite!));
+      sections.add(_buildPrerequisiteItem(context, TreasureCardText.prerequisite, prerequisite!));
     }
 
     if (projectSource != null && projectSource!.isNotEmpty) {
-      sections.add(_buildPrerequisiteItem(context, 'Source', projectSource!));
+      sections.add(_buildPrerequisiteItem(context, TreasureCardText.source, projectSource!));
     }
 
     if (projectRollCharacteristics != null && projectRollCharacteristics!.isNotEmpty) {
       sections.add(_buildPrerequisiteItem(
         context,
-        'Roll',
+        TreasureCardText.roll,
         projectRollCharacteristics!.join(' + '),
       ));
     }
@@ -376,7 +377,7 @@ class PrerequisiteSection extends StatelessWidget {
       final goalText = projectGoalDescription != null && projectGoalDescription!.isNotEmpty
           ? '$projectGoal ($projectGoalDescription)'
           : '$projectGoal';
-      sections.add(_buildPrerequisiteItem(context, 'Goal', goalText));
+      sections.add(_buildPrerequisiteItem(context, TreasureCardText.goal, goalText));
     }
 
     if (sections.isEmpty) return const SizedBox.shrink();
@@ -399,7 +400,7 @@ class PrerequisiteSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'CRAFTING',
+            TreasureCardText.crafting,
             style: TreasureTheme.sectionTitleStyle.copyWith(
               color: TreasureTheme.getTextColor(context),
             ),

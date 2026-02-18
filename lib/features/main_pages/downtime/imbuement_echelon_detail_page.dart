@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../../core/models/downtime.dart';
 import '../../../core/data/downtime_data_source.dart';
+import '../../../core/text/main_pages/downtime/imbuement_echelon_detail_page_text.dart';
+import '../../../core/theme/app_icon.dart';
+import '../../../core/theme/app_icons.dart';
+import '../../../core/theme/form_theme.dart';
 import '../../../core/theme/navigation_theme.dart';
 import '../../../widgets/shared/expandable_card.dart';
 
@@ -150,9 +154,9 @@ class ImbuementEchelonDetailPage extends StatelessWidget {
                             const SizedBox(width: 12),
                             Expanded(
                               child: Text(
-                                '$totalCount imbuements across ${imbuementsByType.length} categories',
+                                ImbuementEchelonDetailPageText.imbuementsAcrossCategories(totalCount, imbuementsByType.length),
                                 style: TextStyle(
-                                  color: Colors.grey.shade300,
+                                  color: FormTheme.textSecondary,
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -214,11 +218,11 @@ class ImbuementEchelonDetailPage extends StatelessWidget {
   String _getShortTypeName(String type) {
     switch (type) {
       case 'armor_imbuement':
-        return 'Armor';
+        return ImbuementEchelonDetailPageText.armorShortName;
       case 'weapon_imbuement':
-        return 'Weapon';
+        return ImbuementEchelonDetailPageText.weaponShortName;
       case 'implement_imbuement':
-        return 'Implement';
+        return ImbuementEchelonDetailPageText.implementShortName;
       default:
         return type.replaceAll('_imbuement', '').toUpperCase();
     }
@@ -488,8 +492,8 @@ class _EntryDetails extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Icon(
-                          _getPrerequisiteIcon(key),
+                        AppIcon(
+                          PrerequisiteIcons.fromKey(key),
                           color: Theme.of(context).colorScheme.primary,
                           size: 16,
                         ),
@@ -540,8 +544,8 @@ class _EntryDetails extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    _getPrerequisiteIcon(key),
+                  AppIcon(
+                    PrerequisiteIcons.fromKey(key),
                     color: Theme.of(context).colorScheme.primary,
                     size: 16,
                   ),
@@ -597,27 +601,6 @@ class _EntryDetails extends StatelessWidget {
     }
   }
 
-  IconData _getPrerequisiteIcon(String key) {
-    switch (key.toLowerCase()) {
-      case 'item_prerequisite':
-        return Icons.inventory_2;
-      case 'project_source':
-        return Icons.menu_book;
-      case 'location':
-        return Icons.place;
-      case 'skill':
-        return Icons.build;
-      case 'level':
-        return Icons.bar_chart;
-      case 'class':
-        return Icons.person;
-      case 'feature':
-        return Icons.star;
-      default:
-        return Icons.arrow_right;
-    }
-  }
-
   Color _getProjectGoalColor(dynamic projectGoal) {
     final goal = int.tryParse(projectGoal.toString()) ?? 0;
     if (goal >= 1000) {
@@ -655,8 +638,8 @@ class _CharacteristicChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            _getCharacteristicIcon(characteristic),
+          AppIcon(
+            CharacteristicIcons.fromName(characteristic),
             size: 14,
             color: _getCharacteristicColor(characteristic),
           ),
@@ -690,22 +673,6 @@ class _CharacteristicChip extends StatelessWidget {
     }
   }
 
-  IconData _getCharacteristicIcon(String characteristic) {
-    switch (characteristic.toLowerCase()) {
-      case 'might':
-        return Icons.fitness_center;
-      case 'agility':
-        return Icons.directions_run;
-      case 'reason':
-        return Icons.psychology;
-      case 'intuition':
-        return Icons.lightbulb_outline;
-      case 'presence':
-        return Icons.person;
-      default:
-        return Icons.help_outline;
-    }
-  }
 }
 
 class _InfoChip extends StatelessWidget {

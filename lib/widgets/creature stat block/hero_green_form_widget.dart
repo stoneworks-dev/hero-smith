@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/db/providers.dart';
 import '../../../core/services/green_forms_service.dart';
+import '../../../core/text/widgets/hero_green_form_text.dart';
 import '../../../core/theme/creature_theme.dart';
 import 'green_forms_selector.dart';
 
@@ -126,7 +127,7 @@ class _HeroGreenFormWidgetState extends ConsumerState<HeroGreenFormWidget> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to save form selection: $e'),
+            content: Text(HeroGreenFormText.failedToSaveFormSelection(e)),
             backgroundColor: Colors.red,
           ),
         );
@@ -337,7 +338,7 @@ class _AutoHeroGreenFormWidgetState extends ConsumerState<AutoHeroGreenFormWidge
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to save form selection: $e'),
+            content: Text(HeroGreenFormText.failedToSaveFormSelection(e)),
             backgroundColor: Colors.red,
           ),
         );

@@ -1,4 +1,8 @@
+import '../../common/common_text.dart';
+
 class SheetStoryLanguagesTabText {
+  SheetStoryLanguagesTabText._();
+
   static const String languagesTitle = 'Languages';
   static const String addLanguage = 'Add Language';
   static const String addLanguageDialogTitle = 'Add Language';
@@ -10,7 +14,22 @@ class SheetStoryLanguagesTabText {
   static const String languageAlreadyAdded = 'Language already added';
   static const String removeLanguageTooltip = 'Remove language';
 
-  static const String emptyState = 'No languages selected. Tap "Add Language" to get started.';
+  static const String emptyState =
+      'No languages selected. Tap "Add Language" to get started.';
+
+  // Error messages
+  static String failedToLoadLanguages(Object e) =>
+      'Failed to load languages: $e';
+  static String failedToAddLanguage(Object e) =>
+      'Failed to add language: $e';
+  static String failedToRemoveLanguage(Object e) =>
+      'Failed to remove language: $e';
+
+  // Counts & labels
+  static String languagesKnown(int count) => '$count languages known';
+  static String region(String region) => 'Region: $region';
+  static String ancestry(String ancestry) => 'Ancestry: $ancestry';
+  static const String pickFromList = 'Pick from list';
 
   // Custom language creation
   static const String createCustomLanguage = 'Create Custom Language';
@@ -25,10 +44,12 @@ class SheetStoryLanguagesTabText {
   static const String ancestryLabel = 'Ancestry';
   static const String ancestryHint = 'Enter ancestry (optional)';
   static const String commonTopicsLabel = 'Common Topics';
-  static const String commonTopicsHint = 'Enter common topics, comma-separated (optional)';
+  static const String commonTopicsHint =
+      'Enter common topics, comma-separated (optional)';
   static const String relatedLanguagesLabel = 'Related Languages';
-  static const String relatedLanguagesHint = 'Enter related languages, comma-separated (optional)';
-  static const String createButton = 'Create';
-  static const String cancelButton = 'Cancel';
+  static const String relatedLanguagesHint =
+      'Enter related languages, comma-separated (optional)';
+  static const String createButton = CommonText.create;
+  static const String cancelButton = CommonText.cancel;
   static const String customType = 'custom';
 }

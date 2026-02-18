@@ -135,7 +135,7 @@ class StaticGrantConflictNotice extends StatelessWidget {
                 Text(
                   SearchablePickerText.duplicateDescription(itemType),
                   style: TextStyle(
-                    color: Colors.grey.shade400,
+                    color: FormTheme.textSecondary,
                     fontSize: 12,
                   ),
                 ),
@@ -144,7 +144,7 @@ class StaticGrantConflictNotice extends StatelessWidget {
           ),
           if (onDismiss != null)
             IconButton(
-              icon: Icon(Icons.close, color: Colors.grey.shade500),
+              icon: Icon(Icons.close, color: FormTheme.textMuted),
               onPressed: onDismiss,
               iconSize: 20,
               splashRadius: 18,
@@ -290,7 +290,7 @@ Future<SearchablePickerResult<T>?> showSearchablePicker<T>({
                         ),
                         IconButton(
                           onPressed: () => Navigator.of(context).pop(),
-                          icon: Icon(Icons.close, color: Colors.grey.shade400),
+                          icon: Icon(Icons.close, color: FormTheme.textSecondary),
                           splashRadius: 20,
                         ),
                       ],
@@ -302,11 +302,11 @@ Future<SearchablePickerResult<T>?> showSearchablePicker<T>({
                     child: TextField(
                       controller: controller,
                       autofocus: autofocusSearch,
-                      style: const TextStyle(color: Colors.white),
+                      style: const TextStyle(color: FormTheme.textBright),
                       decoration: InputDecoration(
                         hintText: SearchablePickerText.searchHint,
-                        hintStyle: TextStyle(color: Colors.grey.shade500),
-                        prefixIcon: Icon(Icons.search, color: Colors.grey.shade500),
+                        hintStyle: TextStyle(color: FormTheme.textMuted),
+                        prefixIcon: Icon(Icons.search, color: FormTheme.textMuted),
                         filled: true,
                         fillColor: FormTheme.surface,
                         border: OutlineInputBorder(
@@ -315,7 +315,7 @@ Future<SearchablePickerResult<T>?> showSearchablePicker<T>({
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: Colors.grey.shade700),
+                          borderSide: BorderSide(color: FormTheme.border),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -343,14 +343,14 @@ Future<SearchablePickerResult<T>?> showSearchablePicker<T>({
                               children: [
                                 Icon(
                                   Icons.search_off,
-                                  color: Colors.grey.shade600,
+                                  color: FormTheme.borderLight,
                                   size: 48,
                                 ),
                                 const SizedBox(height: 12),
                                 Text(
                                   SearchablePickerText.noMatchesFound,
                                   style: TextStyle(
-                                    color: Colors.grey.shade500,
+                                    color: FormTheme.textMuted,
                                     fontSize: 14,
                                   ),
                                 ),
@@ -388,7 +388,7 @@ Future<SearchablePickerResult<T>?> showSearchablePicker<T>({
                                         fontStyle: FontStyle.italic,
                                         color: isSelected
                                             ? effectiveAccent
-                                            : Colors.grey.shade400,
+                                            : FormTheme.textSecondary,
                                       ),
                                     ),
                                     trailing: isSelected
@@ -420,7 +420,7 @@ Future<SearchablePickerResult<T>?> showSearchablePicker<T>({
                                     title: Text(
                                       option.label,
                                       style: TextStyle(
-                                        color: Colors.grey.shade600,
+                                        color: FormTheme.borderLight,
                                       ),
                                     ),
                                     subtitle: Text(
@@ -467,7 +467,7 @@ Future<SearchablePickerResult<T>?> showSearchablePicker<T>({
                                       ? Text(
                                           option.subtitle!,
                                           style: TextStyle(
-                                            color: Colors.grey.shade500,
+                                            color: FormTheme.textMuted,
                                             fontSize: 12,
                                           ),
                                         )
@@ -491,15 +491,15 @@ Future<SearchablePickerResult<T>?> showSearchablePicker<T>({
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       border: Border(
-                        top: BorderSide(color: Colors.grey.shade800),
+                        top: BorderSide(color: FormTheme.borderDim),
                       ),
                     ),
                     child: TextButton(
                       onPressed: () => Navigator.of(context).pop(),
                       style: TextButton.styleFrom(
-                        foregroundColor: Colors.grey.shade400,
+                        foregroundColor: FormTheme.textSecondary,
                       ),
-                      child: const Text('Cancel'),
+                      child: Text(SearchablePickerText.cancel),
                     ),
                   ),
                 ],

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/app_icon.dart';
+import '../../core/theme/app_icons.dart';
 import '../../core/theme/feature_tokens.dart';
 import '../../core/repositories/feature_repository.dart';
 
@@ -65,8 +67,8 @@ class ClassNavigationCard extends StatelessWidget {
                     width: 1.5,
                   ),
                 ),
-                child: Icon(
-                  _getClassIcon(className),
+                child: AppIcon(
+                  ClassIcons.fromName(className),
                   color: classColor,
                   size: 32,
                 ),
@@ -118,18 +120,4 @@ class ClassNavigationCard extends StatelessWidget {
     );
   }
 
-  IconData _getClassIcon(String className) {
-    switch (className.toLowerCase()) {
-      case 'censor': return Icons.gavel;
-      case 'conduit': return Icons.flash_on;
-      case 'elementalist': return Icons.whatshot;
-      case 'fury': return Icons.psychology;
-      case 'null': return Icons.radio_button_unchecked;
-      case 'shadow': return Icons.visibility_off;
-      case 'tactician': return Icons.military_tech;
-      case 'talent': return Icons.diamond;
-      case 'troubadour': return Icons.music_note;
-      default: return Icons.person;
-    }
-  }
 }

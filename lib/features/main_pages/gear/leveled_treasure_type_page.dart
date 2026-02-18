@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/db/providers.dart';
+import '../../../core/text/main_pages/gear/leveled_treasure_type_page_text.dart';
 import '../../../core/models/component.dart' as model;
 import '../../../widgets/treasures/treasures.dart';
 
@@ -47,7 +48,7 @@ class _LeveledTreasureList extends StatelessWidget {
             .toList();
         
         if (filteredItems.isEmpty) {
-          return const Center(child: Text('No treasures available for this type'));
+          return Center(child: Text(LeveledTreasureTypePageText.noTreasuresForType));
         }
         
         return ListView.separated(
@@ -58,7 +59,7 @@ class _LeveledTreasureList extends StatelessWidget {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, st) => Center(child: Text('Error: $e')),
+      error: (e, st) => Center(child: Text(LeveledTreasureTypePageText.errorMessage(e))),
     );
   }
 }

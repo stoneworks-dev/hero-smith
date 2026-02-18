@@ -6,9 +6,13 @@ import '../../core/db/providers.dart';
 import '../../core/db/app_database.dart' as db;
 import '../../core/models/component.dart';
 import '../../core/services/perk_grants_service.dart';
+import '../../core/theme/app_icon.dart';
+import '../../core/theme/app_icon_data.dart';
+import '../../core/theme/app_icons.dart';
 import '../../core/theme/navigation_theme.dart';
 import '../../core/theme/form_theme.dart';
 import '../abilities/ability_expandable_item.dart';
+import '../../core/text/widgets/perks_widget_text.dart';
 import '../shared/expandable_card.dart';
 
 // Perk group colors for dark theme
@@ -134,6 +138,7 @@ class PerkCard extends ConsumerWidget {
     return ExpandableCard(
       title: perk.name,
       borderColor: borderColor,
+      leading: AppIcon(PerkGroupIcons.fromGroup(group), color: borderColor, size: 20),
       badge: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
         decoration: BoxDecoration(
@@ -141,13 +146,20 @@ class PerkCard extends ConsumerWidget {
           border: Border.all(color: borderColor.withAlpha(77), width: 1),
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Text(
-          '$emoji ${group.toUpperCase()}',
-          style: TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.bold,
-            color: borderColor,
-          ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AppIcon(PerkGroupIcons.fromGroup(group), color: borderColor, size: 14),
+            const SizedBox(width: 4),
+            Text(
+              group.toUpperCase(),
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+                color: borderColor,
+              ),
+            ),
+          ],
         ),
       ),
       expandedContent: Column(
@@ -156,27 +168,27 @@ class PerkCard extends ConsumerWidget {
         children: [
           if (description != null && description.isNotEmpty) ...[
             _buildSectionLabel(
-                'Description', Icons.description_outlined, borderColor),
+                'Description', const MaterialIcon(Icons.description_outlined), borderColor),
             const SizedBox(height: 4),
-            _buildIndentedText(description, Colors.grey.shade400),
+            _buildIndentedText(description, FormTheme.textSecondary),
             const SizedBox(height: 8),
           ],
           if (hasGrants) ...[
             _buildSectionLabel(
-                'Grants', Icons.card_giftcard_outlined, borderColor),
+                'Grants', const MaterialIcon(Icons.card_giftcard_outlined), borderColor),
             const SizedBox(height: 8),
             _buildGrantsFromParsed(
-                context, ref, parsedGrant, Colors.grey.shade300, borderColor),
+                context, ref, parsedGrant, FormTheme.textSecondary, borderColor),
           ],
         ],
       ),
     );
   }
 
-  Widget _buildSectionLabel(String text, IconData icon, Color color) {
+  Widget _buildSectionLabel(String text, AppIconData icon, Color color) {
     return Row(
       children: [
-        Icon(icon, size: 14, color: color),
+        AppIcon(icon, size: 14, color: color),
         const SizedBox(width: 6),
         Text(
           text,
@@ -270,7 +282,7 @@ class PerkCard extends ConsumerWidget {
               ),
             ),
             const SizedBox(width: 8),
-            Text('Loading $abilityName...',
+            Text(PerksWidgetText.loadingAbility(abilityName),
                 style: TextStyle(fontSize: 11, color: textColor)),
           ],
         ),
@@ -338,7 +350,7 @@ class PerkCard extends ConsumerWidget {
             return _buildSkillSelector(
               context: context,
               ref: ref,
-              label: 'Chosen ${_capitalize(group)} Skill',
+              label: PerksWidgetText.chosenSkill(_capitalize(group)),
               skills: ownedGroupSkills,
               selectedSkillId: currentChoice,
               selectedSkillName: selectedSkill?['name'] as String?,
@@ -599,7 +611,7 @@ class PerkCard extends ConsumerWidget {
                 CircularProgressIndicator(strokeWidth: 1.5, color: accentColor),
           ),
           const SizedBox(width: 8),
-          Text('Loading...', style: TextStyle(fontSize: 11, color: textColor)),
+          Text(PerksWidgetText.loading, style: TextStyle(fontSize: 11, color: textColor)),
         ],
       ),
     );
@@ -658,7 +670,7 @@ class PerkCard extends ConsumerWidget {
                   border: Border.all(
                     color: hasSelection
                         ? accentColor.withAlpha(102)
-                        : Colors.grey.shade700,
+                        : FormTheme.border,
                     width: 1,
                   ),
                 ),
@@ -670,8 +682,8 @@ class PerkCard extends ConsumerWidget {
                         style: TextStyle(
                           fontSize: 12,
                           color: hasSelection
-                              ? Colors.white
-                              : Colors.grey.shade500,
+                              ? FormTheme.textBright
+                              : FormTheme.textMuted,
                           fontStyle: hasSelection
                               ? FontStyle.normal
                               : FontStyle.italic,
@@ -740,7 +752,7 @@ class PerkCard extends ConsumerWidget {
                   border: Border.all(
                     color: hasSelection
                         ? accentColor.withAlpha(102)
-                        : Colors.grey.shade700,
+                        : FormTheme.border,
                     width: 1,
                   ),
                 ),
@@ -752,8 +764,8 @@ class PerkCard extends ConsumerWidget {
                         style: TextStyle(
                           fontSize: 12,
                           color: hasSelection
-                              ? Colors.white
-                              : Colors.grey.shade500,
+                              ? FormTheme.textBright
+                              : FormTheme.textMuted,
                           fontStyle: hasSelection
                               ? FontStyle.normal
                               : FontStyle.italic,
@@ -799,7 +811,7 @@ class PerkCard extends ConsumerWidget {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 border: Border(
-                  bottom: BorderSide(color: Colors.grey.shade800),
+                  bottom: BorderSide(color: FormTheme.borderDim),
                 ),
               ),
               child: Row(
@@ -823,7 +835,7 @@ class PerkCard extends ConsumerWidget {
                   ),
                   const Spacer(),
                   IconButton(
-                    icon: Icon(Icons.close, color: Colors.grey.shade400),
+                    icon: Icon(Icons.close, color: FormTheme.textSecondary),
                     onPressed: () => Navigator.pop(ctx),
                   ),
                 ],
@@ -850,19 +862,19 @@ class PerkCard extends ConsumerWidget {
                       border: Border.all(
                         color: isSelected
                             ? accentColor.withAlpha(102)
-                            : Colors.grey.shade800,
+                            : FormTheme.borderDim,
                       ),
                     ),
                     child: ListTile(
                       leading: Icon(
                         isSelected ? Icons.check_circle : Icons.circle_outlined,
-                        color: isSelected ? accentColor : Colors.grey.shade600,
+                        color: isSelected ? accentColor : FormTheme.borderLight,
                       ),
                       title: Text(
                         name,
                         style: TextStyle(
                           color:
-                              isSelected ? Colors.white : Colors.grey.shade300,
+                              isSelected ? FormTheme.textBright : FormTheme.textSecondary,
                           fontWeight:
                               isSelected ? FontWeight.w600 : FontWeight.normal,
                         ),
@@ -941,7 +953,7 @@ class PerkCard extends ConsumerWidget {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 border: Border(
-                  bottom: BorderSide(color: Colors.grey.shade800),
+                  bottom: BorderSide(color: FormTheme.borderDim),
                 ),
               ),
               child: Row(
@@ -965,7 +977,7 @@ class PerkCard extends ConsumerWidget {
                   ),
                   const Spacer(),
                   IconButton(
-                    icon: Icon(Icons.close, color: Colors.grey.shade400),
+                    icon: Icon(Icons.close, color: FormTheme.textSecondary),
                     onPressed: () => Navigator.pop(ctx),
                   ),
                 ],
@@ -992,19 +1004,19 @@ class PerkCard extends ConsumerWidget {
                       border: Border.all(
                         color: isSelected
                             ? accentColor.withAlpha(102)
-                            : Colors.grey.shade800,
+                            : FormTheme.borderDim,
                       ),
                     ),
                     child: ListTile(
                       leading: Icon(
                         isSelected ? Icons.check_circle : Icons.circle_outlined,
-                        color: isSelected ? accentColor : Colors.grey.shade600,
+                        color: isSelected ? accentColor : FormTheme.borderLight,
                       ),
                       title: Text(
                         name,
                         style: TextStyle(
                           color:
-                              isSelected ? Colors.white : Colors.grey.shade300,
+                              isSelected ? FormTheme.textBright : FormTheme.textSecondary,
                           fontWeight:
                               isSelected ? FontWeight.w600 : FontWeight.normal,
                         ),

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../core/services/psi_boost_service.dart';
-import '../../core/theme/app_colors.dart';
+import '../../core/theme/ability_colors.dart';
+import '../../core/theme/form_theme.dart';
 import '../../core/theme/heroic_resource_theme.dart';
 
 /// A compact widget that displays available Psi Boosts based on current heroic resource.
@@ -75,9 +76,9 @@ class _PsiBoostWidgetState extends State<PsiBoostWidget> {
     }
 
     final theme = Theme.of(context);
-    final resourceColor = AppColors.psionicKeywordColor;
+    final resourceColor = AbilityColors.psionicKeyword;
     final isDark = theme.brightness == Brightness.dark;
-    final surface = isDark ? HeroicResourceTheme.surface : Colors.white;
+    final surface = isDark ? HeroicResourceTheme.surface : FormTheme.textBright;
     final panel = isDark ? HeroicResourceTheme.panel : Colors.grey.shade50;
 
     // Split boosts into affordable and unaffordable
@@ -158,7 +159,7 @@ class _PsiBoostWidgetState extends State<PsiBoostWidget> {
                   style: TextStyle(
                     fontSize: 11,
                     fontStyle: FontStyle.italic,
-                    color: isDark ? Colors.grey.shade500 : Colors.grey.shade600,
+                    color: isDark ? FormTheme.textMuted : FormTheme.borderLight,
                   ),
                 ),
               ),
@@ -190,7 +191,7 @@ class _PsiBoostWidgetState extends State<PsiBoostWidget> {
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: isDark ? Colors.white : Colors.grey.shade800,
+              color: isDark ? FormTheme.textBright : FormTheme.borderDim,
             ),
           ),
         ),
@@ -233,7 +234,7 @@ class _PsiBoostWidgetState extends State<PsiBoostWidget> {
               style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w500,
-                color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                color: isDark ? FormTheme.textSecondary : FormTheme.borderLight,
               ),
             ),
             const SizedBox(width: 4),
@@ -243,7 +244,7 @@ class _PsiBoostWidgetState extends State<PsiBoostWidget> {
               child: Icon(
                 Icons.expand_more,
                 size: 14,
-                color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                color: isDark ? FormTheme.textSecondary : FormTheme.borderLight,
               ),
             ),
           ],
@@ -294,7 +295,7 @@ class _PsiBoostItem extends StatelessWidget {
               border: Border.all(
                 color: isAffordable
                     ? resourceColor.withOpacity(0.4)
-                    : (isDark ? Colors.grey.shade700 : Colors.grey.shade300),
+                    : (isDark ? FormTheme.border : FormTheme.textSecondary),
                 width: isAffordable ? 1.5 : 1,
               ),
             ),
@@ -313,10 +314,10 @@ class _PsiBoostItem extends StatelessWidget {
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
                           color: isAffordable
-                              ? (isDark ? Colors.white : Colors.grey.shade900)
+                              ? (isDark ? FormTheme.textBright : FormTheme.surfaceDark)
                               : (isDark
-                                  ? Colors.grey.shade500
-                                  : Colors.grey.shade500),
+                                  ? FormTheme.textMuted
+                                  : FormTheme.textMuted),
                         ),
                       ),
                       const SizedBox(height: 2),
@@ -326,11 +327,11 @@ class _PsiBoostItem extends StatelessWidget {
                           fontSize: 10,
                           color: isAffordable
                               ? (isDark
-                                  ? Colors.grey.shade300
-                                  : Colors.grey.shade700)
+                                  ? FormTheme.textSecondary
+                                  : FormTheme.border)
                               : (isDark
-                                  ? Colors.grey.shade600
-                                  : Colors.grey.shade500),
+                                  ? FormTheme.borderLight
+                                  : FormTheme.textMuted),
                           height: 1.3,
                         ),
                       ),
@@ -360,7 +361,7 @@ class _PsiBoostItem extends StatelessWidget {
       decoration: BoxDecoration(
         color: isAffordable
             ? resourceColor
-            : (isDark ? Colors.grey.shade700 : Colors.grey.shade300),
+            : (isDark ? FormTheme.border : FormTheme.textSecondary),
         borderRadius: BorderRadius.circular(6),
         boxShadow: isAffordable
             ? [
@@ -379,8 +380,8 @@ class _PsiBoostItem extends StatelessWidget {
             fontSize: 11,
             fontWeight: FontWeight.w800,
             color: isAffordable
-                ? Colors.white
-                : (isDark ? Colors.grey.shade500 : Colors.grey.shade500),
+                ? FormTheme.textBright
+                : (isDark ? FormTheme.textMuted : FormTheme.textMuted),
           ),
         ),
       ),

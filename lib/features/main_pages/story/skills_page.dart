@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/db/providers.dart';
 import '../../../core/models/component.dart';
+import '../../../core/theme/form_theme.dart';
 import '../../../widgets/skills/skill_card.dart';
+import '../../../core/text/main_pages/story/skills_page_text.dart';
 
 class SkillsPage extends ConsumerWidget {
   const SkillsPage({super.key});
@@ -10,13 +12,13 @@ class SkillsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final skillsAsync = ref.watch(componentsByTypeProvider('skill'));
     return Scaffold(
-      appBar: AppBar(title: const Text('Skills')),
+      appBar: AppBar(title: Text(SkillsPageText.appBarTitle)),
       body: skillsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Error: $e')),
+        error: (e, _) => Center(child: Text(SkillsPageText.errorMessage(e))),
         data: (skills) {
           if (skills.isEmpty) {
-            return const Center(child: Text('No skills found.'));
+            return Center(child: Text(SkillsPageText.noSkillsFound));
           }
 
           // Group by 'group' field
@@ -53,12 +55,12 @@ class SkillsPage extends ConsumerWidget {
   Widget _buildGroup(BuildContext context, WidgetRef ref, String group, List<Component> skills) {
     skills.sort((a, b) => a.name.compareTo(b.name));
     final title = switch (group) {
-      'crafting' => 'Crafting',
-      'exploration' => 'Exploration',
-      'interpersonal' => 'Interpersonal',
-      'intrigue' => 'Intrigue',
-      'lore' => 'Lore',
-      _ => 'Other',
+      'crafting' => SkillsPageText.craftingGroup,
+      'exploration' => SkillsPageText.explorationGroup,
+      'interpersonal' => SkillsPageText.interpersonalGroup,
+      'intrigue' => SkillsPageText.intrigueGroup,
+      'lore' => SkillsPageText.loreGroup,
+      _ => SkillsPageText.otherGroup,
     };
 
     return Column(
@@ -81,7 +83,7 @@ class SkillsPage extends ConsumerWidget {
                 ),
                 child: Text(
                   '${skills.length}',
-                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white),
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: FormTheme.textBright),
                 ),
               ),
             ],
@@ -108,12 +110,12 @@ class SkillsPage extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Delete Custom $type'),
-        content: Text('Remove "$name"? This cannot be undone.'),
+        title: Text(SkillsPageText.deleteCustomTitle(type)),
+        content: Text(SkillsPageText.removeConfirmation(name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancel'),
+            child: Text(SkillsPageText.cancel),
           ),
           TextButton(
             onPressed: () {
@@ -121,7 +123,7 @@ class SkillsPage extends ConsumerWidget {
               ref.read(appDatabaseProvider).deleteComponent(id);
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete'),
+            child: Text(SkillsPageText.delete),
           ),
         ],
       ),

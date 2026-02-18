@@ -9,6 +9,7 @@ import '../../../core/models/component.dart' as model;
 import '../../../core/repositories/hero_repository.dart';
 import '../../../core/services/class_data_service.dart';
 import '../../../core/services/kit_grants_service.dart';
+import '../../../core/theme/form_theme.dart';
 import '../../../core/theme/navigation_theme.dart';
 import '../../../core/text/heroes_sheet/gear/kits_tab_text.dart';
 import '../main_stats/hero_main_stats_providers.dart';
@@ -725,7 +726,7 @@ class _KitsTabState extends ConsumerState<KitsTab> {
                   Text(
                     '${KitsTabText.favoriteKitsHeaderPrefix}${favoriteKits.length}${KitsTabText.favoriteKitsHeaderSuffix}',
                     style: TextStyle(
-                      color: Colors.grey.shade300,
+                      color: FormTheme.textSecondary,
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),
@@ -742,13 +743,13 @@ class _KitsTabState extends ConsumerState<KitsTab> {
                           Icon(
                             Icons.inventory_2_outlined,
                             size: 64,
-                            color: Colors.grey.shade600,
+                            color: FormTheme.borderLight,
                           ),
                           const SizedBox(height: 16),
                           Text(
                             KitsTabText.noFavoriteKitsTitle,
                             style: TextStyle(
-                              color: Colors.grey.shade400,
+                              color: FormTheme.textSecondary,
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
                             ),
@@ -757,7 +758,7 @@ class _KitsTabState extends ConsumerState<KitsTab> {
                           Text(
                             KitsTabText.noFavoriteKitsSubtitle,
                             style: TextStyle(
-                              color: Colors.grey.shade500,
+                              color: FormTheme.textMuted,
                               fontSize: 12,
                             ),
                           ),

@@ -7,8 +7,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/db/providers.dart';
 import '../../core/models/component.dart' as model;
+import '../../core/theme/app_icon.dart';
+import '../../core/theme/app_icons.dart';
 import '../../core/theme/navigation_theme.dart';
 import '../../core/theme/form_theme.dart';
+import '../../core/text/widgets/perks_widget_text.dart';
 import '../abilities/ability_expandable_item.dart';
 
 // Perks accent color for default styling
@@ -145,7 +148,7 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
 
     return perksAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text('Failed to load perks: $e')),
+      error: (e, _) => Center(child: Text(PerksWidgetText.failedToLoadPerks(e))),
       data: (perks) => _buildContent(context, perks),
     );
   }
@@ -338,7 +341,7 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
                     borderColor,
                   ),
                   icon: Icon(Icons.add, color: borderColor),
-                  label: Text('Add Perk', style: TextStyle(color: borderColor)),
+                  label: Text(PerksWidgetText.addPerk, style: TextStyle(color: borderColor)),
                 ),
             ],
           ),
@@ -347,7 +350,7 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
             Text(
               widget.headerSubtitle!,
               style: TextStyle(
-                color: Colors.grey.shade400,
+                color: FormTheme.textSecondary,
                 fontSize: 12,
               ),
             ),
@@ -391,17 +394,17 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
       decoration: BoxDecoration(
         color: NavigationTheme.cardBackgroundDark,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade800),
+        border: Border.all(color: FormTheme.borderDim),
       ),
       child: Column(
         children: [
-          Icon(Icons.star_border, size: 48, color: Colors.grey.shade600),
+          Icon(Icons.star_border, size: 48, color: FormTheme.borderLight),
           const SizedBox(height: 12),
           Text(
             widget.emptyStateMessage,
             style: TextStyle(
               fontStyle: FontStyle.italic,
-              color: Colors.grey.shade500,
+              color: FormTheme.textMuted,
               fontSize: 14,
             ),
           ),
@@ -442,7 +445,7 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
           Text(
             'Choose $pickCount perk${pickCount == 1 ? '' : 's'}$perkTypeLabel.',
             style: const TextStyle(
-                fontWeight: FontWeight.w600, color: Colors.white),
+                fontWeight: FontWeight.w600, color: FormTheme.textBright),
           ),
           const SizedBox(height: 8),
         ],
@@ -496,14 +499,14 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
                           style: TextStyle(
                             fontSize: 15,
                             color: slots[index] != null
-                                ? Colors.white
-                                : Colors.grey.shade500,
+                                ? FormTheme.textBright
+                                : FormTheme.textMuted,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  Icon(Icons.search, color: Colors.grey.shade500, size: 20),
+                  Icon(Icons.search, color: FormTheme.textMuted, size: 20),
                 ],
               ),
             ),
@@ -517,7 +520,7 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
         if (remaining > 0)
           Text(
             '$remaining pick${remaining == 1 ? '' : 's'} remaining.',
-            style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+            style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
           ),
         const SizedBox(height: 8),
       ],
@@ -533,13 +536,14 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
     final grantsRaw = perk.data['grants'];
     final grants =
         grantsRaw is List ? grantsRaw : (grantsRaw is Map ? [grantsRaw] : null);
+    final group = (perk.data['group'] as String?) ?? 'exploration';
 
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: NavigationTheme.cardBackgroundDark,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade800),
+        border: Border.all(color: FormTheme.borderDim),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -552,7 +556,7 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
                   color: borderColor.withAlpha(38),
                   borderRadius: BorderRadius.circular(6),
                 ),
-                child: Icon(Icons.star, size: 16, color: borderColor),
+                child: AppIcon(PerkGroupIcons.fromGroup(group), size: 16, color: borderColor),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -560,7 +564,7 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
                   perk.name,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                    color: FormTheme.textBright,
                     fontSize: 15,
                   ),
                 ),
@@ -568,7 +572,7 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
               if (showRemove)
                 IconButton(
                   icon:
-                      Icon(Icons.close, size: 18, color: Colors.grey.shade500),
+                      Icon(Icons.close, size: 18, color: FormTheme.textMuted),
                   onPressed: () => _removePerk(perk.id, perk.name),
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
@@ -577,10 +581,10 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
           ),
           const SizedBox(height: 8),
           Text(
-            perk.data['description']?.toString() ?? 'No description available',
+            perk.data['description']?.toString() ?? PerksWidgetText.noDescriptionAvailable,
             style: TextStyle(
               fontSize: 13,
-              color: Colors.grey.shade300,
+              color: FormTheme.textSecondary,
             ),
           ),
           if (grants != null && grants.isNotEmpty) ...[
@@ -626,25 +630,25 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
         backgroundColor: NavigationTheme.cardBackgroundDark,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: BorderSide(color: Colors.grey.shade800),
+          side: BorderSide(color: FormTheme.borderDim),
         ),
-        title: const Text('Remove Perk', style: TextStyle(color: Colors.white)),
+        title: Text(PerksWidgetText.removePerk, style: TextStyle(color: FormTheme.textBright)),
         content: Text(
           'Are you sure you want to remove "$perkName"?',
-          style: TextStyle(color: Colors.grey.shade300),
+          style: TextStyle(color: FormTheme.textSecondary),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
             child:
-                Text('Cancel', style: TextStyle(color: Colors.grey.shade400)),
+                Text(PerksWidgetText.cancel, style: TextStyle(color: FormTheme.textSecondary)),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: TextButton.styleFrom(
               foregroundColor: Colors.red.shade400,
             ),
-            child: const Text('Remove'),
+            child: Text(PerksWidgetText.remove),
           ),
         ],
       ),
@@ -676,7 +680,7 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
 
     final result = await showSearchablePicker<String?>(
       context: context,
-      title: 'Select Perk',
+      title: PerksWidgetText.selectPerk,
       options: options,
       selected: currentSlots[index],
     );
@@ -719,8 +723,8 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
     };
 
     final options = <SearchOption<String?>>[
-      const SearchOption<String?>(
-        label: 'Choose perk',
+      SearchOption<String?>(
+        label: PerksWidgetText.choosePerk,
         value: null,
       ),
     ];
@@ -742,7 +746,7 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
 
     final result = await showSearchablePicker<String?>(
       context: context,
-      title: 'Add Perk',
+      title: PerksWidgetText.addPerk,
       options: options,
       selected: null,
     );
@@ -762,8 +766,8 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
     List<String> sortedGroupKeys,
   ) {
     final options = <SearchOption<String?>>[
-      const SearchOption<String?>(
-        label: 'Choose perk',
+      SearchOption<String?>(
+        label: PerksWidgetText.choosePerk,
         value: null,
       ),
     ];
@@ -921,7 +925,7 @@ class _PerkGrantsDisplay extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final textColor = Colors.grey.shade300;
+    final textColor = FormTheme.textSecondary;
     final languageMap = {for (final lang in languages) lang.id: lang};
     final skillMap = {for (final skill in skills) skill.id: skill};
 
@@ -1273,7 +1277,7 @@ class _PerkGrantsDisplay extends ConsumerWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
-            color: Colors.grey.shade900,
+            color: FormTheme.surfaceDark,
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: accentColor.withAlpha(77)),
           ),
@@ -1306,14 +1310,14 @@ class _PerkGrantsDisplay extends ConsumerWidget {
                       style: TextStyle(
                         fontSize: 13,
                         color: selectedName != null
-                            ? Colors.white
-                            : Colors.grey.shade500,
+                            ? FormTheme.textBright
+                            : FormTheme.textMuted,
                       ),
                     ),
                   ],
                 ),
               ),
-              Icon(Icons.search, size: 18, color: Colors.grey.shade500),
+              Icon(Icons.search, size: 18, color: FormTheme.textMuted),
             ],
           ),
         ),
@@ -1335,7 +1339,7 @@ class _PerkGrantsDisplay extends ConsumerWidget {
     final options = _buildLanguageOptions(exclude, currentSelectedId);
     final result = await showSearchablePicker<String?>(
       context: context,
-      title: 'Select Language',
+      title: PerksWidgetText.selectLanguage,
       options: options,
       selected: currentSelectedId,
     );
@@ -1368,7 +1372,7 @@ class _PerkGrantsDisplay extends ConsumerWidget {
     );
     final result = await showSearchablePicker<String?>(
       context: context,
-      title: 'Select ${_capitalize(group)} Skill',
+      title: PerksWidgetText.selectSkill(_capitalize(group)),
       options: options,
       selected: currentSelectedId,
     );
@@ -1390,7 +1394,7 @@ class _PerkGrantsDisplay extends ConsumerWidget {
     }
 
     final options = <SearchOption<String?>>[
-      const SearchOption<String?>(label: 'Choose language', value: null),
+      SearchOption<String?>(label: PerksWidgetText.chooseLanguage, value: null),
     ];
 
     for (final entry in grouped.entries) {
@@ -1429,7 +1433,7 @@ class _PerkGrantsDisplay extends ConsumerWidget {
       ..sort((a, b) => a.name.compareTo(b.name));
 
     final options = <SearchOption<String?>>[
-      const SearchOption<String?>(label: 'Choose skill', value: null),
+      SearchOption<String?>(label: PerksWidgetText.chooseSkill, value: null),
     ];
 
     for (final skill in source) {
@@ -1574,7 +1578,7 @@ Future<PickerSelection<T>?> showSearchablePicker<T>({
             backgroundColor: NavigationTheme.cardBackgroundDark,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
-              side: BorderSide(color: Colors.grey.shade800),
+              side: BorderSide(color: FormTheme.borderDim),
             ),
             child: Container(
               constraints: BoxConstraints(
@@ -1634,7 +1638,7 @@ Future<PickerSelection<T>?> showSearchablePicker<T>({
                         ),
                         IconButton(
                           onPressed: () => Navigator.of(context).pop(),
-                          icon: Icon(Icons.close, color: Colors.grey.shade400),
+                          icon: Icon(Icons.close, color: FormTheme.textSecondary),
                           splashRadius: 20,
                         ),
                       ],
@@ -1646,12 +1650,12 @@ Future<PickerSelection<T>?> showSearchablePicker<T>({
                     child: TextField(
                       controller: controller,
                       autofocus: false,
-                      style: const TextStyle(color: Colors.white),
+                      style: TextStyle(color: FormTheme.textBright),
                       decoration: InputDecoration(
-                        hintText: 'Search...',
-                        hintStyle: TextStyle(color: Colors.grey.shade500),
+                        hintText: PerksWidgetText.searchHint,
+                        hintStyle: TextStyle(color: FormTheme.textMuted),
                         prefixIcon:
-                            Icon(Icons.search, color: Colors.grey.shade500),
+                            Icon(Icons.search, color: FormTheme.textMuted),
                         filled: true,
                         fillColor: FormTheme.surface,
                         border: OutlineInputBorder(
@@ -1660,7 +1664,7 @@ Future<PickerSelection<T>?> showSearchablePicker<T>({
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: Colors.grey.shade700),
+                          borderSide: BorderSide(color: FormTheme.border),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -1684,13 +1688,13 @@ Future<PickerSelection<T>?> showSearchablePicker<T>({
                               children: [
                                 Icon(
                                   Icons.search_off,
-                                  color: Colors.grey.shade600,
+                                  color: FormTheme.borderLight,
                                   size: 48,
                                 ),
                                 const SizedBox(height: 12),
                                 Text(
                                   'No matches found',
-                                  style: TextStyle(color: Colors.grey.shade500),
+                                  style: TextStyle(color: FormTheme.textMuted),
                                 ),
                               ],
                             ),
@@ -1726,7 +1730,7 @@ Future<PickerSelection<T>?> showSearchablePicker<T>({
                                     style: TextStyle(
                                       color: isSelected
                                           ? _perksColor
-                                          : Colors.white,
+                                          : FormTheme.textBright,
                                       fontWeight:
                                           isSelected ? FontWeight.w600 : null,
                                     ),
@@ -1735,7 +1739,7 @@ Future<PickerSelection<T>?> showSearchablePicker<T>({
                                       ? Text(
                                           option.subtitle!,
                                           style: TextStyle(
-                                              color: Colors.grey.shade500),
+                                              color: FormTheme.textMuted),
                                         )
                                       : null,
                                   trailing: isSelected
@@ -1757,15 +1761,15 @@ Future<PickerSelection<T>?> showSearchablePicker<T>({
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       border: Border(
-                        top: BorderSide(color: Colors.grey.shade800),
+                        top: BorderSide(color: FormTheme.borderDim),
                       ),
                     ),
                     child: TextButton(
                       onPressed: () => Navigator.of(context).pop(),
                       style: TextButton.styleFrom(
-                        foregroundColor: Colors.grey.shade400,
+                        foregroundColor: FormTheme.textSecondary,
                       ),
-                      child: const Text('Cancel'),
+                      child: Text(PerksWidgetText.cancel),
                     ),
                   ),
                 ],

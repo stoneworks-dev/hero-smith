@@ -10,6 +10,9 @@ import '../../../core/models/hero_mod_keys.dart';
 import '../../../core/repositories/hero_repository.dart';
 import '../../../core/services/class_data_service.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_icon.dart';
+import '../../../core/theme/app_icons.dart';
+import '../../../core/theme/form_theme.dart';
 import '../../../core/theme/navigation_theme.dart';
 import '../../../core/theme/semantic/semantic_tokens.dart';
 import '../../../core/text/heroes_sheet/main_stats/hero_main_stats_view_text.dart';
@@ -54,7 +57,7 @@ class CombinedStatsCardWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: NavigationTheme.cardBackgroundDark,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade800),
+        border: Border.all(color: FormTheme.borderDim),
       ),
       child: Padding(
         padding: const EdgeInsets.all(12),
@@ -70,14 +73,14 @@ class CombinedStatsCardWidget extends StatelessWidget {
                     color: Colors.blue.withAlpha(40),
                     borderRadius: BorderRadius.circular(6),
                   ),
-                  child: const Icon(Icons.person_outline, size: 14, color: Colors.blue),
+                    child: const AppIcon(CombatIcons.characteristics, size: 14, color: Colors.blue),
                 ),
                 const SizedBox(width: 8),
                 Text(
                   HeroMainStatsViewText.characteristicsSectionTitle,
                   style: theme.textTheme.labelMedium?.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                    color: FormTheme.textBright,
                   ),
                 ),
               ],
@@ -135,7 +138,7 @@ class CombinedStatsCardWidget extends StatelessWidget {
             ),
             // Potency section
             _buildPotencyRow(context, stats),
-            Divider(height: 20, color: Colors.grey.shade800),
+            Divider(height: 20, color: FormTheme.borderDim),
             // Attributes section header (Size, Speed, Disengage, Stability)
             Row(
               children: [
@@ -145,14 +148,14 @@ class CombinedStatsCardWidget extends StatelessWidget {
                     color: Colors.orange.withAlpha(40),
                     borderRadius: BorderRadius.circular(6),
                   ),
-                  child: const Icon(Icons.shield_outlined, size: 14, color: Colors.orange),
+                  child: const AppIcon(CombatIcons.attributes, size: 14, color: Colors.orange),
                 ),
                 const SizedBox(width: 8),
                 Text(
                   HeroMainStatsViewText.attributesSectionTitle,
                   style: theme.textTheme.labelMedium?.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                    color: FormTheme.textBright,
                   ),
                 ),
               ],
@@ -236,7 +239,7 @@ class CombinedStatsCardWidget extends StatelessWidget {
             children: order.map((strength) {
               final value = potencyValues[strength] ?? 0;
               final label = strength[0].toUpperCase();
-              final color = AppColors.getPotencyColor(strength);
+              final color = PotencyTokens.color(strength);
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: Container(
@@ -323,7 +326,7 @@ class CombinedStatsCardWidget extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
                   color: isPositive
-                      ? Colors.grey.shade800.withAlpha(150)
+                      ? FormTheme.surfaceMuted
                       : Colors.red.withAlpha(40),
                   borderRadius: BorderRadius.circular(6),
                 ),
@@ -336,7 +339,7 @@ class CombinedStatsCardWidget extends StatelessWidget {
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: isPositive
-                            ? Colors.white
+                            ? FormTheme.textBright
                             : Colors.red.shade400,
                       ),
                     ),
@@ -372,7 +375,7 @@ class CombinedStatsCardWidget extends StatelessWidget {
         label,
         style: theme.textTheme.labelSmall?.copyWith(
           fontWeight: FontWeight.w500,
-          color: Colors.grey.shade400,
+          color: FormTheme.textSecondary,
         ),
       );
     }
@@ -423,14 +426,14 @@ class CombinedStatsCardWidget extends StatelessWidget {
                 HeroMainStatsViewText.sizeShortLabel,
                 style: theme.textTheme.labelSmall?.copyWith(
                   fontWeight: FontWeight.w500,
-                  color: Colors.grey.shade400,
+                  color: FormTheme.textSecondary,
                 ),
               ),
               const SizedBox(height: 2),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade800.withAlpha(150),
+                  color: FormTheme.surfaceMuted.withAlpha(150),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Row(
@@ -441,7 +444,7 @@ class CombinedStatsCardWidget extends StatelessWidget {
                       sizeTotal,
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: FormTheme.textBright,
                       ),
                     ),
                     if (modValue != 0)

@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/db/providers.dart';
 import '../../../../core/models/component.dart';
+import '../../../../core/theme/app_icon.dart';
+import '../../../../core/theme/app_icon_data.dart';
+import '../../../../core/theme/app_icons.dart';
 import '../../../../core/theme/creator_theme.dart';
 import '../../../../core/theme/kit_theme.dart';
 import '../../../../core/theme/navigation_theme.dart';
@@ -75,13 +78,13 @@ class EquipmentAndModificationsWidget extends ConsumerWidget {
         ChooseEquipmentWidgetText.equipmentTypeChipTitleStormwight,
   };
 
-  static const Map<String, IconData> _equipmentTypeIcons = <String, IconData>{
-    'kit': Icons.backpack_outlined,
-    'psionic_augmentation': Icons.auto_awesome,
-    'enchantment': Icons.auto_fix_high,
-    'prayer': Icons.self_improvement,
-    'ward': Icons.shield_outlined,
-    'stormwight_kit': Icons.pets_outlined,
+  static const Map<String, AppIconData> _equipmentTypeIcons = <String, AppIconData>{
+    'kit': KitIcons.kit,
+    'psionic_augmentation': KitIcons.psionicAugmentation,
+    'enchantment': KitIcons.enchantment,
+    'prayer': KitIcons.prayer,
+    'ward': KitIcons.ward,
+    'stormwight_kit': KitIcons.stormwightKit,
   };
 
   static const String _removeSignal = '__remove_item__';
@@ -101,7 +104,7 @@ class EquipmentAndModificationsWidget extends ConsumerWidget {
           CreatorTheme.sectionHeader(
             title: ChooseEquipmentWidgetText.sectionTitle,
             subtitle: ChooseEquipmentWidgetText.sectionSubtitle,
-            icon: Icons.inventory_2,
+            appIcon: NavIcons.gear,
             accent: _accent,
           ),
           Padding(
@@ -114,7 +117,7 @@ class EquipmentAndModificationsWidget extends ConsumerWidget {
                     key: ValueKey('slot_$i'),
                     slot: slots[i],
                   ),
-                  if (i != slots.length - 1) Divider(height: 32, color: Colors.grey.shade700),
+                  if (i != slots.length - 1) Divider(height: 32, color: FormTheme.border),
                 ],
               ],
             ),
@@ -280,7 +283,7 @@ class _EquipmentSlotTileState extends ConsumerState<_EquipmentSlotTile> {
                 slot.helperText!,
                 style: TextStyle(
                   fontSize: 13,
-                  color: Colors.grey.shade400,
+                  color: FormTheme.textSecondary,
                 ),
               ),
             ],
@@ -311,9 +314,9 @@ class _EquipmentSlotTileState extends ConsumerState<_EquipmentSlotTile> {
                       Expanded(
                         child: Text(
                           selectedItem.name,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontWeight: FontWeight.w500,
-                            color: Colors.white,
+                            color: FormTheme.textBright,
                           ),
                         ),
                       ),
@@ -373,9 +376,9 @@ class _KitPreviewDialog extends StatelessWidget {
                 color: Colors.black54,
                 shape: const CircleBorder(),
                 child: IconButton(
-                  icon: const Icon(Icons.close, color: Colors.white, size: 20),
+                  icon: Icon(Icons.close, color: FormTheme.textBright, size: 20),
                   onPressed: () => Navigator.of(context).pop(),
-                  tooltip: 'Close',
+                  tooltip: ChooseEquipmentWidgetText.close,
                 ),
               ),
             ),
@@ -414,7 +417,7 @@ class _EquipmentCategoryData {
   final String type;
   final String label;
   final String chipLabel;
-  final IconData icon;
+  final AppIconData icon;
   final AsyncValue<List<Component>> data;
 
   String get tabTitle {
@@ -484,7 +487,7 @@ class _EquipmentSelectionDialogState
               EquipmentAndModificationsWidget._equipmentTypeChipTitles[type] ??
                   EquipmentAndModificationsWidget._titleize(type),
           icon: EquipmentAndModificationsWidget._equipmentTypeIcons[type] ??
-              Icons.inventory_2_outlined,
+              KitIcons.fallback,
           data: ref.watch(componentsByTypeProvider(type)),
         ),
     ];
@@ -520,20 +523,20 @@ class _EquipmentSelectionDialogState
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.inventory_2, color: _accent),
+                    AppIcon(NavIcons.gear, color: _accent),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
                         '${ChooseEquipmentWidgetText.selectionDialogTitlePrefix}${widget.slotLabel}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: FormTheme.textBright,
                         ),
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close, color: Colors.white),
+                      icon: Icon(Icons.close, color: FormTheme.textBright),
                       onPressed: () => navigator.pop(),
                     ),
                   ],
@@ -543,7 +546,7 @@ class _EquipmentSelectionDialogState
                 padding: const EdgeInsets.all(24.0),
                 child: Text(
                   ChooseEquipmentWidgetText.noItemsAvailable,
-                  style: TextStyle(color: Colors.grey.shade400),
+                  style: TextStyle(color: FormTheme.textSecondary),
                 ),
               ),
             ],
@@ -580,15 +583,15 @@ class _EquipmentSelectionDialogState
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.inventory_2, color: _accent),
+                    AppIcon(NavIcons.gear, color: _accent),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
                         '${ChooseEquipmentWidgetText.selectionDialogTitlePrefix}${widget.slotLabel}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: FormTheme.textBright,
                         ),
                       ),
                     ),
@@ -603,7 +606,7 @@ class _EquipmentSelectionDialogState
                         ),
                       ),
                     IconButton(
-                      icon: const Icon(Icons.close, color: Colors.white),
+                      icon: Icon(Icons.close, color: FormTheme.textBright),
                       onPressed: () => navigator.pop(),
                     ),
                   ],
@@ -614,15 +617,15 @@ class _EquipmentSelectionDialogState
                 child: TextField(
                   controller: _searchController,
                   autofocus: false,
-                  style: const TextStyle(color: Colors.white),
+                  style: TextStyle(color: FormTheme.textBright),
                   decoration: InputDecoration(
                     hintText: ChooseEquipmentWidgetText.searchHint,
-                    hintStyle: TextStyle(color: Colors.grey.shade500),
-                    prefixIcon: Icon(Icons.search, color: Colors.grey.shade400),
+                    hintStyle: TextStyle(color: FormTheme.textMuted),
+                    prefixIcon: Icon(Icons.search, color: FormTheme.textSecondary),
                     suffixIcon: _searchQuery.isEmpty
                         ? null
                         : IconButton(
-                            icon: Icon(Icons.clear, color: Colors.grey.shade400),
+                            icon: Icon(Icons.clear, color: FormTheme.textSecondary),
                             onPressed: () {
                               setState(() {
                                 _searchQuery = '';
@@ -634,11 +637,11 @@ class _EquipmentSelectionDialogState
                     fillColor: FormTheme.surface,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),
-                      borderSide: BorderSide(color: Colors.grey.shade700),
+                      borderSide: BorderSide(color: FormTheme.border),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),
-                      borderSide: BorderSide(color: Colors.grey.shade700),
+                      borderSide: BorderSide(color: FormTheme.border),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),
@@ -660,12 +663,12 @@ class _EquipmentSelectionDialogState
                     isScrollable: true,
                     indicatorColor: _accent,
                     labelColor: _accent,
-                    unselectedLabelColor: Colors.grey.shade400,
+                    unselectedLabelColor: FormTheme.textSecondary,
                     tabs: categories
                         .map(
                           (cat) => Tab(
                             text: cat.tabTitle,
-                            icon: Icon(cat.icon, size: 18),
+                            icon: AppIcon(cat.icon, size: 18),
                           ),
                         )
                         .toList(),
@@ -744,7 +747,7 @@ class _EquipmentSelectionDialogState
                 query.isEmpty
                     ? '${ChooseEquipmentWidgetText.noItemsPrefix}${category.label.toLowerCase()}${ChooseEquipmentWidgetText.noItemsSuffix}'
                     : '${ChooseEquipmentWidgetText.noResultsPrefix}${_searchController.text}${ChooseEquipmentWidgetText.noResultsSuffix}',
-                style: TextStyle(color: Colors.grey.shade400),
+                style: TextStyle(color: FormTheme.textSecondary),
               ),
             ),
           );
@@ -772,7 +775,7 @@ class _EquipmentSelectionDialogState
                     border: Border.all(
                       color: isSelected
                           ? _accent
-                          : Colors.grey.shade700,
+                          : FormTheme.border,
                       width: isSelected ? 2 : 1,
                     ),
                     borderRadius: BorderRadius.circular(8),
@@ -797,25 +800,25 @@ class _EquipmentSelectionDialogState
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
-                                color: isSelected ? _accent : Colors.white,
+                                color: isSelected ? _accent : FormTheme.textBright,
                               ),
                             ),
                           ),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
-                              color: Colors.grey.shade800,
+                              color: FormTheme.surfaceMuted,
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(
+                                AppIcon(
                                   EquipmentAndModificationsWidget
                                           ._equipmentTypeIcons[item.type] ??
-                                      Icons.inventory_2_outlined,
+                                      KitIcons.fallback,
                                   size: 14,
-                                  color: Colors.grey.shade400,
+                                  color: FormTheme.textSecondary,
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
@@ -825,7 +828,7 @@ class _EquipmentSelectionDialogState
                                           item.type),
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: Colors.grey.shade400,
+                                    color: FormTheme.textSecondary,
                                   ),
                                 ),
                               ],
@@ -839,7 +842,7 @@ class _EquipmentSelectionDialogState
                           description,
                           style: TextStyle(
                             fontSize: 14,
-                            color: Colors.grey.shade400,
+                            color: FormTheme.textSecondary,
                           ),
                         ),
                       ],

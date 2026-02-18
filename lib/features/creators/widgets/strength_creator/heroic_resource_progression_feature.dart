@@ -175,7 +175,7 @@ class _HeroicResourceProgressionFeatureState
                   width: 1,
                 ),
               ),
-              child: Icon(
+              child: AppIcon(
                 featureStyle.icon,
                 size: 16,
                 color: featureStyle.borderColor,
@@ -275,8 +275,8 @@ class _HeroicResourceProgressionFeatureState
       ),
       child: Column(
         children: [
-          Icon(
-            Icons.pets_rounded,
+          AppIcon(
+            KitIcons.stormwightKit,
             size: 32,
             color: CreatorTheme.strengthAccent,
           ),

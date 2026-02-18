@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hero_smith/core/models/component.dart';
 import 'package:hero_smith/core/theme/ds_theme.dart';
+import 'package:hero_smith/core/theme/form_theme.dart';
 import 'package:hero_smith/widgets/shared/expandable_card.dart';
 
 class CultureCard extends StatelessWidget {
@@ -24,7 +25,7 @@ class CultureCard extends StatelessWidget {
     // Determine culture type and get appropriate theming
     final cultureType = culture.type;
     final borderColor =
-        theme.cultureTypeBorder[cultureType] ?? Colors.grey.shade300;
+        theme.cultureTypeBorder[cultureType] ?? FormTheme.textSecondary;
     final typeEmoji = theme.cultureTypeEmoji[cultureType] ?? '🏛️';
 
     // Create type-specific badge text

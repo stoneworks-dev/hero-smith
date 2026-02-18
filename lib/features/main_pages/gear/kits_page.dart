@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/db/providers.dart';
+import '../../../core/text/main_pages/gear/kits_page_text.dart';
 import '../../../core/models/component.dart' as model;
+import '../../../core/theme/form_theme.dart';
 import '../../../core/theme/navigation_theme.dart';
 import '../../../core/theme/kit_page_theme.dart';
 import '../../../widgets/kits/equipment_card.dart';
@@ -35,7 +37,7 @@ class _KitsPageState extends ConsumerState<KitsPage> with SingleTickerProviderSt
       backgroundColor: NavigationTheme.navBarBackground,
       appBar: AppBar(
         backgroundColor: NavigationTheme.navBarBackground,
-        title: const Text('Kits & Equipment'),
+        title: Text(KitsPageText.appBarTitle),
         elevation: 0,
       ),
       body: Column(
@@ -63,14 +65,14 @@ class _KitsPageState extends ConsumerState<KitsPage> with SingleTickerProviderSt
                           color: isSelected ? color.withOpacity(0.2) : Colors.transparent,
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(
-                            color: isSelected ? color : Colors.grey.shade700,
+                            color: isSelected ? color : FormTheme.border,
                             width: isSelected ? 1.5 : 1,
                           ),
                         ),
                         child: Text(
                           tab.label,
                           style: TextStyle(
-                            color: isSelected ? color : Colors.grey.shade400,
+                            color: isSelected ? color : FormTheme.textSecondary,
                             fontSize: 13,
                             fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                           ),
@@ -138,8 +140,8 @@ class _ComponentsList extends StatelessWidget {
           if (items.isEmpty) {
             return Center(
               child: Text(
-                'None available',
-                style: TextStyle(color: Colors.grey.shade500),
+                KitsPageText.noneAvailable,
+                style: TextStyle(color: FormTheme.textMuted),
               ),
             );
           }
@@ -152,7 +154,7 @@ class _ComponentsList extends StatelessWidget {
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, st) => Center(
-          child: Text('Error: $e', style: TextStyle(color: Colors.grey.shade400)),
+          child: Text(KitsPageText.errorMessage(e), style: TextStyle(color: FormTheme.textSecondary)),
         ),
       ),
     );

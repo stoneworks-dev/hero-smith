@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/text/main_pages/strife/strife_page_text.dart';
 import '../../../core/theme/navigation_theme.dart';
 import '../../../widgets/shared/nav_card.dart';
 import 'abilities_page.dart';
@@ -15,8 +16,8 @@ class StrifePage extends StatelessWidget {
       children: [
         NavCard(
           icon: Icons.bolt,
-          title: 'Abilities',
-          subtitle: 'Browse and search all abilities',
+          title: StrifePageText.abilitiesTitle,
+          subtitle: StrifePageText.abilitiesSubtitle,
           accentColor: NavigationTheme.abilitiesColor,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const AbilitiesPage()),
@@ -25,8 +26,8 @@ class StrifePage extends StatelessWidget {
         const SizedBox(height: 12),
         NavCard(
           icon: Icons.extension,
-          title: 'Features',
-          subtitle: 'Browse and search all features',
+          title: StrifePageText.featuresTitle,
+          subtitle: StrifePageText.featuresSubtitle,
           accentColor: NavigationTheme.featuresColor,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const StrifeFeaturesPage()),
@@ -35,8 +36,8 @@ class StrifePage extends StatelessWidget {
         const SizedBox(height: 12),
         NavCard(
           icon: Icons.warning_amber_rounded,
-          title: 'Conditions',
-          subtitle: 'Status effects and their rules',
+          title: StrifePageText.conditionsTitle,
+          subtitle: StrifePageText.conditionsSubtitle,
           accentColor: NavigationTheme.conditionsColor,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const ConditionsPage()),

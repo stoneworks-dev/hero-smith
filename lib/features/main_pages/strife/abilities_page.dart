@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/db/providers.dart';
 import '../../../core/models/component.dart';
 import '../../../core/theme/navigation_theme.dart';
+import '../../../core/theme/form_theme.dart';
 import '../../../core/theme/strife_theme.dart';
+import '../../../core/text/main_pages/strife/abilities_page_text.dart';
 import '../../../widgets/abilities/abilities_shared.dart';
 import '../../../widgets/abilities/ability_expandable_item.dart';
 
@@ -19,9 +21,9 @@ class AbilitiesPage extends ConsumerWidget {
       backgroundColor: NavigationTheme.navBarBackground,
       appBar: AppBar(
         backgroundColor: NavigationTheme.navBarBackground,
-        foregroundColor: Colors.white,
+        foregroundColor: FormTheme.textBright,
         elevation: 0,
-        title: const Text('Abilities Compendium'),
+        title: Text(AbilitiesPageText.appBarTitle),
       ),
       body: abilitiesAsync.when(
         data: (items) => SafeArea(
@@ -252,22 +254,22 @@ class _AbilitiesViewState extends State<_AbilitiesView> {
                       Icon(
                         Icons.search_off,
                         size: 64,
-                        color: Colors.grey.shade500,
+                        color: FormTheme.textMuted,
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        'No abilities match your filters',
+                        AbilitiesPageText.noAbilitiesMatchFilters,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade300,
+                          color: FormTheme.textSecondary,
                         ),
                       ),
                       const SizedBox(height: 8),
                       TextButton.icon(
                         onPressed: _clearFilters,
                         icon: Icon(Icons.clear, color: StrifeTheme.abilitiesAccent),
-                        label: Text('Clear Filters', style: TextStyle(color: StrifeTheme.abilitiesAccent)),
+                        label: Text(AbilitiesPageText.clearFilters, style: TextStyle(color: StrifeTheme.abilitiesAccent)),
                       ),
                     ],
                   ),
@@ -317,24 +319,24 @@ class _AbilitiesViewState extends State<_AbilitiesView> {
             TextField(
               style: TextStyle(color: Colors.grey.shade200),
               decoration: InputDecoration(
-                hintText: 'Search abilities by name...',
-                hintStyle: TextStyle(color: Colors.grey.shade500),
-                prefixIcon: Icon(Icons.search, color: Colors.grey.shade400),
+                hintText: AbilitiesPageText.searchHint,
+                hintStyle: TextStyle(color: FormTheme.textMuted),
+                prefixIcon: Icon(Icons.search, color: FormTheme.textSecondary),
                 suffixIcon: _searchQuery.isNotEmpty
                     ? IconButton(
-                        icon: Icon(Icons.clear, color: Colors.grey.shade400),
+                        icon: Icon(Icons.clear, color: FormTheme.textSecondary),
                         onPressed: () => setState(() => _searchQuery = ''),
                       )
                     : null,
                 filled: true,
-                fillColor: Colors.grey.shade900,
+                fillColor: FormTheme.surfaceDark,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.grey.shade700),
+                  borderSide: BorderSide(color: FormTheme.border),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -346,9 +348,9 @@ class _AbilitiesViewState extends State<_AbilitiesView> {
             const SizedBox(height: 16),
             // Filters
             Text(
-              'Filters',
+              AbilitiesPageText.filtersLabel,
               style: TextStyle(
-                color: Colors.grey.shade300,
+                color: FormTheme.textSecondary,
                 fontWeight: FontWeight.w700,
                 fontSize: 14,
               ),
@@ -360,14 +362,14 @@ class _AbilitiesViewState extends State<_AbilitiesView> {
               children: [
                 _buildFilterDropdown(
                   context,
-                  label: 'Resource',
+                  label: AbilitiesPageText.resourceFilter,
                   value: _resourceFilter,
                   options: resourceOptions,
                   onChanged: (value) => setState(() => _resourceFilter = value),
                 ),
                 _buildFilterDropdown(
                   context,
-                  label: 'Cost',
+                  label: AbilitiesPageText.costFilter,
           value: _costFilter == null
             ? null
             : (_costFilter == 'signature'
@@ -388,21 +390,21 @@ class _AbilitiesViewState extends State<_AbilitiesView> {
                 ),
                 _buildFilterDropdown(
                   context,
-                  label: 'Action',
+                  label: AbilitiesPageText.actionFilter,
                   value: _actionTypeFilter,
                   options: actionTypeOptions,
                   onChanged: (value) => setState(() => _actionTypeFilter = value),
                 ),
                 _buildFilterDropdown(
                   context,
-                  label: 'Distance',
+                  label: AbilitiesPageText.distanceFilter,
                   value: _distanceFilter,
                   options: distanceOptions,
                   onChanged: (value) => setState(() => _distanceFilter = value),
                 ),
                 _buildFilterDropdown(
                   context,
-                  label: 'Targets',
+                  label: AbilitiesPageText.targetsFilter,
                   value: _targetsFilter,
                   options: targetsOptions,
                   onChanged: (value) => setState(() => _targetsFilter = value),
@@ -431,7 +433,7 @@ class _AbilitiesViewState extends State<_AbilitiesView> {
         borderRadius: BorderRadius.circular(8),
         color: NavigationTheme.cardBackgroundDark,
         border: Border.all(
-          color: value != null ? accent : Colors.grey.shade700,
+          color: value != null ? accent : FormTheme.border,
           width: value != null ? 2 : 1,
         ),
       ),
@@ -439,7 +441,7 @@ class _AbilitiesViewState extends State<_AbilitiesView> {
         value: value,
         hint: Text(
           label,
-          style: TextStyle(color: Colors.grey.shade400),
+          style: TextStyle(color: FormTheme.textSecondary),
           overflow: TextOverflow.ellipsis,
         ),
         underline: const SizedBox.shrink(),
@@ -447,17 +449,17 @@ class _AbilitiesViewState extends State<_AbilitiesView> {
         isExpanded: true,
         dropdownColor: NavigationTheme.cardBackgroundDark,
         style: TextStyle(
-          color: Colors.grey.shade300,
+          color: FormTheme.textSecondary,
           fontSize: 14,
         ),
         icon: Icon(
           Icons.arrow_drop_down,
-          color: value != null ? accent : Colors.grey.shade500,
+          color: value != null ? accent : FormTheme.textMuted,
         ),
         items: [
           DropdownMenuItem<String>(
             value: null,
-            child: Text('All $label', overflow: TextOverflow.ellipsis),
+            child: Text(AbilitiesPageText.allFilterLabel(label), overflow: TextOverflow.ellipsis),
           ),
           ...options.map((option) => DropdownMenuItem<String>(
                 value: option,
@@ -475,7 +477,7 @@ class _AbilitiesViewState extends State<_AbilitiesView> {
     if (_searchQuery.isNotEmpty) {
       chips.add(_buildFilterChip(
         context,
-        label: 'Name: "$_searchQuery"',
+        label: AbilitiesPageText.nameFilter(_searchQuery),
         onRemove: () => setState(() => _searchQuery = ''),
       ));
     }
@@ -483,7 +485,7 @@ class _AbilitiesViewState extends State<_AbilitiesView> {
     if (_resourceFilter != null) {
       chips.add(_buildFilterChip(
         context,
-        label: 'Resource: $_resourceFilter',
+        label: AbilitiesPageText.resourceFilterChip(_resourceFilter!),
         onRemove: () => setState(() => _resourceFilter = null),
       ));
     }
@@ -492,8 +494,8 @@ class _AbilitiesViewState extends State<_AbilitiesView> {
       chips.add(_buildFilterChip(
         context,
         label: _costFilter == 'signature'
-            ? 'Cost: Signature'
-            : 'Cost: $_costFilter',
+            ? AbilitiesPageText.costSignature
+            : AbilitiesPageText.costFilterChip(_costFilter!),
         onRemove: () => setState(() => _costFilter = null),
       ));
     }
@@ -501,7 +503,7 @@ class _AbilitiesViewState extends State<_AbilitiesView> {
     if (_actionTypeFilter != null) {
       chips.add(_buildFilterChip(
         context,
-        label: 'Action: $_actionTypeFilter',
+        label: AbilitiesPageText.actionFilterChip(_actionTypeFilter!),
         onRemove: () => setState(() => _actionTypeFilter = null),
       ));
     }
@@ -509,7 +511,7 @@ class _AbilitiesViewState extends State<_AbilitiesView> {
     if (_distanceFilter != null) {
       chips.add(_buildFilterChip(
         context,
-        label: 'Distance: $_distanceFilter',
+        label: AbilitiesPageText.distanceFilterChip(_distanceFilter!),
         onRemove: () => setState(() => _distanceFilter = null),
       ));
     }
@@ -517,7 +519,7 @@ class _AbilitiesViewState extends State<_AbilitiesView> {
     if (_targetsFilter != null) {
       chips.add(_buildFilterChip(
         context,
-        label: 'Targets: $_targetsFilter',
+        label: AbilitiesPageText.targetsFilterChip(_targetsFilter!),
         onRemove: () => setState(() => _targetsFilter = null),
       ));
     }
@@ -538,7 +540,7 @@ class _AbilitiesViewState extends State<_AbilitiesView> {
             Row(
               children: [
                 Text(
-                  'Active Filters',
+                  AbilitiesPageText.activeFiltersLabel,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
@@ -549,7 +551,7 @@ class _AbilitiesViewState extends State<_AbilitiesView> {
                 TextButton.icon(
                   onPressed: _clearFilters,
                   icon: Icon(Icons.clear_all, size: 16, color: accent),
-                  label: Text('Clear All', style: TextStyle(color: accent)),
+                  label: Text(AbilitiesPageText.clearAll, style: TextStyle(color: accent)),
                 ),
               ],
             ),
@@ -574,7 +576,7 @@ class _AbilitiesViewState extends State<_AbilitiesView> {
 
     return Chip(
       label: Text(label, style: TextStyle(color: Colors.grey.shade200)),
-      deleteIcon: Icon(Icons.close, size: 18, color: Colors.grey.shade400),
+      deleteIcon: Icon(Icons.close, size: 18, color: FormTheme.textSecondary),
       onDeleted: onRemove,
       backgroundColor: accent.withValues(alpha: 0.15),
       side: BorderSide(color: accent.withValues(alpha: 0.4)),
@@ -631,7 +633,7 @@ class _AbilitiesSummaryCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Ability Library',
+                        AbilitiesPageText.abilityLibraryTitle,
                         style: TextStyle(
                           color: accent,
                           fontSize: 18,
@@ -640,9 +642,9 @@ class _AbilitiesSummaryCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Browse ${stats.total} abilities by resource and cost.',
+                        AbilitiesPageText.browseAbilities(stats.total),
                         style: TextStyle(
-                          color: Colors.grey.shade400,
+                          color: FormTheme.textSecondary,
                           fontSize: 13,
                         ),
                       ),
@@ -661,31 +663,31 @@ class _AbilitiesSummaryCard extends StatelessWidget {
                 _buildStatChip(
                   context,
                   icon: Icons.auto_awesome,
-                  label: 'Total abilities',
+                  label: AbilitiesPageText.totalAbilities,
                   value: stats.total.toString(),
                 ),
                 _buildStatChip(
                   context,
                   icon: Icons.star_border,
-                  label: 'Signature (no cost)',
+                  label: AbilitiesPageText.signatureNoCost,
                   value: stats.signatureCount.toString(),
                 ),
                 _buildStatChip(
                   context,
                   icon: Icons.flash_on,
-                  label: 'Costed abilities',
+                  label: AbilitiesPageText.costedAbilities,
                   value: stats.costedCount.toString(),
                 ),
                 _buildStatChip(
                   context,
                   icon: Icons.science_outlined,
-                  label: 'Resource types',
+                  label: AbilitiesPageText.resourceTypes,
                   value: stats.resourceTypeCount.toString(),
                 ),
                 _buildStatChip(
                   context,
                   icon: Icons.trending_up,
-                  label: 'Highest cost',
+                  label: AbilitiesPageText.highestCost,
                   value: stats.highestCost?.toString() ?? '—',
                 ),
               ],
@@ -734,7 +736,7 @@ class _AbilitiesSummaryCard extends StatelessWidget {
                 label,
                 style: TextStyle(
                   fontSize: 12,
-                  color: Colors.grey.shade400,
+                  color: FormTheme.textSecondary,
                 ),
               ),
             ],
@@ -763,17 +765,16 @@ class _AbilitiesEmptyState extends StatelessWidget {
             children: [
               StrifeTheme.sectionHeader(
                 context,
-                title: 'No abilities found',
-                subtitle: 'Check your data seed or try syncing again.',
+                title: AbilitiesPageText.noAbilitiesFound,
+                subtitle: AbilitiesPageText.checkDataSeed,
                 icon: Icons.info_outline,
                 accent: StrifeTheme.abilitiesAccent,
               ),
               Padding(
                 padding: StrifeTheme.cardPadding,
                 child: Text(
-                  'We couldn\'t find any abilities in the database. '
-                  'Verify that the compendium has been seeded and then refresh this page.',
-                  style: TextStyle(color: Colors.grey.shade300),
+                  AbilitiesPageText.noAbilitiesBody,
+                  style: TextStyle(color: FormTheme.textSecondary),
                 ),
               ),
             ],
@@ -798,8 +799,8 @@ class _AbilitiesLoadingState extends StatelessWidget {
             CircularProgressIndicator(color: StrifeTheme.abilitiesAccent),
             const SizedBox(height: 16),
             Text(
-              'Loading abilities...',
-              style: TextStyle(color: Colors.grey.shade300),
+              AbilitiesPageText.loadingAbilities,
+              style: TextStyle(color: FormTheme.textSecondary),
             ),
           ],
         ),
@@ -832,8 +833,8 @@ class _AbilitiesErrorState extends StatelessWidget {
               children: [
                 StrifeTheme.sectionHeader(
                   context,
-                  title: 'Unable to load abilities',
-                  subtitle: 'Please try again in a moment.',
+                  title: AbilitiesPageText.unableToLoad,
+                  subtitle: AbilitiesPageText.tryAgain,
                   icon: Icons.error_outline,
                   accent: StrifeTheme.abilitiesAccent,
                 ),
@@ -841,7 +842,7 @@ class _AbilitiesErrorState extends StatelessWidget {
                   padding: StrifeTheme.cardPadding,
                   child: Text(
                     message,
-                    style: TextStyle(color: Colors.grey.shade300),
+                    style: TextStyle(color: FormTheme.textSecondary),
                   ),
                 ),
               ],

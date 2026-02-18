@@ -8,8 +8,11 @@ import '../../../core/models/component.dart' as model;
 import '../../../core/models/downtime.dart';
 import '../../../core/services/class_data_service.dart';
 import '../../../core/text/heroes_sheet/gear/gear_dialogs_text.dart';
+import '../../../core/theme/app_icon.dart';
+import '../../../core/theme/app_icons.dart';
 import '../../../core/theme/navigation_theme.dart';
 import '../../../core/theme/form_theme.dart';
+import '../../../widgets/treasures/imbuement_card.dart';
 import 'gear_utils.dart';
 
 /// Dialog for adding treasures and imbuements.
@@ -134,8 +137,8 @@ class _AddTreasureDialogState extends State<AddTreasureDialog>
               ),
               child: Row(
                 children: [
-                  Icon(Icons.auto_awesome,
-                      color: NavigationTheme.treasureColor),
+                  AppIcon(TreasureIcons.treasuresTab,
+                      color: NavigationTheme.treasureColor, size: 24),
                   const SizedBox(width: 12),
                   const Expanded(
                     child: Text(
@@ -143,12 +146,12 @@ class _AddTreasureDialogState extends State<AddTreasureDialog>
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: FormTheme.textBright,
                       ),
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.close, color: Colors.white),
+                    icon: const Icon(Icons.close, color: FormTheme.textBright),
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                 ],
@@ -158,20 +161,20 @@ class _AddTreasureDialogState extends State<AddTreasureDialog>
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
               child: TextField(
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: FormTheme.textBright),
                 decoration: InputDecoration(
                   hintText: GearDialogsText.addTreasureSearchLabel,
-                  hintStyle: TextStyle(color: Colors.grey.shade500),
-                  prefixIcon: Icon(Icons.search, color: Colors.grey.shade400),
+                  hintStyle: TextStyle(color: FormTheme.textMuted),
+                  prefixIcon: Icon(Icons.search, color: FormTheme.textSecondary),
                   filled: true,
                   fillColor: FormTheme.surface,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey.shade700),
+                    borderSide: BorderSide(color: FormTheme.border),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey.shade700),
+                    borderSide: BorderSide(color: FormTheme.border),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -194,15 +197,15 @@ class _AddTreasureDialogState extends State<AddTreasureDialog>
                 controller: _tabController,
                 indicatorColor: NavigationTheme.treasureColor,
                 labelColor: NavigationTheme.treasureColor,
-                unselectedLabelColor: Colors.grey.shade400,
+                unselectedLabelColor: FormTheme.textSecondary,
                 tabs: [
                   Tab(
-                    icon: const Icon(Icons.diamond, size: 18),
+                    icon: AppIcon(TreasureIcons.treasuresTab, size: 18, color: null),
                     text:
                         '${GearDialogsText.treasuresTabLabel} (${widget.availableTreasures.length})',
                   ),
                   Tab(
-                    icon: const Icon(Icons.auto_fix_high, size: 18),
+                    icon: AppIcon(ImbuementIcons.fromType(''), size: 18, color: null),
                     text:
                         '${GearDialogsText.imbuementsTabLabel} (${widget.availableImbuements.length})',
                   ),
@@ -234,19 +237,19 @@ class _AddTreasureDialogState extends State<AddTreasureDialog>
           DropdownButtonFormField<String>(
             value: _filterType,
             dropdownColor: FormTheme.surface,
-            style: const TextStyle(color: Colors.white),
+            style: const TextStyle(color: FormTheme.textBright),
             decoration: InputDecoration(
               labelText: GearDialogsText.treasureFilterLabel,
-              labelStyle: TextStyle(color: Colors.grey.shade400),
+              labelStyle: TextStyle(color: FormTheme.textSecondary),
               filled: true,
               fillColor: FormTheme.surface,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.grey.shade700),
+                borderSide: BorderSide(color: FormTheme.border),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.grey.shade700),
+                borderSide: BorderSide(color: FormTheme.border),
               ),
               isDense: true,
             ),
@@ -259,7 +262,7 @@ class _AddTreasureDialogState extends State<AddTreasureDialog>
                 value: 'consumable',
                 child: Row(
                   children: [
-                    Icon(Icons.science_outlined,
+                    AppIcon(TreasureIcons.consumable,
                         color: NavigationTheme.consumablesColor, size: 18),
                     const SizedBox(width: 8),
                     Text(GearDialogsText.treasureFilterConsumablesLabel,
@@ -272,7 +275,7 @@ class _AddTreasureDialogState extends State<AddTreasureDialog>
                 value: 'trinket',
                 child: Row(
                   children: [
-                    Icon(Icons.diamond_outlined,
+                    AppIcon(TreasureIcons.trinket,
                         color: NavigationTheme.trinketsColor, size: 18),
                     const SizedBox(width: 8),
                     Text(GearDialogsText.treasureFilterTrinketsLabel,
@@ -284,7 +287,7 @@ class _AddTreasureDialogState extends State<AddTreasureDialog>
                 value: 'artifact',
                 child: Row(
                   children: [
-                    Icon(Icons.auto_awesome,
+                    AppIcon(TreasureIcons.artifact,
                         color: NavigationTheme.artifactsColor, size: 18),
                     const SizedBox(width: 8),
                     Text(GearDialogsText.treasureFilterArtifactsLabel,
@@ -297,7 +300,7 @@ class _AddTreasureDialogState extends State<AddTreasureDialog>
                 value: 'leveled_treasure',
                 child: Row(
                   children: [
-                    Icon(Icons.trending_up,
+                    AppIcon(TreasureIcons.leveledTreasure,
                         color: NavigationTheme.leveledColor, size: 18),
                     const SizedBox(width: 8),
                     Text(GearDialogsText.treasureFilterLeveledEquipmentLabel,
@@ -319,7 +322,7 @@ class _AddTreasureDialogState extends State<AddTreasureDialog>
                 ? Center(
                     child: Text(
                       GearDialogsText.treasuresEmptyMessage,
-                      style: TextStyle(color: Colors.grey.shade400),
+                      style: TextStyle(color: FormTheme.textSecondary),
                     ),
                   )
                 : ListView.builder(
@@ -348,8 +351,8 @@ class _AddTreasureDialogState extends State<AddTreasureDialog>
                               color: treasureColor.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: Icon(
-                              getTreasureIcon(treasure.type),
+                            child: AppIcon(
+                              getComponentTreasureIcon(treasure),
                               color: treasureColor,
                               size: 22,
                             ),
@@ -357,7 +360,7 @@ class _AddTreasureDialogState extends State<AddTreasureDialog>
                           title: Text(
                             treasure.name,
                             style: const TextStyle(
-                                color: Colors.white,
+                                color: FormTheme.textBright,
                                 fontWeight: FontWeight.w500),
                           ),
                           subtitle: Column(
@@ -370,14 +373,14 @@ class _AddTreasureDialogState extends State<AddTreasureDialog>
                               if (echelon != null)
                                 Text(
                                   '${GearDialogsText.treasureEchelonPrefix}$echelon',
-                                  style: TextStyle(color: Colors.grey.shade400),
+                                  style: TextStyle(color: FormTheme.textSecondary),
                                 ),
                               if (description.isNotEmpty)
                                 Text(
                                   description,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(color: Colors.grey.shade400),
+                                  style: TextStyle(color: FormTheme.textSecondary),
                                 ),
                             ],
                           ),
@@ -401,19 +404,19 @@ class _AddTreasureDialogState extends State<AddTreasureDialog>
           DropdownButtonFormField<String>(
             value: _imbuementFilterType,
             dropdownColor: FormTheme.surface,
-            style: const TextStyle(color: Colors.white),
+            style: const TextStyle(color: FormTheme.textBright),
             decoration: InputDecoration(
               labelText: GearDialogsText.imbuementFilterLabel,
-              labelStyle: TextStyle(color: Colors.grey.shade400),
+              labelStyle: TextStyle(color: FormTheme.textSecondary),
               filled: true,
               fillColor: FormTheme.surface,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.grey.shade700),
+                borderSide: BorderSide(color: FormTheme.border),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.grey.shade700),
+                borderSide: BorderSide(color: FormTheme.border),
               ),
               isDense: true,
             ),
@@ -448,81 +451,19 @@ class _AddTreasureDialogState extends State<AddTreasureDialog>
                 ? Center(
                     child: Text(
                       GearDialogsText.imbuementsEmptyMessage,
-                      style: TextStyle(color: Colors.grey.shade400),
+                      style: TextStyle(color: FormTheme.textSecondary),
                     ),
                   )
                 : ListView.builder(
                     itemCount: _filteredImbuements.length,
                     itemBuilder: (context, index) {
                       final imbuement = _filteredImbuements[index];
-                      final level = imbuement.raw['level'] as int?;
-                      final imbuementType =
-                          imbuement.raw['type']?.toString() ?? '';
-                      final description =
-                          imbuement.raw['description']?.toString() ?? '';
-
-                      return Container(
-                        margin: const EdgeInsets.only(bottom: 8),
-                        decoration: BoxDecoration(
-                          color: FormTheme.surface,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.grey.shade700),
-                        ),
-                        child: ListTile(
-                          leading: Icon(
-                            _getImbuementTypeIcon(imbuementType),
-                            color: NavigationTheme.imbuementsTabColor,
-                          ),
-                          title: Text(
-                            imbuement.name,
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500),
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    _getImbuementTypeDisplay(imbuementType),
-                                    style: TextStyle(
-                                        color:
-                                            NavigationTheme.imbuementsTabColor),
-                                  ),
-                                  if (level != null) ...[
-                                    const SizedBox(width: 8),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 6, vertical: 2),
-                                      decoration: BoxDecoration(
-                                        color:
-                                            getLevelColor(level).withAlpha(51),
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                      child: Text(
-                                        '${GearDialogsText.imbuementLevelPrefix}$level',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: getLevelColor(level),
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ],
-                              ),
-                              if (description.isNotEmpty)
-                                Text(
-                                  description,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(color: Colors.grey.shade400),
-                                ),
-                            ],
-                          ),
-                          isThreeLine: description.isNotEmpty,
-                          onTap: () => widget.onImbuementSelected(imbuement.id),
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: ImbuementCard(
+                          imbuement: imbuement,
+                          onTap: () =>
+                              widget.onImbuementSelected(imbuement.id),
                         ),
                       );
                     },
@@ -531,32 +472,6 @@ class _AddTreasureDialogState extends State<AddTreasureDialog>
         ],
       ),
     );
-  }
-
-  IconData _getImbuementTypeIcon(String type) {
-    switch (type) {
-      case 'armor_imbuement':
-        return Icons.shield;
-      case 'weapon_imbuement':
-        return Icons.sports_martial_arts;
-      case 'implement_imbuement':
-        return Icons.auto_awesome;
-      default:
-        return Icons.auto_fix_high;
-    }
-  }
-
-  String _getImbuementTypeDisplay(String type) {
-    switch (type) {
-      case 'armor_imbuement':
-        return GearDialogsText.imbuementTypeArmorDisplay;
-      case 'weapon_imbuement':
-        return GearDialogsText.imbuementTypeWeaponDisplay;
-      case 'implement_imbuement':
-        return GearDialogsText.imbuementTypeImplementDisplay;
-      default:
-        return type.replaceAll('_', ' ');
-    }
   }
 }
 
@@ -598,7 +513,7 @@ class _CreateContainerDialogState extends State<CreateContainerDialog> {
                   child: Text(
                     GearDialogsText.createContainerTitle,
                     style: TextStyle(
-                      color: Colors.white,
+                      color: FormTheme.textBright,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -614,12 +529,12 @@ class _CreateContainerDialogState extends State<CreateContainerDialog> {
             // Name field
             TextField(
               controller: _controller,
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: FormTheme.textBright),
               decoration: InputDecoration(
                 labelText: GearDialogsText.createContainerNameLabel,
-                labelStyle: TextStyle(color: Colors.grey.shade400),
+                labelStyle: TextStyle(color: FormTheme.textSecondary),
                 hintText: GearDialogsText.createContainerNameHint,
-                hintStyle: TextStyle(color: Colors.grey.shade600),
+                hintStyle: TextStyle(color: FormTheme.borderLight),
                 filled: true,
                 fillColor: FormTheme.surface,
                 border: OutlineInputBorder(
@@ -628,7 +543,7 @@ class _CreateContainerDialogState extends State<CreateContainerDialog> {
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.grey.shade700),
+                  borderSide: BorderSide(color: FormTheme.border),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -648,14 +563,14 @@ class _CreateContainerDialogState extends State<CreateContainerDialog> {
                   onPressed: () => Navigator.of(context).pop(),
                   child: Text(
                     GearDialogsText.createContainerCancelAction,
-                    style: TextStyle(color: Colors.grey.shade400),
+                    style: TextStyle(color: FormTheme.textSecondary),
                   ),
                 ),
                 const SizedBox(width: 12),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: NavigationTheme.itemsColor,
-                    foregroundColor: Colors.white,
+                    foregroundColor: FormTheme.textBright,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8)),
                   ),
@@ -697,9 +612,9 @@ class _CreateItemDialogState extends State<CreateItemDialog> {
       {int maxLines = 1}) {
     return InputDecoration(
       labelText: label,
-      labelStyle: TextStyle(color: Colors.grey.shade400),
+      labelStyle: TextStyle(color: FormTheme.textSecondary),
       hintText: hint,
-      hintStyle: TextStyle(color: Colors.grey.shade600),
+      hintStyle: TextStyle(color: FormTheme.borderLight),
       filled: true,
       fillColor: FormTheme.surface,
       border: OutlineInputBorder(
@@ -708,7 +623,7 @@ class _CreateItemDialogState extends State<CreateItemDialog> {
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: Colors.grey.shade700),
+        borderSide: BorderSide(color: FormTheme.border),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -738,7 +653,7 @@ class _CreateItemDialogState extends State<CreateItemDialog> {
                   child: Text(
                     GearDialogsText.createItemTitle,
                     style: TextStyle(
-                      color: Colors.white,
+                      color: FormTheme.textBright,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -754,7 +669,7 @@ class _CreateItemDialogState extends State<CreateItemDialog> {
             // Name field
             TextField(
               controller: _nameController,
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: FormTheme.textBright),
               decoration: _darkInputDecoration(
                 GearDialogsText.createItemNameLabel,
                 GearDialogsText.createItemNameHint,
@@ -766,7 +681,7 @@ class _CreateItemDialogState extends State<CreateItemDialog> {
             // Description field
             TextField(
               controller: _descController,
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: FormTheme.textBright),
               decoration: _darkInputDecoration(
                 GearDialogsText.createItemDescriptionLabel,
                 GearDialogsText.createItemDescriptionHint,
@@ -785,7 +700,7 @@ class _CreateItemDialogState extends State<CreateItemDialog> {
                 children: [
                   Text(
                     GearDialogsText.createItemQuantityLabel,
-                    style: TextStyle(color: Colors.grey.shade400),
+                    style: TextStyle(color: FormTheme.textSecondary),
                   ),
                   const Spacer(),
                   IconButton(
@@ -793,7 +708,7 @@ class _CreateItemDialogState extends State<CreateItemDialog> {
                       Icons.remove_circle_outline,
                       color: _quantity > 1
                           ? NavigationTheme.itemsColor
-                          : Colors.grey.shade600,
+                          : FormTheme.borderLight,
                     ),
                     onPressed: _quantity > 1
                         ? () => setState(() => _quantity--)
@@ -813,7 +728,7 @@ class _CreateItemDialogState extends State<CreateItemDialog> {
                         '$_quantity',
                         textAlign: TextAlign.center,
                         style: const TextStyle(
-                            color: Colors.white,
+                            color: FormTheme.textBright,
                             fontSize: 16,
                             fontWeight: FontWeight.bold),
                       ),
@@ -824,7 +739,7 @@ class _CreateItemDialogState extends State<CreateItemDialog> {
                       Icons.add_circle_outline,
                       color: _quantity < 999
                           ? NavigationTheme.itemsColor
-                          : Colors.grey.shade600,
+                          : FormTheme.borderLight,
                     ),
                     onPressed: _quantity < 999
                         ? () => setState(() => _quantity++)
@@ -842,14 +757,14 @@ class _CreateItemDialogState extends State<CreateItemDialog> {
                   onPressed: () => Navigator.of(context).pop(),
                   child: Text(
                     GearDialogsText.createItemCancelAction,
-                    style: TextStyle(color: Colors.grey.shade400),
+                    style: TextStyle(color: FormTheme.textSecondary),
                   ),
                 ),
                 const SizedBox(width: 12),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: NavigationTheme.itemsColor,
-                    foregroundColor: Colors.white,
+                    foregroundColor: FormTheme.textBright,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8)),
                   ),
@@ -922,9 +837,9 @@ class _EditItemDialogState extends State<EditItemDialog> {
   InputDecoration _darkInputDecoration(String label, String hint) {
     return InputDecoration(
       labelText: label,
-      labelStyle: TextStyle(color: Colors.grey.shade400),
+      labelStyle: TextStyle(color: FormTheme.textSecondary),
       hintText: hint,
-      hintStyle: TextStyle(color: Colors.grey.shade600),
+      hintStyle: TextStyle(color: FormTheme.borderLight),
       filled: true,
       fillColor: FormTheme.surface,
       border: OutlineInputBorder(
@@ -933,7 +848,7 @@ class _EditItemDialogState extends State<EditItemDialog> {
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: Colors.grey.shade700),
+        borderSide: BorderSide(color: FormTheme.border),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -963,7 +878,7 @@ class _EditItemDialogState extends State<EditItemDialog> {
                   child: Text(
                     GearDialogsText.editItemTitle,
                     style: TextStyle(
-                      color: Colors.white,
+                      color: FormTheme.textBright,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -979,7 +894,7 @@ class _EditItemDialogState extends State<EditItemDialog> {
             // Name field
             TextField(
               controller: _nameController,
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: FormTheme.textBright),
               decoration: _darkInputDecoration(
                 GearDialogsText.editItemNameLabel,
                 GearDialogsText.editItemNameHint,
@@ -991,7 +906,7 @@ class _EditItemDialogState extends State<EditItemDialog> {
             // Description field
             TextField(
               controller: _descController,
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: FormTheme.textBright),
               decoration: _darkInputDecoration(
                 GearDialogsText.editItemDescriptionLabel,
                 GearDialogsText.editItemDescriptionHint,
@@ -1010,7 +925,7 @@ class _EditItemDialogState extends State<EditItemDialog> {
                 children: [
                   Text(
                     GearDialogsText.editItemQuantityLabel,
-                    style: TextStyle(color: Colors.grey.shade400),
+                    style: TextStyle(color: FormTheme.textSecondary),
                   ),
                   const Spacer(),
                   IconButton(
@@ -1018,7 +933,7 @@ class _EditItemDialogState extends State<EditItemDialog> {
                       Icons.remove_circle_outline,
                       color: _quantity > 1
                           ? NavigationTheme.itemsColor
-                          : Colors.grey.shade600,
+                          : FormTheme.borderLight,
                     ),
                     onPressed: _quantity > 1
                         ? () => setState(() => _quantity--)
@@ -1038,7 +953,7 @@ class _EditItemDialogState extends State<EditItemDialog> {
                         '$_quantity',
                         textAlign: TextAlign.center,
                         style: const TextStyle(
-                            color: Colors.white,
+                            color: FormTheme.textBright,
                             fontSize: 16,
                             fontWeight: FontWeight.bold),
                       ),
@@ -1049,7 +964,7 @@ class _EditItemDialogState extends State<EditItemDialog> {
                       Icons.add_circle_outline,
                       color: _quantity < 999
                           ? NavigationTheme.itemsColor
-                          : Colors.grey.shade600,
+                          : FormTheme.borderLight,
                     ),
                     onPressed: _quantity < 999
                         ? () => setState(() => _quantity++)
@@ -1067,14 +982,14 @@ class _EditItemDialogState extends State<EditItemDialog> {
                   onPressed: () => Navigator.of(context).pop(),
                   child: Text(
                     GearDialogsText.editItemCancelAction,
-                    style: TextStyle(color: Colors.grey.shade400),
+                    style: TextStyle(color: FormTheme.textSecondary),
                   ),
                 ),
                 const SizedBox(width: 12),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: NavigationTheme.itemsColor,
-                    foregroundColor: Colors.white,
+                    foregroundColor: FormTheme.textBright,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8)),
                   ),
@@ -1154,7 +1069,7 @@ class _EditContainerDialogState extends State<EditContainerDialog> {
                   child: Text(
                     GearDialogsText.editContainerTitle,
                     style: TextStyle(
-                      color: Colors.white,
+                      color: FormTheme.textBright,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -1170,12 +1085,12 @@ class _EditContainerDialogState extends State<EditContainerDialog> {
             // Name field
             TextField(
               controller: _controller,
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: FormTheme.textBright),
               decoration: InputDecoration(
                 labelText: GearDialogsText.editContainerNameLabel,
-                labelStyle: TextStyle(color: Colors.grey.shade400),
+                labelStyle: TextStyle(color: FormTheme.textSecondary),
                 hintText: GearDialogsText.editContainerNameHint,
-                hintStyle: TextStyle(color: Colors.grey.shade600),
+                hintStyle: TextStyle(color: FormTheme.borderLight),
                 filled: true,
                 fillColor: FormTheme.surface,
                 border: OutlineInputBorder(
@@ -1184,7 +1099,7 @@ class _EditContainerDialogState extends State<EditContainerDialog> {
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.grey.shade700),
+                  borderSide: BorderSide(color: FormTheme.border),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -1204,14 +1119,14 @@ class _EditContainerDialogState extends State<EditContainerDialog> {
                   onPressed: () => Navigator.of(context).pop(),
                   child: Text(
                     GearDialogsText.editContainerCancelAction,
-                    style: TextStyle(color: Colors.grey.shade400),
+                    style: TextStyle(color: FormTheme.textSecondary),
                   ),
                 ),
                 const SizedBox(width: 12),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: NavigationTheme.itemsColor,
-                    foregroundColor: Colors.white,
+                    foregroundColor: FormTheme.textBright,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8)),
                   ),
@@ -1476,14 +1391,14 @@ class _AddFavoriteKitDialogState extends State<AddFavoriteKitDialog> {
               const SizedBox(height: 16),
               const Text(
                 GearDialogsText.addFavoriteLoadingTitle,
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: FormTheme.textBright),
               ),
               const SizedBox(height: 16),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
                 child: Text(
                   GearDialogsText.addFavoriteLoadingCancelAction,
-                  style: TextStyle(color: Colors.grey.shade400),
+                  style: TextStyle(color: FormTheme.textSecondary),
                 ),
               ),
             ],
@@ -1506,7 +1421,7 @@ class _AddFavoriteKitDialogState extends State<AddFavoriteKitDialog> {
               const Text(
                 GearDialogsText.addFavoriteErrorTitle,
                 style: TextStyle(
-                    color: Colors.white,
+                    color: FormTheme.textBright,
                     fontSize: 18,
                     fontWeight: FontWeight.bold),
               ),
@@ -1521,7 +1436,7 @@ class _AddFavoriteKitDialogState extends State<AddFavoriteKitDialog> {
                 onPressed: () => Navigator.of(context).pop(),
                 child: Text(
                   GearDialogsText.addFavoriteErrorCloseAction,
-                  style: TextStyle(color: Colors.grey.shade400),
+                  style: TextStyle(color: FormTheme.textSecondary),
                 ),
               ),
             ],
@@ -1545,7 +1460,7 @@ class _AddFavoriteKitDialogState extends State<AddFavoriteKitDialog> {
           value: type,
           child: Row(
             children: [
-              Icon(icon, size: 18),
+              AppIcon(icon, size: 18),
               const SizedBox(width: 8),
               Text(label),
             ],
@@ -1589,7 +1504,7 @@ class _AddFavoriteKitDialogState extends State<AddFavoriteKitDialog> {
                         const Text(
                           GearDialogsText.addFavoriteMainTitle,
                           style: TextStyle(
-                            color: Colors.white,
+                            color: FormTheme.textBright,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -1598,7 +1513,7 @@ class _AddFavoriteKitDialogState extends State<AddFavoriteKitDialog> {
                           Text(
                             '${GearDialogsText.addFavoriteMainTitleClassPrefix}$_heroClassName${GearDialogsText.addFavoriteMainTitleClassSuffix}',
                             style: TextStyle(
-                                color: Colors.grey.shade400, fontSize: 13),
+                                color: FormTheme.textSecondary, fontSize: 13),
                           ),
                       ],
                     ),
@@ -1614,11 +1529,11 @@ class _AddFavoriteKitDialogState extends State<AddFavoriteKitDialog> {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
               child: TextField(
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: FormTheme.textBright),
                 decoration: InputDecoration(
                   labelText: GearDialogsText.addFavoriteSearchLabel,
-                  labelStyle: TextStyle(color: Colors.grey.shade400),
-                  prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                  labelStyle: TextStyle(color: FormTheme.textSecondary),
+                  prefixIcon: Icon(Icons.search, color: FormTheme.icon),
                   filled: true,
                   fillColor: FormTheme.surface,
                   border: OutlineInputBorder(
@@ -1627,7 +1542,7 @@ class _AddFavoriteKitDialogState extends State<AddFavoriteKitDialog> {
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey.shade700),
+                    borderSide: BorderSide(color: FormTheme.border),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -1648,19 +1563,19 @@ class _AddFavoriteKitDialogState extends State<AddFavoriteKitDialog> {
                 child: DropdownButtonFormField<String>(
                   value: _filterType,
                   dropdownColor: FormTheme.surface,
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: FormTheme.textBright),
                   decoration: InputDecoration(
                     labelText: GearDialogsText.addFavoriteFilterLabel,
-                    labelStyle: TextStyle(color: Colors.grey.shade400),
+                    labelStyle: TextStyle(color: FormTheme.textSecondary),
                     filled: true,
                     fillColor: FormTheme.surface,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.grey.shade700),
+                      borderSide: BorderSide(color: FormTheme.border),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.grey.shade700),
+                      borderSide: BorderSide(color: FormTheme.border),
                     ),
                   ),
                   items: filterItems,
@@ -1681,7 +1596,7 @@ class _AddFavoriteKitDialogState extends State<AddFavoriteKitDialog> {
                             ? GearDialogsText
                                 .addFavoriteAllItemsAlreadyFavoritedMessage
                             : GearDialogsText.addFavoriteNoItemsMatchMessage,
-                        style: TextStyle(color: Colors.grey.shade400),
+                        style: TextStyle(color: FormTheme.textSecondary),
                         textAlign: TextAlign.center,
                       ),
                     )
@@ -1701,15 +1616,15 @@ class _AddFavoriteKitDialogState extends State<AddFavoriteKitDialog> {
                           decoration: BoxDecoration(
                             color: FormTheme.surface,
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.grey.shade700),
+                            border: Border.all(color: FormTheme.border),
                           ),
                           child: ListTile(
                             leading:
-                                Icon(icon, color: NavigationTheme.kitsColor),
+                                AppIcon(icon, color: NavigationTheme.kitsColor),
                             title: Text(
                               kit.name,
                               style: const TextStyle(
-                                  color: Colors.white,
+                                  color: FormTheme.textBright,
                                   fontWeight: FontWeight.w500),
                             ),
                             subtitle: Column(
@@ -1728,7 +1643,7 @@ class _AddFavoriteKitDialogState extends State<AddFavoriteKitDialog> {
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                     style:
-                                        TextStyle(color: Colors.grey.shade400),
+                                        TextStyle(color: FormTheme.textSecondary),
                                   ),
                               ],
                             ),
@@ -1807,7 +1722,7 @@ class _QuantityInputDialogState extends State<_QuantityInputDialog> {
             const Text(
               GearDialogsText.quantityDialogTitle,
               style: TextStyle(
-                color: Colors.white,
+                color: FormTheme.textBright,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
@@ -1817,11 +1732,11 @@ class _QuantityInputDialogState extends State<_QuantityInputDialog> {
               controller: _controller,
               focusNode: _focusNode,
               keyboardType: TextInputType.number,
-              style: const TextStyle(color: Colors.white, fontSize: 18),
+              style: const TextStyle(color: FormTheme.textBright, fontSize: 18),
               textAlign: TextAlign.center,
               decoration: InputDecoration(
                 labelText: GearDialogsText.quantityDialogLabel,
-                labelStyle: TextStyle(color: Colors.grey.shade400),
+                labelStyle: TextStyle(color: FormTheme.textSecondary),
                 filled: true,
                 fillColor: FormTheme.surface,
                 border: OutlineInputBorder(
@@ -1830,7 +1745,7 @@ class _QuantityInputDialogState extends State<_QuantityInputDialog> {
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.grey.shade700),
+                  borderSide: BorderSide(color: FormTheme.border),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -1848,14 +1763,14 @@ class _QuantityInputDialogState extends State<_QuantityInputDialog> {
                   onPressed: () => Navigator.of(context).pop(),
                   child: Text(
                     GearDialogsText.quantityDialogCancelAction,
-                    style: TextStyle(color: Colors.grey.shade400),
+                    style: TextStyle(color: FormTheme.textSecondary),
                   ),
                 ),
                 const SizedBox(width: 12),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: NavigationTheme.itemsColor,
-                    foregroundColor: Colors.white,
+                    foregroundColor: FormTheme.textBright,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8)),
                   ),

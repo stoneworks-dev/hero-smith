@@ -5,8 +5,12 @@ library;
 
 import 'package:flutter/material.dart';
 
+import '../../../core/theme/app_icons.dart';
+import '../../../core/theme/app_icon.dart';
+import '../../../core/theme/app_icon_data.dart';
 import '../../../core/models/hero_mod_keys.dart';
 import '../../../core/repositories/hero_repository.dart';
+import '../../../core/theme/form_theme.dart';
 import '../../../core/theme/navigation_theme.dart';
 import '../../../core/text/heroes_sheet/main_stats/hero_main_stats_view_text.dart';
 import 'hero_main_stats_models.dart';
@@ -23,7 +27,7 @@ typedef OnEditMod = void Function({
   required int currentModValue,
   required List<String> insights,
   Color? accentColor,
-  IconData? icon,
+  AppIconData? icon,
 });
 
 /// Compact horizontal row for Level, XP, Victories, Wealth, Renown
@@ -50,7 +54,7 @@ class ProgressionRowWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: NavigationTheme.cardBackgroundDark,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade800),
+        border: Border.all(color: FormTheme.borderDim),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
@@ -77,7 +81,7 @@ class ProgressionRowWidget extends StatelessWidget {
                   Text(
                     level.toString(),
                     style: theme.textTheme.titleLarge?.copyWith(
-                      color: Colors.white,
+                      color: FormTheme.textBright,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -92,13 +96,13 @@ class ProgressionRowWidget extends StatelessWidget {
                 children: [
                   _buildProgressionItem(
                     context,
-                    icon: Icons.star_outline,
+                    icon: CombatIcons.experience,
                     label: HeroMainStatsViewText.progressionXpLabel,
                     field: NumericField.exp,
                   ),
                   _buildProgressionItem(
                     context,
-                    icon: Icons.emoji_events_outlined,
+                    icon: CombatIcons.victories,
                     label: HeroMainStatsViewText.progressionVictoriesLabel,
                     field: NumericField.victories,
                   ),
@@ -108,7 +112,7 @@ class ProgressionRowWidget extends StatelessWidget {
             Container(
               width: 1,
               height: 40,
-              color: Colors.grey.shade700,
+              color: FormTheme.border,
             ),
             // Wealth and Renown
             Expanded(
@@ -117,7 +121,7 @@ class ProgressionRowWidget extends StatelessWidget {
                 children: [
                   _buildEconomyItem(
                     context,
-                    icon: Icons.paid_outlined,
+                    icon: CombatIcons.wealth,
                     label: HeroMainStatsViewText.progressionWealthLabel,
                     baseValue: stats?.wealthBase ?? 0,
                     totalValue: stats?.wealthTotal ?? 0,
@@ -127,7 +131,7 @@ class ProgressionRowWidget extends StatelessWidget {
                   ),
                   _buildEconomyItem(
                     context,
-                    icon: Icons.military_tech_outlined,
+                    icon: CombatIcons.renown,
                     label: HeroMainStatsViewText.progressionRenownLabel,
                     baseValue: stats?.renownBase ?? 0,
                     totalValue: stats?.renownTotal ?? 0,
@@ -146,7 +150,7 @@ class ProgressionRowWidget extends StatelessWidget {
 
   Widget _buildProgressionItem(
     BuildContext context, {
-    required IconData icon,
+    required AppIconData icon,
     required String label,
     required NumericField field,
   }) {
@@ -168,13 +172,13 @@ class ProgressionRowWidget extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 16, color: Colors.amber.shade400),
+            AppIcon(icon, size: 16, color: Colors.amber.shade400),
             const SizedBox(height: 2),
             Text(
               value.toString(),
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: FormTheme.textBright,
               ),
             ),
           ],
@@ -185,7 +189,7 @@ class ProgressionRowWidget extends StatelessWidget {
 
   Widget _buildEconomyItem(
     BuildContext context, {
-    required IconData icon,
+    required AppIconData icon,
     required String label,
     required int baseValue,
     required int totalValue,
@@ -213,7 +217,7 @@ class ProgressionRowWidget extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 16, color: color),
+            AppIcon(icon, size: 16, color: color),
             const SizedBox(height: 2),
             Row(
               mainAxisSize: MainAxisSize.min,
@@ -222,7 +226,7 @@ class ProgressionRowWidget extends StatelessWidget {
                   totalValue.toString(),
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: FormTheme.textBright,
                   ),
                 ),
                 if (modValue != 0)

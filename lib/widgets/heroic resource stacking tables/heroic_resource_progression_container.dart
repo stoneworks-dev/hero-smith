@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../core/models/heroic_resource_progression.dart';
 import '../../core/theme/heroic_resource_theme.dart';
 import '../../core/services/heroic_resource_progression_service.dart';
+import '../../core/theme/ability_colors.dart';
+import '../../core/theme/form_theme.dart';
 import '../../core/theme/app_colors.dart';
 import 'heroic_resource_gauge.dart';
 
@@ -220,7 +222,7 @@ class _HeroicResourceProgressionContainerState
     return Container(
       padding: EdgeInsets.all(widget.showCompact ? 12 : 16),
       decoration: BoxDecoration(
-        color: isDark ? HeroicResourceTheme.surface : Colors.white,
+        color: isDark ? HeroicResourceTheme.surface : FormTheme.textBright,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: resourceColor.withOpacity(0.3),
@@ -243,7 +245,7 @@ class _HeroicResourceProgressionContainerState
             'Loading progression...',
             style: TextStyle(
               fontSize: 12,
-              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+              color: isDark ? FormTheme.textSecondary : FormTheme.borderLight,
             ),
           ),
         ],
@@ -300,12 +302,12 @@ class _HeroicResourceProgressionContainerState
   Widget _buildAwaitingKitState() {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final resourceColor = AppColors.ferocityColor;
+    final resourceColor = AbilityColors.ferocity;
 
     return Container(
       padding: EdgeInsets.all(widget.showCompact ? 12 : 16),
       decoration: BoxDecoration(
-        color: isDark ? HeroicResourceTheme.surface : Colors.white,
+        color: isDark ? HeroicResourceTheme.surface : FormTheme.textBright,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: resourceColor.withOpacity(0.3),
@@ -333,7 +335,7 @@ class _HeroicResourceProgressionContainerState
             style: TextStyle(
               fontSize: widget.showCompact ? 14 : 16,
               fontWeight: FontWeight.w700,
-              color: isDark ? Colors.white : Colors.grey.shade900,
+              color: isDark ? FormTheme.textBright : FormTheme.surfaceDark,
             ),
           ),
           const SizedBox(height: 4),
@@ -342,7 +344,7 @@ class _HeroicResourceProgressionContainerState
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: widget.showCompact ? 11 : 12,
-              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+              color: isDark ? FormTheme.textSecondary : FormTheme.borderLight,
             ),
           ),
           const SizedBox(height: 8),
@@ -388,10 +390,10 @@ class _HeroicResourceProgressionContainerState
     return Container(
       padding: EdgeInsets.all(widget.showCompact ? 12 : 16),
       decoration: BoxDecoration(
-        color: isDark ? HeroicResourceTheme.surface : Colors.white,
+        color: isDark ? HeroicResourceTheme.surface : FormTheme.textBright,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: Colors.grey.shade400,
+          color: FormTheme.textSecondary,
           width: 1,
         ),
       ),
@@ -408,7 +410,7 @@ class _HeroicResourceProgressionContainerState
               'Select a subclass to view your ${_getResourceName()} progression',
               style: TextStyle(
                 fontSize: 12,
-                color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                color: isDark ? FormTheme.textSecondary : FormTheme.borderLight,
               ),
             ),
           ),
@@ -421,9 +423,9 @@ class _HeroicResourceProgressionContainerState
     final resourceType = _service.getResourceType(widget.className);
     switch (resourceType) {
       case HeroicResourceType.ferocity:
-        return AppColors.ferocityColor;
+        return AbilityColors.ferocity;
       case HeroicResourceType.discipline:
-        return AppColors.disciplineColor;
+        return AbilityColors.discipline;
       default:
         return AppColors.primary;
     }

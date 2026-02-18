@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../core/models/feature.dart';
+import '../../core/text/widgets/feature_widget_text.dart';
+import '../../core/theme/app_icon.dart';
+import '../../core/theme/app_icons.dart';
 import '../../core/theme/feature_tokens.dart';
 import '../../features/main_pages/strife/level_detail_page.dart';
 
@@ -79,8 +82,8 @@ class LevelDropdownCard extends StatelessWidget {
                       width: 1.5,
                     ),
                   ),
-                  child: Icon(
-                    _getLevelIcon(level),
+                  child: AppIcon(
+                    LevelIcons.fromLevel(level),
                     color: levelColor,
                     size: 28,
                   ),
@@ -94,7 +97,7 @@ class LevelDropdownCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Level $level',
+                        FeatureWidgetText.levelLabelDynamic(level),
                         style: theme.textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.w700,
                           color: levelColor,
@@ -133,10 +136,4 @@ class LevelDropdownCard extends StatelessWidget {
     );
   }
 
-  IconData _getLevelIcon(int level) {
-    if (level <= 3) return Icons.star_outline;
-    if (level <= 6) return Icons.star_half;
-    if (level <= 9) return Icons.star;
-    return Icons.auto_awesome;
-  }
 }

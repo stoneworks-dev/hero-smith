@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/db/providers.dart';
 import '../../../core/models/component.dart';
+import '../../../core/text/main_pages/story/titles_page_text.dart';
+import '../../../core/theme/form_theme.dart';
 import '../../../widgets/titles/title_card.dart';
 
 class TitlesPage extends ConsumerWidget {
@@ -10,13 +12,13 @@ class TitlesPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final titlesAsync = ref.watch(componentsByTypeProvider('title'));
     return Scaffold(
-      appBar: AppBar(title: const Text('Titles')),
+      appBar: AppBar(title: Text(TitlesPageText.appBarTitle)),
       body: titlesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Error: $e')),
+        error: (e, _) => Center(child: Text(TitlesPageText.errorMessage(e))),
         data: (titles) {
           if (titles.isEmpty) {
-            return const Center(child: Text('No titles found.'));
+            return Center(child: Text(TitlesPageText.noTitlesFound));
           }
 
           // Group by echelon (1..4) others as 0/unknown
@@ -50,7 +52,7 @@ class TitlesPage extends ConsumerWidget {
 
   Widget _buildGroup(BuildContext context, int echelon, List<Component> titles) {
     titles.sort((a, b) => a.name.compareTo(b.name));
-    final title = echelon > 0 ? 'Echelon $echelon' : 'Other Titles';
+    final title = echelon > 0 ? TitlesPageText.echelonGroup(echelon) : TitlesPageText.otherTitles;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -71,7 +73,7 @@ class TitlesPage extends ConsumerWidget {
                 ),
                 child: Text(
                   '${titles.length}',
-                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white),
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: FormTheme.textBright),
                 ),
               ),
             ],

@@ -76,7 +76,7 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab>
     } catch (e) {
       setState(() {
         _isLoading = false;
-        _errorMessage = 'Failed to load languages: $e';
+        _errorMessage = SheetStoryLanguagesTabText.failedToLoadLanguages(e);
       });
     }
   }
@@ -143,7 +143,7 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab>
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to add language: $e')),
+          SnackBar(content: Text(SheetStoryLanguagesTabText.failedToAddLanguage(e))),
         );
       }
     }
@@ -164,7 +164,7 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab>
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to remove language: $e')),
+          SnackBar(content: Text(SheetStoryLanguagesTabText.failedToRemoveLanguage(e))),
         );
       }
     }
@@ -257,7 +257,7 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab>
               onPressed: _loadData,
               style: ElevatedButton.styleFrom(
                 backgroundColor: _languagesColor,
-                foregroundColor: Colors.white,
+                foregroundColor: FormTheme.textBright,
               ),
               child: const Text(SheetStoryCommonText.retry),
             ),
@@ -294,7 +294,7 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab>
                 decoration: BoxDecoration(
                   color: NavigationTheme.cardBackgroundDark,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey.shade800),
+                  border: Border.all(color: FormTheme.borderDim),
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
@@ -312,24 +312,24 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab>
                         color: _languagesColor.withAlpha(51),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Icon(Icons.translate, color: _languagesColor, size: 24),
+                      child: AppIcon(LanguageTypeIcons.tab, color: _languagesColor, size: 24),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
+                          Text(
                             SheetStoryLanguagesTabText.languagesTitle,
                             style: TextStyle(
-                              color: Colors.white,
+                              color: FormTheme.textBright,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
-                            '${selectedComponents.length} languages known',
-                            style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+                            SheetStoryLanguagesTabText.languagesKnown(selectedComponents.length),
+                            style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
                           ),
                         ],
                       ),
@@ -344,11 +344,11 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab>
                     padding: const EdgeInsets.all(32),
                     child: Column(
                       children: [
-                        Icon(Icons.language_outlined, size: 48, color: Colors.grey.shade600),
+                        Icon(Icons.language_outlined, size: 48, color: FormTheme.borderLight),
                         const SizedBox(height: 16),
                         Text(
                           SheetStoryLanguagesTabText.emptyState,
-                          style: TextStyle(color: Colors.grey.shade400),
+                          style: TextStyle(color: FormTheme.textSecondary),
                           textAlign: TextAlign.center,
                         ),
                       ],
@@ -376,6 +376,8 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab>
                               ),
                             ),
                             const SizedBox(width: 8),
+                            AppIcon(LanguageTypeIcons.fromType(groupName), color: _languagesColor, size: 18),
+                            const SizedBox(width: 6),
                             Text(
                               groupName,
                               style: const TextStyle(
@@ -510,11 +512,11 @@ class _AddLanguageDialogState extends State<_AddLanguageDialog> {
                     child: const Icon(Icons.translate, color: _languagesColor, size: 24),
                   ),
                   const SizedBox(width: 12),
-                  const Expanded(
+                  Expanded(
                     child: Text(
                       SheetStoryLanguagesTabText.addLanguageDialogTitle,
                       style: TextStyle(
-                        color: Colors.white,
+                        color: FormTheme.textBright,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -531,11 +533,11 @@ class _AddLanguageDialogState extends State<_AddLanguageDialog> {
             Padding(
               padding: const EdgeInsets.all(16),
               child: TextField(
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(color: FormTheme.textBright),
                 decoration: InputDecoration(
                   labelText: SheetStoryLanguagesTabText.searchLanguagesLabel,
-                  labelStyle: TextStyle(color: Colors.grey.shade400),
-                  prefixIcon: Icon(Icons.search, color: Colors.grey.shade400),
+                  labelStyle: TextStyle(color: FormTheme.textSecondary),
+                  prefixIcon: Icon(Icons.search, color: FormTheme.textSecondary),
                   filled: true,
                   fillColor: StoryTheme.cardBackground,
                   border: OutlineInputBorder(
@@ -577,11 +579,11 @@ class _AddLanguageDialogState extends State<_AddLanguageDialog> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.search_off, size: 48, color: Colors.grey.shade600),
+                            Icon(Icons.search_off, size: 48, color: FormTheme.borderLight),
                             const SizedBox(height: 16),
                             Text(
                               SheetStoryLanguagesTabText.noLanguagesFound,
-                              style: TextStyle(color: Colors.grey.shade400),
+                              style: TextStyle(color: FormTheme.textSecondary),
                             ),
                           ],
                         ),
@@ -621,12 +623,12 @@ class _AddLanguageDialogState extends State<_AddLanguageDialog> {
                           ...languages.map((lang) {
                             String subtitle = '';
                             if (lang.region.isNotEmpty) {
-                              subtitle = 'Region: ${lang.region}';
+                              subtitle = SheetStoryLanguagesTabText.region(lang.region);
                             }
                             if (lang.ancestry.isNotEmpty) {
                               subtitle = subtitle.isEmpty
-                                  ? 'Ancestry: ${lang.ancestry}'
-                                  : '$subtitle • Ancestry: ${lang.ancestry}';
+                                  ? SheetStoryLanguagesTabText.ancestry(lang.ancestry)
+                                  : '$subtitle • ${SheetStoryLanguagesTabText.ancestry(lang.ancestry)}';
                             }
 
                             return Container(
@@ -634,7 +636,7 @@ class _AddLanguageDialogState extends State<_AddLanguageDialog> {
                               decoration: BoxDecoration(
                                 color: StoryTheme.cardBackground,
                                 borderRadius: BorderRadius.circular(8),
-                                border: Border.all(color: Colors.grey.shade800),
+                                border: Border.all(color: FormTheme.borderDim),
                               ),
                               child: ListTile(
                                 dense: true,
@@ -649,12 +651,12 @@ class _AddLanguageDialogState extends State<_AddLanguageDialog> {
                                 ),
                                 title: Text(
                                   lang.name,
-                                  style: const TextStyle(color: Colors.white, fontSize: 14),
+                                  style: TextStyle(color: FormTheme.textBright, fontSize: 14),
                                 ),
                                 subtitle: subtitle.isNotEmpty
                                     ? Text(
                                         subtitle,
-                                        style: TextStyle(color: Colors.grey.shade500, fontSize: 11),
+                                        style: TextStyle(color: FormTheme.textMuted, fontSize: 11),
                                       )
                                     : null,
                                 onTap: () => widget.onLanguageSelected(lang.id),
@@ -785,13 +787,13 @@ class _CreateCustomLanguageDialogState
   }) {
     return TextFormField(
       controller: controller,
-      style: const TextStyle(color: Colors.white),
+      style: TextStyle(color: FormTheme.textBright),
       maxLines: maxLines,
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
-        labelStyle: TextStyle(color: Colors.grey.shade400),
-        hintStyle: TextStyle(color: Colors.grey.shade600),
+        labelStyle: TextStyle(color: FormTheme.textSecondary),
+        hintStyle: TextStyle(color: FormTheme.borderLight),
         filled: true,
         fillColor: StoryTheme.cardBackground,
         border: OutlineInputBorder(
@@ -848,12 +850,12 @@ class _CreateCustomLanguageDialogState
                             color: _languagesColor, size: 24),
                       ),
                       const SizedBox(width: 12),
-                      const Expanded(
+                      Expanded(
                         child: Text(
                           SheetStoryLanguagesTabText
                               .createCustomLanguageTitle,
                           style: TextStyle(
-                            color: Colors.white,
+                            color: FormTheme.textBright,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -891,14 +893,14 @@ class _CreateCustomLanguageDialogState
                         DropdownButtonFormField<String>(
                           value: _selectedType,
                           dropdownColor: NavigationTheme.cardBackgroundDark,
-                          style: const TextStyle(color: Colors.white),
+                          style: TextStyle(color: FormTheme.textBright),
                           decoration: InputDecoration(
                             labelText:
                                 SheetStoryLanguagesTabText.languageTypeLabel,
                             hintText:
                                 SheetStoryLanguagesTabText.languageTypeHint,
-                            labelStyle: TextStyle(color: Colors.grey.shade400),
-                            hintStyle: TextStyle(color: Colors.grey.shade600),
+                            labelStyle: TextStyle(color: FormTheme.textSecondary),
+                            hintStyle: TextStyle(color: FormTheme.borderLight),
                             filled: true,
                             fillColor: StoryTheme.cardBackground,
                             border: OutlineInputBorder(
@@ -939,8 +941,8 @@ class _CreateCustomLanguageDialogState
                           ),
                           label: Text(
                             _useCustomType
-                                ? 'Pick from list'
-                                : 'Custom type',
+                                ? SheetStoryLanguagesTabText.pickFromList
+                                : SheetStoryLanguagesTabText.customType,
                             style: const TextStyle(
                                 color: _languagesColor, fontSize: 12),
                           ),
@@ -990,7 +992,7 @@ class _CreateCustomLanguageDialogState
                             onPressed: () => Navigator.of(context).pop(),
                             child: Text(
                               SheetStoryLanguagesTabText.cancelButton,
-                              style: TextStyle(color: Colors.grey.shade400),
+                              style: TextStyle(color: FormTheme.textSecondary),
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -998,18 +1000,18 @@ class _CreateCustomLanguageDialogState
                             onPressed: _isSaving ? null : _submit,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: _languagesColor,
-                              foregroundColor: Colors.white,
+                              foregroundColor: FormTheme.textBright,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
                             child: _isSaving
-                                ? const SizedBox(
+                                ? SizedBox(
                                     width: 18,
                                     height: 18,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2,
-                                      color: Colors.white,
+                                      color: FormTheme.textBright,
                                     ),
                                   )
                                 : const Text(

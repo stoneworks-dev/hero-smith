@@ -1,13 +1,15 @@
+import '../../common/common_text.dart';
+
 /// Copy for the coin purse UI.
 class CoinPurseText {
   CoinPurseText._();
 
   static const colorLabel = 'Color';
-  static const cancel = 'Cancel';
-  static const add = 'Add';
-  static const save = 'Save';
-  static const edit = 'Edit';
-  static const delete = 'Delete';
+  static const cancel = CommonText.cancel;
+  static const add = CommonText.add;
+  static const save = CommonText.save;
+  static const edit = CommonText.edit;
+  static const delete = CommonText.delete;
   static const emptyState = 'No coins yet. Tap + to add.';
   static const addCoinTitle = 'Add Coin';
   static const editCoinTitle = 'Edit Coin';

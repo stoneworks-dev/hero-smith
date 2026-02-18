@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../core/models/component.dart' as model;
+import '../../core/text/widgets/treasure_card_text.dart';
 import 'base_treasure_card.dart';
+import '../../core/theme/form_theme.dart';
 import '../../core/theme/treasure_theme.dart';
 
 /// Widget for displaying leveled treasures with their three level variants
@@ -71,7 +73,7 @@ class LeveledTreasureCard extends StatelessWidget {
       child: Text(
         leveledType.toUpperCase(),
         style: TreasureTheme.keywordChipStyle.copyWith(
-          color: Colors.white,
+          color: FormTheme.textBright,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -88,7 +90,7 @@ class LeveledTreasureCard extends StatelessWidget {
     }
 
     return EffectSection(
-      title: 'BASE EFFECT',
+      title: TreasureCardText.baseEffect,
       text: effectDescription,
       colorScheme: colorScheme,
     );
@@ -109,7 +111,7 @@ class LeveledTreasureCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'LEVEL VARIANTS',
+          TreasureCardText.levelVariants,
           style: TreasureTheme.sectionTitleStyle.copyWith(
             color: TreasureTheme.getTextColor(context),
           ),
@@ -163,7 +165,7 @@ class LeveledTreasureCard extends StatelessWidget {
               ),
             ),
             child: Text(
-              'LEVEL $level',
+              TreasureCardText.levelLabel(level),
               style: TreasureTheme.levelHeaderStyle,
             ),
           ),

@@ -10,6 +10,9 @@ import '../../../core/db/providers.dart';
 import '../../../core/models/component.dart';
 import '../../../core/models/hero_assembled_model.dart';
 import '../../../core/text/heroes_sheet/main_stats/conditions_tracker_text.dart';
+import '../../../core/theme/form_theme.dart';
+import '../../../core/theme/app_icon.dart';
+import '../../../core/theme/app_icons.dart';
 import '../../../core/theme/navigation_theme.dart';
 
 /// Information about a condition immunity and its source
@@ -378,7 +381,7 @@ class _ConditionsTrackerWidgetState
             surfaceTintColor: Colors.transparent,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
-              side: BorderSide(color: Colors.grey.shade800),
+              side: BorderSide(color: FormTheme.borderDim),
             ),
             title: Row(
               children: [
@@ -394,7 +397,7 @@ class _ConditionsTrackerWidgetState
                 const Expanded(
                   child: Text(
                     ConditionsTrackerText.saveEndsEditTitle,
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: FormTheme.textBright),
                   ),
                 ),
               ],
@@ -410,7 +413,7 @@ class _ConditionsTrackerWidgetState
                   children: [
                     Text(
                       '${ConditionsTrackerText.saveEndsBaseLabelPrefix}$_saveEndsBase',
-                      style: TextStyle(color: Colors.grey.shade400),
+                      style: TextStyle(color: FormTheme.textSecondary),
                     ),
                     const SizedBox(height: 8),
                     Text(
@@ -426,21 +429,21 @@ class _ConditionsTrackerWidgetState
                       controller: modController,
                       autofocus: true,
                       keyboardType: const TextInputType.numberWithOptions(signed: true),
-                      style: const TextStyle(color: Colors.white),
+                      style: const TextStyle(color: FormTheme.textBright),
                       decoration: InputDecoration(
                         labelText: ConditionsTrackerText.saveEndsModifierLabel,
-                        labelStyle: TextStyle(color: Colors.grey.shade400),
+                        labelStyle: TextStyle(color: FormTheme.textSecondary),
                         border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey.shade700),
+                          borderSide: BorderSide(color: FormTheme.border),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey.shade700),
+                          borderSide: BorderSide(color: FormTheme.border),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.orange.shade400),
                         ),
                         helperText: ConditionsTrackerText.saveEndsHelperText,
-                        helperStyle: TextStyle(color: Colors.grey.shade500),
+                        helperStyle: TextStyle(color: FormTheme.textMuted),
                       ),
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp(r'^-?\d*')),
@@ -457,14 +460,14 @@ class _ConditionsTrackerWidgetState
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                style: TextButton.styleFrom(foregroundColor: Colors.grey.shade400),
+                style: TextButton.styleFrom(foregroundColor: FormTheme.textSecondary),
                 child: const Text(ConditionsTrackerText.saveEndsCancelLabel),
               ),
               FilledButton(
                 onPressed: () => Navigator.of(context).pop(true),
                 style: FilledButton.styleFrom(
                   backgroundColor: Colors.orange.shade600,
-                  foregroundColor: Colors.white,
+                  foregroundColor: FormTheme.textBright,
                 ),
                 child: const Text(ConditionsTrackerText.saveEndsSaveLabel),
               ),
@@ -530,7 +533,7 @@ class _ConditionsTrackerWidgetState
               surfaceTintColor: Colors.transparent,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
-                side: BorderSide(color: Colors.grey.shade800),
+                side: BorderSide(color: FormTheme.borderDim),
               ),
               title: Row(
                 children: [
@@ -545,7 +548,7 @@ class _ConditionsTrackerWidgetState
                   const SizedBox(width: 12),
                   const Text(
                     ConditionsTrackerText.addConditionDialogTitle,
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: FormTheme.textBright),
                   ),
                 ],
               ),
@@ -562,14 +565,14 @@ class _ConditionsTrackerWidgetState
                           return Container(
                             margin: const EdgeInsets.only(top: 8),
                             decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey.shade700),
+                              border: Border.all(color: FormTheme.border),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: ListTile(
                               leading: Icon(Icons.add_circle_outline, color: Colors.orange.shade400),
                               title: const Text(
                                 ConditionsTrackerText.addConditionCustomOptionLabel,
-                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                                style: TextStyle(fontWeight: FontWeight.bold, color: FormTheme.textBright),
                               ),
                               onTap: () {
                                 Navigator.of(context).pop();
@@ -581,12 +584,12 @@ class _ConditionsTrackerWidgetState
                         
                         final condition = conditions[index];
                         return ListTile(
-                          title: Text(condition.name, style: const TextStyle(color: Colors.white)),
+                          title: Text(condition.name, style: const TextStyle(color: FormTheme.textBright)),
                           subtitle: Text(
                             condition.data['short_description'] as String? ?? '',
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(color: Colors.grey.shade400),
+                            style: TextStyle(color: FormTheme.textSecondary),
                           ),
                           onTap: () => _addCondition(condition),
                         );
@@ -605,7 +608,7 @@ class _ConditionsTrackerWidgetState
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  style: TextButton.styleFrom(foregroundColor: Colors.grey.shade400),
+                  style: TextButton.styleFrom(foregroundColor: FormTheme.textSecondary),
                   child: const Text(ConditionsTrackerText.addConditionCancelLabel),
                 ),
               ],
@@ -630,7 +633,7 @@ class _ConditionsTrackerWidgetState
             surfaceTintColor: Colors.transparent,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
-              side: BorderSide(color: Colors.grey.shade800),
+              side: BorderSide(color: FormTheme.borderDim),
             ),
             title: Row(
               children: [
@@ -645,7 +648,7 @@ class _ConditionsTrackerWidgetState
                 const SizedBox(width: 12),
                 const Text(
                   ConditionsTrackerText.customConditionDialogTitle,
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: FormTheme.textBright),
                 ),
               ],
             ),
@@ -655,15 +658,15 @@ class _ConditionsTrackerWidgetState
                 children: [
                   TextField(
                     controller: nameController,
-                    style: const TextStyle(color: Colors.white),
+                    style: const TextStyle(color: FormTheme.textBright),
                     decoration: InputDecoration(
                       labelText: ConditionsTrackerText.customConditionNameLabel,
-                      labelStyle: TextStyle(color: Colors.grey.shade400),
+                      labelStyle: TextStyle(color: FormTheme.textSecondary),
                       border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade700),
+                        borderSide: BorderSide(color: FormTheme.border),
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade700),
+                        borderSide: BorderSide(color: FormTheme.border),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.purple.shade400),
@@ -674,42 +677,42 @@ class _ConditionsTrackerWidgetState
                   const SizedBox(height: 12),
                   TextField(
                     controller: shortDescController,
-                    style: const TextStyle(color: Colors.white),
+                    style: const TextStyle(color: FormTheme.textBright),
                     decoration: InputDecoration(
                       labelText: ConditionsTrackerText.customConditionShortDescLabel,
-                      labelStyle: TextStyle(color: Colors.grey.shade400),
+                      labelStyle: TextStyle(color: FormTheme.textSecondary),
                       border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade700),
+                        borderSide: BorderSide(color: FormTheme.border),
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade700),
+                        borderSide: BorderSide(color: FormTheme.border),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.purple.shade400),
                       ),
                       hintText: ConditionsTrackerText.customConditionShortDescHint,
-                      hintStyle: TextStyle(color: Colors.grey.shade600),
+                      hintStyle: TextStyle(color: FormTheme.borderLight),
                     ),
                     maxLines: 2,
                   ),
                   const SizedBox(height: 12),
                   TextField(
                     controller: longDescController,
-                    style: const TextStyle(color: Colors.white),
+                    style: const TextStyle(color: FormTheme.textBright),
                     decoration: InputDecoration(
                       labelText: ConditionsTrackerText.customConditionLongDescLabel,
-                      labelStyle: TextStyle(color: Colors.grey.shade400),
+                      labelStyle: TextStyle(color: FormTheme.textSecondary),
                       border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade700),
+                        borderSide: BorderSide(color: FormTheme.border),
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade700),
+                        borderSide: BorderSide(color: FormTheme.border),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.purple.shade400),
                       ),
                       hintText: ConditionsTrackerText.customConditionLongDescHint,
-                      hintStyle: TextStyle(color: Colors.grey.shade600),
+                      hintStyle: TextStyle(color: FormTheme.borderLight),
                     ),
                     maxLines: 4,
                   ),
@@ -719,7 +722,7 @@ class _ConditionsTrackerWidgetState
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                style: TextButton.styleFrom(foregroundColor: Colors.grey.shade400),
+                style: TextButton.styleFrom(foregroundColor: FormTheme.textSecondary),
                 child: const Text(ConditionsTrackerText.customConditionCancelLabel),
               ),
               FilledButton(
@@ -730,7 +733,7 @@ class _ConditionsTrackerWidgetState
                 },
                 style: FilledButton.styleFrom(
                   backgroundColor: Colors.purple.shade600,
-                  foregroundColor: Colors.white,
+                  foregroundColor: FormTheme.textBright,
                 ),
                 child: const Text(ConditionsTrackerText.customConditionCreateLabel),
               ),
@@ -806,7 +809,7 @@ class _ConditionsTrackerWidgetState
               surfaceTintColor: Colors.transparent,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
-                side: BorderSide(color: Colors.grey.shade800),
+                side: BorderSide(color: FormTheme.borderDim),
               ),
               title: Row(
                 children: [
@@ -822,7 +825,7 @@ class _ConditionsTrackerWidgetState
                   Expanded(
                     child: Text(
                       trackedCondition.conditionName,
-                      style: const TextStyle(color: Colors.white),
+                      style: const TextStyle(color: FormTheme.textBright),
                     ),
                   ),
                 ],
@@ -860,7 +863,7 @@ class _ConditionsTrackerWidgetState
                               ),
                             ),
                             const SizedBox(height: 8),
-                            Text(shortDesc, style: const TextStyle(color: Colors.white)),
+                            Text(shortDesc, style: const TextStyle(color: FormTheme.textBright)),
                             const SizedBox(height: 16),
                           ],
                           if (longDesc.isNotEmpty) ...[
@@ -873,7 +876,7 @@ class _ConditionsTrackerWidgetState
                               ),
                             ),
                             const SizedBox(height: 8),
-                            Text(longDesc, style: TextStyle(color: Colors.grey.shade300)),
+                            Text(longDesc, style: TextStyle(color: FormTheme.textSecondary)),
                           ],
                         ],
                       ),
@@ -894,7 +897,7 @@ class _ConditionsTrackerWidgetState
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  style: TextButton.styleFrom(foregroundColor: Colors.grey.shade400),
+                  style: TextButton.styleFrom(foregroundColor: FormTheme.textSecondary),
                   child: const Text(ConditionsTrackerText.conditionDetailsCloseLabel),
                 ),
               ],
@@ -921,7 +924,7 @@ class _ConditionsTrackerWidgetState
       decoration: BoxDecoration(
         color: NavigationTheme.cardBackgroundDark,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade800),
+        border: Border.all(color: FormTheme.borderDim),
       ),
       child: Padding(
         padding: const EdgeInsets.all(12),
@@ -937,7 +940,7 @@ class _ConditionsTrackerWidgetState
                     color: Colors.orange.withAlpha(40),
                     borderRadius: BorderRadius.circular(6),
                   ),
-                  child: Icon(Icons.warning_amber_rounded, size: 18, color: Colors.orange.shade400),
+                  child: AppIcon(CombatIcons.conditions, size: 18, color: Colors.orange.shade400),
                 ),
                 const SizedBox(width: 8),
                 Text(
@@ -945,7 +948,7 @@ class _ConditionsTrackerWidgetState
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
-                    color: Colors.white,
+                    color: FormTheme.textBright,
                   ),
                 ),
                 const Spacer(),
@@ -956,7 +959,7 @@ class _ConditionsTrackerWidgetState
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: Colors.grey.shade800,
+                      color: FormTheme.surfaceMuted,
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Row(
@@ -965,7 +968,7 @@ class _ConditionsTrackerWidgetState
                         Text(
                           ConditionsTrackerText.saveEndsLabelPrefix,
                           style: TextStyle(
-                            color: Colors.grey.shade400,
+                            color: FormTheme.textSecondary,
                             fontSize: 12,
                           ),
                         ),
@@ -973,7 +976,7 @@ class _ConditionsTrackerWidgetState
                           '>=$_saveEndsTotal',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            color: FormTheme.textBright,
                           ),
                         ),
                         if (_saveEndsMod != 0)
@@ -1001,7 +1004,7 @@ class _ConditionsTrackerWidgetState
                   child: Text(
                     ConditionsTrackerText.conditionsEmptyLabel,
                     style: TextStyle(
-                      color: Colors.grey.shade500,
+                      color: FormTheme.textMuted,
                     ),
                   ),
                 ),
@@ -1031,7 +1034,7 @@ class _ConditionsTrackerWidgetState
             // Condition Immunities section
             if (_conditionImmunities.isNotEmpty) ...[
               const SizedBox(height: 16),
-              Divider(color: Colors.grey.shade700),
+              Divider(color: FormTheme.border),
               const SizedBox(height: 8),
               _buildConditionImmunitiesSection(context),
             ],
@@ -1053,7 +1056,7 @@ class _ConditionsTrackerWidgetState
                 color: Colors.green.withAlpha(40),
                 borderRadius: BorderRadius.circular(4),
               ),
-              child: Icon(Icons.shield_outlined, size: 16, color: Colors.green.shade400),
+              child: AppIcon(CombatIcons.damageResistances, size: 16, color: Colors.green.shade400),
             ),
             const SizedBox(width: 8),
             Text(
@@ -1119,10 +1122,10 @@ class _ConditionsTrackerWidgetState
       padding: const EdgeInsets.only(bottom: 6),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.grey.shade800.withAlpha(100),
+          color: FormTheme.surfaceMuted,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: Colors.grey.shade700,
+            color: FormTheme.border,
           ),
         ),
         child: Row(
@@ -1138,7 +1141,7 @@ class _ConditionsTrackerWidgetState
                     condition.conditionName,
                     style: const TextStyle(
                       fontWeight: FontWeight.w500,
-                      color: Colors.white,
+                      color: FormTheme.textBright,
                     ),
                   ),
                 ),
@@ -1147,7 +1150,7 @@ class _ConditionsTrackerWidgetState
             // End type selector (segmented style)
             Container(
               decoration: BoxDecoration(
-                color: Colors.grey.shade800,
+                color: FormTheme.surfaceMuted,
                 borderRadius: BorderRadius.circular(6),
               ),
               padding: const EdgeInsets.all(2),
@@ -1177,7 +1180,7 @@ class _ConditionsTrackerWidgetState
             ),
             // Delete button
             IconButton(
-              icon: Icon(Icons.close, size: 18, color: Colors.grey.shade500),
+              icon: Icon(Icons.close, size: 18, color: FormTheme.textMuted),
               padding: const EdgeInsets.all(8),
               constraints: const BoxConstraints(),
               visualDensity: VisualDensity.compact,
@@ -1205,8 +1208,8 @@ class _ConditionsTrackerWidgetState
           label,
           style: TextStyle(
             color: isSelected 
-                ? Colors.white 
-                : Colors.grey.shade500,
+                ? FormTheme.textBright 
+                : FormTheme.textMuted,
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
             fontSize: 11,
           ),

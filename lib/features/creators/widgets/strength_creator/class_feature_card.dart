@@ -225,7 +225,7 @@ class _FeatureCardState extends State<_FeatureCard>
 
 class _FeatureStyle {
   final Color borderColor;
-  final IconData icon;
+  final AppIconData icon;
   final String label;
 
   const _FeatureStyle({
@@ -243,7 +243,7 @@ class _FeatureStyle {
       case 'granted':
         return _FeatureStyle(
           borderColor: Colors.green.shade600,
-          icon: Icons.check_circle_outline,
+          icon: const MaterialIcon(Icons.check_circle_outline),
           label: ClassFeatureCardText.grantedLabel,
         );
       case 'pick':
@@ -252,26 +252,26 @@ class _FeatureStyle {
         if (hasOptionsRequiringChoice) {
           return _FeatureStyle(
             borderColor: Colors.orange.shade600,
-            icon: Icons.touch_app_outlined,
+            icon: const MaterialIcon(Icons.touch_app_outlined),
             label: ClassFeatureCardText.choiceRequiredLabel,
           );
         }
         if (isSubclass) {
           return _FeatureStyle(
             borderColor: Colors.purple.shade500,
-            icon: Icons.star_outline_rounded,
+            icon: AbilityIcons.feature,
             label: ClassFeatureCardText.subclassFeatureLabel,
           );
         }
         return _FeatureStyle(
           borderColor: Colors.blueGrey.shade400,
-          icon: Icons.category_outlined,
+          icon: AbilityIcons.subclass,
           label: ClassFeatureCardText.classFeatureLabel,
         );
       case 'ability':
         return _FeatureStyle(
           borderColor: Colors.blue.shade600,
-          icon: Icons.auto_awesome_outlined,
+          icon: AbilityIcons.abilityGrant,
           label: ClassFeatureCardText.abilityGrantedLabel,
         );
       default:
@@ -279,20 +279,20 @@ class _FeatureStyle {
         if (hasOptionsRequiringChoice) {
           return _FeatureStyle(
             borderColor: Colors.orange.shade600,
-            icon: Icons.touch_app_outlined,
+            icon: const MaterialIcon(Icons.touch_app_outlined),
             label: ClassFeatureCardText.choiceRequiredLabel,
           );
         }
         if (isSubclass) {
           return _FeatureStyle(
             borderColor: Colors.purple.shade500,
-            icon: Icons.star_outline_rounded,
+            icon: AbilityIcons.feature,
             label: ClassFeatureCardText.subclassFeatureLabel,
           );
         }
         return _FeatureStyle(
           borderColor: Colors.blueGrey.shade400,
-          icon: Icons.category_outlined,
+          icon: AbilityIcons.subclass,
           label: ClassFeatureCardText.classFeatureLabel,
         );
     }

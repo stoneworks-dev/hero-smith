@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/db/providers.dart';
+import '../../../core/theme/app_icon.dart';
+import '../../../core/theme/app_icons.dart';
+import '../../../core/theme/form_theme.dart';
 import '../../../core/theme/navigation_theme.dart';
 import '../../../core/text/heroes_sheet/gear/inventory_tab_text.dart';
 import 'gear_dialogs.dart';
@@ -368,7 +371,7 @@ class _InventoryTabState extends ConsumerState<InventoryTab> {
                   Text(
                     InventoryTabText.inventoryTitle,
                     style: TextStyle(
-                      color: Colors.grey.shade300,
+                      color: FormTheme.textSecondary,
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),
@@ -382,16 +385,16 @@ class _InventoryTabState extends ConsumerState<InventoryTab> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
-                            Icons.inventory_2_outlined,
+                          AppIcon(
+                            AppIcons.gear.inventoryTab,
                             size: 64,
-                            color: Colors.grey.shade600,
+                            color: FormTheme.borderLight,
                           ),
                           const SizedBox(height: 16),
                           Text(
                             InventoryTabText.emptyContainersMessage,
                             textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.grey.shade400),
+                            style: TextStyle(color: FormTheme.textSecondary),
                           ),
                         ],
                       ),
@@ -433,8 +436,8 @@ class _InventoryTabState extends ConsumerState<InventoryTab> {
               borderRadius: BorderRadius.circular(16),
               side: BorderSide(color: NavigationTheme.itemsColor, width: 1.5),
             ),
-            child: Icon(Icons.create_new_folder,
-                color: NavigationTheme.itemsColor, size: 20),
+            child: AppIcon(AppIcons.gear.container,
+                color: NavigationTheme.itemsColor, size: 22),
           ),
         ),
       ],

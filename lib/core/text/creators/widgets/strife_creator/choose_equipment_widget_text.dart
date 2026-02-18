@@ -1,4 +1,6 @@
-﻿class ChooseEquipmentWidgetText {
+﻿import '../../../common/common_text.dart';
+
+class ChooseEquipmentWidgetText {
   static const String sectionTitle = 'Equipment & Modifications';
   static const String sectionSubtitle = 'Select the loadout required by your class';
   static const String equipmentTypeTitleKit = 'Standard Kits';
@@ -13,12 +15,12 @@
   static const String equipmentTypeChipTitlePrayer = 'Prayer';
   static const String equipmentTypeChipTitleWard = 'Ward';
   static const String equipmentTypeChipTitleStormwight = 'Stormwight Kit';
-  static const String buttonLoadingLabel = 'Loading...';
+  static const String buttonLoadingLabel = CommonText.loading;
   static const String buttonSelectPrefix = 'Select ';
   static const String buttonChangePrefix = 'Change ';
   static const String selectionDialogTitlePrefix = 'Select ';
   static const String noItemsAvailable = 'No items available';
-  static const String removeLabel = 'Remove';
+  static const String removeLabel = CommonText.remove;
   static const String searchHint = 'Search equipment...';
   static const String noItemsPrefix = 'No ';
   static const String noItemsSuffix = ' available';
@@ -29,4 +31,5 @@
   static const String categoryCountPrefix = ' (';
   static const String categoryCountSuffix = ')';
   static const String unableToLoadSelectedItem = 'Unable to load selected item';
+  static const String close = CommonText.close;
 }

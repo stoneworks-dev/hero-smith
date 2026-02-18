@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hero_smith/core/db/providers.dart';
+import 'package:hero_smith/core/text/main_pages/story/complications_page_text.dart';
 import 'package:hero_smith/widgets/complications/complication_card.dart';
 
 class ComplicationsPage extends ConsumerWidget {
@@ -12,7 +13,7 @@ class ComplicationsPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Complications'),
+        title: Text(ComplicationsPageText.appBarTitle),
         backgroundColor: Theme.of(context).colorScheme.surface,
         surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
       ),
@@ -31,7 +32,7 @@ class ComplicationsPage extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                'Failed to load complications',
+                ComplicationsPageText.failedToLoad,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
               const SizedBox(height: 8),
@@ -56,7 +57,7 @@ class ComplicationsPage extends ConsumerWidget {
                   ),
                   SizedBox(height: 16),
                   Text(
-                    'No complications found',
+                    ComplicationsPageText.noComplicationsFound,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
@@ -81,7 +82,7 @@ class ComplicationsPage extends ConsumerWidget {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 24),
                   child: Text(
-                    '${sortedComplications.length} complications available',
+                    ComplicationsPageText.countAvailable(sortedComplications.length),
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                     ),

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/app_icon.dart';
+import '../../core/theme/app_icon_data.dart';
 import '../../core/theme/ds_theme.dart';
 
 class SectionLabel extends StatelessWidget {
   final String text;
   final String? emoji;
   final Color? color;
-  const SectionLabel(this.text, {super.key, this.emoji, this.color});
+  final AppIconData? icon;
+  const SectionLabel(this.text, {super.key, this.emoji, this.color, this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +18,10 @@ class SectionLabel extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.label_outline, size: 12, color: effectiveColor.withOpacity(0.9)),
+        if (icon != null)
+          AppIcon(icon!, size: 12, color: effectiveColor.withOpacity(0.9))
+        else
+          Icon(Icons.label_outline, size: 12, color: effectiveColor.withOpacity(0.9)),
         const SizedBox(width: 4),
         if (emoji != null) Text('$emoji ', style: ds.sectionLabelStyle.copyWith(color: effectiveColor)),
         Text(text, style: ds.sectionLabelStyle.copyWith(color: effectiveColor)),

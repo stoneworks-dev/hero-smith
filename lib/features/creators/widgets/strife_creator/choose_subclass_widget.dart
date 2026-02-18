@@ -5,6 +5,9 @@ import '../../../../core/models/class_data.dart';
 import '../../../../core/models/subclass_models.dart';
 import '../../../../core/services/subclass_data_service.dart';
 import '../../../../core/services/subclass_service.dart';
+import '../../../../core/theme/app_icon.dart';
+import '../../../../core/theme/app_icon_data.dart';
+import '../../../../core/theme/app_icons.dart';
 import '../../../../core/theme/creator_theme.dart';
 import '../../../../core/theme/navigation_theme.dart';
 import '../../../../core/theme/form_theme.dart';
@@ -122,7 +125,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                         ),
                         IconButton(
                           onPressed: () => Navigator.of(context).pop(),
-                          icon: Icon(Icons.close, color: Colors.grey.shade400),
+                          icon: Icon(Icons.close, color: FormTheme.textSecondary),
                           splashRadius: 20,
                         ),
                       ],
@@ -134,11 +137,11 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                     child: TextField(
                       controller: controller,
                       autofocus: false,
-                      style: const TextStyle(color: Colors.white),
+                      style: TextStyle(color: FormTheme.textBright),
                       decoration: InputDecoration(
                         hintText: ChooseSubclassWidgetText.searchHint,
-                        hintStyle: TextStyle(color: Colors.grey.shade500),
-                        prefixIcon: Icon(Icons.search, color: Colors.grey.shade500),
+                        hintStyle: TextStyle(color: FormTheme.textMuted),
+                        prefixIcon: Icon(Icons.search, color: FormTheme.textMuted),
                         filled: true,
                         fillColor: FormTheme.surface,
                         border: OutlineInputBorder(
@@ -147,7 +150,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: Colors.grey.shade700),
+                          borderSide: BorderSide(color: FormTheme.border),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -175,14 +178,14 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                               children: [
                                 Icon(
                                   Icons.search_off,
-                                  color: Colors.grey.shade600,
+                                  color: FormTheme.borderLight,
                                   size: 48,
                                 ),
                                 const SizedBox(height: 12),
                                 Text(
                                   ChooseSubclassWidgetText.noMatchesFound,
                                   style: TextStyle(
-                                    color: Colors.grey.shade500,
+                                    color: FormTheme.textMuted,
                                     fontSize: 14,
                                   ),
                                 ),
@@ -206,7 +209,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
                                   color: isNoneOption
-                                      ? Colors.grey.shade800.withValues(alpha: 0.4)
+                                      ? FormTheme.surfaceMuted
                                       : isSelected
                                           ? accentColor.withValues(alpha: 0.15)
                                           : Colors.transparent,
@@ -216,20 +219,20 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                                         )
                                       : isNoneOption
                                           ? Border.all(
-                                              color: Colors.grey.shade700,
+                                              color: FormTheme.border,
                                             )
                                           : null,
                                 ),
                                 child: ListTile(
                                   leading: isNoneOption
                                       ? Icon(Icons.remove_circle_outline,
-                                          size: 20, color: Colors.grey.shade500)
+                                          size: 20, color: FormTheme.textMuted)
                                       : null,
                                   title: Text(
                                     option.label,
                                     style: TextStyle(
                                       color: isNoneOption
-                                          ? Colors.grey.shade400
+                                          ? FormTheme.textSecondary
                                           : isSelected
                                               ? accentColor
                                               : Colors.grey.shade200,
@@ -245,7 +248,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                                       ? Text(
                                           option.subtitle!,
                                           style: TextStyle(
-                                            color: Colors.grey.shade500,
+                                            color: FormTheme.textMuted,
                                             fontSize: 12,
                                           ),
                                         )
@@ -269,13 +272,13 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       border: Border(
-                        top: BorderSide(color: Colors.grey.shade800),
+                        top: BorderSide(color: FormTheme.borderDim),
                       ),
                     ),
                     child: TextButton(
                       onPressed: () => Navigator.of(context).pop(),
                       style: TextButton.styleFrom(
-                        foregroundColor: Colors.grey.shade400,
+                        foregroundColor: FormTheme.textSecondary,
                       ),
                       child: const Text(ChooseSubclassWidgetText.cancelLabel),
                     ),
@@ -647,7 +650,7 @@ class _ChooseSubclassWidgetState extends State<ChooseSubclassWidget> {
       children.add(
         Text(
           ChooseSubclassWidgetText.domainsDetermineSubclass,
-          style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+          style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
         ),
       );
       children.add(const SizedBox(height: 16));
@@ -671,7 +674,7 @@ class _ChooseSubclassWidgetState extends State<ChooseSubclassWidget> {
           CreatorTheme.sectionHeader(
             title: ChooseSubclassWidgetText.sectionTitle,
             subtitle: ChooseSubclassWidgetText.sectionSubtitle,
-            icon: Icons.category,
+            appIcon: StoryIcons.subclass,
             accent: _accent,
           ),
           Padding(
@@ -696,7 +699,7 @@ class _ChooseSubclassWidgetState extends State<ChooseSubclassWidget> {
           CreatorTheme.sectionHeader(
             title: ChooseSubclassWidgetText.sectionTitle,
             subtitle: ChooseSubclassWidgetText.sectionSubtitle,
-            icon: Icons.category,
+            appIcon: StoryIcons.subclass,
             accent: _accent,
           ),
           child,
@@ -754,7 +757,7 @@ class _ChooseSubclassWidgetState extends State<ChooseSubclassWidget> {
           decoration: BoxDecoration(
             color: FormTheme.surface,
             borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),
-            border: Border.all(color: Colors.grey.shade700),
+            border: Border.all(color: FormTheme.border),
           ),
           child: Row(
             children: [
@@ -766,7 +769,7 @@ class _ChooseSubclassWidgetState extends State<ChooseSubclassWidget> {
                       ChooseSubclassWidgetText.subclassLabel,
                       style: TextStyle(
                         fontSize: 12,
-                        color: Colors.grey.shade400,
+                        color: FormTheme.textSecondary,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -777,14 +780,14 @@ class _ChooseSubclassWidgetState extends State<ChooseSubclassWidget> {
                       style: TextStyle(
                         fontSize: 16,
                         color: selectedOption != null
-                            ? Colors.white
-                            : Colors.grey.shade500,
+                            ? FormTheme.textBright
+                            : FormTheme.textMuted,
                       ),
                     ),
                   ],
                 ),
               ),
-              Icon(Icons.search, color: Colors.grey.shade400),
+              Icon(Icons.search, color: FormTheme.textSecondary),
             ],
           ),
         ),
@@ -797,7 +800,7 @@ class _ChooseSubclassWidgetState extends State<ChooseSubclassWidget> {
         const SizedBox(height: 12),
         Text(
           featureData.featureDescription!,
-          style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+          style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
         ),
       ],
     ];
@@ -811,13 +814,13 @@ class _ChooseSubclassWidgetState extends State<ChooseSubclassWidget> {
 
     final chips = <Widget>[];
     if (skillInfo != null && skillInfo.isNotEmpty) {
-      chips.add(_buildInfoChip(Icons.psychology_outlined, skillInfo));
+      chips.add(_buildInfoChip(StoryIcons.skills, skillInfo));
     }
     if (skillGroup != null && skillGroup.isNotEmpty) {
-      chips.add(_buildInfoChip(Icons.folder_shared_outlined, skillGroup));
+      chips.add(_buildInfoChip(StoryIcons.skills, skillGroup));
     }
     if (option.domain != null && option.domain!.isNotEmpty) {
-      chips.add(_buildInfoChip(Icons.public_outlined, option.domain!));
+      chips.add(_buildInfoChip(FeatureIcons.domain, option.domain!));
     }
 
     return Column(
@@ -825,17 +828,17 @@ class _ChooseSubclassWidgetState extends State<ChooseSubclassWidget> {
       children: [
         Text(
           option.name,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
-            color: Colors.white,
+            color: FormTheme.textBright,
           ),
         ),
         const SizedBox(height: 4),
         if (option.description != null && option.description!.isNotEmpty)
           Text(
             option.description!,
-            style: TextStyle(color: Colors.grey.shade300, fontSize: 14),
+            style: TextStyle(color: FormTheme.textSecondary, fontSize: 14),
           ),
         if (ability != null && ability.isNotEmpty) ...[
           const SizedBox(height: 8),
@@ -932,7 +935,7 @@ class _ChooseSubclassWidgetState extends State<ChooseSubclassWidget> {
           decoration: BoxDecoration(
             color: FormTheme.surface,
             borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),
-            border: Border.all(color: Colors.grey.shade700),
+            border: Border.all(color: FormTheme.border),
           ),
           child: Row(
             children: [
@@ -944,7 +947,7 @@ class _ChooseSubclassWidgetState extends State<ChooseSubclassWidget> {
                       ChooseSubclassWidgetText.deityLabel,
                       style: TextStyle(
                         fontSize: 12,
-                        color: Colors.grey.shade400,
+                        color: FormTheme.textSecondary,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -955,14 +958,14 @@ class _ChooseSubclassWidgetState extends State<ChooseSubclassWidget> {
                       style: TextStyle(
                         fontSize: 16,
                         color: selectedDeity != null
-                            ? Colors.white
-                            : Colors.grey.shade500,
+                            ? FormTheme.textBright
+                            : FormTheme.textMuted,
                       ),
                     ),
                   ],
                 ),
               ),
-              Icon(Icons.search, color: Colors.grey.shade400),
+              Icon(Icons.search, color: FormTheme.textSecondary),
             ],
           ),
         ),
@@ -998,10 +1001,10 @@ class _ChooseSubclassWidgetState extends State<ChooseSubclassWidget> {
         required > 0
             ? '${ChooseSubclassWidgetText.domainHeaderRequiredPrefix}$required${required == 1 ? ChooseSubclassWidgetText.domainHeaderRequiredSingularSuffix : ChooseSubclassWidgetText.domainHeaderRequiredPluralSuffix}'
             : ChooseSubclassWidgetText.domainHeaderNoRequired,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w600,
-          color: Colors.white,
+          color: FormTheme.textBright,
         ),
       ),
       const SizedBox(height: 8),
@@ -1017,7 +1020,7 @@ class _ChooseSubclassWidgetState extends State<ChooseSubclassWidget> {
             label: Text(
               domain,
               style: TextStyle(
-                color: isSelected ? Colors.white : Colors.grey.shade300,
+                color: isSelected ? FormTheme.textBright : FormTheme.textSecondary,
               ),
             ),
             selected: isSelected,
@@ -1025,7 +1028,7 @@ class _ChooseSubclassWidgetState extends State<ChooseSubclassWidget> {
             backgroundColor: FormTheme.surface,
             checkmarkColor: _accent,
             side: BorderSide(
-              color: isSelected ? _accent : Colors.grey.shade700,
+              color: isSelected ? _accent : FormTheme.border,
             ),
             onSelected:
                 canSelectMore ? null : (value) => _toggleDomain(domain, value),
@@ -1036,13 +1039,13 @@ class _ChooseSubclassWidgetState extends State<ChooseSubclassWidget> {
         const SizedBox(height: 8),
         Text(
           '$remaining${ChooseSubclassWidgetText.remainingPicksPrefix}${remaining == 1 ? ChooseSubclassWidgetText.remainingPicksSingularSuffix : ChooseSubclassWidgetText.remainingPicksPluralSuffix}',
-          style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+          style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
         ),
       ],
     ];
   }
 
-  Widget _buildInfoChip(IconData icon, String label) {
+  Widget _buildInfoChip(AppIconData icon, String label) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
@@ -1053,11 +1056,11 @@ class _ChooseSubclassWidgetState extends State<ChooseSubclassWidget> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16, color: _accent),
+          AppIcon(icon, size: 16, color: _accent),
           const SizedBox(width: 6),
           Text(
             label,
-            style: TextStyle(fontSize: 13, color: Colors.grey.shade300),
+            style: TextStyle(fontSize: 13, color: FormTheme.textSecondary),
           ),
         ],
       ),

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../core/models/feature.dart';
+import '../../../core/text/main_pages/strife/level_detail_page_text.dart';
+import '../../../core/theme/app_icon.dart';
+import '../../../core/theme/app_icons.dart';
 import '../../../core/theme/feature_tokens.dart';
 import '../../../core/repositories/feature_repository.dart';
 import '../../../widgets/features/feature_dropdown_section.dart';
@@ -27,7 +30,7 @@ class LevelDetailPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Level $level Features'),
+        title: Text(LevelDetailPageText.appBarTitle(level)),
         backgroundColor: levelColor.withValues(alpha: 0.1),
         foregroundColor: levelColor,
         elevation: 0,
@@ -74,8 +77,8 @@ class LevelDetailPage extends StatelessWidget {
                         width: 2,
                       ),
                     ),
-                    child: Icon(
-                      _getLevelIcon(level),
+                    child: AppIcon(
+                      LevelIcons.fromLevel(level),
                       color: levelColor,
                       size: 40,
                     ),
@@ -86,7 +89,7 @@ class LevelDetailPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '${FeatureRepository.formatClassName(className)} - Level $level',
+                          LevelDetailPageText.classLevelTitle(FeatureRepository.formatClassName(className), level),
                           style: theme.textTheme.headlineLarge?.copyWith(
                             fontWeight: FontWeight.w800,
                             color: levelColor,
@@ -94,7 +97,7 @@ class LevelDetailPage extends StatelessWidget {
                         ),
                         const SizedBox(height: 6),
                         Text(
-                          '${features.length} Features Available',
+                          LevelDetailPageText.featuresAvailable(features.length),
                           style: theme.textTheme.titleMedium?.copyWith(
                             color: levelColor.withValues(alpha: 0.8),
                             fontWeight: FontWeight.w600,
@@ -138,17 +141,17 @@ class LevelDetailPage extends StatelessWidget {
       String category;
       
       if (feature.isSubclassFeature) {
-        category = 'Subclass Features';
+        category = LevelDetailPageText.subclassFeatures;
       } else if (feature.name.toLowerCase().contains('maneuver')) {
-        category = 'Maneuvers';
+        category = LevelDetailPageText.maneuvers;
       } else if (feature.name.toLowerCase().contains('spell') || 
                  feature.name.toLowerCase().contains('magic')) {
-        category = 'Magical Abilities';
+        category = LevelDetailPageText.magicalAbilities;
       } else if (feature.description.toLowerCase().contains('passive') ||
                  feature.description.toLowerCase().contains('always')) {
-        category = 'Passive Features';
+        category = LevelDetailPageText.passiveFeatures;
       } else {
-        category = 'Core Features';
+        category = LevelDetailPageText.coreFeatures;
       }
       
       grouped.putIfAbsent(category, () => []).add(feature);
@@ -157,10 +160,4 @@ class LevelDetailPage extends StatelessWidget {
     return grouped;
   }
 
-  IconData _getLevelIcon(int level) {
-    if (level <= 3) return Icons.star_outline;
-    if (level <= 6) return Icons.star_half;
-    if (level <= 9) return Icons.star;
-    return Icons.auto_awesome;
-  }
 }

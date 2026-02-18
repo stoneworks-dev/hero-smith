@@ -5,6 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/db/providers.dart';
 import '../../../core/repositories/hero_entry_repository.dart';
 
+import '../../../core/theme/app_icon.dart';
+import '../../../core/theme/app_icon_data.dart';
+import '../../../core/theme/app_icons.dart';
+import '../../../core/theme/form_theme.dart';
 import '../../../core/theme/navigation_theme.dart';
 import '../../../core/theme/semantic/hero_entry_tokens.dart';
 import '../../../core/text/heroes_sheet/abilities/sheet_abilities_text.dart';
@@ -125,14 +129,14 @@ class _SheetAbilitiesState extends ConsumerState<SheetAbilities> {
     final theme = Theme.of(context);
 
     // Tab data with icons and colors
-    const tabData = [
+    final tabData = [
       (
-        icon: Icons.bolt,
+        icon: AppIcons.abilities.heroAbilities,
         label: SheetAbilitiesText.tabHeroAbilities,
         color: NavigationTheme.abilitiesColor
       ),
       (
-        icon: Icons.public,
+        icon: AppIcons.abilities.commonAbilities,
         label: SheetAbilitiesText.tabCommonAbilities,
         color: NavigationTheme.featuresColor
       ),
@@ -182,7 +186,7 @@ class _SheetAbilitiesState extends ConsumerState<SheetAbilities> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Icon(
+                                      AppIcon(
                                         tab.icon,
                                         color: color,
                                         size: 16,
@@ -232,13 +236,13 @@ class _SheetAbilitiesState extends ConsumerState<SheetAbilities> {
                                       children: [
                                         Icon(Icons.bolt_outlined,
                                             size: 48,
-                                            color: Colors.grey.shade600),
+                                            color: FormTheme.borderLight),
                                         const SizedBox(height: 12),
                                         Text(
                                           SheetAbilitiesText.emptyHeroTitle,
                                           style: theme.textTheme.titleMedium
                                               ?.copyWith(
-                                            color: Colors.grey.shade400,
+                                            color: FormTheme.textSecondary,
                                           ),
                                         ),
                                         const SizedBox(height: 4),
@@ -246,7 +250,7 @@ class _SheetAbilitiesState extends ConsumerState<SheetAbilities> {
                                           SheetAbilitiesText.emptyHeroSubtitle,
                                           style: theme.textTheme.bodySmall
                                               ?.copyWith(
-                                            color: Colors.grey.shade500,
+                                            color: FormTheme.textMuted,
                                           ),
                                         ),
                                       ],
@@ -276,7 +280,7 @@ class _SheetAbilitiesState extends ConsumerState<SheetAbilities> {
                                       SheetAbilitiesText.errorTitle,
                                       style:
                                           theme.textTheme.titleMedium?.copyWith(
-                                        color: Colors.white,
+                                        color: FormTheme.textBright,
                                       ),
                                     ),
                                     const SizedBox(height: 4),
@@ -284,7 +288,7 @@ class _SheetAbilitiesState extends ConsumerState<SheetAbilities> {
                                       error.toString(),
                                       style:
                                           theme.textTheme.bodySmall?.copyWith(
-                                        color: Colors.grey.shade500,
+                                        color: FormTheme.textMuted,
                                       ),
                                       textAlign: TextAlign.center,
                                     ),

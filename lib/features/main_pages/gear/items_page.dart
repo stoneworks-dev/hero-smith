@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/text/main_pages/gear/items_page_text.dart';
 
 class GearItemsPage extends StatelessWidget {
   const GearItemsPage({super.key});
@@ -6,9 +7,9 @@ class GearItemsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Items')),
+      appBar: AppBar(title: Text(ItemsPageText.appBarTitle)),
       body: const Center(
-        child: Text('Items list coming soon'),
+        child: Text(ItemsPageText.comingSoon),
       ),
     );
   }
