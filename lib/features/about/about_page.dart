@@ -7,6 +7,7 @@ import '../../core/theme/form_theme.dart';
 import '../../core/theme/navigation_theme.dart';
 import '../../core/services/update_provider.dart';
 import '../../core/services/update_service.dart';
+import '../../core/services/dice_roller_provider.dart';
 import '../../widgets/update_dialog.dart';
 import '../../core/text/about/about_page_text.dart';
 
@@ -148,6 +149,8 @@ class _AboutPageState extends ConsumerState<AboutPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildUpdatePromptToggle(accent),
+                  const SizedBox(height: 8),
+                  _buildDiceRollerToggle(accent),
                   const SizedBox(height: 12),
                   SizedBox(
                     width: double.infinity,
@@ -367,6 +370,35 @@ class _AboutPageState extends ConsumerState<AboutPage> {
             ref
                 .read(updatePreferencesProvider.notifier)
                 .setShowPrompts(v);
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDiceRollerToggle(Color accent) {
+    final showRollerAsync = ref.watch(diceRollerPreferencesProvider);
+    final showRoller = showRollerAsync.valueOrNull ?? true;
+
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            AboutPageText.showDiceRoller,
+            style: TextStyle(
+              fontSize: 14,
+              color: showRoller ? FormTheme.textBright : FormTheme.textMuted,
+            ),
+          ),
+        ),
+        Switch(
+          value: showRoller,
+          activeColor: const Color(0xFF2E7D32),
+          activeTrackColor: const Color(0xFF66BB6A),
+          onChanged: (v) {
+            ref
+                .read(diceRollerPreferencesProvider.notifier)
+                .setVisible(v);
           },
         ),
       ],

@@ -20,6 +20,7 @@ class ContainerCard extends StatefulWidget {
     required this.onEditContainer,
     required this.onUpdateItemQuantity,
     this.onMoveItem,
+    this.onItemDropAt,
   });
 
   final Map<String, dynamic> container;
@@ -31,6 +32,7 @@ class ContainerCard extends StatefulWidget {
   final VoidCallback onEditContainer;
   final Function(String, int) onUpdateItemQuantity;
   final Function(Map<String, dynamic>)? onMoveItem;
+  final Future<void> Function(Map<String, dynamic>, int)? onItemDropAt;
 
   @override
   State<ContainerCard> createState() => _ContainerCardState();
@@ -154,20 +156,24 @@ class _ContainerCardState extends State<ContainerCard> {
             Container(
               padding: const EdgeInsets.all(12),
               child: Column(
-                children: items.map((item) {
-                  final itemMap = item as Map<String, dynamic>;
-                  final itemId = itemMap['id'] as String;
-                  final qty = itemMap['quantity'];
-                  final quantity = qty is int
-                      ? qty
-                      : int.tryParse(qty?.toString() ?? '1') ?? 1;
-                  final description = itemMap['description'] as String?;
-                  final category =
-                      itemMap['category'] as String? ?? 'custom';
-                  final itemColor =
-                      ItemsCatalogService.categoryColor(category);
+                children: [
+                  for (var index = 0; index < items.length; index++) ...[
+                    _buildItemDropZone(index),
+                    Builder(
+                      builder: (context) {
+                        final itemMap = items[index] as Map<String, dynamic>;
+                        final itemId = itemMap['id'] as String;
+                        final qty = itemMap['quantity'];
+                        final quantity = qty is int
+                            ? qty
+                            : int.tryParse(qty?.toString() ?? '1') ?? 1;
+                        final description = itemMap['description'] as String?;
+                        final category =
+                            itemMap['category'] as String? ?? 'custom';
+                        final itemColor =
+                            ItemsCatalogService.categoryColor(category);
 
-                  final itemWidget = Container(
+                        final itemWidget = Container(
                     margin: const EdgeInsets.only(bottom: 8),
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
@@ -176,33 +182,41 @@ class _ContainerCardState extends State<ContainerCard> {
                       border: Border.all(color: FormTheme.borderDim),
                     ),
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // Drag handle
-                        Icon(
-                          Icons.drag_indicator,
-                          size: 18,
-                          color: FormTheme.borderLight,
+                        Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Icon(
+                            Icons.drag_indicator,
+                            size: 18,
+                            color: FormTheme.borderLight,
+                          ),
                         ),
                         const SizedBox(width: 4),
                         // Fantasy item icon
-                        Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            color: itemColor.withAlpha(26),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(
-                            ItemsCatalogService.categoryIcon(category),
-                            color: itemColor,
-                            size: 20,
+                        Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: itemColor.withAlpha(26),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(
+                              ItemsCatalogService.categoryIcon(category),
+                              color: itemColor,
+                              size: 20,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 10),
-                        // Item name and description
+                        // Name, description, and actions stacked
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              // Item name
                               Text(
                                 itemMap['name'] as String? ??
                                     InventoryWidgetsText.defaultItemName,
@@ -211,146 +225,166 @@ class _ContainerCardState extends State<ContainerCard> {
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
+                              // Description
                               if (description != null && description.isNotEmpty)
-                                Text(
-                                  description,
-                                  style: TextStyle(
-                                    color: FormTheme.textMuted,
-                                    fontSize: 12,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                            ],
-                          ),
-                        ),
-                        // Quantity controls
-                        Container(
-                          decoration: BoxDecoration(
-                            color: FormTheme.surfaceMuted,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              InkWell(
-                                borderRadius: const BorderRadius.horizontal(
-                                    left: Radius.circular(8)),
-                                onTap: quantity > 1
-                                    ? () => widget.onUpdateItemQuantity(
-                                        itemId, quantity - 1)
-                                    : null,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(6.0),
-                                  child: Icon(
-                                    Icons.remove,
-                                    size: 14,
-                                    color: quantity > 1
-                                        ? NavigationTheme.itemsColor
-                                        : FormTheme.borderLight,
-                                  ),
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () => _showQuantityDialog(
-                                    context, itemId, quantity),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10.0),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 2),
                                   child: Text(
-                                    '$quantity',
+                                    description,
                                     style: TextStyle(
-                                      color: FormTheme.textBright,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 13,
+                                      color: FormTheme.textMuted,
+                                      fontSize: 12,
                                     ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                              ),
-                              InkWell(
-                                borderRadius: const BorderRadius.horizontal(
-                                    right: Radius.circular(8)),
-                                onTap: quantity < 999
-                                    ? () => widget.onUpdateItemQuantity(
-                                        itemId, quantity + 1)
-                                    : null,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(6.0),
-                                  child: Icon(
-                                    Icons.add,
-                                    size: 14,
-                                    color: quantity < 999
-                                        ? NavigationTheme.itemsColor
-                                        : FormTheme.borderLight,
-                                  ),
+                              // Actions row: quantity, move, edit, delete
+                              Padding(
+                                padding: const EdgeInsets.only(top: 6),
+                                child: Row(
+                                  children: [
+                                    // Quantity controls
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: FormTheme.surfaceMuted,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          InkWell(
+                                            borderRadius: const BorderRadius.horizontal(
+                                                left: Radius.circular(8)),
+                                            onTap: quantity > 1
+                                                ? () => widget.onUpdateItemQuantity(
+                                                    itemId, quantity - 1)
+                                                : null,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(6.0),
+                                              child: Icon(
+                                                Icons.remove,
+                                                size: 14,
+                                                color: quantity > 1
+                                                    ? NavigationTheme.itemsColor
+                                                    : FormTheme.borderLight,
+                                              ),
+                                            ),
+                                          ),
+                                          InkWell(
+                                            onTap: () => _showQuantityDialog(
+                                                context, itemId, quantity),
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(
+                                                  horizontal: 10.0),
+                                              child: Text(
+                                                '$quantity',
+                                                style: TextStyle(
+                                                  color: FormTheme.textBright,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 13,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          InkWell(
+                                            borderRadius: const BorderRadius.horizontal(
+                                                right: Radius.circular(8)),
+                                            onTap: quantity < 999
+                                                ? () => widget.onUpdateItemQuantity(
+                                                    itemId, quantity + 1)
+                                                : null,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(6.0),
+                                              child: Icon(
+                                                Icons.add,
+                                                size: 14,
+                                                color: quantity < 999
+                                                    ? NavigationTheme.itemsColor
+                                                    : FormTheme.borderLight,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    // Move button
+                                    if (widget.onMoveItem != null)
+                                      IconButton(
+                                        icon: Icon(Icons.drive_file_move_outline,
+                                            size: 18, color: FormTheme.textSecondary),
+                                        onPressed: () => widget.onMoveItem!(itemMap),
+                                        tooltip: InventoryWidgetsText.moveItemTooltip,
+                                        constraints: const BoxConstraints(),
+                                        padding: const EdgeInsets.all(4),
+                                        visualDensity: VisualDensity.compact,
+                                      ),
+                                    // Edit button
+                                    IconButton(
+                                      icon: Icon(Icons.edit_outlined,
+                                          size: 18, color: FormTheme.textSecondary),
+                                      onPressed: () => widget.onEditItem(itemId, itemMap),
+                                      tooltip: InventoryWidgetsText.editItemTooltip,
+                                      constraints: const BoxConstraints(),
+                                      padding: const EdgeInsets.all(4),
+                                      visualDensity: VisualDensity.compact,
+                                    ),
+                                    // Delete button
+                                    IconButton(
+                                      icon: Icon(Icons.close,
+                                          size: 18, color: Colors.red.shade400),
+                                      onPressed: () => widget.onDeleteItem(itemId),
+                                      tooltip: InventoryWidgetsText.deleteItemTooltip,
+                                      constraints: const BoxConstraints(),
+                                      padding: const EdgeInsets.all(4),
+                                      visualDensity: VisualDensity.compact,
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                        const SizedBox(width: 4),
-                        // Move button
-                        if (widget.onMoveItem != null)
-                          IconButton(
-                            icon: Icon(Icons.drive_file_move_outline,
-                                size: 18, color: FormTheme.textSecondary),
-                            onPressed: () => widget.onMoveItem!(itemMap),
-                            tooltip: InventoryWidgetsText.moveItemTooltip,
-                            constraints: const BoxConstraints(),
-                            padding: const EdgeInsets.all(4),
-                            visualDensity: VisualDensity.compact,
-                          ),
-                        // Edit button
-                        IconButton(
-                          icon: Icon(Icons.edit_outlined,
-                              size: 18, color: FormTheme.textSecondary),
-                          onPressed: () => widget.onEditItem(itemId, itemMap),
-                          tooltip: InventoryWidgetsText.editItemTooltip,
-                          constraints: const BoxConstraints(),
-                          padding: const EdgeInsets.all(4),
-                          visualDensity: VisualDensity.compact,
-                        ),
-                        // Delete button
-                        IconButton(
-                          icon: Icon(Icons.close,
-                              size: 18, color: Colors.red.shade400),
-                          onPressed: () => widget.onDeleteItem(itemId),
-                          tooltip: InventoryWidgetsText.deleteItemTooltip,
-                          constraints: const BoxConstraints(),
-                          padding: const EdgeInsets.all(4),
-                          visualDensity: VisualDensity.compact,
                         ),
                       ],
                     ),
-                  );
+                        );
 
-                  final containerId =
-                      widget.container['id']?.toString() ?? '';
+                        final containerId =
+                            widget.container['id']?.toString() ?? '';
 
-                  return LongPressDraggable<Map<String, dynamic>>(
-                    delay: const Duration(milliseconds: 150),
-                    data: {
-                      'item': itemMap,
-                      'source': 'container',
-                      'containerId': containerId,
-                    },
-                    feedback: Material(
-                      color: Colors.transparent,
-                      child: Opacity(
-                        opacity: 0.85,
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.7,
+                        return LongPressDraggable<Map<String, dynamic>>(
+                          delay: const Duration(milliseconds: 150),
+                          data: {
+                            'item': itemMap,
+                            'source': 'container',
+                            'containerId': containerId,
+                            'itemIndex': index,
+                          },
+                          feedback: Material(
+                            color: Colors.transparent,
+                            child: Opacity(
+                              opacity: 0.85,
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxWidth:
+                                      MediaQuery.of(context).size.width * 0.7,
+                                ),
+                                child: itemWidget,
+                              ),
+                            ),
+                          ),
+                          childWhenDragging: Opacity(
+                            opacity: 0.3,
+                            child: itemWidget,
+                          ),
                           child: itemWidget,
-                        ),
-                      ),
+                        );
+                      },
                     ),
-                    childWhenDragging: Opacity(
-                      opacity: 0.3,
-                      child: itemWidget,
-                    ),
-                    child: itemWidget,
-                  );
-                }).toList(),
+                  ],
+                  _buildItemDropZone(items.length),
+                ],
               ),
             ),
           if (_isExpanded && items.isEmpty)
@@ -363,6 +397,43 @@ class _ContainerCardState extends State<ContainerCard> {
             ),
         ],
       ),
+    );
+  }
+
+  Widget _buildItemDropZone(int index) {
+    if (widget.onItemDropAt == null) {
+      return const SizedBox(height: 4);
+    }
+
+    return DragTarget<Map<String, dynamic>>(
+      onWillAcceptWithDetails: (details) {
+        final data = details.data;
+        final source = data['source']?.toString();
+        return source == 'loose' || source == 'container';
+      },
+      onAcceptWithDetails: (details) {
+        widget.onItemDropAt!(details.data, index);
+      },
+      builder: (context, candidateData, rejectedData) {
+        final isHovering = candidateData.isNotEmpty;
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          height: isHovering ? 16 : 8,
+          margin: const EdgeInsets.symmetric(vertical: 2),
+          decoration: BoxDecoration(
+            color: isHovering
+                ? NavigationTheme.itemsColor.withValues(alpha: 0.25)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(6),
+            border: isHovering
+                ? Border.all(
+                    color: NavigationTheme.itemsColor.withValues(alpha: 0.8),
+                    width: 1.5,
+                  )
+                : null,
+          ),
+        );
+      },
     );
   }
 }

@@ -14,6 +14,7 @@ A Flutter app for creating and managing heroes for the **Draw Steel** tabletop r
 -  **Downtime tracking** - Tracks downtime progression, followers and guides
 -  **Note taking** - Take detailed notes for your hero and the campaign
 -  **Offline-First** - All data stored locally via SQLite (Drift)
+-  **Dice Roller** - Floating overlay with d3/d6/d10/2d10/d100, Draw Steel edge/bane rules, tier visualization, and bonus modifiers
 -  **Automatic Update Checks** - App checks GitHub Releases for new versions on startup
 
 ## Installation

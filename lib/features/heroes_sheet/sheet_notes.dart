@@ -98,6 +98,24 @@ class _SheetNotesState extends ConsumerState<SheetNotes> {
     setState(() {});
   }
 
+  Future<void> _renameFolder(String folderId, String currentName) async {
+    final newName = await _showTextInputDialog(
+      context: context,
+      title: SheetNotesText.renameFolderDialogTitle,
+      hint: SheetNotesText.createFolderDialogHint,
+      initialValue: currentName,
+    );
+
+    if (newName == null || newName.trim().isEmpty || newName.trim() == currentName) return;
+
+    await ref.read(heroNotesRepositoryProvider).updateFolderTitle(
+          folderId,
+          newName.trim(),
+        );
+
+    setState(() {});
+  }
+
   Future<void> _deleteFolder(String folderId) async {
     final confirmed = await _showConfirmDialog(
       context: context,
@@ -616,9 +634,16 @@ class _SheetNotesState extends ConsumerState<SheetNotes> {
                 ),
                 const Icon(Icons.chevron_right, color: HeroSheetTheme.notesAccent),
                 IconButton(
+                  icon: Icon(Icons.edit_outlined, color: FormTheme.textMuted),
+                  onPressed: () => _renameFolder(folder.id, folder.title),
+                  tooltip: SheetNotesText.tooltipRenameFolder,
+                  visualDensity: VisualDensity.compact,
+                ),
+                IconButton(
                   icon: Icon(Icons.delete_outline, color: FormTheme.textMuted),
                   onPressed: () => _deleteFolder(folder.id),
                   tooltip: SheetNotesText.tooltipDeleteFolder,
+                  visualDensity: VisualDensity.compact,
                 ),
               ],
             ),

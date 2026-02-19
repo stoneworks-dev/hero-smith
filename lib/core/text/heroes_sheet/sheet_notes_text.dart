@@ -41,7 +41,10 @@ class SheetNotesText {
   static String updated(String formattedDate) => 'Updated $formattedDate';
 
   static const String tooltipDeleteFolder = 'Delete folder';
+  static const String tooltipRenameFolder = 'Rename folder';
   static const String tooltipDeleteNote = 'Delete note';
+
+  static const String renameFolderDialogTitle = 'Rename Folder';
 
   static const String noteSavedSnack = 'Note saved';
 

@@ -33,6 +33,7 @@ class AboutPageText {
 
   // Updates
   static const String showUpdatePrompts = 'Show update prompts on startup';
+    static const String showDiceRoller = 'Show floating dice roller';
   static const String checking = 'Checking...';
   static const String checkForUpdates = 'Check for Updates';
   static const String latestVersion = 'You are on the latest version!';

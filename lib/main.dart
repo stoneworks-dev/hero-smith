@@ -15,6 +15,11 @@ import 'features/main_pages/downtime/downtime_projects_page.dart';
 import 'features/splash/splash_screen.dart';
 import 'core/db/providers.dart';
 import 'widgets/update_dialog.dart';
+import 'widgets/dice_roller/dice_roller_overlay.dart';
+
+/// Global navigator key so widgets above the Navigator (e.g. DiceRollerOverlay)
+/// can show routes.
+final globalNavigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
   runApp(const ProviderScope(child: HeroSmithApp()));
@@ -26,6 +31,7 @@ class HeroSmithApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: globalNavigatorKey,
       title: MainText.appTitle,
       theme: ThemeData(
         colorSchemeSeed: AppColors.primary,
@@ -37,6 +43,8 @@ class HeroSmithApp extends StatelessWidget {
         useMaterial3: true,
       ),
       themeMode: ThemeMode.dark,
+      builder: (context, child) =>
+          DiceRollerOverlay(child: child ?? const SizedBox.shrink()),
       home: const SplashWrapper(),
     );
   }

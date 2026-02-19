@@ -854,32 +854,7 @@ class _InventoryTabState extends ConsumerState<InventoryTab> {
                         // ── Loose Items Section ──
                         _buildLooseItemsDragTarget(),
                         // ── Containers ──
-                        ..._containers.map((container) {
-                          final containerId = container['id'] as String;
-                          return _buildContainerDragTarget(
-                            containerId,
-                            ContainerCard(
-                              container: container,
-                              onAddItem: () =>
-                                  _addItemToContainer(containerId),
-                              onAddFromCatalog: () =>
-                                  _addItemFromCatalog(containerId),
-                              onDeleteContainer: () =>
-                                  _deleteContainer(containerId),
-                              onDeleteItem: (itemId) =>
-                                  _deleteItem(containerId, itemId),
-                              onEditItem: (itemId, itemMap) =>
-                                  _editItem(containerId, itemId, itemMap),
-                              onEditContainer: () =>
-                                  _editContainer(containerId),
-                              onUpdateItemQuantity: (itemId, newQty) =>
-                                  _updateItemQuantity(
-                                      containerId, itemId, newQty),
-                              onMoveItem: (item) =>
-                                  _moveItemFromContainer(containerId, item),
-                            ),
-                          );
-                        }),
+                        ..._buildContainersReorderList(),
                         const SizedBox(height: 72), // FAB clearance
                       ],
                     ),
@@ -906,6 +881,141 @@ class _InventoryTabState extends ConsumerState<InventoryTab> {
       ],
     );
   }
+
+  List<Widget> _buildContainersReorderList() {
+    final widgets = <Widget>[];
+
+    for (var index = 0; index < _containers.length; index++) {
+      final container = _containers[index];
+      final containerId = container['id'] as String;
+
+      widgets.add(_buildContainerDropZone(index));
+      widgets.add(
+        LongPressDraggable<Map<String, dynamic>>(
+          delay: const Duration(milliseconds: 150),
+          data: {
+            'source': 'container_card',
+            'containerId': containerId,
+            'containerIndex': index,
+          },
+          feedback: Material(
+            color: Colors.transparent,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width * 0.85,
+              ),
+              child: Opacity(
+                opacity: 0.88,
+                child: _buildContainerDragTarget(
+                  containerId,
+                  ContainerCard(
+                    container: container,
+                    onAddItem: () => _addItemToContainer(containerId),
+                    onAddFromCatalog: () => _addItemFromCatalog(containerId),
+                    onDeleteContainer: () => _deleteContainer(containerId),
+                    onDeleteItem: (itemId) => _deleteItem(containerId, itemId),
+                    onEditItem: (itemId, itemMap) =>
+                        _editItem(containerId, itemId, itemMap),
+                    onEditContainer: () => _editContainer(containerId),
+                    onUpdateItemQuantity: (itemId, newQty) =>
+                        _updateItemQuantity(containerId, itemId, newQty),
+                    onMoveItem: (item) =>
+                        _moveItemFromContainer(containerId, item),
+                    onItemDropAt: (dragData, targetIndex) =>
+                        _handleItemDropAt(
+                      dragData: dragData,
+                      toTarget: containerId,
+                      targetIndex: targetIndex,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          childWhenDragging: Opacity(
+            opacity: 0.35,
+            child: _buildContainerDragTarget(
+              containerId,
+              ContainerCard(
+                container: container,
+                onAddItem: () => _addItemToContainer(containerId),
+                onAddFromCatalog: () => _addItemFromCatalog(containerId),
+                onDeleteContainer: () => _deleteContainer(containerId),
+                onDeleteItem: (itemId) => _deleteItem(containerId, itemId),
+                onEditItem: (itemId, itemMap) =>
+                    _editItem(containerId, itemId, itemMap),
+                onEditContainer: () => _editContainer(containerId),
+                onUpdateItemQuantity: (itemId, newQty) =>
+                    _updateItemQuantity(containerId, itemId, newQty),
+                onMoveItem: (item) => _moveItemFromContainer(containerId, item),
+                onItemDropAt: (dragData, targetIndex) => _handleItemDropAt(
+                  dragData: dragData,
+                  toTarget: containerId,
+                  targetIndex: targetIndex,
+                ),
+              ),
+            ),
+          ),
+          child: _buildContainerDragTarget(
+            containerId,
+            ContainerCard(
+              container: container,
+              onAddItem: () => _addItemToContainer(containerId),
+              onAddFromCatalog: () => _addItemFromCatalog(containerId),
+              onDeleteContainer: () => _deleteContainer(containerId),
+              onDeleteItem: (itemId) => _deleteItem(containerId, itemId),
+              onEditItem: (itemId, itemMap) =>
+                  _editItem(containerId, itemId, itemMap),
+              onEditContainer: () => _editContainer(containerId),
+              onUpdateItemQuantity: (itemId, newQty) =>
+                  _updateItemQuantity(containerId, itemId, newQty),
+              onMoveItem: (item) => _moveItemFromContainer(containerId, item),
+              onItemDropAt: (dragData, targetIndex) => _handleItemDropAt(
+                dragData: dragData,
+                toTarget: containerId,
+                targetIndex: targetIndex,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    widgets.add(_buildContainerDropZone(_containers.length));
+    return widgets;
+  }
+
+  Widget _buildContainerDropZone(int targetIndex) {
+    return DragTarget<Map<String, dynamic>>(
+      onWillAcceptWithDetails: (details) {
+        final source = details.data['source']?.toString();
+        return source == 'container_card';
+      },
+      onAcceptWithDetails: (details) {
+        _handleContainerDropAt(details.data, targetIndex);
+      },
+      builder: (context, candidateData, rejectedData) {
+        final isHovering = candidateData.isNotEmpty;
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          height: isHovering ? 18 : 8,
+          margin: const EdgeInsets.symmetric(vertical: 2),
+          decoration: BoxDecoration(
+            color: isHovering
+                ? NavigationTheme.itemsColor.withValues(alpha: 0.25)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+            border: isHovering
+                ? Border.all(
+                    color: NavigationTheme.itemsColor.withValues(alpha: 0.8),
+                    width: 1.5,
+                  )
+                : null,
+          ),
+        );
+      },
+    );
+  }
   // ===========================================================================
   // DRAG & DROP
   // ===========================================================================
@@ -915,21 +1025,14 @@ class _InventoryTabState extends ConsumerState<InventoryTab> {
     return DragTarget<Map<String, dynamic>>(
       onWillAcceptWithDetails: (details) {
         final data = details.data;
-        // Don't accept if dragged from the same container
-        if (data['source'] == 'container' &&
-            data['containerId'] == containerId) {
-          return false;
-        }
-        return true;
+        final source = data['source']?.toString();
+        return source == 'loose' || source == 'container';
       },
       onAcceptWithDetails: (details) {
-        final data = details.data;
-        final item = Map<String, dynamic>.from(data['item'] as Map);
-        _handleDrop(
-          item: item,
-          fromSource: data['source'] as String,
-          fromContainerId: data['containerId'] as String?,
+        _handleItemDropAt(
+          dragData: details.data,
           toTarget: containerId,
+          targetIndex: -1,
         );
       },
       builder: (context, candidateData, rejectedData) {
@@ -956,17 +1059,14 @@ class _InventoryTabState extends ConsumerState<InventoryTab> {
     return DragTarget<Map<String, dynamic>>(
       onWillAcceptWithDetails: (details) {
         final data = details.data;
-        // Don't accept if already from loose
-        return data['source'] != 'loose';
+        final source = data['source']?.toString();
+        return source == 'loose' || source == 'container';
       },
       onAcceptWithDetails: (details) {
-        final data = details.data;
-        final item = Map<String, dynamic>.from(data['item'] as Map);
-        _handleDrop(
-          item: item,
-          fromSource: data['source'] as String,
-          fromContainerId: data['containerId'] as String?,
+        _handleItemDropAt(
+          dragData: details.data,
           toTarget: '__loose__',
+          targetIndex: -1,
         );
       },
       builder: (context, candidateData, rejectedData) {
@@ -988,54 +1088,112 @@ class _InventoryTabState extends ConsumerState<InventoryTab> {
     );
   }
 
-  /// Handle a drag-drop from source to target.
-  Future<void> _handleDrop({
-    required Map<String, dynamic> item,
-    required String fromSource,
-    required String? fromContainerId,
+  Future<void> _handleContainerDropAt(
+      Map<String, dynamic> dragData, int targetIndex) async {
+    try {
+      final source = dragData['source']?.toString();
+      if (source != 'container_card') return;
+
+      final containerId = dragData['containerId']?.toString();
+      if (containerId == null || containerId.isEmpty) return;
+
+      final containers = List<Map<String, dynamic>>.from(_containers);
+      final fromIndex = containers.indexWhere((c) => c['id'] == containerId);
+      if (fromIndex == -1) return;
+
+      var insertIndex =
+          targetIndex.clamp(0, containers.length) as int;
+      if (fromIndex < insertIndex) {
+        insertIndex -= 1;
+      }
+      if (fromIndex == insertIndex) return;
+
+      final moved = containers.removeAt(fromIndex);
+      containers.insert(insertIndex, moved);
+
+      final heroRepo = ref.read(heroRepositoryProvider);
+      await heroRepo.saveInventoryContainers(widget.heroId, containers);
+      setState(() {
+        _containers = containers;
+      });
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${InventoryTabText.updateContainerFailedPrefix}$e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  /// Handle item drag-drop with optional positional insertion.
+  Future<void> _handleItemDropAt({
+    required Map<String, dynamic> dragData,
     required String toTarget,
+    required int targetIndex,
   }) async {
     try {
-      final heroRepo = ref.read(heroRepositoryProvider);
-      final containers = List<Map<String, dynamic>>.from(_containers);
-      var looseItems = List<Map<String, dynamic>>.from(_looseItems);
+      final source = dragData['source']?.toString();
+      if (source != 'loose' && source != 'container') return;
 
-      // Remove from source
-      if (fromSource == 'loose') {
-        looseItems.removeWhere((i) => i['id'] == item['id']);
-      } else if (fromSource == 'container' && fromContainerId != null) {
-        final srcIdx =
+      final itemRaw = dragData['item'];
+      if (itemRaw is! Map) return;
+      final draggedItem = Map<String, dynamic>.from(itemRaw);
+      final itemId = draggedItem['id']?.toString();
+      if (itemId == null || itemId.isEmpty) return;
+
+      final containers = List<Map<String, dynamic>>.from(_containers);
+      final looseItems = List<Map<String, dynamic>>.from(_looseItems);
+
+      List<Map<String, dynamic>> sourceList;
+      List<Map<String, dynamic>> destinationList;
+      int removedIndex = -1;
+
+      if (source == 'loose') {
+        sourceList = looseItems;
+      } else {
+        final fromContainerId = dragData['containerId']?.toString();
+        if (fromContainerId == null) return;
+        final srcContainerIndex =
             containers.indexWhere((c) => c['id'] == fromContainerId);
-        if (srcIdx != -1) {
-          final src = Map<String, dynamic>.from(containers[srcIdx]);
-          final srcItems =
-              List<Map<String, dynamic>>.from(src['items'] as List? ?? []);
-          srcItems.removeWhere((i) => i['id'] == item['id']);
-          src['items'] = srcItems;
-          containers[srcIdx] = src;
-        }
+        if (srcContainerIndex == -1) return;
+        final srcContainer = Map<String, dynamic>.from(containers[srcContainerIndex]);
+        sourceList =
+            List<Map<String, dynamic>>.from(srcContainer['items'] as List? ?? []);
+        srcContainer['items'] = sourceList;
+        containers[srcContainerIndex] = srcContainer;
       }
 
-      // Add to destination with new ID
-      final movedItem = Map<String, dynamic>.from(item);
-      movedItem['id'] = DateTime.now().millisecondsSinceEpoch.toString();
+      removedIndex = sourceList.indexWhere((i) => i['id']?.toString() == itemId);
+      if (removedIndex == -1) return;
+      final movedItem = Map<String, dynamic>.from(sourceList.removeAt(removedIndex));
 
       if (toTarget == '__loose__') {
-        looseItems.add(movedItem);
+        destinationList = looseItems;
       } else {
-        final destIdx = containers.indexWhere((c) => c['id'] == toTarget);
-        if (destIdx != -1) {
-          final dest = Map<String, dynamic>.from(containers[destIdx]);
-          final destItems =
-              List<Map<String, dynamic>>.from(dest['items'] as List? ?? []);
-          destItems.add(movedItem);
-          dest['items'] = destItems;
-          containers[destIdx] = dest;
-        }
+        final destContainerIndex = containers.indexWhere((c) => c['id'] == toTarget);
+        if (destContainerIndex == -1) return;
+        final destContainer = Map<String, dynamic>.from(containers[destContainerIndex]);
+        destinationList =
+            List<Map<String, dynamic>>.from(destContainer['items'] as List? ?? []);
+        destContainer['items'] = destinationList;
+        containers[destContainerIndex] = destContainer;
       }
 
+      var insertIndex = targetIndex < 0 ? destinationList.length : targetIndex;
+      final sameList = identical(sourceList, destinationList);
+      if (sameList && removedIndex < insertIndex) {
+        insertIndex -= 1;
+      }
+      insertIndex = insertIndex.clamp(0, destinationList.length) as int;
+      destinationList.insert(insertIndex, movedItem);
+
+      final heroRepo = ref.read(heroRepositoryProvider);
       await heroRepo.saveInventoryContainers(widget.heroId, containers);
       await heroRepo.saveLooseItems(widget.heroId, looseItems);
+
       setState(() {
         _containers = containers;
         _looseItems = looseItems;
@@ -1120,18 +1278,23 @@ class _InventoryTabState extends ConsumerState<InventoryTab> {
             Container(
               padding: const EdgeInsets.all(12),
               child: Column(
-                children: _looseItems.map((itemMap) {
-                  final itemId = itemMap['id'] as String;
-                  final qty = itemMap['quantity'];
-                  final quantity = qty is int
-                      ? qty
-                      : int.tryParse(qty?.toString() ?? '1') ?? 1;
-                  final description = itemMap['description'] as String?;
-                  final category = itemMap['category'] as String? ?? 'custom';
-                  final itemColor =
-                      ItemsCatalogService.categoryColor(category);
+                children: [
+                  for (var index = 0; index < _looseItems.length; index++) ...[
+                    _buildLooseItemDropZone(index),
+                    Builder(builder: (context) {
+                      final itemMap = _looseItems[index];
+                      final itemId = itemMap['id'] as String;
+                      final qty = itemMap['quantity'];
+                      final quantity = qty is int
+                          ? qty
+                          : int.tryParse(qty?.toString() ?? '1') ?? 1;
+                      final description = itemMap['description'] as String?;
+                      final category =
+                          itemMap['category'] as String? ?? 'custom';
+                      final itemColor =
+                          ItemsCatalogService.categoryColor(category);
 
-                  final itemWidget = Container(
+                      final itemWidget = Container(
                     margin: const EdgeInsets.only(bottom: 8),
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
@@ -1140,31 +1303,40 @@ class _InventoryTabState extends ConsumerState<InventoryTab> {
                       border: Border.all(color: FormTheme.borderDim),
                     ),
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // Drag handle
-                        Icon(
-                          Icons.drag_indicator,
-                          size: 18,
-                          color: FormTheme.borderLight,
+                        Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Icon(
+                            Icons.drag_indicator,
+                            size: 18,
+                            color: FormTheme.borderLight,
+                          ),
                         ),
                         const SizedBox(width: 4),
-                        Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            color: itemColor.withAlpha(26),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(
-                            ItemsCatalogService.categoryIcon(category),
-                            color: itemColor,
-                            size: 20,
+                        Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: itemColor.withAlpha(26),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(
+                              ItemsCatalogService.categoryIcon(category),
+                              color: itemColor,
+                              size: 20,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 10),
+                        // Name, description, and actions stacked
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              // Item name
                               Text(
                                 itemMap['name'] as String? ??
                                     InventoryWidgetsText.defaultItemName,
@@ -1173,141 +1345,160 @@ class _InventoryTabState extends ConsumerState<InventoryTab> {
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
+                              // Description
                               if (description != null &&
                                   description.isNotEmpty)
-                                Text(
-                                  description,
-                                  style: TextStyle(
-                                    color: FormTheme.textMuted,
-                                    fontSize: 12,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                            ],
-                          ),
-                        ),
-                        // Quantity controls
-                        Container(
-                          decoration: BoxDecoration(
-                            color: FormTheme.surfaceMuted,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              InkWell(
-                                borderRadius: const BorderRadius.horizontal(
-                                    left: Radius.circular(8)),
-                                onTap: quantity > 1
-                                    ? () => _updateLooseItemQuantity(
-                                        itemId, quantity - 1)
-                                    : null,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(6.0),
-                                  child: Icon(
-                                    Icons.remove,
-                                    size: 14,
-                                    color: quantity > 1
-                                        ? NavigationTheme.itemsColor
-                                        : FormTheme.borderLight,
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 2),
+                                  child: Text(
+                                    description,
+                                    style: TextStyle(
+                                      color: FormTheme.textMuted,
+                                      fontSize: 12,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                              ),
+                              // Actions row: quantity, move, edit, delete
                               Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0),
-                                child: Text(
-                                  '$quantity',
-                                  style: TextStyle(
-                                    color: FormTheme.textBright,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 13,
-                                  ),
-                                ),
-                              ),
-                              InkWell(
-                                borderRadius: const BorderRadius.horizontal(
-                                    right: Radius.circular(8)),
-                                onTap: quantity < 999
-                                    ? () => _updateLooseItemQuantity(
-                                        itemId, quantity + 1)
-                                    : null,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(6.0),
-                                  child: Icon(
-                                    Icons.add,
-                                    size: 14,
-                                    color: quantity < 999
-                                        ? NavigationTheme.itemsColor
-                                        : FormTheme.borderLight,
-                                  ),
+                                padding: const EdgeInsets.only(top: 6),
+                                child: Row(
+                                  children: [
+                                    // Quantity controls
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: FormTheme.surfaceMuted,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          InkWell(
+                                            borderRadius: const BorderRadius.horizontal(
+                                                left: Radius.circular(8)),
+                                            onTap: quantity > 1
+                                                ? () => _updateLooseItemQuantity(
+                                                    itemId, quantity - 1)
+                                                : null,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(6.0),
+                                              child: Icon(
+                                                Icons.remove,
+                                                size: 14,
+                                                color: quantity > 1
+                                                    ? NavigationTheme.itemsColor
+                                                    : FormTheme.borderLight,
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 10.0),
+                                            child: Text(
+                                              '$quantity',
+                                              style: TextStyle(
+                                                color: FormTheme.textBright,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 13,
+                                              ),
+                                            ),
+                                          ),
+                                          InkWell(
+                                            borderRadius: const BorderRadius.horizontal(
+                                                right: Radius.circular(8)),
+                                            onTap: quantity < 999
+                                                ? () => _updateLooseItemQuantity(
+                                                    itemId, quantity + 1)
+                                                : null,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(6.0),
+                                              child: Icon(
+                                                Icons.add,
+                                                size: 14,
+                                                color: quantity < 999
+                                                    ? NavigationTheme.itemsColor
+                                                    : FormTheme.borderLight,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    // Move button
+                                    if (_containers.isNotEmpty)
+                                      IconButton(
+                                        icon: Icon(Icons.drive_file_move_outline,
+                                            size: 18, color: FormTheme.textSecondary),
+                                        onPressed: () => _moveItemFromLoose(itemMap),
+                                        tooltip: InventoryWidgetsText.moveItemTooltip,
+                                        constraints: const BoxConstraints(),
+                                        padding: const EdgeInsets.all(4),
+                                        visualDensity: VisualDensity.compact,
+                                      ),
+                                    // Edit button
+                                    IconButton(
+                                      icon: Icon(Icons.edit_outlined,
+                                          size: 18, color: FormTheme.textSecondary),
+                                      onPressed: () =>
+                                          _editLooseItem(itemId, itemMap),
+                                      tooltip: InventoryWidgetsText.editItemTooltip,
+                                      constraints: const BoxConstraints(),
+                                      padding: const EdgeInsets.all(4),
+                                      visualDensity: VisualDensity.compact,
+                                    ),
+                                    // Delete button
+                                    IconButton(
+                                      icon: Icon(Icons.close,
+                                          size: 18, color: Colors.red.shade400),
+                                      onPressed: () => _deleteLooseItem(itemId),
+                                      tooltip: InventoryWidgetsText.deleteItemTooltip,
+                                      constraints: const BoxConstraints(),
+                                      padding: const EdgeInsets.all(4),
+                                      visualDensity: VisualDensity.compact,
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                        const SizedBox(width: 4),
-                        // Move button
-                        if (_containers.isNotEmpty)
-                          IconButton(
-                            icon: Icon(Icons.drive_file_move_outline,
-                                size: 18, color: FormTheme.textSecondary),
-                            onPressed: () => _moveItemFromLoose(itemMap),
-                            tooltip: InventoryWidgetsText.moveItemTooltip,
-                            constraints: const BoxConstraints(),
-                            padding: const EdgeInsets.all(4),
-                            visualDensity: VisualDensity.compact,
-                          ),
-                        // Edit button
-                        IconButton(
-                          icon: Icon(Icons.edit_outlined,
-                              size: 18, color: FormTheme.textSecondary),
-                          onPressed: () =>
-                              _editLooseItem(itemId, itemMap),
-                          tooltip: InventoryWidgetsText.editItemTooltip,
-                          constraints: const BoxConstraints(),
-                          padding: const EdgeInsets.all(4),
-                          visualDensity: VisualDensity.compact,
-                        ),
-                        // Delete button
-                        IconButton(
-                          icon: Icon(Icons.close,
-                              size: 18, color: Colors.red.shade400),
-                          onPressed: () => _deleteLooseItem(itemId),
-                          tooltip: InventoryWidgetsText.deleteItemTooltip,
-                          constraints: const BoxConstraints(),
-                          padding: const EdgeInsets.all(4),
-                          visualDensity: VisualDensity.compact,
                         ),
                       ],
                     ),
-                  );
+                      );
 
-                  return LongPressDraggable<Map<String, dynamic>>(
-                    delay: const Duration(milliseconds: 150),
-                    data: {
-                      'item': itemMap,
-                      'source': 'loose',
-                      'containerId': null,
-                    },
-                    feedback: Material(
-                      color: Colors.transparent,
-                      child: Opacity(
-                        opacity: 0.85,
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.7,
+                      return LongPressDraggable<Map<String, dynamic>>(
+                        delay: const Duration(milliseconds: 150),
+                        data: {
+                          'item': itemMap,
+                          'source': 'loose',
+                          'containerId': null,
+                          'itemIndex': index,
+                        },
+                        feedback: Material(
+                          color: Colors.transparent,
+                          child: Opacity(
+                            opacity: 0.85,
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth:
+                                    MediaQuery.of(context).size.width * 0.7,
+                              ),
+                              child: itemWidget,
+                            ),
+                          ),
+                        ),
+                        childWhenDragging: Opacity(
+                          opacity: 0.3,
                           child: itemWidget,
                         ),
-                      ),
-                    ),
-                    childWhenDragging: Opacity(
-                      opacity: 0.3,
-                      child: itemWidget,
-                    ),
-                    child: itemWidget,
-                  );
-                }).toList(),
+                        child: itemWidget,
+                      );
+                    }),
+                  ],
+                  _buildLooseItemDropZone(_looseItems.length),
+                ],
               ),
             ),
           if (_looseItems.isEmpty)
@@ -1320,6 +1511,42 @@ class _InventoryTabState extends ConsumerState<InventoryTab> {
             ),
         ],
       ),
+    );
+  }
+
+  Widget _buildLooseItemDropZone(int targetIndex) {
+    return DragTarget<Map<String, dynamic>>(
+      onWillAcceptWithDetails: (details) {
+        final source = details.data['source']?.toString();
+        return source == 'loose' || source == 'container';
+      },
+      onAcceptWithDetails: (details) {
+        _handleItemDropAt(
+          dragData: details.data,
+          toTarget: '__loose__',
+          targetIndex: targetIndex,
+        );
+      },
+      builder: (context, candidateData, rejectedData) {
+        final isHovering = candidateData.isNotEmpty;
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          height: isHovering ? 16 : 8,
+          margin: const EdgeInsets.symmetric(vertical: 2),
+          decoration: BoxDecoration(
+            color: isHovering
+                ? NavigationTheme.itemsColor.withValues(alpha: 0.25)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(6),
+            border: isHovering
+                ? Border.all(
+                    color: NavigationTheme.itemsColor.withValues(alpha: 0.8),
+                    width: 1.5,
+                  )
+                : null,
+          ),
+        );
+      },
     );
   }
 }
