@@ -45,4 +45,49 @@ class SheetStoryTitlesTabText {
   static String echelonWithBenefits(
           dynamic echelon, dynamic benefitCount) =>
       'Echelon $echelon \u2022 $benefitCount benefits';
+
+  // Ancestry points grants
+  static const String selectAncestryTraits = 'Select Ancestry Traits';
+  static String ancestryTraitsTitle(String ancestry) =>
+      ancestry.isEmpty ? 'Ancestry Traits' : '${ancestry[0].toUpperCase()}${ancestry.substring(1)} Traits';
+  static String pointsBudget(int points) => '$points pts to spend';
+  static String pointsRemaining(int remaining) => '$remaining remaining';
+  static const String notEnoughPoints = 'Not enough points';
+  static const String traitsSaved = 'Traits saved';
+  static const String noTraitsSelected = 'Tap to select traits';
+  static String traitsSelected(int count) => '$count trait(s) selected';
+
+  // Skill choice grants
+  static const String chooseSkillHint = 'Choose skill…';
+  static String chooseSkillFromGroup(String group) =>
+      'Choose ${group[0].toUpperCase()}${group.substring(1)} skill';
+  static const String chooseAnySkill = 'Choose any skill';
+
+  // Language choice grants
+  static const String chooseLanguageHint = 'Choose language…';
+  static String chooseLanguages(int count) => 'Choose $count language(s)';
+
+  // Heroic ability choice grants
+  static const String chooseHeroicAbility = 'Choose heroic ability';
+  static const String chooseHeroicAbilityHint = 'Search abilities…';
+  static const String heroicAbilityLabel = 'Heroic Ability';
+
+  // Item prerequisite
+  static String itemPrerequisite(String category, String tag) =>
+      'Prerequisite met: $tag $category';
+
+  // Damage immunity grants
+  static const String damageImmunityTitle = 'Damage Immunity';
+  static const String chooseDamageType = 'Choose damage type';
+  static const String chooseDamageTypeHint = 'Tap to choose damage type';
+  static String damageImmunityLevel(String type) =>
+      '$type immunity = hero level';
+  static String damageImmunityHighestChar(String type) =>
+      '$type immunity = highest characteristic';
+  static String damageImmunityStatic(String type, dynamic value) =>
+      '$type immunity $value';
+
+  // Condition immunity grants
+  static String conditionImmunity(String condition) =>
+      'Immune to $condition';
 }

@@ -185,7 +185,25 @@
         "id": "elemental_dabbler__elemental_immunity",
         "name": "Elemental Immunity",
         "description": "Immunity to chosen damage type equal to highest characteristic score.",
-        "ability": null
+        "ability": null,
+        "grants": [
+          {
+            "type": "damage_immunity",
+            "damage_type": "choose",
+            "damage_type_options": [
+              "acid",
+              "cold",
+              "corruption",
+              "fire",
+              "holy",
+              "lightning",
+              "poison",
+              "psychic",
+              "sonic"
+            ],
+            "value_source": "highest_characteristic"
+          }
+        ]
       },
       {
         "id": "elemental_dabbler__elemental_weapons",
@@ -205,28 +223,39 @@
     "prerequisite": "Join an army, guild, or similar organization.",
     "benefits": [
       {
+        "id": "faction_member__faction_patience",
+        "name": "Faction Patience",
+        "description": "NPC faction members' patience increases by 2 (max 5) when interacting with you.",
+        "ability": null,
+        "auto": true
+      },
+      {
         "id": "faction_member__academic_faction",
         "name": "Academic Faction",
         "description": "Sage makes up to three Reason tests or research project rolls for you (+5), 10 minutes each, not requiring a respite.",
-        "ability": null
+        "ability": null,
+        "director_assigned": true
       },
       {
         "id": "faction_member__guild_faction",
         "name": "Guild Faction",
         "description": "Expert crafter makes up to three crafting project rolls for you (+5), 10 uninterrupted minutes each, no respite required.",
-        "ability": null
+        "ability": null,
+        "director_assigned": true
       },
       {
         "id": "faction_member__martial_faction",
         "name": "Martial Faction",
         "description": "Recruit up to three minions (levels ≤ yours) appropriate to faction for a day.",
-        "ability": null
+        "ability": null,
+        "director_assigned": true
       },
       {
         "id": "faction_member__spy_faction",
         "name": "Spy Faction",
         "description": "Agent provides three pieces of settlement information (hidden person, secret entrance, motivations/pitfalls).",
-        "ability": null
+        "ability": null,
+        "director_assigned": true
       }
     ],
     "special": "Can take multiple times, once per faction; can be stripped if acting against faction. Use benefit only in settlement with faction presence and once per task completion."
@@ -250,7 +279,12 @@
         "name": "Local Fame",
         "description": "Earn 1 Renown.",
         "ability": null,
-        "grants": [{ "type": "renown", "value": 1 }]
+        "grants": [
+          {
+            "type": "renown",
+            "value": 1
+          }
+        ]
       },
       {
         "id": "local_hero__a_new_dawn",
@@ -366,13 +400,16 @@
         "id": "owed_a_favor__faction_favor",
         "name": "Faction Favor",
         "description": "Faction performs one favor for the party if it doesn’t conflict with its goals.",
-        "ability": null
+        "ability": null,
+        "auto": true
       },
       {
         "id": "owed_a_favor__knowledge_network",
         "name": "Knowledge Network",
         "description": "Gain appropriate crafting/lore skill in faction settlement; if already trained, edge with that skill.",
-        "ability": null
+        "ability": null,
+        "auto": true,
+        "director_assigned": true
       }
     ],
     "special": null
@@ -611,7 +648,12 @@
         "name": "Instant Celebrity",
         "description": "Earn 1 Renown.",
         "ability": null,
-        "grants": [{ "type": "renown", "value": 1 }]
+        "grants": [
+          {
+            "type": "renown",
+            "value": 1
+          }
+        ]
       },
       {
         "id": "arena_fighter__showstopper",
@@ -670,7 +712,12 @@
         "name": "Renowned Warrior",
         "description": "Earn 1 Renown.",
         "ability": null,
-        "grants": [{ "type": "renown", "value": 1 }]
+        "grants": [
+          {
+            "type": "renown",
+            "value": 1
+          }
+        ]
       },
       {
         "id": "battlefield_commander__student_of_war",
@@ -705,7 +752,14 @@
         "id": "blood_magic__i_reject_this_evil_power",
         "name": "I Reject This Evil Power!",
         "description": "Corruption immunity equal to your level.",
-        "ability": null
+        "ability": null,
+        "grants": [
+          {
+            "type": "damage_immunity",
+            "damage_type": "corruption",
+            "value_source": "level"
+          }
+        ]
       }
     ],
     "special": null
@@ -735,7 +789,12 @@
         "name": "Fearsome Reputation",
         "description": "Earn 1 Renown.",
         "ability": null,
-        "grants": [{ "type": "renown", "value": 1 }]
+        "grants": [
+          {
+            "type": "renown",
+            "value": 1
+          }
+        ]
       },
       {
         "id": "corsair__scoundrel_tactics",
@@ -758,13 +817,15 @@
         "id": "faction_officer__requisition",
         "name": "Requisition",
         "description": "Gain 1st/2nd-echelon magic trinket; can swap on leveling.",
-        "ability": null
+        "ability": null,
+        "auto": true
       },
       {
         "id": "faction_officer__youre_the_boss",
         "name": "You’re the Boss",
         "description": "Lower ranks follow routine orders; edge influencing them in nonroutine matters.",
-        "ability": null
+        "ability": null,
+        "auto": true
       }
     ],
     "special": null
@@ -783,7 +844,11 @@
         "description": "Gain one interpersonal skill of your choice.",
         "ability": null,
         "grants": [
-          { "type": "skill_choice", "group": "interpersonal", "count": 1 }
+          {
+            "type": "skill_choice",
+            "group": "interpersonal",
+            "count": 1
+          }
         ]
       },
       {
@@ -800,7 +865,13 @@
       }
     ],
     "special": "Know the Khelt language.",
-    "grants": [{ "type": "languages", "count": 1, "specific": ["khelt"] }]
+    "grants": [
+      {
+        "type": "languages",
+        "count": 1,
+        "specific": ["khelt"]
+      }
+    ]
   },
   {
     "id": "giant_slayer",
@@ -918,7 +989,12 @@
         "name": "Heraldic Fame",
         "description": "Earn 1 Renown.",
         "ability": null,
-        "grants": [{ "type": "renown", "value": 1 }]
+        "grants": [
+          {
+            "type": "renown",
+            "value": 1
+          }
+        ]
       },
       {
         "id": "knight__knightly_aegis",
@@ -960,14 +1036,25 @@
         "name": "Picked Up a Few Things",
         "description": "Gain one lore skill.",
         "ability": null,
-        "grants": [{ "type": "skill_choice", "group": "lore", "count": 1 }]
+        "grants": [
+          {
+            "type": "skill_choice",
+            "group": "lore",
+            "count": 1
+          }
+        ]
       },
       {
         "id": "master_librarian__polyglot",
         "name": "Polyglot",
         "description": "Know two languages; Learn New Language project goal is halved for you.",
         "ability": null,
-        "grants": [{ "type": "languages", "count": 2 }]
+        "grants": [
+          {
+            "type": "languages",
+            "count": 2
+          }
+        ]
       }
     ],
     "special": null
@@ -1039,25 +1126,42 @@
     "prerequisite": "Killed by an undead creature.",
     "benefits": [
       {
+        "id": "undead_slain__return_to_life",
+        "name": "Return to Life",
+        "description": "You return to life 1 minute after death with Stamina equal to your winded value. You gain corruption immunity equal to your level.",
+        "ability": null,
+        "auto": true,
+        "grants": [
+          {
+            "type": "damage_immunity",
+            "damage_type": "corruption",
+            "value_source": "level"
+          }
+        ]
+      },
+      {
         "id": "undead_slain__ghoul_or_vampire",
         "name": "Ghoul or Vampire",
         "description": "Melee free strike vs adjacent: bite on tier 3 to gain temp Stamina equal to damage (lasts until end of next respite).",
-        "ability": null
+        "ability": null,
+        "director_assigned": true
       },
       {
         "id": "undead_slain__incorporeal_undead",
         "name": "Incorporeal Undead",
         "description": "Move through creatures/objects; first pass-through per round deals corruption damage = half level; no damage from being forced into objects.",
-        "ability": null
+        "ability": null,
+        "director_assigned": true
       },
       {
         "id": "undead_slain__other_corporeal_undead",
         "name": "Other Corporeal Undead",
         "description": "Reduced to 0 by non-fire/holy & body intact: regain half Stamina and fall prone (once per 10+ Victories).",
-        "ability": null
+        "ability": null,
+        "director_assigned": true
       }
     ],
-    "special": "Gain corruption immunity equal to level; if die again you rise as undead under Director’s control."
+    "special": "If you die again, you rise as undead under the Director's control."
   },
   {
     "id": "unstoppable",
@@ -1176,7 +1280,11 @@
         "description": "Gain 3 ancestry points for purchased devil ancestry traits.",
         "ability": null,
         "grants": [
-          { "type": "ancestry_points", "ancestry": "devil", "value": 3 }
+          {
+            "type": "ancestry_points",
+            "ancestry": "devil",
+            "value": 3
+          }
         ]
       },
       {
@@ -1214,7 +1322,11 @@
         "description": "Gain 3 ancestry points for purchased dragon knight ancestry traits.",
         "ability": null,
         "grants": [
-          { "type": "ancestry_points", "ancestry": "dragon_knight", "value": 3 }
+          {
+            "type": "ancestry_points",
+            "ancestry": "dragon_knight",
+            "value": 3
+          }
         ]
       }
     ],
@@ -1245,7 +1357,12 @@
         "name": "Treasure Keeper",
         "description": "Earn 1 Wealth.",
         "ability": null,
-        "grants": [{ "type": "wealth", "value": 1 }]
+        "grants": [
+          {
+            "type": "wealth",
+            "value": 1
+          }
+        ]
       },
       {
         "id": "fleet_admiral__weather_wizard",
@@ -1348,8 +1465,14 @@
         "description": "Earn 1 Renown and 1 Wealth.",
         "ability": null,
         "grants": [
-          { "type": "renown", "value": 1 },
-          { "type": "wealth", "value": 1 }
+          {
+            "type": "renown",
+            "value": 1
+          },
+          {
+            "type": "wealth",
+            "value": 1
+          }
         ]
       },
       {
@@ -1357,7 +1480,12 @@
         "name": "Retinue",
         "description": "Followers cap increases by two.",
         "ability": null,
-        "grants": [{ "type": "followers_cap", "value": 2 }]
+        "grants": [
+          {
+            "type": "followers_cap",
+            "value": 2
+          }
+        ]
       }
     ],
     "special": "May be called upon to perform duties for grantor."
@@ -1374,7 +1502,14 @@
         "id": "planar_voyager__prismacore_eyes",
         "name": "Prismacore Eyes",
         "description": "Psychic immunity 10; opponents can’t locate/read thoughts magically unless allowed; +3 stability vs magic/psionic abilities.",
-        "ability": null
+        "ability": null,
+        "grants": [
+          {
+            "type": "damage_immunity",
+            "damage_type": "psychic",
+            "value": 10
+          }
+        ]
       },
       {
         "id": "planar_voyager__stellar_knowledge",
@@ -1402,7 +1537,11 @@
         "description": "Gain 2 ancestry points for purchased time raider ancestry traits.",
         "ability": null,
         "grants": [
-          { "type": "ancestry_points", "ancestry": "time_raider", "value": 2 }
+          {
+            "type": "ancestry_points",
+            "ancestry": "time_raider",
+            "value": 2
+          }
         ]
       }
     ],
@@ -1491,8 +1630,14 @@
         "description": "Earn 2 Renown and 1 Wealth.",
         "ability": null,
         "grants": [
-          { "type": "renown", "value": 2 },
-          { "type": "wealth", "value": 1 }
+          {
+            "type": "renown",
+            "value": 2
+          },
+          {
+            "type": "wealth",
+            "value": 1
+          }
         ]
       },
       {
@@ -1526,6 +1671,7 @@
         "name": "Immortal Excellence",
         "description": "Increase a characteristic by 1 (max 6).",
         "ability": null,
+        "auto": true,
         "grants": [
           {
             "type": "characteristic_increase",
@@ -1539,20 +1685,27 @@
         "id": "demigod__longevity",
         "name": "Longevity",
         "description": "Natural lifespan doubles; can appear any age.",
-        "ability": null
+        "ability": null,
+        "auto": true
       },
       {
         "id": "demigod__worshippers",
         "name": "Worshippers",
         "description": "Magically hear prayers directed to you.",
-        "ability": null
+        "ability": null,
+        "auto": true
       },
       {
         "id": "demigod__acolytes",
         "name": "Acolytes",
         "description": "Followers cap increases by two.",
         "ability": null,
-        "grants": [{ "type": "followers_cap", "value": 2 }]
+        "grants": [
+          {
+            "type": "followers_cap",
+            "value": 2
+          }
+        ]
       },
       {
         "id": "demigod__divine_weapons",
@@ -1565,7 +1718,12 @@
         "name": "Missionaries",
         "description": "Earn 2 Renown.",
         "ability": null,
-        "grants": [{ "type": "renown", "value": 2 }]
+        "grants": [
+          {
+            "type": "renown",
+            "value": 2
+          }
+        ]
       }
     ],
     "special": null
@@ -1625,7 +1783,26 @@
         "id": "forsaken__perfect_protection",
         "name": "Perfect Protection",
         "description": "Director chooses artifact-related damage type; you have immunity to that type.",
-        "ability": null
+        "ability": null,
+        "grants": [
+          {
+            "type": "damage_immunity",
+            "damage_type": "choose",
+            "damage_type_options": [
+              "acid",
+              "cold",
+              "corruption",
+              "fire",
+              "holy",
+              "lightning",
+              "poison",
+              "psychic",
+              "sonic"
+            ],
+            "value": 9999,
+            "note": "Director chooses damage type related to artifact"
+          }
+        ]
       },
       {
         "id": "forsaken__poor_compensation",
@@ -1656,13 +1833,15 @@
         "id": "monarch__royal_authority",
         "name": "Royal Authority",
         "description": "Inhabitants must obey lawful orders or face consequences.",
-        "ability": null
+        "ability": null,
+        "auto": true
       },
       {
         "id": "monarch__royal_majesty",
         "name": "Royal Majesty",
         "description": "Increase Might or Presence by 1 (max 6).",
         "ability": null,
+        "auto": true,
         "grants": [
           {
             "type": "characteristic_increase",
@@ -1683,21 +1862,36 @@
         "name": "Royal Fame",
         "description": "Earn 2 Renown.",
         "ability": null,
-        "grants": [{ "type": "renown", "value": 2 }]
+        "grants": [
+          {
+            "type": "renown",
+            "value": 2
+          }
+        ]
       },
       {
         "id": "monarch__royal_retinue",
         "name": "Royal Retinue",
         "description": "Followers cap increases by 2.",
         "ability": null,
-        "grants": [{ "type": "followers_cap", "value": 2 }]
+        "grants": [
+          {
+            "type": "followers_cap",
+            "value": 2
+          }
+        ]
       },
       {
         "id": "monarch__royal_wealth",
         "name": "Royal Wealth",
         "description": "Earn 2 Wealth.",
         "ability": null,
-        "grants": [{ "type": "wealth", "value": 2 }]
+        "grants": [
+          {
+            "type": "wealth",
+            "value": 2
+          }
+        ]
       }
     ],
     "special": "May be called upon for national duties."
@@ -1770,7 +1964,12 @@
         "name": "Memories of the Beyond",
         "description": "Gain two skills of your choice.",
         "ability": null,
-        "grants": [{ "type": "skill_choice", "count": 2 }]
+        "grants": [
+          {
+            "type": "skill_choice",
+            "count": 2
+          }
+        ]
       }
     ],
     "special": "If a hakaan gains via Doomsight trait they lose that trait. Increase Intuition or Presence by 1 (max 6).",
@@ -1803,7 +2002,11 @@
             "value": 1,
             "max": 6
           },
-          { "type": "heroic_ability_choice", "count": 1, "source": "any_class" }
+          {
+            "type": "heroic_ability_choice",
+            "count": 1,
+            "source": "any_class"
+          }
         ]
       }
     ],
@@ -1833,7 +2036,13 @@
         "id": "tireless__undying",
         "name": "Undying",
         "description": "Immune to bleeding condition.",
-        "ability": null
+        "ability": null,
+        "grants": [
+          {
+            "type": "condition_immunity",
+            "condition": "bleeding"
+          }
+        ]
       }
     ],
     "special": "Increase Might or Agility by 1 (max 6).",

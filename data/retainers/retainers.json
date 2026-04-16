@@ -1,0 +1,888 @@
+[
+  {
+    "id": "angulotl_hopper",
+    "type": "retainer",
+    "name": "Angulotl Hopper",
+    "ancestry_tags": [
+      "Angulotl",
+      "Humanoid"
+    ],
+    "starting_level": 1,
+    "role": "harrier",
+    "size": "1S",
+    "speed": 6,
+    "base_stamina": 21,
+    "stability": 0,
+    "free_strike_damage": 2,
+    "immunities": [
+      "Poison 2"
+    ],
+    "weaknesses": [],
+    "movement_modes": [
+      "climb",
+      "swim"
+    ],
+    "characteristics": {
+      "might": 1,
+      "agility": 2,
+      "reason": 0,
+      "intuition": 0,
+      "presence": 0
+    },
+    "signature_ability": "angulotl_hopper__leapfrog",
+    "base_abilities": [],
+    "passive_traits": [
+      {
+        "id": "angulotl_hopper__toxiferous",
+        "name": "Toxiferous",
+        "description": "Whenever an adjacent enemy grabs the hopper or uses a melee ability against them, that enemy takes 3 poison damage."
+      }
+    ],
+    "advancement_abilities": {
+      "4": "angulotl_hopper__leaping_attack",
+      "7": "angulotl_hopper__three_poison_dart",
+      "10": "angulotl_hopper__trip_of_the_tongue"
+    }
+  },
+  {
+    "id": "bugbear_commando",
+    "type": "retainer",
+    "name": "Bugbear Commando",
+    "ancestry_tags": [
+      "Bugbear",
+      "Fey",
+      "Goblin",
+      "Humanoid"
+    ],
+    "starting_level": 2,
+    "role": "ambusher",
+    "size": "1L",
+    "speed": 5,
+    "base_stamina": 30,
+    "stability": 0,
+    "free_strike_damage": 2,
+    "immunities": [],
+    "weaknesses": [],
+    "movement_modes": [],
+    "characteristics": {
+      "might": 2,
+      "agility": 2,
+      "reason": 0,
+      "intuition": 1,
+      "presence": 0
+    },
+    "signature_ability": "bugbear_commando__bear_hug",
+    "base_abilities": [
+      "bugbear_commando__throw",
+      "bugbear_commando__catcher"
+    ],
+    "passive_traits": [],
+    "advancement_abilities": {
+      "4": "bugbear_commando__face_grab",
+      "7": "bugbear_commando__shadow_drag",
+      "10": "bugbear_commando__neck_snap"
+    }
+  },
+  {
+    "id": "devil_defector",
+    "type": "retainer",
+    "name": "Devil Defector",
+    "ancestry_tags": [
+      "Devil",
+      "Infernal"
+    ],
+    "starting_level": 5,
+    "role": "hexer",
+    "size": "1M",
+    "speed": 6,
+    "base_stamina": 57,
+    "stability": 0,
+    "free_strike_damage": 5,
+    "immunities": [
+      "Fire 5"
+    ],
+    "weaknesses": [],
+    "movement_modes": [
+      "fly"
+    ],
+    "characteristics": {
+      "might": 3,
+      "agility": 2,
+      "reason": 3,
+      "intuition": 1,
+      "presence": 2
+    },
+    "signature_ability": "devil_defector__black_flame",
+    "base_abilities": [
+      "devil_defector__tempting_offer"
+    ],
+    "passive_traits": [
+      {
+        "id": "devil_defector__true_name",
+        "name": "True Name",
+        "description": "If a creature within 10 squares speaks the defector’s true name, the defector loses their damage immunities and their Tempting Offer triggered action until the end of the encounter."
+      }
+    ],
+    "advancement_abilities": {
+      "7": "devil_defector__flames_of_revenge",
+      "10": "devil_defector__hell_on_earth"
+    }
+  },
+  {
+    "id": "the_nameless",
+    "type": "retainer",
+    "name": "The Nameless",
+    "ancestry_tags": [
+      "Draconian",
+      "Dragon",
+      "Humanoid"
+    ],
+    "starting_level": 6,
+    "role": "defender",
+    "size": "1M",
+    "speed": 5,
+    "base_stamina": 66,
+    "stability": 4,
+    "free_strike_damage": 6,
+    "immunities": [
+      "Corruption 6"
+    ],
+    "weaknesses": [],
+    "movement_modes": [
+      "fly"
+    ],
+    "characteristics": {
+      "might": 3,
+      "agility": 2,
+      "reason": 1,
+      "intuition": 1,
+      "presence": 2
+    },
+    "signature_ability": "the_nameless__baneful_blade",
+    "base_abilities": [
+      "the_nameless__i_m_not_a_steed_you_re_equipment"
+    ],
+    "passive_traits": [
+      {
+        "id": "the_nameless__wing_block",
+        "name": "Wing Block",
+        "description": "Ranged strikes against the Nameless take a bane."
+      }
+    ],
+    "advancement_abilities": {
+      "7": "the_nameless__looming_wings",
+      "10": "the_nameless__spew_death"
+    }
+  },
+  {
+    "id": "dwarf_mortar",
+    "type": "retainer",
+    "name": "Dwarf Mortar",
+    "ancestry_tags": [
+      "Dwarf",
+      "Humanoid"
+    ],
+    "starting_level": 1,
+    "role": "hexer",
+    "size": "1M",
+    "speed": 5,
+    "base_stamina": 21,
+    "stability": 3,
+    "free_strike_damage": 3,
+    "immunities": [],
+    "weaknesses": [],
+    "movement_modes": [],
+    "characteristics": {
+      "might": 2,
+      "agility": 0,
+      "reason": 0,
+      "intuition": 1,
+      "presence": 0
+    },
+    "signature_ability": "dwarf_mortar__mortar",
+    "base_abilities": [],
+    "passive_traits": [
+      {
+        "id": "dwarf_mortar__voice_rune",
+        "name": "Voice Rune",
+        "description": "The mortar can use a magical rune inscribed on their skin to talk to their mentor over any distance as long as both are in the same world."
+      }
+    ],
+    "advancement_abilities": {
+      "4": "dwarf_mortar__signal_shell",
+      "7": "dwarf_mortar__screaming_shell",
+      "10": "dwarf_mortar__pacifier_shell"
+    }
+  },
+  {
+    "id": "high_elf_weatherwise",
+    "type": "retainer",
+    "name": "High Elf Weatherwise",
+    "ancestry_tags": [
+      "Fey",
+      "High Elf",
+      "Humanoid"
+    ],
+    "starting_level": 1,
+    "role": "controller",
+    "size": "1M",
+    "speed": 5,
+    "base_stamina": 21,
+    "stability": 0,
+    "free_strike_damage": 2,
+    "immunities": [],
+    "weaknesses": [],
+    "movement_modes": [],
+    "characteristics": {
+      "might": -1,
+      "agility": 1,
+      "reason": 2,
+      "intuition": 0,
+      "presence": 1
+    },
+    "signature_ability": "high_elf_weatherwise__summer_s_bolt",
+    "base_abilities": [],
+    "passive_traits": [
+      {
+        "id": "high_elf_weatherwise__otherworldly_grace",
+        "name": "Otherworldly Grace",
+        "description": "At the start of each of their turns, the weatherwise can choose one effect on them that can be ended by a saving throw. That effect instead ends at the end of their turn."
+      }
+    ],
+    "advancement_abilities": {
+      "4": "high_elf_weatherwise__winter_s_breath",
+      "7": "high_elf_weatherwise__spring_s_rebirth",
+      "10": "high_elf_weatherwise__autumn_s_decay"
+    }
+  },
+  {
+    "id": "shadow_elf_shade",
+    "type": "retainer",
+    "name": "Shadow Elf Shade",
+    "ancestry_tags": [
+      "Fey",
+      "Humanoid",
+      "Shadow Elf"
+    ],
+    "starting_level": 4,
+    "role": "ambusher",
+    "size": "1M",
+    "speed": 5,
+    "base_stamina": 48,
+    "stability": 0,
+    "free_strike_damage": 5,
+    "immunities": [],
+    "weaknesses": [],
+    "movement_modes": [
+      "climb"
+    ],
+    "characteristics": {
+      "might": 1,
+      "agility": 3,
+      "reason": 0,
+      "intuition": 2,
+      "presence": 1
+    },
+    "signature_ability": "shadow_elf_shade__gloom_dagger",
+    "base_abilities": [
+      "shadow_elf_shade__duskfall"
+    ],
+    "passive_traits": [
+      {
+        "id": "shadow_elf_shade__of_the_umbra",
+        "name": "Of the Umbra",
+        "description": "The shade ignores concealment created by darkness. While the shade is in direct sunlight, they have damage weakness 3. While the shade has concealment, they have damage immunity 3."
+      }
+    ],
+    "advancement_abilities": {
+      "7": "shadow_elf_shade__slow_poison_needle",
+      "10": "shadow_elf_shade__shadow_dagger"
+    }
+  },
+  {
+    "id": "wode_elf_arrowswift",
+    "type": "retainer",
+    "name": "Wode Elf Arrowswift",
+    "ancestry_tags": [
+      "Fey",
+      "Humanoid",
+      "Wode Elf"
+    ],
+    "starting_level": 1,
+    "role": "artillery",
+    "size": "1M",
+    "speed": 7,
+    "base_stamina": 21,
+    "stability": 1,
+    "free_strike_damage": 2,
+    "immunities": [],
+    "weaknesses": [],
+    "movement_modes": [],
+    "characteristics": {
+      "might": 0,
+      "agility": 2,
+      "reason": 0,
+      "intuition": 1,
+      "presence": 0
+    },
+    "signature_ability": "wode_elf_arrowswift__longshot",
+    "base_abilities": [],
+    "passive_traits": [
+      {
+        "id": "wode_elf_arrowswift__masking_glamor",
+        "name": "Masking Glamor",
+        "description": "Abilities targeting the arrowswift that would take a bane from cover or concealment have a double bane instead."
+      }
+    ],
+    "advancement_abilities": {
+      "4": "wode_elf_arrowswift__snipe",
+      "7": "wode_elf_arrowswift__magic_arrows",
+      "10": "wode_elf_arrowswift__double_shot"
+    }
+  },
+  {
+    "id": "gnoll_gnasher",
+    "type": "retainer",
+    "name": "Gnoll Gnasher",
+    "ancestry_tags": [
+      "Abyssal",
+      "Gnoll"
+    ],
+    "starting_level": 2,
+    "role": "harrier",
+    "size": "1M",
+    "speed": 7,
+    "base_stamina": 30,
+    "stability": 1,
+    "free_strike_damage": 3,
+    "immunities": [],
+    "weaknesses": [],
+    "movement_modes": [],
+    "characteristics": {
+      "might": 1,
+      "agility": 2,
+      "reason": 0,
+      "intuition": 0,
+      "presence": 1
+    },
+    "signature_ability": "gnoll_gnasher__gnash",
+    "base_abilities": [],
+    "passive_traits": [
+      {
+        "id": "gnoll_gnasher__death_frenzy",
+        "name": "Death Frenzy",
+        "description": "Whenever a non-minion ally within 7 squares of the gnasher is reduced to 0 Stamina, the gnasher moves up to their speed and can make a melee free strike."
+      }
+    ],
+    "advancement_abilities": {
+      "4": "gnoll_gnasher__frenzied_bite",
+      "7": "gnoll_gnasher__flurry_of_fangs",
+      "10": "gnoll_gnasher__horrific_feast"
+    }
+  },
+  {
+    "id": "goblin_guide",
+    "type": "retainer",
+    "name": "Goblin Guide",
+    "ancestry_tags": [
+      "Goblin",
+      "Humanoid"
+    ],
+    "starting_level": 1,
+    "role": "harrier",
+    "size": "1S",
+    "speed": 5,
+    "base_stamina": 21,
+    "stability": 0,
+    "free_strike_damage": 2,
+    "immunities": [],
+    "weaknesses": [],
+    "movement_modes": [
+      "climb"
+    ],
+    "characteristics": {
+      "might": -1,
+      "agility": 1,
+      "reason": 0,
+      "intuition": 0,
+      "presence": 1
+    },
+    "signature_ability": "goblin_guide__stabbity_stab",
+    "base_abilities": [],
+    "passive_traits": [
+      {
+        "id": "goblin_guide__crafty",
+        "name": "Crafty",
+        "description": "The guide doesn’t provoke opportunity attacks by moving."
+      }
+    ],
+    "advancement_abilities": {
+      "4": "goblin_guide__weaving_knives",
+      "7": "goblin_guide__sneak_and_stab",
+      "10": "goblin_guide__poison_blade"
+    }
+  },
+  {
+    "id": "hobgoblin_flameslinger",
+    "type": "retainer",
+    "name": "Hobgoblin Flameslinger",
+    "ancestry_tags": [
+      "Goblin",
+      "Hobgoblin",
+      "Humanoid",
+      "Infernal"
+    ],
+    "starting_level": 4,
+    "role": "controller",
+    "size": "1M",
+    "speed": 5,
+    "base_stamina": 48,
+    "stability": 0,
+    "free_strike_damage": 5,
+    "immunities": [
+      "Fire 4"
+    ],
+    "weaknesses": [],
+    "movement_modes": [],
+    "characteristics": {
+      "might": 1,
+      "agility": 0,
+      "reason": 2,
+      "intuition": 1,
+      "presence": 3
+    },
+    "signature_ability": "hobgoblin_flameslinger__fire_curse",
+    "base_abilities": [
+      "hobgoblin_flameslinger__fuel_for_the_fire"
+    ],
+    "passive_traits": [
+      {
+        "id": "hobgoblin_flameslinger__infernal_ichor",
+        "name": "Infernal Ichor",
+        "description": "When the flameslinger is reduced to 0 Stamina, they spray burn­ ing blood. Each creature adjacent to the flameslinger takes 3 fire damage."
+      }
+    ],
+    "advancement_abilities": {
+      "7": "hobgoblin_flameslinger__unholy_attraction",
+      "10": "hobgoblin_flameslinger__fire_spiral"
+    }
+  },
+  {
+    "id": "human_warrior",
+    "type": "retainer",
+    "name": "Human Warrior",
+    "ancestry_tags": [
+      "Human",
+      "Humanoid"
+    ],
+    "starting_level": 1,
+    "role": "defender",
+    "size": "1M",
+    "speed": 5,
+    "base_stamina": 21,
+    "stability": 0,
+    "free_strike_damage": 2,
+    "immunities": [],
+    "weaknesses": [],
+    "movement_modes": [],
+    "characteristics": {
+      "might": 2,
+      "agility": 0,
+      "reason": 0,
+      "intuition": 0,
+      "presence": 1
+    },
+    "signature_ability": "human_warrior__chop",
+    "base_abilities": [],
+    "passive_traits": [
+      {
+        "id": "human_warrior__supernatural_insight",
+        "name": "Supernatural Insight",
+        "description": "The warrior ignores concealment if it’s granted by a supernatural effect."
+      }
+    ],
+    "advancement_abilities": {
+      "4": "human_warrior__scuse_me_boss",
+      "7": "human_warrior__defensive_fighting",
+      "10": "human_warrior__whirlwind_of_steel"
+    }
+  },
+  {
+    "id": "kobold_shieldbearer",
+    "type": "retainer",
+    "name": "Kobold Shieldbearer",
+    "ancestry_tags": [
+      "Humanoid",
+      "Kobold"
+    ],
+    "starting_level": 1,
+    "role": "defender",
+    "size": "1S",
+    "speed": 5,
+    "base_stamina": 21,
+    "stability": 0,
+    "free_strike_damage": 2,
+    "immunities": [],
+    "weaknesses": [],
+    "movement_modes": [],
+    "characteristics": {
+      "might": 2,
+      "agility": 1,
+      "reason": 0,
+      "intuition": 0,
+      "presence": 0
+    },
+    "signature_ability": "kobold_shieldbearer__gladius",
+    "base_abilities": [],
+    "passive_traits": [
+      {
+        "id": "kobold_shieldbearer__shield_boss",
+        "name": "Shield, Boss?",
+        "description": "While the shieldbearer is adjacent to their mentor, both have a +1 bonus to stability, have cover, and grant cover to allies."
+      }
+    ],
+    "advancement_abilities": {
+      "4": "kobold_shieldbearer__shield_block",
+      "7": "kobold_shieldbearer__living_backpack",
+      "10": "kobold_shieldbearer__let_s_go_sledding"
+    }
+  },
+  {
+    "id": "minotaur_gorer",
+    "type": "retainer",
+    "name": "Minotaur Gorer",
+    "ancestry_tags": [
+      "Accursed",
+      "Humanoid",
+      "Minotaur"
+    ],
+    "starting_level": 3,
+    "role": "brute",
+    "size": "2",
+    "speed": 6,
+    "base_stamina": 39,
+    "stability": 2,
+    "free_strike_damage": 6,
+    "immunities": [],
+    "weaknesses": [],
+    "movement_modes": [],
+    "characteristics": {
+      "might": 2,
+      "agility": 1,
+      "reason": 0,
+      "intuition": 1,
+      "presence": 0
+    },
+    "signature_ability": "minotaur_gorer__gore",
+    "base_abilities": [
+      "minotaur_gorer__retaliatory_strike"
+    ],
+    "passive_traits": [
+      {
+        "id": "minotaur_gorer__minotaur_sense",
+        "name": "Minotaur Sense",
+        "description": "The gorer can’t obtain less than a tier 2 outcome when making tests to navigate, search, or seek."
+      }
+    ],
+    "advancement_abilities": {
+      "4": "minotaur_gorer__horn_toss",
+      "7": "minotaur_gorer__triumphant_bay",
+      "10": "minotaur_gorer__horn_rake"
+    }
+  },
+  {
+    "id": "orc_charger",
+    "type": "retainer",
+    "name": "Orc Charger",
+    "ancestry_tags": [
+      "Humanoid",
+      "Orc"
+    ],
+    "starting_level": 1,
+    "role": "harrier",
+    "size": "1M",
+    "speed": 8,
+    "base_stamina": 21,
+    "stability": 0,
+    "free_strike_damage": 3,
+    "immunities": [],
+    "weaknesses": [],
+    "movement_modes": [],
+    "characteristics": {
+      "might": 2,
+      "agility": 2,
+      "reason": 0,
+      "intuition": 0,
+      "presence": 0
+    },
+    "signature_ability": "orc_charger__notched_axe",
+    "base_abilities": [],
+    "passive_traits": [
+      {
+        "id": "orc_charger__relentless",
+        "name": "Relentless",
+        "description": "If the charger is reduced to 0 Stamina, they can make a free strike. If the target of the free strike is reduced to 0 Stamina, the charger is reduced to 1 Stamina instead."
+      }
+    ],
+    "advancement_abilities": {
+      "4": "orc_charger__blood_oath",
+      "7": "orc_charger__mow_em_down",
+      "10": "orc_charger__vein_burst"
+    }
+  },
+  {
+    "id": "radenwight_sidekick",
+    "type": "retainer",
+    "name": "Radenwight Sidekick",
+    "ancestry_tags": [
+      "Humanoid",
+      "Radenwight"
+    ],
+    "starting_level": 1,
+    "role": "support",
+    "size": "1S",
+    "speed": 5,
+    "base_stamina": 21,
+    "stability": 0,
+    "free_strike_damage": 2,
+    "immunities": [],
+    "weaknesses": [],
+    "movement_modes": [
+      "climb"
+    ],
+    "characteristics": {
+      "might": 0,
+      "agility": 2,
+      "reason": 0,
+      "intuition": 1,
+      "presence": 0
+    },
+    "signature_ability": "radenwight_sidekick__dagger_s_bite",
+    "base_abilities": [
+      "radenwight_sidekick__ready_rodent"
+    ],
+    "passive_traits": [],
+    "advancement_abilities": {
+      "4": "radenwight_sidekick__boost",
+      "7": "radenwight_sidekick__bug_bag",
+      "10": "radenwight_sidekick__triumphant_squeak"
+    }
+  },
+  {
+    "id": "time_raider_mind_healer",
+    "type": "retainer",
+    "name": "Time Raider Mind Healer",
+    "ancestry_tags": [
+      "Humanoid",
+      "Time Raider"
+    ],
+    "starting_level": 3,
+    "role": "support",
+    "size": "1M",
+    "speed": 5,
+    "base_stamina": 39,
+    "stability": 0,
+    "free_strike_damage": 4,
+    "immunities": [
+      "Psychic 5"
+    ],
+    "weaknesses": [],
+    "movement_modes": [],
+    "characteristics": {
+      "might": 0,
+      "agility": 2,
+      "reason": 2,
+      "intuition": 2,
+      "presence": 0
+    },
+    "signature_ability": "time_raider_mind_healer__laser_lancet",
+    "base_abilities": [],
+    "passive_traits": [
+      {
+        "id": "time_raider_mind_healer__foresight",
+        "name": "Foresight",
+        "description": "The mind healer doesn’t take a bane on strikes against creatures with concealment."
+      }
+    ],
+    "advancement_abilities": {
+      "4": "time_raider_mind_healer__stim_charge",
+      "7": "time_raider_mind_healer__mind_whelm",
+      "10": "time_raider_mind_healer__psychic_short_circuit"
+    }
+  },
+  {
+    "id": "troll_mercenary",
+    "type": "retainer",
+    "name": "Troll Mercenary",
+    "ancestry_tags": [
+      "Giant",
+      "Troll"
+    ],
+    "starting_level": 5,
+    "role": "brute",
+    "size": "2",
+    "speed": 6,
+    "base_stamina": 57,
+    "stability": 4,
+    "free_strike_damage": 6,
+    "immunities": [],
+    "weaknesses": [
+      "Acid 5",
+      "fire 5"
+    ],
+    "movement_modes": [],
+    "characteristics": {
+      "might": 3,
+      "agility": 1,
+      "reason": -1,
+      "intuition": 0,
+      "presence": 1
+    },
+    "signature_ability": "troll_mercenary__big_bite",
+    "base_abilities": [
+      "troll_mercenary__troll_roar"
+    ],
+    "passive_traits": [
+      {
+        "id": "troll_mercenary__relentless_hunger",
+        "name": "Relentless Hunger",
+        "description": "The mercenary dies only if they are reduced to 0 Stamina by acid or fire damage, if they end their turn with 0 Stamina, or if they take acid or fire damage while at 0 Stamina."
+      }
+    ],
+    "advancement_abilities": {
+      "7": "troll_mercenary__hangry_frenzy",
+      "10": "troll_mercenary__fire_bad"
+    }
+  },
+  {
+    "id": "undead_servitor",
+    "type": "retainer",
+    "name": "Undead Servitor",
+    "ancestry_tags": [
+      "Undead",
+      "Soulless"
+    ],
+    "starting_level": 1,
+    "role": "brute",
+    "size": "1M",
+    "speed": 5,
+    "base_stamina": 21,
+    "stability": 0,
+    "free_strike_damage": 3,
+    "immunities": [],
+    "weaknesses": [],
+    "movement_modes": [],
+    "characteristics": {
+      "might": 2,
+      "agility": -1,
+      "reason": -3,
+      "intuition": -1,
+      "presence": 0
+    },
+    "signature_ability": "undead_servitor__lurching_swipe",
+    "base_abilities": [],
+    "passive_traits": [
+      {
+        "id": "undead_servitor__arise",
+        "name": "Arise",
+        "description": "The first time in an encounter that the servitor is reduced to 0 Stamina by damage that isn’t fire damage or holy damage and their body isn’t destroyed, they regain half their Stamina maxi­ mum and fall prone."
+      }
+    ],
+    "advancement_abilities": {
+      "4": "undead_servitor__grab_and_bite",
+      "7": "undead_servitor__death_to_death",
+      "10": "undead_servitor__death_miasma"
+    }
+  },
+  {
+    "id": "unquiet_spirit",
+    "type": "retainer",
+    "name": "Unquiet Spirit",
+    "ancestry_tags": [
+      "Undead",
+      "Soulless"
+    ],
+    "starting_level": 1,
+    "role": "hexer",
+    "size": "1M",
+    "speed": 5,
+    "base_stamina": 21,
+    "stability": 1,
+    "free_strike_damage": 2,
+    "immunities": [
+      "Corruption 3",
+      "poison 3"
+    ],
+    "weaknesses": [],
+    "movement_modes": [
+      "fly",
+      "hover"
+    ],
+    "characteristics": {
+      "might": -4,
+      "agility": 1,
+      "reason": 0,
+      "intuition": 0,
+      "presence": 2
+    },
+    "signature_ability": "unquiet_spirit__chill_of_death",
+    "base_abilities": [
+      "unquiet_spirit__spirit_meld"
+    ],
+    "passive_traits": [
+      {
+        "id": "unquiet_spirit__corruptive_phasing",
+        "name": "Corruptive Phasing",
+        "description": "The unquiet spirit can move through creatures and objects at their usual speed, but can’t end their turn inside a creature or object. The first time in a round that the spirit moves through a creature other than their mentor, that creature takes 2 corruption damage."
+      }
+    ],
+    "advancement_abilities": {
+      "4": "unquiet_spirit__enervating_curse",
+      "7": "unquiet_spirit__ectoplasm",
+      "10": "unquiet_spirit__death_phase"
+    }
+  },
+  {
+    "id": "vampire_rebel",
+    "type": "retainer",
+    "name": "Vampire Rebel",
+    "ancestry_tags": [
+      "Undead",
+      "Vampire"
+    ],
+    "starting_level": 4,
+    "role": "harrier",
+    "size": "1M",
+    "speed": 5,
+    "base_stamina": 48,
+    "stability": 0,
+    "free_strike_damage": 4,
+    "immunities": [],
+    "weaknesses": [],
+    "movement_modes": [
+      "climb"
+    ],
+    "characteristics": {
+      "might": 2,
+      "agility": 3,
+      "reason": 0,
+      "intuition": 0,
+      "presence": 3
+    },
+    "signature_ability": "vampire_rebel__flashing_fangs",
+    "base_abilities": [
+      "vampire_rebel__bat_form"
+    ],
+    "passive_traits": [
+      {
+        "id": "vampire_rebel__agonizing_bloodthirst",
+        "name": "Agonizing Bloodthirst",
+        "description": "The vampire rebel has speed 10 while any creature within 10 squares of them is bleeding. If the vampire rebel is able to deal damage to a bleeding creature on their turn and does not do so, they take 5 corruption damage at the end of their turn."
+      }
+    ],
+    "advancement_abilities": {
+      "7": "vampire_rebel__blood_surge",
+      "10": "vampire_rebel__exsanguination"
+    }
+  }
+]

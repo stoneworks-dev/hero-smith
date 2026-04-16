@@ -18,6 +18,10 @@ import '../services/hero_config_service.dart';
 import '../services/hero_assembly_service.dart';
 import '../services/treasure_bonus_service.dart';
 import '../services/items_catalog_service.dart';
+import '../services/retainer_advancement_service.dart';
+import '../repositories/retainer_repository.dart';
+import '../models/retainer.dart';
+import '../models/retainer_instance.dart';
 import '../models/hero_assembled_model.dart';
 
 // Core singletons
@@ -238,7 +242,82 @@ const _supplementalAbilityJsonFiles = [
   'data/abilities/complication_abilities.json',
   'data/abilities/ancestry_abilities.json',
   'data/abilities/kit_abilities.json',
+  'data/abilities/retainer_abilities.json',
+  'data/retainers/role_advancement_abilities.json',
 ];
+
+// ---------------------------------------------------------------------------
+// Retainer providers
+// ---------------------------------------------------------------------------
+
+final retainerRepositoryProvider = Provider<RetainerRepository>((ref) {
+  final database = ref.read(appDatabaseProvider);
+  return RetainerRepository(database);
+});
+
+final retainerAdvancementServiceProvider =
+    Provider<RetainerAdvancementService>((ref) {
+  return const RetainerAdvancementService();
+});
+
+/// Watch the active retainer instance for a hero.
+final heroRetainerProvider =
+    StreamProvider.family<RetainerInstance?, String>((ref, heroId) {
+  final repo = ref.read(retainerRepositoryProvider);
+  return repo.watchRetainerForHero(heroId);
+});
+
+/// Watch the retainer template (base stat block) for a hero's active retainer.
+final heroRetainerTemplateProvider =
+    FutureProvider.family<Retainer?, String>((ref, heroId) async {
+  final instance = ref.watch(heroRetainerProvider(heroId)).valueOrNull;
+  if (instance == null) return null;
+  final database = ref.read(appDatabaseProvider);
+  final row = await (database.select(database.components)
+        ..where((c) => c.id.equals(instance.retainerComponentId)))
+      .getSingleOrNull();
+  if (row == null) return null;
+  return Retainer.fromComponent(model.Component.fromJson({
+    'id': row.id,
+    'type': row.type,
+    'name': row.name,
+    ...row.dataJson.isNotEmpty
+        ? (jsonDecode(row.dataJson) as Map<String, dynamic>)
+        : <String, dynamic>{},
+  }));
+});
+
+/// Computed retainer stats at the hero's current level.
+/// Combines the base template + player choices + advancement rules.
+final heroRetainerStatsProvider =
+    FutureProvider.family<RetainerStats?, String>((ref, heroId) async {
+  final instance = ref.watch(heroRetainerProvider(heroId)).valueOrNull;
+  if (instance == null) return null;
+  final template = await ref.watch(heroRetainerTemplateProvider(heroId).future);
+  if (template == null) return null;
+
+  // Get hero level from assembly
+  final assembly = await ref.watch(heroAssemblyProvider(heroId).future);
+  final heroLevel = assembly?.level ?? 1;
+
+  final svc = ref.read(retainerAdvancementServiceProvider);
+  return svc.computeStats(
+    template: template,
+    mentorLevel: heroLevel,
+    instance: instance,
+  );
+});
+
+/// All seeded retainer templates (for the "Add Retainer" picker).
+final allRetainerTemplatesProvider =
+    StreamProvider<List<Retainer>>((ref) {
+  final repo = ref.read(componentRepositoryProvider);
+  return repo.watchByType('retainer').map(
+        (components) =>
+            components.map((c) => Retainer.fromComponent(c)).toList()
+              ..sort((a, b) => a.name.compareTo(b.name)),
+      );
+});
 
 /// Cache for loaded supplemental abilities - keyed by both name and id
 Map<String, model.Component>? _supplementalAbilitiesCache;

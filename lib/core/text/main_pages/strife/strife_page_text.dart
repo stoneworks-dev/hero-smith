@@ -5,4 +5,6 @@ class StrifePageText {
   static const String featuresSubtitle = 'Browse and search all features';
   static const String conditionsTitle = 'Conditions';
   static const String conditionsSubtitle = 'Status effects and their rules';
+  static const String retainersTitle = 'Retainers';
+  static const String retainersSubtitle = 'Browse all retainer stat blocks';
 }

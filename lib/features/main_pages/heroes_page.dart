@@ -1145,6 +1145,7 @@ class _ExportOptionsDialogState extends State<_ExportOptionsDialog> {
   bool _includeDowntime = true;
   bool _includeTitles = true;
   bool _includeNotes = true;
+  bool _includeRetainers = true;
 
   @override
   Widget build(BuildContext context) {
@@ -1173,7 +1174,7 @@ class _ExportOptionsDialogState extends State<_ExportOptionsDialog> {
           // Core build — always included (disabled checkbox)
           _buildOptionTile(
             theme: theme,
-            icon: Icons.person,
+            icon: Icon(Icons.person, size: 20, color: theme.colorScheme.onSurface.withValues(alpha: 0.4)),
             title: 'Core Build',
             subtitle: 'Class, ancestry, kit, abilities, stats',
             value: true,
@@ -1185,7 +1186,7 @@ class _ExportOptionsDialogState extends State<_ExportOptionsDialog> {
           // Downtime
           _buildOptionTile(
             theme: theme,
-            icon: Icons.construction,
+            icon: Icon(Icons.construction, size: 20, color: theme.colorScheme.onSurface),
             title: 'Downtime',
             subtitle: 'Projects, followers, and sources',
             value: _includeDowntime,
@@ -1197,7 +1198,7 @@ class _ExportOptionsDialogState extends State<_ExportOptionsDialog> {
           // Titles
           _buildOptionTile(
             theme: theme,
-            icon: Icons.military_tech,
+            icon: Icon(Icons.military_tech, size: 20, color: theme.colorScheme.onSurface),
             title: 'Titles',
             subtitle: 'Title progress tracking data',
             value: _includeTitles,
@@ -1209,12 +1210,24 @@ class _ExportOptionsDialogState extends State<_ExportOptionsDialog> {
           // Notes
           _buildOptionTile(
             theme: theme,
-            icon: Icons.note_alt_outlined,
+            icon: Icon(Icons.note_alt_outlined, size: 20, color: theme.colorScheme.onSurface),
             title: 'Notes',
             subtitle: 'Personal notes and session logs',
             value: _includeNotes,
             enabled: true,
             onChanged: (v) => setState(() => _includeNotes = v ?? false),
+          ),
+          const SizedBox(height: 8),
+
+          // Retainers
+          _buildOptionTile(
+            theme: theme,
+            icon: AppIcon(DowntimeIcons.follower, size: 20, color: theme.colorScheme.onSurface),
+            title: 'Retainers',
+            subtitle: 'Retainer instances and advancement choices',
+            value: _includeRetainers,
+            enabled: true,
+            onChanged: (v) => setState(() => _includeRetainers = v ?? false),
           ),
         ],
       ),
@@ -1229,6 +1242,7 @@ class _ExportOptionsDialogState extends State<_ExportOptionsDialog> {
               includeDowntime: _includeDowntime,
               includeTitles: _includeTitles,
               includeNotes: _includeNotes,
+              includeRetainers: _includeRetainers,
             ),
           ),
           child: Text(HeroesPageText.export_),
@@ -1239,7 +1253,7 @@ class _ExportOptionsDialogState extends State<_ExportOptionsDialog> {
 
   Widget _buildOptionTile({
     required ThemeData theme,
-    required IconData icon,
+    required Widget icon,
     required String title,
     required String subtitle,
     required bool value,
@@ -1268,13 +1282,7 @@ class _ExportOptionsDialogState extends State<_ExportOptionsDialog> {
               value: value,
               onChanged: enabled ? onChanged : null,
             ),
-            Icon(
-              icon,
-              size: 20,
-              color: enabled
-                  ? theme.colorScheme.onSurface
-                  : theme.colorScheme.onSurface.withValues(alpha: 0.4),
-            ),
+            icon,
             const SizedBox(width: 10),
             Expanded(
               child: Column(

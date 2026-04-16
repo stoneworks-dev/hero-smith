@@ -1,0 +1,614 @@
+[
+  {
+    "type": "ability",
+    "id": "role_ambusher__go_for_the_jugular",
+    "name": "Go for the Jugular",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "5 damage; m<w bleeding (save ends)",
+        "tier2": "9 damage; m<v bleeding (save ends)",
+        "tier3": "12 damage; m<s bleeding (save ends)"
+      }
+    ],
+    "effect": "If the target is grabbed or the retainer had an edge on the power roll, the retainer gains 2 surges.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "ambusher",
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "role_ambusher__hamstring_slice",
+    "name": "Hamstring Slice",
+    "keywords": "Melee/Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1 or ranged 5",
+    "targets": "One creature",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "7 damage; m<w slowed (EoT)",
+        "tier2": "10 damage; m<v slowed (save ends)",
+        "tier3": "15 damage; m<s slowed and the target can’t used trig­"
+      }
+    ],
+    "effect": "The retainer and their mentor can each move up to their speed.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "ambusher",
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "role_ambusher__hold_em_down",
+    "name": "Hold ’Em Down",
+    "keywords": "Melee/Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1 or ranged 5",
+    "targets": "One creature",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "11 damage; a size 1 or smaller target who has m<w is",
+        "tier2": "16 damage; a size 1 or smaller target who has m<v is",
+        "tier3": "21 damage; a size 1 or smaller target who has m<s is"
+      }
+    ],
+    "effect": "The retainer gains 2 surges when any creature makes a strike against a target grabbed this way.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "ambusher",
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "role_brute__supporting_volley",
+    "name": "Supporting Volley",
+    "keywords": "Ranged/Weapon",
+    "action_type": "triggered action",
+    "trigger_text": "The retainer’s mentor makes a strike against a creature within distance.",
+    "distance": "Ranged 5",
+    "targets": "The triggering creature",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The retainer makes a ranged free strike against the target.",
+    "special_effect": "",
+    "encounter": false,
+    "signature": false,
+    "role": "brute",
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "role_brute__line_em_up",
+    "name": "Line ’Em Up",
+    "keywords": "Area/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "10 × 1 line within 1",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "7 damage; m<w prone",
+        "tier2": "11 damage; m<v prone",
+        "tier3": "16 damage; m<s prone"
+      }
+    ],
+    "effect": "",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "brute",
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "role_brute__ricochet_shot",
+    "name": "Ricochet Shot",
+    "keywords": "Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 5",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "9 damage",
+        "tier2": "14 damage",
+        "tier3": "19 damage"
+      }
+    ],
+    "effect": "The retainer can target a second creature or object within 5 squares of the original target and that has line of effect to the original target. The retainer doesn’t need line of effect to the second target but must be aware of their location.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "brute",
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "role_artillery__big_windup",
+    "name": "Big Windup",
+    "keywords": "—",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Until the start of the retainer’s next turn, strikes made against the retainer gain an edge. At the start of the retainer’s next turn, they gain 2 surges, and any ability they use before the end of their turn that force moves a creature can move that creature 2 additional squares.",
+    "special_effect": "",
+    "encounter": false,
+    "signature": false,
+    "role": "artillery",
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "role_artillery__overhand_swat",
+    "name": "Overhand Swat",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "8 damage",
+        "tier2": "13 damage; push 2",
+        "tier3": "16 damage; push 3; m<s prone"
+      }
+    ],
+    "effect": "If the target ends any forced movement from this ability in a square adjacent to the retainer’s mentor, the mentor can make a melee free strike against them.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "artillery",
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "role_artillery__dizzying_sweep",
+    "name": "Dizzying Sweep",
+    "keywords": "Area/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "1 burst",
+    "targets": "Each creature in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "10 damage; push 1",
+        "tier2": "14 damage; push 2",
+        "tier3": "20 damage; push 4"
+      }
+    ],
+    "effect": "The retainer is dazed until the end of their next turn.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "artillery",
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "role_controller__elemental_blast",
+    "name": "Elemental Blast",
+    "keywords": "Area/Magic/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 cube within 10",
+    "targets": "Each creature in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "4 damage; push 2",
+        "tier2": "6 damage; push 3",
+        "tier3": "10 damage; push 5"
+      }
+    ],
+    "effect": "When the retainer uses this ability, they can choose for it to deal one of the following damage types: acid, cold, fire, lightning, poison, or sonic.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "controller",
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "role_controller__oil_slick",
+    "name": "Oil Slick",
+    "keywords": "Area/Ranged/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 cube within 10",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "5 poison damage; m<w prone",
+        "tier2": "8 poison damage; m<v prone",
+        "tier3": "11 poison damage; m<s prone"
+      }
+    ],
+    "effect": "The area is difficult terrain for enemies. Any enemy has fire weakness 5 while in the area, and any enemy who ends their turn in the area and has no movement remaining falls prone.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "controller",
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "role_controller__shattering_shards",
+    "name": "Shattering Shards",
+    "keywords": "Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One Object",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "7 damage",
+        "tier2": "11 damage",
+        "tier3": "16 damage"
+      }
+    ],
+    "effect": "The area within 2 squares of the target is difficult terrain, and each enemy in the area takes the same damage the object took.",
+    "special_effect": "The target must be size 1M or smaller.",
+    "encounter": true,
+    "signature": false,
+    "role": "controller",
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "role_defender__watch_out",
+    "name": "Watch Out!",
+    "keywords": "Melee",
+    "action_type": "triggered action",
+    "trigger_text": "The target takes damage from a strike.",
+    "distance": "Melee 1",
+    "targets": "The retainer’s mentor",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The retainer pushes the target or the attacking creature up to 2 squares. If that moves the mentor out of distance of the strike, the strike has no effect.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "defender",
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "role_defender__it_s_me_you_want",
+    "name": "It’s Me You Want!",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "Two creatures",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "7 damage; taunted (EoT)",
+        "tier2": "11 damage; taunted (save ends)",
+        "tier3": "16 damage; taunted (save ends)"
+      }
+    ],
+    "effect": "",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "defender",
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "role_defender__last_stand",
+    "name": "Last Stand",
+    "keywords": "Melee/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One enemy",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "8 damage",
+        "tier2": "13 damage",
+        "tier3": "17 damage"
+      }
+    ],
+    "effect": "The retainer and their mentor each gain 10 temporary Stam­ ina. Additionally, each winded ally within 2 squares of the retainer can spend a Recovery.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "defender",
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "role_harrier__tackle",
+    "name": "Tackle",
+    "keywords": "Charge/Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One enemy",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "5 damage; push 1",
+        "tier2": "9 damage; push 2",
+        "tier3": "12 damage; push 4"
+      }
+    ],
+    "effect": "",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "harrier",
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "role_harrier__meet_you_there",
+    "name": "Meet You There",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "7 damage",
+        "tier2": "10 damage",
+        "tier3": "15 damage"
+      }
+    ],
+    "effect": "Before or after the strike, the retainer and their mentor can each shift up to their speed.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "harrier",
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "role_harrier__nab_and_stab",
+    "name": "Nab and Stab",
+    "keywords": "Area/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "1 burst",
+    "targets": "Each creature in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "11 damage; one target who has m<w is grabbed",
+        "tier2": "16 damage; one target who has m<v is grabbed",
+        "tier3": "21 damage; one target who has m<s is grabbed"
+      }
+    ],
+    "effect": "The retainer shifts up to 2 squares, and can move a creature grabbed using this ability with them.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "harrier",
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "role_hexer__backfire_curse",
+    "name": "Backfire Curse",
+    "keywords": "Magic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One enemy",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "2 corruption damage; the target is cursed (EoT)",
+        "tier2": "5 corruption damage; the target is cursed (EoT)",
+        "tier3": "7 corruption damage; the target is cursed (EoT)"
+      }
+    ],
+    "effect": "While the target is cursed this way, whenever they make a strike that targets only one creature, the retainer can use a free triggered action to choose a second target for the strike within its distance.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "hexer",
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "role_hexer__take_root",
+    "name": "Take Root",
+    "keywords": "Magic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "5 damage; m<w slowed (save ends)",
+        "tier2": "9 damage; m<v slowed (save ends)",
+        "tier3": "12 damage; m<s slowed (save ends)"
+      }
+    ],
+    "effect": "While the target is slowed this way, if they end their turn without moving on that turn, they are no longer slowed and are restrained (save ends).",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "hexer",
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "role_hexer__mazed",
+    "name": "Mazed",
+    "keywords": "Magic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "7 damage; if the target has m<w they are mazed (save ends)",
+        "tier2": "11 damage; if the target has m<v they are mazed (save ends)",
+        "tier3": "16 damage; if the target has m<s they are mazed (save ends)"
+      }
+    ],
+    "effect": "While mazed, the target is dazed. Additionally, at the end of each of the mazed target’s turns, the retainer can cause the target to move up to their speed in a straight line in a direction of the retainer’s choice. This is not forced movement, and the movement ends if it would cause the target to enter difficult or damaging terrain.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "hexer",
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "role_mount__cavalry_charge",
+    "name": "Cavalry Charge",
+    "keywords": "Charge/Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One enemy",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "6 damage",
+        "tier2": "8 damage",
+        "tier3": "11 damage"
+      }
+    ],
+    "effect": "If this ability is used as part of the Charge main action, the mount’s rider can use a free triggered action to make a melee free strike against the same target.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "mount",
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "role_mount__giddyup",
+    "name": "Giddyup!",
+    "keywords": "—",
+    "action_type": "move action",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The mount shifts twice their speed. They can jump as part of this movement.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "mount",
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "role_mount__rearing_trample",
+    "name": "Rearing Trample",
+    "keywords": "Area/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "1 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "10 damage; m<w prone",
+        "tier2": "15 damage; m<v prone",
+        "tier3": "21 damage; m<s prone"
+      }
+    ],
+    "effect": "A target knocked prone this way or who is already prone takes an extra 5 damage.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "mount",
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "role_support__battlefield_medic",
+    "name": "Battlefield Medic",
+    "keywords": "Melee",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "Self or one ally",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The target spends a Recovery, and ability rolls against the target take a bane until the start of the retainer’s next turn.",
+    "special_effect": "",
+    "encounter": false,
+    "signature": false,
+    "role": "support",
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "role_support__focus_fire",
+    "name": "Focus Fire",
+    "keywords": "Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 5",
+    "targets": "One creature",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "9 damage",
+        "tier2": "13 damage",
+        "tier3": "18 damage"
+      }
+    ],
+    "effect": "One ally within distance gains 2 surges.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "support",
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "role_support__back_from_the_dead",
+    "name": "Back from the Dead",
+    "keywords": "Melee",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One ally",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "If the target is at or below 0 Stamina, or if they have died due to Stamina loss since the end of the retainer’s last turn, the target is alive with 1 Stamina and can spend a Recovery. In a vivid green jungle, an angulotl perched in a tree shoots a blowgun",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "support",
+    "advancement_level": 10
+  }
+]

@@ -1,0 +1,2449 @@
+[
+  {
+    "type": "ability",
+    "id": "angulotl_hopper__leapfrog",
+    "name": "Leapfrog",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "3 damage",
+        "tier2": "5 damage",
+        "tier3": "7 damage"
+      }
+    ],
+    "effect": "Before or after making this strike, the hopper jumps up to 2 squares, or up to 4 squares if they jump over their mentor’s space.",
+    "special_effect": "",
+    "encounter": false,
+    "signature": true
+  },
+  {
+    "type": "ability",
+    "id": "angulotl_hopper__leaping_attack",
+    "name": "Leaping Attack",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "5 damage; m<w, prone",
+        "tier2": "9 damage; m<v, prone",
+        "tier3": "12 damage; m<s, prone"
+      }
+    ],
+    "effect": "The hopper can jump up to their speed in a straight line before the strike without provoking opportunity attacks. If they jump 2 or more squares this way, they gain 1 surge.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "angulotl_hopper__three_poison_dart",
+    "name": "Three-Poison Dart",
+    "keywords": "Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 5",
+    "targets": "One creature",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "5 poison damage; m<w, weakened (save ends)",
+        "tier2": "9 poison damage; m<v, slowed and weakened (save",
+        "tier3": "12 poison damage; m<s, dazed, slowed, and weakened"
+      }
+    ],
+    "effect": "",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "angulotl_hopper__trip_of_the_tongue",
+    "name": "Trip of the Tongue",
+    "keywords": "Melee",
+    "action_type": "triggered action",
+    "trigger_text": "A target moves within distance.",
+    "distance": "Melee 5",
+    "targets": "One creature or object",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "If the target has m<v, their movement ends, they are knocked prone, and one ally within distance gains 2 surges. Bugbear Commando",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "bugbear_commando__bear_hug",
+    "name": "Bear Hug",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "5 damage",
+        "tier2": "6 damage",
+        "tier3": "11 damage"
+      }
+    ],
+    "effect": "If the commando started their turn with concealment from the target or hidden from them, they gain 1 surge that can be used immediately.",
+    "special_effect": "",
+    "encounter": false,
+    "signature": true
+  },
+  {
+    "type": "ability",
+    "id": "bugbear_commando__throw",
+    "name": "Throw",
+    "keywords": "Melee/Strike",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The target is vertical pushed up to 5 squares. An ally doesn’t take damage from being force moved this way.",
+    "special_effect": "The target must be grabbed by the commando.",
+    "encounter": false,
+    "signature": false
+  },
+  {
+    "type": "ability",
+    "id": "bugbear_commando__catcher",
+    "name": "Catcher",
+    "keywords": "Melee",
+    "action_type": "free triggered action",
+    "trigger_text": "A size 1 creature or object is force moved within distance, or a size 1 ally willingly moves within distance.",
+    "distance": "Melee 1",
+    "targets": "The triggering creature or object",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The target is grabbed by the commando.",
+    "special_effect": "",
+    "encounter": false,
+    "signature": false
+  },
+  {
+    "type": "ability",
+    "id": "bugbear_commando__face_grab",
+    "name": "Face Grab",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "6 damage; m<w grabbed",
+        "tier2": "9 damage; m<v grabbed",
+        "tier3": "13 damage; m<s grabbed"
+      }
+    ],
+    "effect": "While the target is grabbed this way, they can’t communicate and all creatures and objects have concealment from them.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "bugbear_commando__shadow_drag",
+    "name": "Shadow Drag",
+    "keywords": "Magic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "Pull 8",
+        "tier2": "Pull 10",
+        "tier3": "Pull 12"
+      }
+    ],
+    "effect": "The target takes 1 damage for each square they are pulled.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "bugbear_commando__neck_snap",
+    "name": "Neck Snap",
+    "keywords": "Melee",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature grabbed by the commando",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "12 damage",
+        "tier2": "18 damage",
+        "tier3": "24 damage"
+      }
+    ],
+    "effect": "The target takes 15 damage, they are no longer grabbed, and they fall prone. A bugbear stands atop a moss An armored devil holds a rapier with a raised arm, blood swirling in a magical helix around the blade Devil Defector",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "devil_defector__black_flame",
+    "name": "Black Flame",
+    "keywords": "Magic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "6 corruption or fire damage",
+        "tier2": "10 corruption or fire damage",
+        "tier3": "13 corruption or fire damage"
+      }
+    ],
+    "effect": "",
+    "special_effect": "",
+    "encounter": false,
+    "signature": true
+  },
+  {
+    "type": "ability",
+    "id": "devil_defector__tempting_offer",
+    "name": "Tempting Offer",
+    "keywords": "Ranged/Strike",
+    "action_type": "free triggered action",
+    "trigger_text": "A sapient enemy is reduced to 0 Stamina.",
+    "distance": "Ranged 10",
+    "targets": "The triggering creature",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The defector makes an offer to keep the target alive. If the target accepts, they are reduced to 1 Stamina instead. On the target’s next turn, the defector controls their move action and the target must use a signature ability against a creature of the defector’s choice or immediately die. To have the target turn down the offer, the Direc­ tor must spend 3 Malice.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false
+  },
+  {
+    "type": "ability",
+    "id": "devil_defector__flames_of_revenge",
+    "name": "Flames of Revenge",
+    "keywords": "Area/Magic/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 cube within 10",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "6 corruption damage",
+        "tier2": "10 corruption damage",
+        "tier3": "14 corruption damage"
+      }
+    ],
+    "effect": "If the defector’s mentor is in the area, the mentor burns with flame until the end of the defector’s next turn. While this fire burns, the mentor has fire immunity 10, and any creature who targets the mentor with a strike takes 10 fire damage.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "devil_defector__hell_on_earth",
+    "name": "Hell On Earth",
+    "keywords": "Area/Magic/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "5 cube within 10",
+    "targets": "Special",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The area burns with infernal fire until the end of the devil’s next turn. Any enemy of the defector who ends their turn in the area takes 10 fire damage, and if they have p<v they are frightened (save ends). The Nameless",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "the_nameless__baneful_blade",
+    "name": "Baneful Blade",
+    "keywords": "Charge/Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "6 damage",
+        "tier2": "11 damage",
+        "tier3": "14 damage; push 2"
+      }
+    ],
+    "effect": "",
+    "special_effect": "",
+    "encounter": false,
+    "signature": true
+  },
+  {
+    "type": "ability",
+    "id": "the_nameless__i_m_not_a_steed_you_re_equipment",
+    "name": "I’m Not a Steed, You’re Equipment",
+    "keywords": "Melee",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "The Nameless’s mentor",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The Nameless’s mentor enters the Nameless’s space and rides on their back. The Nameless or the mentor can move the mentor to an adjacent space as a free maneuver. While in the Nameless’s space, the mentor moves with them and can’t use their move action, and ability rolls against the mentor take a bane.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false
+  },
+  {
+    "type": "ability",
+    "id": "the_nameless__looming_wings",
+    "name": "Looming Wings",
+    "keywords": "Area/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "1 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "5 corruption damage; i<w weakened (save ends)",
+        "tier2": "9 corruption damage; i<v weakened (save ends)",
+        "tier3": "12 corruption damage; i<s weakened (save ends)"
+      }
+    ],
+    "effect": "If the Nameless’s mentor is in the area, ability rolls against the mentor have a double bane until the start of their next turn.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "the_nameless__spew_death",
+    "name": "Spew Death",
+    "keywords": "Area/Magic",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "5 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "11 corruption damage",
+        "tier2": "16 corruption damage",
+        "tier3": "21 corruption damage"
+      }
+    ],
+    "effect": "Any living minions reduced to 0 Stamina by this ability regain all their Stamina and become corporeal undead under the Name­ less’s control until the end of the Nameless’s next turn, after which they are destroyed. Free StrikeA purple-skinned dwarf standing atop a pile of boulders aims a shoulder ballista Face partially obscured by Dwarf Mortar",
+    "special_effect": "The Nameless must be winded to use this ability.",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "dwarf_mortar__mortar",
+    "name": "Mortar",
+    "keywords": "Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 15",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "3 damage",
+        "tier2": "5 damage",
+        "tier3": "7 damage"
+      }
+    ],
+    "effect": "This ability ignores cover and bypasses temporary Stamina.",
+    "special_effect": "",
+    "encounter": false,
+    "signature": true
+  },
+  {
+    "type": "ability",
+    "id": "dwarf_mortar__signal_shell",
+    "name": "Signal Shell",
+    "keywords": "Area/Ranged/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Special; see below",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "5 fire damage",
+        "tier2": "8 fire damage",
+        "tier3": "11 fire damage"
+      }
+    ],
+    "effect": "The mortar fires a shell straight upward, which hovers 3 squares up in the air and sheds light below it in a 3 cube. Enemies illuminated by this light can’t hide or turn invisible and can’t benefit from concealment or cover. At the start of the mortar’s next turn, the shell explodes to deal damage to enemies in the area.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "dwarf_mortar__screaming_shell",
+    "name": "Screaming Shell",
+    "keywords": "Area/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "10 × 1 line within 1",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "6 damage; p<w frightened",
+        "tier2": "9 damage; p<v frightened",
+        "tier3": "13 damage; p<s frightened"
+      }
+    ],
+    "effect": "Until the start of the mortar’s next turn, strikes made against the mortar or any ally adjacent to them take a bane.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "dwarf_mortar__pacifier_shell",
+    "name": "Pacifier Shell",
+    "keywords": "Area/Ranged/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 cube within 15",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "8 damage; i<w dazed (save ends)",
+        "tier2": "12 damage; i<v dazed (save ends)",
+        "tier3": "16 damage; i<s dazed (save ends) and prone"
+      }
+    ],
+    "effect": "",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "high_elf_weatherwise__summer_s_bolt",
+    "name": "Summer’s Bolt",
+    "keywords": "Magic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "3 fire damage",
+        "tier2": "5 fire damage",
+        "tier3": "7 fire damage"
+      }
+    ],
+    "effect": "If the weatherwise targets their mentor, the mentor ignores the damage and instead gains temporary Stamina equal to the damage dealt.",
+    "special_effect": "",
+    "encounter": false,
+    "signature": true
+  },
+  {
+    "type": "ability",
+    "id": "high_elf_weatherwise__winter_s_breath",
+    "name": "Winter’s Breath",
+    "keywords": "Area/Magic",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 cube within 1",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "3 cold damage; push 2",
+        "tier2": "5 cold damage; push 3",
+        "tier3": "8 cold damage; push 5"
+      }
+    ],
+    "effect": "The weatherwise can teleport up to 5 squares before or after using this ability.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "high_elf_weatherwise__spring_s_rebirth",
+    "name": "Spring’s Rebirth",
+    "keywords": "Area/Magic",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 burst",
+    "targets": "Each ally in the area",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Each target can spend a Recovery, and can choose one effect on them that can be ended by a saving throw. That effect instead ends at the end of their turn.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "high_elf_weatherwise__autumn_s_decay",
+    "name": "Autumn’s Decay",
+    "keywords": "Area/Magic",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 cube within 1",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "6 corruption damage; p<w prone and can’t stand (save",
+        "tier2": "10 corruption damage; p<v prone and can’t stand (save",
+        "tier3": "14 corruption damage; p<s prone and can’t stand (save"
+      }
+    ],
+    "effect": "",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "shadow_elf_shade__gloom_dagger",
+    "name": "Gloom Dagger",
+    "keywords": "Melee/Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1 or ranged 3",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "6 damage",
+        "tier2": "10 damage",
+        "tier3": "13 damage"
+      }
+    ],
+    "effect": "Whenever the shade starts their turn with concealment from the target, they gain 1 surge.",
+    "special_effect": "",
+    "encounter": false,
+    "signature": true
+  },
+  {
+    "type": "ability",
+    "id": "shadow_elf_shade__duskfall",
+    "name": "Duskfall",
+    "keywords": "Area/Magic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "3 cube within 1",
+    "targets": "Special",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Until the end of the next turn, the area is filled with darkness. The shade’s mentor ignores concealment created by this darkness.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false
+  },
+  {
+    "type": "ability",
+    "id": "shadow_elf_shade__slow_poison_needle",
+    "name": "Slow-Poison Needle",
+    "keywords": "Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 5",
+    "targets": "One creature",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "8 poison damage; weakened (save ends)",
+        "tier2": "12 poison damage; weakened (save ends)",
+        "tier3": "16 poison damage; weakened (save ends)"
+      }
+    ],
+    "effect": "The slow-poison needle is initially painless, with the damage and effect delayed until the start of the target’s next turn. If the shade is hidden, using this ability doesn’t cause them to be revealed.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "shadow_elf_shade__shadow_dagger",
+    "name": "Shadow Dagger",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "12 poison damage; the target has shadowed vision (save ends)",
+        "tier2": "17 poison damage; the target has shadowed vision (save ends)",
+        "tier3": "23 poison damage; the target has shadowed vision (save ends)"
+      }
+    ],
+    "effect": "While a creature has shadowed vision, all creatures have concealment from them.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "wode_elf_arrowswift__longshot",
+    "name": "Longshot",
+    "keywords": "Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 15",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "4 damage",
+        "tier2": "7 damage",
+        "tier3": "10 damage"
+      }
+    ],
+    "effect": "The arrowswift can take a bane on this ability to gain a +5 bonus to ranged distance.",
+    "special_effect": "",
+    "encounter": false,
+    "signature": true
+  },
+  {
+    "type": "ability",
+    "id": "wode_elf_arrowswift__snipe",
+    "name": "Snipe",
+    "keywords": "Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 15",
+    "targets": "One creature",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "7 damage",
+        "tier2": "11 damage",
+        "tier3": "16 damage"
+      }
+    ],
+    "effect": "If the arrowswift is hidden when they use this ability, they gain 2 surges that can be used immediately.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "wode_elf_arrowswift__magic_arrows",
+    "name": "Magic Arrows",
+    "keywords": "—",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Until the end of the encounter, whenever the arrowswift makes a ranged strike, the strike gains an edge and the arrowswift gains 1 surge that must be used immediately. While the arrowswift’s mentor is adjacent to them, the mentor also gains this benefit.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "wode_elf_arrowswift__double_shot",
+    "name": "Double Shot",
+    "keywords": "Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 15",
+    "targets": "Two creatures or objects",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "12 damage",
+        "tier2": "17 damage",
+        "tier3": "23 damage"
+      }
+    ],
+    "effect": "",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "gnoll_gnasher__gnash",
+    "name": "Gnash",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "4 damage",
+        "tier2": "7 damage",
+        "tier3": "10 damage; m<s bleeding (save ends)"
+      }
+    ],
+    "effect": "",
+    "special_effect": "",
+    "encounter": false,
+    "signature": true
+  },
+  {
+    "type": "ability",
+    "id": "gnoll_gnasher__frenzied_bite",
+    "name": "Frenzied Bite",
+    "keywords": "—",
+    "action_type": "triggered action",
+    "trigger_text": "An enemy within 5 squares is reduced to 0 Stamina.",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The gnasher moves up to their speed and can use their signa­ ture ability.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "gnoll_gnasher__flurry_of_fangs",
+    "name": "Flurry of Fangs",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "Three creatures or objects",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "7 damage",
+        "tier2": "11 damage",
+        "tier3": "16 damage"
+      }
+    ],
+    "effect": "",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "gnoll_gnasher__horrific_feast",
+    "name": "Horrific Feast",
+    "keywords": "—",
+    "action_type": "triggered action",
+    "trigger_text": "The gnasher reduces a creature to 0 Stamina.",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The gnasher consumes part of the target’s body. The gnasher can spend a Recovery, and each enemy within 5 squares of the gnasher who has i<v is frightened (save ends). Goblin Guide",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "goblin_guide__stabbity_stab",
+    "name": "Stabbity Stab",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "3 damage",
+        "tier2": "5 damage",
+        "tier3": "7 damage"
+      }
+    ],
+    "effect": "The target can’t make opportunity attacks until the end of the guide’s turn.",
+    "special_effect": "",
+    "encounter": false,
+    "signature": true
+  },
+  {
+    "type": "ability",
+    "id": "goblin_guide__weaving_knives",
+    "name": "Weaving Knives",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "5 damage",
+        "tier2": "9 damage",
+        "tier3": "12 damage"
+      }
+    ],
+    "effect": "The guide shifts up to their speed before and after the strike.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "goblin_guide__sneak_and_stab",
+    "name": "Sneak and Stab",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "8 damage",
+        "tier2": "12 damage; the guide and their mentor can each move up to",
+        "tier3": "16 damage; the guide and their mentor can each move up to"
+      }
+    ],
+    "effect": "If the guide is hidden from the target, this ability has a double edge.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "goblin_guide__poison_blade",
+    "name": "Poison Blade",
+    "keywords": "—",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Special",
+    "targets": "Special",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The guide applies poison to their weapon. The next time the guide obtains a tier 2 or tier 3 outcome on a weapon strike, the strike deals an extra 10 poison damage, and if the target has m<v, they are weakened (save ends). If the guide is adjacent to their men­ tor when they use Poison Blade, they apply poison to the mentor’s weapon in the same way.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "hobgoblin_flameslinger__fire_curse",
+    "name": "Fire Curse",
+    "keywords": "Magic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "5 fire damage",
+        "tier2": "9 fire damage",
+        "tier3": "12 fire damage; a<s the target is burning (save ends)"
+      }
+    ],
+    "effect": "A burning creature takes 1d6 fire damage at the start of each of their turns. A burning object takes 1d6 fire damage at the end of each round.",
+    "special_effect": "",
+    "encounter": false,
+    "signature": true
+  },
+  {
+    "type": "ability",
+    "id": "hobgoblin_flameslinger__fuel_for_the_fire",
+    "name": "Fuel for the Fire",
+    "keywords": "Magic/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Until the end of the flameslinger’s next turn, the target has fire weakness equal to the flameslinger’s level. If the target is the flameslinger’s mentor, they instead have fire immunity equal to the flameslinger’s level.",
+    "special_effect": "",
+    "encounter": false,
+    "signature": false
+  },
+  {
+    "type": "ability",
+    "id": "hobgoblin_flameslinger__unholy_attraction",
+    "name": "Unholy Attraction",
+    "keywords": "Area/Magic/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 cube within 10",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "8 damage; pull 1",
+        "tier2": "12 damage; pull 2",
+        "tier3": "16 damage, pull 4"
+      }
+    ],
+    "effect": "A target who is pulled adjacent to the flameslinger and who has p<v is knocked prone.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "hobgoblin_flameslinger__fire_spiral",
+    "name": "Fire Spiral",
+    "keywords": "Area/Magic",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "8 damage; push 2",
+        "tier2": "12 damage; push 3",
+        "tier3": "16 damage; push 5"
+      }
+    ],
+    "effect": "If the flameslinger’s mentor is within 10 squares of the flameslinger, the mentor can be the source of the burst instead of the flameslinger.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "human_warrior__chop",
+    "name": "Chop",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "3 damage",
+        "tier2": "5 damage",
+        "tier3": "7 damage"
+      }
+    ],
+    "effect": "If the warrior is adjacent to their mentor, this ability gains an edge.",
+    "special_effect": "",
+    "encounter": false,
+    "signature": true
+  },
+  {
+    "type": "ability",
+    "id": "human_warrior__scuse_me_boss",
+    "name": "’Scuse Me, Boss",
+    "keywords": "Melee",
+    "action_type": "triggered action",
+    "trigger_text": "The warrior’s mentor is targeted by a strike while within distance.",
+    "distance": "Melee 1",
+    "targets": "The warrior’s mentor",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The warrior and the mentor switch places. The warrior is the strike’s new target and the strike has a double bane.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "human_warrior__defensive_fighting",
+    "name": "Defensive Fighting",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "7 damage",
+        "tier2": "11 damage",
+        "tier3": "16 damage"
+      }
+    ],
+    "effect": "Until the start of the warrior’s next turn, ability rolls against the warrior or any ally adjacent to the warrior have a double bane.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "human_warrior__whirlwind_of_steel",
+    "name": "Whirlwind of Steel",
+    "keywords": "Area/Charge/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "1 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "12 damage",
+        "tier2": "18 damage",
+        "tier3": "24 damage"
+      }
+    ],
+    "effect": "",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "kobold_shieldbearer__gladius",
+    "name": "Gladius",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "3 damage",
+        "tier2": "5 damage",
+        "tier3": "7 damage; taunted (EoT)"
+      }
+    ],
+    "effect": "",
+    "special_effect": "",
+    "encounter": false,
+    "signature": true
+  },
+  {
+    "type": "ability",
+    "id": "kobold_shieldbearer__shield_block",
+    "name": "Shield Block",
+    "keywords": "Ranged",
+    "action_type": "triggered action",
+    "trigger_text": "The mentor takes damage from a strike while within distance.",
+    "distance": "Ranged 5",
+    "targets": "The shieldbearer’s mentor",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The shieldbearer blocks the strike (if adjacent to the mentor) or throws their shield into the mentor’s space. The triggering strike’s damage is halved and the potency of any potency effects is reduced by 1. If the shieldbearer threw their shield, it bounces back to their hand.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "kobold_shieldbearer__living_backpack",
+    "name": "Living Backpack",
+    "keywords": "Melee",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "The shieldbearer’s mentor",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The shieldbearer straps their shield on their back and climbs onto their mentor’s back, entering the mentor’s space. While the shieldbearer is on their mentor’s back, each of them gains 10 temporary Stamina and can use Shield Block as a triggered action targeting an ally instead of the shieldbearer’s mentor. Additionally, the shieldbearer moves with the mentor, and they can’t use main actions, maneuvers, or move actions except to end this effect as a maneuver. The effect also ends if the shieldbearer is force moved away from their mentor or knocked prone. If the shieldbearer is still in their mentor’s space when the effect ends, they move into an adjacent unoccupied space of their choice.",
+    "special_effect": "",
+    "encounter": false,
+    "signature": false,
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "kobold_shieldbearer__let_s_go_sledding",
+    "name": "Let’s Go Sledding",
+    "keywords": "Charge/Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "Three enemies",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "6 damage; m<w prone",
+        "tier2": "10 damage; m<v prone",
+        "tier3": "14 damage; m<s prone"
+      }
+    ],
+    "effect": "If this ability is used as part of the Charge main action, the shieldbearer gains 2 surges that can be used immediately. Minotaur Gorer",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "minotaur_gorer__gore",
+    "name": "Gore",
+    "keywords": "Charge/Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "5 damage",
+        "tier2": "9 damage",
+        "tier3": "12 damage; m<s prone"
+      }
+    ],
+    "effect": "",
+    "special_effect": "",
+    "encounter": false,
+    "signature": true
+  },
+  {
+    "type": "ability",
+    "id": "minotaur_gorer__retaliatory_strike",
+    "name": "Retaliatory Strike",
+    "keywords": "Ranged",
+    "action_type": "triggered action",
+    "trigger_text": "A creature within distance deals damage to the gorer.",
+    "distance": "Ranged 6",
+    "targets": "The triggering creature",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The gorer uses the Charge main action and Gore against the target.",
+    "special_effect": "",
+    "encounter": false,
+    "signature": false
+  },
+  {
+    "type": "ability",
+    "id": "minotaur_gorer__horn_toss",
+    "name": "Horn Toss",
+    "keywords": "Melee",
+    "action_type": "free triggered action",
+    "trigger_text": "The gorer damages a creature within distance using Gore.",
+    "distance": "Melee 1",
+    "targets": "The triggering creature",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The target is pushed up to 3 squares. If the target has stability 0, they are also knocked prone.",
+    "special_effect": "",
+    "encounter": false,
+    "signature": false,
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "minotaur_gorer__triumphant_bay",
+    "name": "Triumphant Bay",
+    "keywords": "—",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The gorer gains 3 surges, and until the start of the gorer’s next turn, strikes made against them and their mentor take a bane.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "minotaur_gorer__horn_rake",
+    "name": "Horn Rake",
+    "keywords": "Area/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "1 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "11 damage; m<w bleeding (save ends)",
+        "tier2": "16 damage; m<v bleeding (save ends)",
+        "tier3": "21 damage; m<s prone and can’t stand (save ends)"
+      }
+    ],
+    "effect": "",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "orc_charger__notched_axe",
+    "name": "Notched Axe",
+    "keywords": "Charge/Melee/Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1 or ranged 5",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "3 damage",
+        "tier2": "5 damage",
+        "tier3": "7 damage"
+      }
+    ],
+    "effect": "",
+    "special_effect": "",
+    "encounter": false,
+    "signature": true
+  },
+  {
+    "type": "ability",
+    "id": "orc_charger__blood_oath",
+    "name": "Blood Oath",
+    "keywords": "Self",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Until the start of the charger’s next turn, the charger and their mentor each have temporary Stamina equal to their Recovery value and a +2 bonus to speed, and they each gain an edge on reactive tests.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "orc_charger__mow_em_down",
+    "name": "Mow ’Em Down",
+    "keywords": "—",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Self; See below",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The charger moves in a straight line up to their speed. During this move, they ignore enemy free strikes, and they can make a me­ lee free strike against any creature they move adjacent to.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "orc_charger__vein_burst",
+    "name": "Vein Burst",
+    "keywords": "Area/Psionic",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "2 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "12 psychic damage",
+        "tier2": "18 psychic damage",
+        "tier3": "24 psychic damage"
+      }
+    ],
+    "effect": "The charger takes psychic damage equal to the number of enemies affected. This damage can’t be reduced in any way. Free StrikeA radenwight leans casually, arms crossed, against a wrought-iron-tipped, upward-curved stone wall Radenwight Sidekick",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "radenwight_sidekick__dagger_s_bite",
+    "name": "Dagger’s Bite",
+    "keywords": "Melee/Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1 or ranged 5",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "3 damage",
+        "tier2": "5 damage",
+        "tier3": "7 damage"
+      }
+    ],
+    "effect": "",
+    "special_effect": "",
+    "encounter": false,
+    "signature": true
+  },
+  {
+    "type": "ability",
+    "id": "radenwight_sidekick__ready_rodent",
+    "name": "Ready Rodent",
+    "keywords": "Melee/Weapon",
+    "action_type": "triggered action",
+    "trigger_text": "An ally deals damage to the target.",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The sidekick makes a free strike against the target.",
+    "special_effect": "",
+    "encounter": false,
+    "signature": false
+  },
+  {
+    "type": "ability",
+    "id": "radenwight_sidekick__boost",
+    "name": "Boost",
+    "keywords": "—",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "If the sidekick’s mentor moves adjacent to the sidekick at any point during the mentor’s turn, the mentor gains a +1 bonus to speed and can automatically climb at full speed while moving until the end of their turn.",
+    "special_effect": "",
+    "encounter": false,
+    "signature": false,
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "radenwight_sidekick__bug_bag",
+    "name": "Bug Bag",
+    "keywords": "Area/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 cube within 3",
+    "targets": "Each creature in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "6 poison damage; m<w weakened (save ends)",
+        "tier2": "9 poison damage; m<v weakened (save ends)",
+        "tier3": "13 poison damage; m<s weakened (save ends)"
+      }
+    ],
+    "effect": "",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "radenwight_sidekick__triumphant_squeak",
+    "name": "Triumphant Squeak",
+    "keywords": "Ranged",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Self and each ally",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Each target can spend a Recovery, and ends the dazed, fright­ ened, and weakened conditions on themself.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "time_raider_mind_healer__laser_lancet",
+    "name": "Laser Lancet",
+    "keywords": "Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 3",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "5 fire damage",
+        "tier2": "8 fire damage",
+        "tier3": "11 fire damage"
+      }
+    ],
+    "effect": "If the mind healer targets an ally, the ability deals no damage. Additionally, the target can end one effect on them that can be ended by a saving throw or that ends at the end of their turn.",
+    "special_effect": "",
+    "encounter": false,
+    "signature": true
+  },
+  {
+    "type": "ability",
+    "id": "time_raider_mind_healer__stim_charge",
+    "name": "Stim Charge",
+    "keywords": "Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 3",
+    "targets": "One creature",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The target can spend 1 Recovery, and has their speed doubled until the end of their next turn.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "time_raider_mind_healer__mind_whelm",
+    "name": "Mind Whelm",
+    "keywords": "Psionic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 3",
+    "targets": "One creature",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "8 psychic damage; r<w frightened (save ends)",
+        "tier2": "13 psychic damage; r<v frightened (save ends)",
+        "tier3": "17 psychic damage; r<s frightened (save ends)"
+      }
+    ],
+    "effect": "",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "time_raider_mind_healer__psychic_short_circuit",
+    "name": "Psychic Short Circuit",
+    "keywords": "Area/Psionic",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "2 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "11 psychic damage",
+        "tier2": "16 psychic damage",
+        "tier3": "21 psychic damage"
+      }
+    ],
+    "effect": "If the mind healer is dazed, frightened, or taunted, they can end one of those conditions and impose the same condition on one enemy in the area. Additionally, they can do the same for their men­ tor if the mentor is in the area and is dazed, frightened, or taunted. Troll Mercenary",
+    "special_effect": "",
+    "encounter": false,
+    "signature": false,
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "troll_mercenary__big_bite",
+    "name": "Big Bite",
+    "keywords": "Charge/Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "6 damage",
+        "tier2": "11 damage",
+        "tier3": "14 damage"
+      }
+    ],
+    "effect": "The mercenary regains Stamina equal to half the damage dealt.",
+    "special_effect": "",
+    "encounter": false,
+    "signature": true
+  },
+  {
+    "type": "ability",
+    "id": "troll_mercenary__troll_roar",
+    "name": "Troll Roar",
+    "keywords": "Area",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "3 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "p<w frightened (save ends)",
+        "tier2": "p<v frightened (save ends)",
+        "tier3": "p<s frightened (save ends), push 3, prone"
+      }
+    ],
+    "effect": "",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false
+  },
+  {
+    "type": "ability",
+    "id": "troll_mercenary__hangry_frenzy",
+    "name": "Hangry Frenzy",
+    "keywords": "Melee",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "Three creatures",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The mercenary must be winded to use this ability. The merce­ nary uses Big Bite against each target.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "troll_mercenary__fire_bad",
+    "name": "Fire Bad",
+    "keywords": "—",
+    "action_type": "triggered action",
+    "trigger_text": "An ability deals acid or fire damage to the mercenary.",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The mercenary moves up to their speed. If this movement takes them beyond the distance of the triggering ability, the ability has no effect on them.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "undead_servitor__lurching_swipe",
+    "name": "Lurching Swipe",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "4 damage",
+        "tier2": "7 damage",
+        "tier3": "10 damage"
+      }
+    ],
+    "effect": "",
+    "special_effect": "",
+    "encounter": false,
+    "signature": true
+  },
+  {
+    "type": "ability",
+    "id": "undead_servitor__grab_and_bite",
+    "name": "Grab and Bite",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "7 damage; m<w grabbed",
+        "tier2": "11 damage; m<v grabbed",
+        "tier3": "16 damage; m<s grabbed"
+      }
+    ],
+    "effect": "",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "undead_servitor__death_to_death",
+    "name": "Death to Death",
+    "keywords": "Magic/Ranged/Strike",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "8 corruption damage; p<w weakened (save ends)",
+        "tier2": "13 corruption damage; p<v weakened (save ends)",
+        "tier3": "17 corruption damage; p<s weakened (save ends)"
+      }
+    ],
+    "effect": "Before making the strike, the servitor can teleport up to 10 squares to a space containing a dead creature, then burst out of the creature’s body.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "undead_servitor__death_miasma",
+    "name": "Death Miasma",
+    "keywords": "Area/Magic",
+    "action_type": "free triggered action",
+    "trigger_text": "The servitor is reduced to 0 Stamina.",
+    "distance": "2 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "6 corruption damage",
+        "tier2": "10 corruption damage",
+        "tier3": "14 corruption damage"
+      }
+    ],
+    "effect": "The servitor explodes.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "unquiet_spirit__chill_of_death",
+    "name": "Chill of Death",
+    "keywords": "Magic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "3 cold damage",
+        "tier2": "5 cold damage",
+        "tier3": "7 cold damage; p<s slowed (EoT)"
+      }
+    ],
+    "effect": "",
+    "special_effect": "",
+    "encounter": false,
+    "signature": true
+  },
+  {
+    "type": "ability",
+    "id": "unquiet_spirit__spirit_meld",
+    "name": "Spirit Meld",
+    "keywords": "—",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "While adjacent to their mentor, the unquiet spirit enters the mentor’s space. A spirit who enters their mentor’s space this way moves with the mentor, can’t be sensed, and can’t affect or be affected by other creatures or objects. They can’t take main actions, maneuvers, or move actions, except to use this ability to leave their mentor’s space and appear in an adjacent space.",
+    "special_effect": "",
+    "encounter": false,
+    "signature": false
+  },
+  {
+    "type": "ability",
+    "id": "unquiet_spirit__enervating_curse",
+    "name": "Enervating Curse",
+    "keywords": "Magic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "6 corruption damage; the target has 1 level of drain",
+        "tier2": "10 corruption damage; the target has 2 levels of drain",
+        "tier3": "14 corruption damage; the target has 3 levels of drain"
+      }
+    ],
+    "effect": "The next creature to make a strike against the target gains 1 surge for each level of drain, which must be used on that strike.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "unquiet_spirit__ectoplasm",
+    "name": "Ectoplasm",
+    "keywords": "Area/Magic",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 cube within 1",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "a<w slowed and weakened (save ends)",
+        "tier2": "a<v slowed and weakened (save ends)",
+        "tier3": "a<s slowed and weakened (save ends)"
+      }
+    ],
+    "effect": "",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "unquiet_spirit__death_phase",
+    "name": "Death Phase",
+    "keywords": "Magic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 5",
+    "targets": "One creature",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "If the target has p<s, they are phased until the end of their next turn. A phased target gains the unquiet spirit’s Corruptive Phasing trait and can fly. They are visible but can’t affect or be affect­ ed by other creatures or objects. A willing creature not subject to the ability’s potency can choose to automatically be affected.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "vampire_rebel__flashing_fangs",
+    "name": "Flashing Fangs",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "5 damage",
+        "tier2": "5 damage, 3 corruption damage",
+        "tier3": "5 damage, 6 corruption damage; m<s bleeding (save"
+      }
+    ],
+    "effect": "The vampire rebel gains temporary Stamina equal to any corruption damage dealt.",
+    "special_effect": "",
+    "encounter": false,
+    "signature": true
+  },
+  {
+    "type": "ability",
+    "id": "vampire_rebel__bat_form",
+    "name": "Bat Form",
+    "keywords": "—",
+    "action_type": "move action",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The vampire rebel changes their form into a bat. In bat form, their size is 1T and they can fly. The vampire rebel then shifts up to their speed, then regains their true form. If they can’t fit in their cur­ rent space when they return to their true form, they take 10 damage and are pushed to the nearest unoccupied space.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false
+  },
+  {
+    "type": "ability",
+    "id": "vampire_rebel__blood_surge",
+    "name": "Blood Surge",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "7 damage; m<w bleeding (save ends)",
+        "tier2": "11 damage; m<v bleeding (save ends)",
+        "tier3": "16 damage; m<s bleeding (save ends)"
+      }
+    ],
+    "effect": "Before the strike, the vampire rebel shifts up to their speed. If the vampire rebel has temporary Stamina, they can expend it, dealing an extra 2 corruption damage for each point of temporary Stamina expended this way.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "vampire_rebel__exsanguination",
+    "name": "Exsanguination",
+    "keywords": "Area/Magic",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 cube within 1",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "7 corruption damage; m<w bleeding (save ends)",
+        "tier2": "11 corruption damage; m<v bleeding (save ends)",
+        "tier3": "16 corruption damage; m<s bleeding (save ends)"
+      }
+    ],
+    "effect": "",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "role_ambusher__go_for_the_jugular",
+    "name": "Go for the Jugular",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "5 damage; m<w bleeding (save ends)",
+        "tier2": "9 damage; m<v bleeding (save ends)",
+        "tier3": "12 damage; m<s bleeding (save ends)"
+      }
+    ],
+    "effect": "If the target is grabbed or the retainer had an edge on the power roll, the retainer gains 2 surges.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "ambusher",
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "role_ambusher__hamstring_slice",
+    "name": "Hamstring Slice",
+    "keywords": "Melee/Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1 or ranged 5",
+    "targets": "One creature",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "7 damage; m<w slowed (EoT)",
+        "tier2": "10 damage; m<v slowed (save ends)",
+        "tier3": "15 damage; m<s slowed and the target can’t used trig­"
+      }
+    ],
+    "effect": "The retainer and their mentor can each move up to their speed.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "ambusher",
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "role_ambusher__hold_em_down",
+    "name": "Hold ’Em Down",
+    "keywords": "Melee/Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1 or ranged 5",
+    "targets": "One creature",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "11 damage; a size 1 or smaller target who has m<w is",
+        "tier2": "16 damage; a size 1 or smaller target who has m<v is",
+        "tier3": "21 damage; a size 1 or smaller target who has m<s is"
+      }
+    ],
+    "effect": "The retainer gains 2 surges when any creature makes a strike against a target grabbed this way.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "ambusher",
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "role_brute__supporting_volley",
+    "name": "Supporting Volley",
+    "keywords": "Ranged/Weapon",
+    "action_type": "triggered action",
+    "trigger_text": "The retainer’s mentor makes a strike against a creature within distance.",
+    "distance": "Ranged 5",
+    "targets": "The triggering creature",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The retainer makes a ranged free strike against the target.",
+    "special_effect": "",
+    "encounter": false,
+    "signature": false,
+    "role": "brute",
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "role_brute__line_em_up",
+    "name": "Line ’Em Up",
+    "keywords": "Area/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "10 × 1 line within 1",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "7 damage; m<w prone",
+        "tier2": "11 damage; m<v prone",
+        "tier3": "16 damage; m<s prone"
+      }
+    ],
+    "effect": "",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "brute",
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "role_brute__ricochet_shot",
+    "name": "Ricochet Shot",
+    "keywords": "Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 5",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "9 damage",
+        "tier2": "14 damage",
+        "tier3": "19 damage"
+      }
+    ],
+    "effect": "The retainer can target a second creature or object within 5 squares of the original target and that has line of effect to the original target. The retainer doesn’t need line of effect to the second target but must be aware of their location.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "brute",
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "role_artillery__big_windup",
+    "name": "Big Windup",
+    "keywords": "—",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "Self",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Until the start of the retainer’s next turn, strikes made against the retainer gain an edge. At the start of the retainer’s next turn, they gain 2 surges, and any ability they use before the end of their turn that force moves a creature can move that creature 2 additional squares.",
+    "special_effect": "",
+    "encounter": false,
+    "signature": false,
+    "role": "artillery",
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "role_artillery__overhand_swat",
+    "name": "Overhand Swat",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "8 damage",
+        "tier2": "13 damage; push 2",
+        "tier3": "16 damage; push 3; m<s prone"
+      }
+    ],
+    "effect": "If the target ends any forced movement from this ability in a square adjacent to the retainer’s mentor, the mentor can make a melee free strike against them.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "artillery",
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "role_artillery__dizzying_sweep",
+    "name": "Dizzying Sweep",
+    "keywords": "Area/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "1 burst",
+    "targets": "Each creature in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "10 damage; push 1",
+        "tier2": "14 damage; push 2",
+        "tier3": "20 damage; push 4"
+      }
+    ],
+    "effect": "The retainer is dazed until the end of their next turn.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "artillery",
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "role_controller__elemental_blast",
+    "name": "Elemental Blast",
+    "keywords": "Area/Magic/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 cube within 10",
+    "targets": "Each creature in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "4 damage; push 2",
+        "tier2": "6 damage; push 3",
+        "tier3": "10 damage; push 5"
+      }
+    ],
+    "effect": "When the retainer uses this ability, they can choose for it to deal one of the following damage types: acid, cold, fire, lightning, poison, or sonic.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "controller",
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "role_controller__oil_slick",
+    "name": "Oil Slick",
+    "keywords": "Area/Ranged/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "3 cube within 10",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "5 poison damage; m<w prone",
+        "tier2": "8 poison damage; m<v prone",
+        "tier3": "11 poison damage; m<s prone"
+      }
+    ],
+    "effect": "The area is difficult terrain for enemies. Any enemy has fire weakness 5 while in the area, and any enemy who ends their turn in the area and has no movement remaining falls prone.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "controller",
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "role_controller__shattering_shards",
+    "name": "Shattering Shards",
+    "keywords": "Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One Object",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "7 damage",
+        "tier2": "11 damage",
+        "tier3": "16 damage"
+      }
+    ],
+    "effect": "The area within 2 squares of the target is difficult terrain, and each enemy in the area takes the same damage the object took.",
+    "special_effect": "The target must be size 1M or smaller.",
+    "encounter": true,
+    "signature": false,
+    "role": "controller",
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "role_defender__watch_out",
+    "name": "Watch Out!",
+    "keywords": "Melee",
+    "action_type": "triggered action",
+    "trigger_text": "The target takes damage from a strike.",
+    "distance": "Melee 1",
+    "targets": "The retainer’s mentor",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The retainer pushes the target or the attacking creature up to 2 squares. If that moves the mentor out of distance of the strike, the strike has no effect.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "defender",
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "role_defender__it_s_me_you_want",
+    "name": "It’s Me You Want!",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "Two creatures",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "7 damage; taunted (EoT)",
+        "tier2": "11 damage; taunted (save ends)",
+        "tier3": "16 damage; taunted (save ends)"
+      }
+    ],
+    "effect": "",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "defender",
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "role_defender__last_stand",
+    "name": "Last Stand",
+    "keywords": "Melee/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One enemy",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "8 damage",
+        "tier2": "13 damage",
+        "tier3": "17 damage"
+      }
+    ],
+    "effect": "The retainer and their mentor each gain 10 temporary Stam­ ina. Additionally, each winded ally within 2 squares of the retainer can spend a Recovery.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "defender",
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "role_harrier__tackle",
+    "name": "Tackle",
+    "keywords": "Charge/Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One enemy",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "5 damage; push 1",
+        "tier2": "9 damage; push 2",
+        "tier3": "12 damage; push 4"
+      }
+    ],
+    "effect": "",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "harrier",
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "role_harrier__meet_you_there",
+    "name": "Meet You There",
+    "keywords": "Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "7 damage",
+        "tier2": "10 damage",
+        "tier3": "15 damage"
+      }
+    ],
+    "effect": "Before or after the strike, the retainer and their mentor can each shift up to their speed.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "harrier",
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "role_harrier__nab_and_stab",
+    "name": "Nab and Stab",
+    "keywords": "Area/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "1 burst",
+    "targets": "Each creature in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "11 damage; one target who has m<w is grabbed",
+        "tier2": "16 damage; one target who has m<v is grabbed",
+        "tier3": "21 damage; one target who has m<s is grabbed"
+      }
+    ],
+    "effect": "The retainer shifts up to 2 squares, and can move a creature grabbed using this ability with them.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "harrier",
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "role_hexer__backfire_curse",
+    "name": "Backfire Curse",
+    "keywords": "Magic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One enemy",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "2 corruption damage; the target is cursed (EoT)",
+        "tier2": "5 corruption damage; the target is cursed (EoT)",
+        "tier3": "7 corruption damage; the target is cursed (EoT)"
+      }
+    ],
+    "effect": "While the target is cursed this way, whenever they make a strike that targets only one creature, the retainer can use a free triggered action to choose a second target for the strike within its distance.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "hexer",
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "role_hexer__take_root",
+    "name": "Take Root",
+    "keywords": "Magic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "5 damage; m<w slowed (save ends)",
+        "tier2": "9 damage; m<v slowed (save ends)",
+        "tier3": "12 damage; m<s slowed (save ends)"
+      }
+    ],
+    "effect": "While the target is slowed this way, if they end their turn without moving on that turn, they are no longer slowed and are restrained (save ends).",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "hexer",
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "role_hexer__mazed",
+    "name": "Mazed",
+    "keywords": "Magic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "7 damage; if the target has m<w they are mazed (save ends)",
+        "tier2": "11 damage; if the target has m<v they are mazed (save ends)",
+        "tier3": "16 damage; if the target has m<s they are mazed (save ends)"
+      }
+    ],
+    "effect": "While mazed, the target is dazed. Additionally, at the end of each of the mazed target’s turns, the retainer can cause the target to move up to their speed in a straight line in a direction of the retainer’s choice. This is not forced movement, and the movement ends if it would cause the target to enter difficult or damaging terrain.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "hexer",
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "role_mount__cavalry_charge",
+    "name": "Cavalry Charge",
+    "keywords": "Charge/Melee/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One enemy",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "6 damage",
+        "tier2": "8 damage",
+        "tier3": "11 damage"
+      }
+    ],
+    "effect": "If this ability is used as part of the Charge main action, the mount’s rider can use a free triggered action to make a melee free strike against the same target.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "mount",
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "role_mount__giddyup",
+    "name": "Giddyup!",
+    "keywords": "—",
+    "action_type": "move action",
+    "trigger_text": "",
+    "distance": "Self",
+    "targets": "",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The mount shifts twice their speed. They can jump as part of this movement.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "mount",
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "role_mount__rearing_trample",
+    "name": "Rearing Trample",
+    "keywords": "Area/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "1 burst",
+    "targets": "Each enemy in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "10 damage; m<w prone",
+        "tier2": "15 damage; m<v prone",
+        "tier3": "21 damage; m<s prone"
+      }
+    ],
+    "effect": "A target knocked prone this way or who is already prone takes an extra 5 damage.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "mount",
+    "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "role_support__battlefield_medic",
+    "name": "Battlefield Medic",
+    "keywords": "Melee",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "Self or one ally",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The target spends a Recovery, and ability rolls against the target take a bane until the start of the retainer’s next turn.",
+    "special_effect": "",
+    "encounter": false,
+    "signature": false,
+    "role": "support",
+    "advancement_level": 4
+  },
+  {
+    "type": "ability",
+    "id": "role_support__focus_fire",
+    "name": "Focus Fire",
+    "keywords": "Ranged/Strike/Weapon",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 5",
+    "targets": "One creature",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "9 damage",
+        "tier2": "13 damage",
+        "tier3": "18 damage"
+      }
+    ],
+    "effect": "One ally within distance gains 2 surges.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "support",
+    "advancement_level": 7
+  },
+  {
+    "type": "ability",
+    "id": "role_support__back_from_the_dead",
+    "name": "Back from the Dead",
+    "keywords": "Melee",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One ally",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "If the target is at or below 0 Stamina, or if they have died due to Stamina loss since the end of the retainer’s last turn, the target is alive with 1 Stamina and can spend a Recovery. In a vivid green jungle, an angulotl perched in a tree shoots a blowgun",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false,
+    "role": "support",
+    "advancement_level": 10
+  }
+]

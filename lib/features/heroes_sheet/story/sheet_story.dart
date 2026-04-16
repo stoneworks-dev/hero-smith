@@ -13,6 +13,7 @@ import '../../../core/services/class_data_service.dart';
 import '../../../core/services/class_feature_data_service.dart';
 import '../../../core/services/class_feature_grants_service.dart';
 import '../../../core/services/complication_grants_service.dart';
+import '../../../core/services/skill_data_service.dart';
 import '../../../core/services/story_creator_service.dart';
 import '../../../core/services/subclass_data_service.dart';
 
@@ -23,11 +24,13 @@ import '../../../core/theme/app_icon.dart';
 import '../../../core/theme/app_icon_data.dart';
 import '../../../core/theme/app_icons.dart';
 import '../../../core/text/heroes_sheet/story/sheet_story_text.dart';
+import '../../../core/utils/searchable_picker.dart';
 import '../../creators/widgets/strength_creator/class_features_section.dart';
 
-import '../../../widgets/perks/perks_selection_widget.dart';
+import '../../../widgets/perks/perks_selection_widget.dart' hide showSearchablePicker;
 import '../../../widgets/perks/add_perk_dialog.dart';
 import '../../../widgets/titles/add_title_dialog.dart';
+import '../../../widgets/titles/title_ancestry_traits_dialog.dart';
 import '../../../widgets/abilities/ability_expandable_item.dart';
 import '../../../widgets/skills/skill_card.dart';
 import '../../../widgets/languages/language_card.dart';

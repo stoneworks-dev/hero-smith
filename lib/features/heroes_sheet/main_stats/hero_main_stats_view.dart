@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/db/providers.dart';
 import '../../../core/models/hero_mod_keys.dart';
+import '../../../core/models/retainer_instance.dart';
 import '../../../core/models/stat_modification_model.dart';
 import '../../../core/repositories/hero_repository.dart';
 import '../../../core/services/heroic_resource_progression_service.dart';
@@ -29,9 +30,11 @@ import 'coin_purse_model.dart';
 import 'conditions_tracker_widget.dart';
 import 'damage_resistance_tracker_widget.dart';
 import 'hero_main_stats_models.dart';
+import 'hero_retainer_section.dart';
 import 'hero_stat_insights.dart';
 import 'hero_stamina_helpers.dart';
 import 'heroic_resource_details_provider.dart';
+import 'combat_dialogs.dart';
 import 'stamina_bar_widget.dart';
 import 'progression_row_widget.dart';
 import 'respite_downtime_row_widget.dart';
@@ -510,6 +513,8 @@ class _HeroMainStatsViewState extends ConsumerState<HeroMainStatsView> {
           ConditionsTrackerWidget(heroId: widget.heroId),
           const SizedBox(height: 12),
           DamageResistanceTrackerWidget(heroId: widget.heroId),
+          const SizedBox(height: 12),
+          HeroRetainerSection(heroId: widget.heroId),
           const SizedBox(height: 16),
         ],
       ),
@@ -678,6 +683,23 @@ class _HeroMainStatsViewState extends ConsumerState<HeroMainStatsView> {
     await _persistNumberField(
         _NumericField.staminaCurrent, staminaMax.toString());
 
+    // Reset retainer stamina to max
+    final retainerInstance =
+        ref.read(heroRetainerProvider(widget.heroId)).valueOrNull;
+    if (retainerInstance != null) {
+      final retainerStats =
+          ref.read(heroRetainerStatsProvider(widget.heroId)).valueOrNull;
+      if (retainerStats != null) {
+        final repo = ref.read(retainerRepositoryProvider);
+        await repo.updateCombatState(
+          retainerInstance.id,
+          currentStamina: retainerStats.stamina,
+          tempStamina: 0,
+          currentRecoveries: RetainerInstance.maxRecoveries,
+        );
+      }
+    }
+
     if (mounted) {
       _showSnack(
         '${HeroMainStatsViewText.respiteCompletePrefix}$victories${HeroMainStatsViewText.respiteCompleteSuffix}',
@@ -769,7 +791,9 @@ class _HeroMainStatsViewState extends ConsumerState<HeroMainStatsView> {
                     children: [
                       // Custom stamina bar showing -halfMax to max with temp HP
                       StaminaBarWidget(
-                        stats: stats,
+                        maxStamina: stats.staminaMaxEffective,
+                        currentStamina: stats.staminaCurrent,
+                        tempHp: stats.staminaTemp,
                         staminaState: staminaState,
                       ),
                       const SizedBox(height: 6),
@@ -4000,9 +4024,12 @@ class _HeroMainStatsViewState extends ConsumerState<HeroMainStatsView> {
   }
 
   Future<void> _handleDealDamage(HeroMainStats stats) async {
-    final amount = await _promptForAmount(
+    final amount = await showCombatAmountDialog(
+      context,
       title: HeroMainStatsViewText.applyDamageTitle,
       description: HeroMainStatsViewText.applyDamageDescription,
+      icon: Icons.remove_circle_outline,
+      color: Colors.red.shade400,
     );
     if (amount == null || amount <= 0) return;
     if (!mounted) return;
@@ -4031,7 +4058,8 @@ class _HeroMainStatsViewState extends ConsumerState<HeroMainStatsView> {
   }
 
   Future<void> _handleApplyHealing(HeroMainStats stats) async {
-    final result = await _promptForHealingAmount(
+    final result = await showHealingAmountDialog(
+      context,
       title: HeroMainStatsViewText.applyHealingTitle,
       description: HeroMainStatsViewText.applyHealingDescription,
     );
@@ -4060,264 +4088,6 @@ class _HeroMainStatsViewState extends ConsumerState<HeroMainStatsView> {
     } catch (err) {
       if (!mounted) return;
       _showSnack('${HeroMainStatsViewText.applyHealingErrorPrefix}$err');
-    }
-  }
-
-  Future<({int amount, bool applyToTemp})?> _promptForHealingAmount({
-    required String title,
-    String? description,
-  }) async {
-    if (!mounted) return null;
-
-    final controller = TextEditingController(text: '1');
-
-    try {
-      final result = await showDialog<({int amount, bool applyToTemp})>(
-        context: context,
-        builder: (dialogContext) {
-          return AlertDialog(
-            backgroundColor: NavigationTheme.cardBackgroundDark,
-            surfaceTintColor: Colors.transparent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-              side: BorderSide(color: FormTheme.borderDim),
-            ),
-            title: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.green.withAlpha(40),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(
-                    Icons.healing,
-                    color: Colors.green.shade400,
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    title,
-                    style: TextStyle(
-                      color: FormTheme.textBright,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (description != null) ...[
-                  Text(
-                    description,
-                    style: TextStyle(color: FormTheme.textSecondary),
-                  ),
-                  const SizedBox(height: 12),
-                ],
-                TextField(
-                  controller: controller,
-                  autofocus: true,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: _formatters(false, 3),
-                  style: TextStyle(color: FormTheme.textBright),
-                  decoration: InputDecoration(
-                    labelText: HeroMainStatsViewText.promptAmountLabel,
-                    labelStyle: TextStyle(color: FormTheme.textSecondary),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: FormTheme.border),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: FormTheme.border),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.green.shade400),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(dialogContext).pop(),
-                child: Text(
-                  HeroMainStatsViewText.promptCancelLabel,
-                  style: TextStyle(color: FormTheme.textSecondary),
-                ),
-              ),
-              FilledButton(
-                style: FilledButton.styleFrom(
-                  backgroundColor: Colors.teal.shade600,
-                ),
-                onPressed: () {
-                  final value = int.tryParse(controller.text.trim());
-                  if (value == null || value <= 0) {
-                    Navigator.of(dialogContext).pop();
-                  } else {
-                    Navigator.of(dialogContext).pop(
-                      (amount: value, applyToTemp: true),
-                    );
-                  }
-                },
-                child: const Text(HeroMainStatsViewText.promptApplyTempLabel),
-              ),
-              FilledButton(
-                style: FilledButton.styleFrom(
-                  backgroundColor: Colors.green.shade600,
-                ),
-                onPressed: () {
-                  final value = int.tryParse(controller.text.trim());
-                  if (value == null || value <= 0) {
-                    Navigator.of(dialogContext).pop();
-                  } else {
-                    Navigator.of(dialogContext).pop(
-                      (amount: value, applyToTemp: false),
-                    );
-                  }
-                },
-                child: const Text(HeroMainStatsViewText.promptApplyLabel),
-              ),
-            ],
-          );
-        },
-      );
-
-      // Wait for dialog animation to complete before returning result
-      if (result != null) {
-        await Future.delayed(const Duration(milliseconds: 300));
-      }
-
-      return result;
-    } finally {
-      await Future.delayed(const Duration(milliseconds: 100));
-      controller.dispose();
-    }
-  }
-
-  Future<int?> _promptForAmount({
-    required String title,
-    String? description,
-  }) async {
-    if (!mounted) return null;
-
-    final controller = TextEditingController(text: '1');
-
-    try {
-      final result = await showDialog<int>(
-        context: context,
-        builder: (dialogContext) {
-          return AlertDialog(
-            backgroundColor: NavigationTheme.cardBackgroundDark,
-            surfaceTintColor: Colors.transparent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-              side: BorderSide(color: FormTheme.borderDim),
-            ),
-            title: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.red.withAlpha(40),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(
-                    Icons.remove_circle_outline,
-                    color: Colors.red.shade400,
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    title,
-                    style: TextStyle(
-                      color: FormTheme.textBright,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (description != null) ...[
-                  Text(
-                    description,
-                    style: TextStyle(color: FormTheme.textSecondary),
-                  ),
-                  const SizedBox(height: 12),
-                ],
-                TextField(
-                  controller: controller,
-                  autofocus: true,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: _formatters(false, 3),
-                  style: TextStyle(color: FormTheme.textBright),
-                  decoration: InputDecoration(
-                    labelText: HeroMainStatsViewText.promptAmountLabel,
-                    labelStyle: TextStyle(color: FormTheme.textSecondary),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: FormTheme.border),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: FormTheme.border),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.red.shade400),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(dialogContext).pop(),
-                child: Text(
-                  HeroMainStatsViewText.promptCancelLabel,
-                  style: TextStyle(color: FormTheme.textSecondary),
-                ),
-              ),
-              FilledButton(
-                style: FilledButton.styleFrom(
-                  backgroundColor: Colors.red.shade600,
-                ),
-                onPressed: () {
-                  final value = int.tryParse(controller.text.trim());
-                  if (value == null || value <= 0) {
-                    Navigator.of(dialogContext).pop();
-                  } else {
-                    Navigator.of(dialogContext).pop(value);
-                  }
-                },
-                child: const Text(HeroMainStatsViewText.promptApplyLabel),
-              ),
-            ],
-          );
-        },
-      );
-
-      // Wait for dialog animation to complete before returning result
-      if (result != null) {
-        await Future.delayed(const Duration(milliseconds: 300));
-      }
-
-      return result;
-    } finally {
-      await Future.delayed(const Duration(milliseconds: 100));
-      controller.dispose();
     }
   }
 

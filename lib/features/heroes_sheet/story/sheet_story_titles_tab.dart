@@ -16,6 +16,13 @@ class _TitlesTab extends ConsumerStatefulWidget {
 class _TitlesTabState extends ConsumerState<_TitlesTab> {
   List<Map<String, dynamic>> _availableTitles = [];
   Map<String, Map<String, dynamic>> _selectedTitles = {}; // titleId -> {title, selectedBenefitIndex}
+  Map<String, String> _charChoices = {}; // choiceKey -> chosen characteristic
+  Map<String, List<String>> _ancestryTraitSelections = {}; // titleId -> [traitIds]
+  Map<String, String> _ancestryTraitSubChoices = {}; // titleId.traitId -> value
+  Map<String, List<String>> _skillChoices = {}; // choiceKey -> [skillIds]
+  Map<String, List<String>> _languageChoices = {}; // titleId -> [langIds]
+  Map<String, String> _heroicAbilityChoices = {}; // titleId -> abilityId
+  Map<String, String> _damageTypeChoices = {}; // titleId -> damageType
   bool _isLoading = true;
   String? _errorMessage;
 
@@ -61,6 +68,63 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
           }
         }
       }
+
+      // Load stored characteristic choices
+      final service = ref.read(titleGrantsServiceProvider);
+      _charChoices = await service.getAllCharacteristicChoices(heroId: widget.heroId);
+
+      // Load stored ancestry trait selections
+      _ancestryTraitSelections = {};
+      _ancestryTraitSubChoices = await service.getAllAncestryTraitSubChoices(heroId: widget.heroId);
+      for (final titleId in _selectedTitles.keys) {
+        final traitIds = await service.getAncestryTraitSelections(heroId: widget.heroId, titleId: titleId);
+        if (traitIds.isNotEmpty) {
+          _ancestryTraitSelections[titleId] = traitIds;
+        }
+      }
+
+      // Load stored skill choices
+      _skillChoices = {};
+      for (final titleId in _selectedTitles.keys) {
+        // Check each potential group key
+        for (final suffix in ['', '__interpersonal', '__lore', '__crafting', '__exploration']) {
+          final key = '$titleId$suffix';
+          final chosen = await service.getSkillChoice(
+            heroId: widget.heroId,
+            titleId: titleId,
+            group: suffix.isEmpty ? null : suffix.substring(2),
+          );
+          if (chosen.isNotEmpty) {
+            _skillChoices[key] = chosen;
+          }
+        }
+        // Also check without group (any skill)
+        final anyChosen = await service.getSkillChoice(heroId: widget.heroId, titleId: titleId);
+        if (anyChosen.isNotEmpty && !_skillChoices.containsKey(titleId)) {
+          _skillChoices[titleId] = anyChosen;
+        }
+      }
+
+      // Load stored language choices
+      _languageChoices = {};
+      for (final titleId in _selectedTitles.keys) {
+        final chosen = await service.getLanguageChoice(heroId: widget.heroId, titleId: titleId);
+        if (chosen.isNotEmpty) {
+          _languageChoices[titleId] = chosen;
+        }
+      }
+
+      // Load stored heroic ability choices
+      _heroicAbilityChoices = {};
+      for (final titleId in _selectedTitles.keys) {
+        final chosen = await service.getHeroicAbilityChoice(heroId: widget.heroId, titleId: titleId);
+        if (chosen != null) {
+          _heroicAbilityChoices[titleId] = chosen;
+        }
+      }
+
+      // Load stored damage type choices
+      _damageTypeChoices = await service.getAllDamageTypeChoices(heroId: widget.heroId);
 
       if (!mounted) return;
       setState(() {
@@ -211,8 +275,16 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
             );
             if (title.isNotEmpty) {
               final benefits = title['benefits'] as List? ?? [];
-              if (benefits.length <= 1) {
-                _addTitle(titleId, 0);
+              // Count chooseable (non-auto) benefits
+              final choiceCount = benefits.where((b) =>
+                b is Map<String, dynamic> && b['auto'] != true
+              ).length;
+              if (choiceCount <= 1) {
+                // Find the single chooseable index, or -1 if all auto
+                final choiceIdx = benefits.indexWhere((b) =>
+                  b is Map<String, dynamic> && b['auto'] != true
+                );
+                _addTitle(titleId, choiceIdx);
               } else {
                 // Show benefit selection via the add dialog
                 showDialog(
@@ -520,41 +592,10 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
               ),
             ],
             const SizedBox(height: 16),
-            Text(
-              SheetStoryTitlesTabText.selectedBenefit,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: FormTheme.textSecondary,
-                fontSize: 13,
-              ),
-            ),
-            const SizedBox(height: 8),
-            if (benefits.isNotEmpty && selectedBenefitIndex < benefits.length)
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: _titlesColor.withAlpha(20),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: _titlesColor.withAlpha(51)),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildBenefitContent(context, benefits[selectedBenefitIndex]),
-                    if (benefits.length > 1) ...[
-                      const SizedBox(height: 12),
-                      TextButton.icon(
-                        onPressed: () => _showChangeBenefitDialog(titleId, benefits),
-                        style: TextButton.styleFrom(
-                          foregroundColor: _titlesColor,
-                        ),
-                        icon: const Icon(Icons.swap_horiz, size: 18),
-                        label: const Text(SheetStoryTitlesTabText.changeBenefit),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
+            // Title-level grants (characteristic increases, languages, etc.)
+            ..._buildTitleLevelGrants(context, titleId, title),
+            // Separate auto benefits from chooseable ones
+            ..._buildBenefitsSections(context, titleId, benefits, selectedBenefitIndex),
             if (title['special'] != null) ...[
               const SizedBox(height: 12),
               Container(
@@ -584,7 +625,283 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
     );
   }
 
-  Widget _buildBenefitContent(BuildContext context, dynamic benefit) {
+  /// Build the benefits display sections for a title card.
+  /// Auto benefits are shown first as "Granted", then the chosen benefit
+  /// (if any chooseable benefits exist) with a change button.
+  List<Widget> _buildBenefitsSections(
+    BuildContext context,
+    String titleId,
+    List benefits,
+    int selectedBenefitIndex,
+  ) {
+    final autoBenefits = <MapEntry<int, Map<String, dynamic>>>[];
+    final choiceBenefits = <MapEntry<int, Map<String, dynamic>>>[];
+
+    for (int i = 0; i < benefits.length; i++) {
+      final b = benefits[i];
+      if (b is! Map<String, dynamic>) continue;
+      if (b['auto'] == true) {
+        autoBenefits.add(MapEntry(i, b));
+      } else {
+        choiceBenefits.add(MapEntry(i, b));
+      }
+    }
+
+    final widgets = <Widget>[];
+
+    // Show auto benefits
+    if (autoBenefits.isNotEmpty) {
+      widgets.add(
+        Text(
+          'Granted Benefits',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: FormTheme.textSecondary,
+            fontSize: 13,
+          ),
+        ),
+      );
+      widgets.add(const SizedBox(height: 8));
+      for (final entry in autoBenefits) {
+        widgets.add(
+          Container(
+            margin: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.green.withAlpha(20),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.green.withAlpha(51)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.check_circle, size: 16, color: Colors.green.shade400),
+                    const SizedBox(width: 6),
+                    Text(
+                      entry.value['name'] as String? ?? '',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green.shade300,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                _buildBenefitContent(context, entry.value, titleId: titleId),
+              ],
+            ),
+          ),
+        );
+      }
+    }
+
+    // Show chosen benefit (if there are chooseable benefits and the
+    // stored index actually points to a non-auto benefit)
+    final hasValidChoice = selectedBenefitIndex >= 0 &&
+        selectedBenefitIndex < benefits.length &&
+        !((benefits[selectedBenefitIndex] is Map<String, dynamic>) &&
+            (benefits[selectedBenefitIndex] as Map<String, dynamic>)['auto'] == true);
+
+    if (choiceBenefits.isNotEmpty && hasValidChoice) {
+      widgets.add(
+        Text(
+          SheetStoryTitlesTabText.selectedBenefit,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: FormTheme.textSecondary,
+            fontSize: 13,
+          ),
+        ),
+      );
+      widgets.add(const SizedBox(height: 8));
+      if (true) {
+        widgets.add(
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: _titlesColor.withAlpha(20),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: _titlesColor.withAlpha(51)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (benefits[selectedBenefitIndex] is Map<String, dynamic> &&
+                    (benefits[selectedBenefitIndex] as Map)['name'] != null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Text(
+                      (benefits[selectedBenefitIndex] as Map)['name'] as String,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: _titlesColor,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                _buildBenefitContent(context, benefits[selectedBenefitIndex], titleId: titleId),
+                if (choiceBenefits.length > 1) ...[
+                  const SizedBox(height: 12),
+                  TextButton.icon(
+                    onPressed: () => _showChangeBenefitDialog(titleId, benefits),
+                    style: TextButton.styleFrom(
+                      foregroundColor: _titlesColor,
+                    ),
+                    icon: const Icon(Icons.swap_horiz, size: 18),
+                    label: const Text(SheetStoryTitlesTabText.changeBenefit),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        );
+      }
+    }
+
+    return widgets;
+  }
+
+  /// Build widgets for title-level grants (not inside a benefit).
+  List<Widget> _buildTitleLevelGrants(
+    BuildContext context,
+    String titleId,
+    Map<String, dynamic> title,
+  ) {
+    final grants = title['grants'] as List?;
+    if (grants == null || grants.isEmpty) return [];
+
+    final widgets = <Widget>[];
+    for (final grant in grants) {
+      if (grant is! Map<String, dynamic>) continue;
+      final type = grant['type'] as String?;
+      if (type == 'characteristic_increase') {
+        widgets.add(_buildCharacteristicPicker(context, titleId, grant));
+      } else if (type == 'languages') {
+        final specific = (grant['specific'] as List?)?.whereType<String>().toList();
+        if (specific != null && specific.isNotEmpty) {
+          widgets.add(
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Row(
+                children: [
+                  Icon(Icons.translate, size: 16, color: Colors.teal.shade300),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Grants: ${specific.map((l) => l[0].toUpperCase() + l.substring(1)).join(', ')}',
+                    style: TextStyle(color: Colors.teal.shade300, fontSize: 12),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+      }
+    }
+    if (widgets.isNotEmpty) {
+      widgets.add(const SizedBox(height: 8));
+    }
+    return widgets;
+  }
+
+  /// Build an interactive characteristic choice dropdown for a title grant.
+  Widget _buildCharacteristicPicker(
+    BuildContext context,
+    String titleId,
+    Map<String, dynamic> grant,
+  ) {
+    final choices = (grant['choices'] as List?)?.whereType<String>().toList() ?? [];
+    final value = (grant['value'] as num?)?.toInt() ?? 1;
+    final tag = grant['tag'] as String?;
+
+    // Read the stored choice from _charChoices cache
+    final choiceKey = tag != null ? '${titleId}__$tag' : titleId;
+    final selected = _charChoices[choiceKey];
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        children: [
+          Icon(Icons.trending_up, size: 16, color: Colors.amber.shade300),
+          const SizedBox(width: 6),
+          Text(
+            '+$value ',
+            style: TextStyle(
+              color: Colors.amber.shade300, fontSize: 13, fontWeight: FontWeight.bold,
+            ),
+          ),
+          Expanded(
+            child: Container(
+              height: 32,
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              decoration: BoxDecoration(
+                color: StoryTheme.cardBackground,
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(
+                  color: selected != null ? Colors.amber.shade700 : Colors.orange.shade700,
+                  width: selected != null ? 1 : 1.5,
+                ),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  value: selected,
+                  isExpanded: true,
+                  dropdownColor: NavigationTheme.cardBackgroundDark,
+                  hint: Text(
+                    'Choose characteristic…',
+                    style: TextStyle(color: Colors.orange.shade300, fontSize: 12),
+                  ),
+                  style: TextStyle(color: Colors.amber.shade200, fontSize: 13),
+                  icon: Icon(Icons.arrow_drop_down, color: Colors.amber.shade400, size: 20),
+                  items: choices.map((c) {
+                    return DropdownMenuItem(
+                      value: c,
+                      child: Text(
+                        c[0].toUpperCase() + c.substring(1),
+                        style: TextStyle(color: Colors.amber.shade200, fontSize: 13),
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (newValue) {
+                    if (newValue == null) return;
+                    _onCharacteristicChosen(titleId, newValue, tag: tag);
+                  },
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Handle characteristic choice selection: save, re-apply grants, refresh.
+  Future<void> _onCharacteristicChosen(
+    String titleId,
+    String characteristic, {
+    String? tag,
+  }) async {
+    final service = ref.read(titleGrantsServiceProvider);
+    await service.setCharacteristicChoice(
+      heroId: widget.heroId,
+      titleId: titleId,
+      characteristic: characteristic,
+      tag: tag,
+    );
+
+    // Re-apply all title grants with updated choice
+    await _reapplyGrants();
+
+    // Update local cache
+    final choiceKey = tag != null ? '${titleId}__$tag' : titleId;
+    _charChoices[choiceKey] = characteristic;
+
+    if (mounted) setState(() {});
+  }
+
+  Widget _buildBenefitContent(BuildContext context, dynamic benefit, {String? titleId}) {
     if (benefit is! Map<String, dynamic>) return const SizedBox.shrink();
     
     final description = benefit['description'] as String?;
@@ -607,6 +924,51 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
           ...grants.map((grant) {
             if (grant is Map<String, dynamic>) {
               final type = grant['type'] as String?;
+              if (type == 'characteristic_increase' && titleId != null) {
+                return _buildCharacteristicPicker(context, titleId, grant);
+              }
+              if (type == 'ancestry_points' && titleId != null) {
+                return _buildAncestryPointsPicker(context, titleId, grant);
+              }
+              if (type == 'skill_choice' && titleId != null && grant['skill'] == null) {
+                return _buildSkillChoicePicker(context, titleId, grant);
+              }
+              if (type == 'languages' && titleId != null && grant['specific'] == null) {
+                return _buildLanguageChoicePicker(context, titleId, grant);
+              }
+              if (type == 'heroic_ability_choice' && titleId != null) {
+                return _buildHeroicAbilityPicker(context, titleId, grant);
+              }
+              if (type == 'damage_immunity' && titleId != null) {
+                final damageType = grant['damage_type'] as String?;
+                if (damageType == 'choose') {
+                  return _buildDamageImmunityPicker(context, titleId, grant);
+                }
+                return _buildDamageImmunityBadge(grant);
+              }
+              if (type == 'condition_immunity') {
+                final condition = grant['condition'] as String? ?? '';
+                return _buildConditionImmunityBadge(condition);
+              }
+              if (type == 'item_prerequisite') {
+                final category = grant['category'] as String? ?? '';
+                final tag = grant['tag'] as String? ?? '';
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: Row(
+                    children: [
+                      Icon(Icons.inventory_2, size: 16, color: Colors.purple.shade300),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          SheetStoryTitlesTabText.itemPrerequisite(category, tag),
+                          style: TextStyle(color: Colors.purple.shade300, fontSize: 12),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
               final value = grant['value'];
               if (type != null) {
                 return Padding(
@@ -615,11 +977,13 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                     children: [
                       Icon(Icons.card_giftcard, size: 16, color: Colors.teal.shade300),
                       const SizedBox(width: 4),
-                      Text(
-                        SheetStoryTitlesTabText.grantsLabel(_formatGrant(type, value)),
-                        style: TextStyle(
-                          color: Colors.teal.shade300,
-                          fontSize: 12,
+                      Expanded(
+                        child: Text(
+                          SheetStoryTitlesTabText.grantsLabel(_formatGrant(type, value)),
+                          style: TextStyle(
+                            color: Colors.teal.shade300,
+                            fontSize: 12,
+                          ),
                         ),
                       ),
                     ],
@@ -631,6 +995,747 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
           }),
         ],
       ],
+    );
+  }
+
+  // ════════════════════════════════════════════════════════════════════════════
+  // Ancestry Points Picker
+  // ════════════════════════════════════════════════════════════════════════════
+
+  Widget _buildAncestryPointsPicker(
+    BuildContext context,
+    String titleId,
+    Map<String, dynamic> grant,
+  ) {
+    final ancestry = grant['ancestry'] as String? ?? '';
+    final points = (grant['value'] as num?)?.toInt() ?? 0;
+    final selected = _ancestryTraitSelections[titleId] ?? [];
+    final hasSelection = selected.isNotEmpty;
+    final ancestryLabel = ancestry.replaceAll('_', ' ');
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: InkWell(
+        onTap: () => _openAncestryTraitsDialog(titleId, ancestry, points),
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            color: hasSelection
+                ? _titlesColor.withAlpha(20)
+                : Colors.orange.withAlpha(20),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: hasSelection
+                  ? _titlesColor.withAlpha(80)
+                  : Colors.orange.withAlpha(80),
+            ),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                Icons.auto_awesome,
+                size: 16,
+                color: hasSelection ? _titlesColor : Colors.orange.shade300,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      SheetStoryTitlesTabText.ancestryTraitsTitle(ancestryLabel),
+                      style: TextStyle(
+                        color: hasSelection ? _titlesColor : Colors.orange.shade300,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13,
+                      ),
+                    ),
+                    Text(
+                      hasSelection
+                          ? SheetStoryTitlesTabText.traitsSelected(selected.length)
+                          : SheetStoryTitlesTabText.noTraitsSelected,
+                      style: TextStyle(
+                        color: hasSelection
+                            ? FormTheme.textSecondary
+                            : Colors.orange.shade200,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Text(
+                '${points}pts',
+                style: TextStyle(
+                  color: hasSelection ? _titlesColor : Colors.orange.shade300,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Icon(
+                Icons.chevron_right,
+                size: 18,
+                color: hasSelection ? _titlesColor : Colors.orange.shade300,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _openAncestryTraitsDialog(
+    String titleId,
+    String ancestryId,
+    int pointsBudget,
+  ) async {
+    // Filter sub-choices for this title
+    final subChoices = <String, String>{};
+    for (final entry in _ancestryTraitSubChoices.entries) {
+      if (entry.key.startsWith('$titleId.')) {
+        final traitId = entry.key.substring(titleId.length + 1);
+        subChoices[traitId] = entry.value;
+      }
+    }
+
+    final result = await showDialog<TitleAncestryTraitsResult>(
+      context: context,
+      builder: (context) => TitleAncestryTraitsDialog(
+        heroId: widget.heroId,
+        titleId: titleId,
+        ancestryId: ancestryId,
+        pointsBudget: pointsBudget,
+        initialSelectedTraitIds: _ancestryTraitSelections[titleId] ?? [],
+        initialSubChoices: subChoices,
+      ),
+    );
+
+    if (result == null) return;
+
+    final service = ref.read(titleGrantsServiceProvider);
+
+    // Save trait selections
+    await service.setAncestryTraitSelections(
+      heroId: widget.heroId,
+      titleId: titleId,
+      traitIds: result.selectedTraitIds,
+    );
+
+    // Save sub-choices
+    for (final entry in result.subChoices.entries) {
+      await service.setAncestryTraitSubChoice(
+        heroId: widget.heroId,
+        titleId: titleId,
+        traitId: entry.key,
+        value: entry.value,
+      );
+    }
+
+    // Re-apply grants
+    await _reapplyGrants();
+
+    // Update local cache
+    _ancestryTraitSelections[titleId] = result.selectedTraitIds;
+    for (final entry in result.subChoices.entries) {
+      _ancestryTraitSubChoices['$titleId.${entry.key}'] = entry.value;
+    }
+
+    if (mounted) setState(() {});
+  }
+
+  // ════════════════════════════════════════════════════════════════════════════
+  // Skill Choice Picker (group-based or any)
+  // ════════════════════════════════════════════════════════════════════════════
+
+  Widget _buildSkillChoicePicker(
+    BuildContext context,
+    String titleId,
+    Map<String, dynamic> grant,
+  ) {
+    final group = grant['group'] as String?;
+    final count = (grant['count'] as num?)?.toInt() ?? 1;
+    final choiceKey = group != null ? '${titleId}__$group' : titleId;
+    final chosen = _skillChoices[choiceKey] ?? [];
+    final hasSelection = chosen.isNotEmpty;
+
+    final label = group != null
+        ? SheetStoryTitlesTabText.chooseSkillFromGroup(group)
+        : SheetStoryTitlesTabText.chooseAnySkill;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: InkWell(
+        onTap: () => _openSkillPicker(titleId, grant),
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            color: hasSelection
+                ? Colors.blue.withAlpha(20)
+                : Colors.orange.withAlpha(20),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: hasSelection
+                  ? Colors.blue.withAlpha(80)
+                  : Colors.orange.withAlpha(80),
+            ),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                Icons.school,
+                size: 16,
+                color: hasSelection ? Colors.blue.shade300 : Colors.orange.shade300,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  hasSelection
+                      ? chosen.map((s) => s.replaceAll('_', ' ')).join(', ')
+                      : '$label ($count)',
+                  style: TextStyle(
+                    color: hasSelection ? Colors.blue.shade300 : Colors.orange.shade300,
+                    fontWeight: hasSelection ? FontWeight.w600 : FontWeight.normal,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+              Icon(
+                Icons.edit,
+                size: 16,
+                color: hasSelection ? Colors.blue.shade300 : Colors.orange.shade300,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _openSkillPicker(
+    String titleId,
+    Map<String, dynamic> grant,
+  ) async {
+    final group = grant['group'] as String?;
+    final count = (grant['count'] as num?)?.toInt() ?? 1;
+    final choiceKey = group != null ? '${titleId}__$group' : titleId;
+
+    // Load skills
+    final allSkills = await SkillDataService().loadSkills();
+    final filteredSkills = group != null
+        ? allSkills.where((s) => s.group == group.toLowerCase()).toList()
+        : allSkills;
+
+    if (!mounted) return;
+
+    final options = filteredSkills.map((s) => SearchableOption<String>(
+      label: s.name,
+      value: s.id,
+      subtitle: s.group.isNotEmpty
+          ? '${s.group[0].toUpperCase()}${s.group.substring(1)}'
+          : null,
+    )).toList();
+
+    // For single-pick, use searchable picker
+    if (count == 1) {
+      final current = (_skillChoices[choiceKey] ?? []).firstOrNull;
+      final result = await showSearchablePicker<String>(
+        context: context,
+        title: group != null
+            ? SheetStoryTitlesTabText.chooseSkillFromGroup(group)
+            : SheetStoryTitlesTabText.chooseAnySkill,
+        options: options,
+        selected: current,
+        accentColor: Colors.blue.shade300,
+        icon: Icons.school,
+      );
+      if (result == null || result.value == null) return;
+
+      final service = ref.read(titleGrantsServiceProvider);
+      await service.setSkillChoice(
+        heroId: widget.heroId,
+        titleId: titleId,
+        skillIds: [result.value!],
+        group: group,
+      );
+      await _reapplyGrants();
+      _skillChoices[choiceKey] = [result.value!];
+      if (mounted) setState(() {});
+    } else {
+      // Multi-pick: show picker repeatedly for each slot
+      final chosen = <String>[];
+      for (int i = 0; i < count; i++) {
+        if (!mounted) return;
+        final result = await showSearchablePicker<String>(
+          context: context,
+          title: '${SheetStoryTitlesTabText.chooseAnySkill} (${i + 1}/$count)',
+          options: options.where((o) => !chosen.contains(o.value)).toList(),
+          accentColor: Colors.blue.shade300,
+          icon: Icons.school,
+        );
+        if (result == null || result.value == null) break;
+        chosen.add(result.value!);
+      }
+      if (chosen.isEmpty) return;
+
+      final service = ref.read(titleGrantsServiceProvider);
+      await service.setSkillChoice(
+        heroId: widget.heroId,
+        titleId: titleId,
+        skillIds: chosen,
+        group: group,
+      );
+      await _reapplyGrants();
+      _skillChoices[choiceKey] = chosen;
+      if (mounted) setState(() {});
+    }
+  }
+
+  // ════════════════════════════════════════════════════════════════════════════
+  // Language Choice Picker
+  // ════════════════════════════════════════════════════════════════════════════
+
+  Widget _buildLanguageChoicePicker(
+    BuildContext context,
+    String titleId,
+    Map<String, dynamic> grant,
+  ) {
+    final count = (grant['count'] as num?)?.toInt() ?? 1;
+    final chosen = _languageChoices[titleId] ?? [];
+    final hasSelection = chosen.isNotEmpty;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: InkWell(
+        onTap: () => _openLanguagePicker(titleId, count),
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            color: hasSelection
+                ? Colors.teal.withAlpha(20)
+                : Colors.orange.withAlpha(20),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: hasSelection
+                  ? Colors.teal.withAlpha(80)
+                  : Colors.orange.withAlpha(80),
+            ),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                Icons.translate,
+                size: 16,
+                color: hasSelection ? Colors.teal.shade300 : Colors.orange.shade300,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  hasSelection
+                      ? chosen.map((l) => l.replaceAll('_', ' ')).join(', ')
+                      : SheetStoryTitlesTabText.chooseLanguages(count),
+                  style: TextStyle(
+                    color: hasSelection ? Colors.teal.shade300 : Colors.orange.shade300,
+                    fontWeight: hasSelection ? FontWeight.w600 : FontWeight.normal,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+              Icon(
+                Icons.edit,
+                size: 16,
+                color: hasSelection ? Colors.teal.shade300 : Colors.orange.shade300,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _openLanguagePicker(String titleId, int count) async {
+    final db = ref.read(appDatabaseProvider);
+    final languages = await db.getComponentsByType('language');
+
+    if (!mounted) return;
+
+    final options = languages.map((l) {
+      final data = l.dataJson.isNotEmpty
+          ? json.decode(l.dataJson) as Map<String, dynamic>
+          : <String, dynamic>{};
+      final langType = data['language_type'] as String?;
+      return SearchableOption<String>(
+        label: l.name,
+        value: l.id,
+        subtitle: langType != null
+            ? '${langType[0].toUpperCase()}${langType.substring(1)}'
+            : null,
+      );
+    }).toList()
+      ..sort((a, b) => a.label.compareTo(b.label));
+
+    final chosen = <String>[];
+    for (int i = 0; i < count; i++) {
+      if (!mounted) return;
+      final result = await showSearchablePicker<String>(
+        context: context,
+        title: '${SheetStoryTitlesTabText.chooseLanguageHint} (${i + 1}/$count)',
+        options: options.where((o) => !chosen.contains(o.value)).toList(),
+        accentColor: Colors.teal.shade300,
+        icon: Icons.translate,
+      );
+      if (result == null || result.value == null) break;
+      chosen.add(result.value!);
+    }
+    if (chosen.isEmpty) return;
+
+    final service = ref.read(titleGrantsServiceProvider);
+    await service.setLanguageChoice(
+      heroId: widget.heroId,
+      titleId: titleId,
+      languageIds: chosen,
+    );
+    await _reapplyGrants();
+    _languageChoices[titleId] = chosen;
+    if (mounted) setState(() {});
+  }
+
+  // ════════════════════════════════════════════════════════════════════════════
+  // Heroic Ability Choice Picker
+  // ════════════════════════════════════════════════════════════════════════════
+
+  Widget _buildHeroicAbilityPicker(
+    BuildContext context,
+    String titleId,
+    Map<String, dynamic> grant,
+  ) {
+    final chosenId = _heroicAbilityChoices[titleId];
+    final hasSelection = chosenId != null && chosenId.isNotEmpty;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          InkWell(
+            onTap: () => _openHeroicAbilityPicker(titleId),
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              decoration: BoxDecoration(
+                color: hasSelection
+                    ? Colors.purple.withAlpha(20)
+                    : Colors.orange.withAlpha(20),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: hasSelection
+                      ? Colors.purple.withAlpha(80)
+                      : Colors.orange.withAlpha(80),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.flash_on,
+                    size: 16,
+                    color: hasSelection
+                        ? Colors.purple.shade300
+                        : Colors.orange.shade300,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      hasSelection
+                          ? SheetStoryTitlesTabText.heroicAbilityLabel
+                          : SheetStoryTitlesTabText.chooseHeroicAbility,
+                      style: TextStyle(
+                        color: hasSelection
+                            ? Colors.purple.shade300
+                            : Colors.orange.shade300,
+                        fontWeight: hasSelection
+                            ? FontWeight.w600
+                            : FontWeight.normal,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                  Icon(
+                    Icons.edit,
+                    size: 16,
+                    color: hasSelection
+                        ? Colors.purple.shade300
+                        : Colors.orange.shade300,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (hasSelection) ...[
+            const SizedBox(height: 4),
+            _buildAbilityCard(chosenId),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Future<void> _openHeroicAbilityPicker(String titleId) async {
+    // Load all heroic abilities from DB (cost >= 3 or keyword "heroic")
+    final db = ref.read(appDatabaseProvider);
+    final allAbilities = await db.getComponentsByType('ability');
+
+    if (!mounted) return;
+
+    // Filter to heroic abilities (resource_value >= 3, which typically indicates heroic tier)
+    final heroicAbilities = allAbilities.where((a) {
+      final data = a.dataJson.isNotEmpty
+          ? json.decode(a.dataJson) as Map<String, dynamic>
+          : <String, dynamic>{};
+      final cost = data['resource_value'];
+      if (cost is int && cost >= 3) return true;
+      // Also check the keywords for "heroic"
+      final kw = data['keywords'];
+      final keywords = kw is String ? kw.toLowerCase() : (kw is List ? kw.join('/').toLowerCase() : '');
+      if (keywords.contains('heroic')) return true;
+      return false;
+    }).toList()
+      ..sort((a, b) => a.name.compareTo(b.name));
+
+    final options = heroicAbilities.map((a) {
+      final data = a.dataJson.isNotEmpty
+          ? json.decode(a.dataJson) as Map<String, dynamic>
+          : <String, dynamic>{};
+      final resource = data['resource'] as String?;
+      final cost = data['resource_value'];
+      final subtitle = resource != null && cost != null ? '$resource $cost' : null;
+      return SearchableOption<String>(
+        label: a.name,
+        value: a.id,
+        subtitle: subtitle,
+      );
+    }).toList();
+
+    final current = _heroicAbilityChoices[titleId];
+    final result = await showSearchablePicker<String>(
+      context: context,
+      title: SheetStoryTitlesTabText.chooseHeroicAbility,
+      options: options,
+      selected: current,
+      accentColor: Colors.purple.shade300,
+      icon: Icons.flash_on,
+      autofocusSearch: true,
+    );
+
+    if (result == null || result.value == null) return;
+
+    final service = ref.read(titleGrantsServiceProvider);
+    await service.setHeroicAbilityChoice(
+      heroId: widget.heroId,
+      titleId: titleId,
+      abilityId: result.value!,
+    );
+    await _reapplyGrants();
+    _heroicAbilityChoices[titleId] = result.value!;
+    if (mounted) setState(() {});
+  }
+
+  // ════════════════════════════════════════════════════════════════════════════
+  // Damage Immunity Picker & Badges
+  // ════════════════════════════════════════════════════════════════════════════
+
+  Widget _buildDamageImmunityPicker(
+    BuildContext context,
+    String titleId,
+    Map<String, dynamic> grant,
+  ) {
+    final chosen = _damageTypeChoices[titleId];
+    final hasSelection = chosen != null && chosen.isNotEmpty;
+    final valueSource = grant['value_source']?.toString();
+    final staticValue = grant['value'];
+
+    String subtitle;
+    if (hasSelection) {
+      final label = chosen[0].toUpperCase() + chosen.substring(1);
+      if (valueSource == 'level') {
+        subtitle = SheetStoryTitlesTabText.damageImmunityLevel(label);
+      } else if (valueSource == 'highest_characteristic') {
+        subtitle = SheetStoryTitlesTabText.damageImmunityHighestChar(label);
+      } else if (staticValue != null) {
+        subtitle = SheetStoryTitlesTabText.damageImmunityStatic(label, staticValue);
+      } else {
+        subtitle = label;
+      }
+    } else {
+      subtitle = SheetStoryTitlesTabText.chooseDamageTypeHint;
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: InkWell(
+        onTap: () => _openDamageTypePicker(titleId, grant),
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            color: hasSelection
+                ? Colors.red.withAlpha(20)
+                : Colors.orange.withAlpha(20),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: hasSelection
+                  ? Colors.red.withAlpha(80)
+                  : Colors.orange.withAlpha(80),
+            ),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                Icons.shield,
+                size: 16,
+                color: hasSelection ? Colors.red.shade300 : Colors.orange.shade300,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      SheetStoryTitlesTabText.damageImmunityTitle,
+                      style: TextStyle(
+                        color: hasSelection ? Colors.red.shade300 : Colors.orange.shade300,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13,
+                      ),
+                    ),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        color: hasSelection
+                            ? FormTheme.textSecondary
+                            : Colors.orange.shade200,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                Icons.edit,
+                size: 16,
+                color: hasSelection ? Colors.red.shade300 : Colors.orange.shade300,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _openDamageTypePicker(
+    String titleId,
+    Map<String, dynamic> grant,
+  ) async {
+    final options = (grant['damage_type_options'] as List?)
+            ?.cast<String>()
+            .map((dt) => SearchableOption<String>(
+                  label: dt[0].toUpperCase() + dt.substring(1),
+                  value: dt,
+                ))
+            .toList() ??
+        [];
+
+    final current = _damageTypeChoices[titleId];
+    final result = await showSearchablePicker<String>(
+      context: context,
+      title: SheetStoryTitlesTabText.chooseDamageType,
+      options: options,
+      selected: current,
+      accentColor: Colors.red.shade300,
+      icon: Icons.shield,
+    );
+
+    if (result == null || result.value == null) return;
+
+    final service = ref.read(titleGrantsServiceProvider);
+    await service.setDamageTypeChoice(
+      heroId: widget.heroId,
+      titleId: titleId,
+      damageType: result.value!,
+    );
+    await _reapplyGrants();
+    _damageTypeChoices[titleId] = result.value!;
+    if (mounted) setState(() {});
+  }
+
+  Widget _buildDamageImmunityBadge(Map<String, dynamic> grant) {
+    final damageType = grant['damage_type'] as String? ?? '';
+    final valueSource = grant['value_source']?.toString();
+    final staticValue = grant['value'];
+    final label = damageType[0].toUpperCase() + damageType.substring(1);
+
+    String text;
+    if (valueSource == 'level') {
+      text = SheetStoryTitlesTabText.damageImmunityLevel(label);
+    } else if (valueSource == 'highest_characteristic') {
+      text = SheetStoryTitlesTabText.damageImmunityHighestChar(label);
+    } else if (staticValue != null) {
+      text = SheetStoryTitlesTabText.damageImmunityStatic(label, staticValue);
+    } else {
+      text = '$label immunity';
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Row(
+        children: [
+          Icon(Icons.shield, size: 16, color: Colors.red.shade300),
+          const SizedBox(width: 4),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(color: Colors.red.shade300, fontSize: 12),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildConditionImmunityBadge(String condition) {
+    final label = condition[0].toUpperCase() + condition.substring(1);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Row(
+        children: [
+          Icon(Icons.health_and_safety, size: 16, color: Colors.teal.shade300),
+          const SizedBox(width: 4),
+          Expanded(
+            child: Text(
+              SheetStoryTitlesTabText.conditionImmunity(label),
+              style: TextStyle(color: Colors.teal.shade300, fontSize: 12),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ════════════════════════════════════════════════════════════════════════════
+  // Shared Helpers
+  // ════════════════════════════════════════════════════════════════════════════
+
+  /// Re-apply all title grants after a choice change.
+  Future<void> _reapplyGrants() async {
+    final service = ref.read(titleGrantsServiceProvider);
+    final updatedIds = _selectedTitles.entries
+        .map((e) => '${e.key}:${e.value['selectedBenefitIndex']}')
+        .toList();
+    await service.applyTitleGrants(
+      heroId: widget.heroId,
+      selectedTitleIds: updatedIds,
     );
   }
 
@@ -714,6 +1819,15 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
   }
 
   void _showChangeBenefitDialog(String titleId, List benefits) {
+    // Only show chooseable (non-auto) benefits
+    final choiceEntries = <MapEntry<int, dynamic>>[];
+    for (int i = 0; i < benefits.length; i++) {
+      final b = benefits[i];
+      if (b is Map<String, dynamic> && b['auto'] == true) continue;
+      choiceEntries.add(MapEntry(i, b));
+    }
+    if (choiceEntries.length <= 1) return; // Nothing to change
+
     showDialog(
       context: context,
       builder: (context) => Dialog(
@@ -767,15 +1881,16 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                   ],
                 ),
               ),
-              // Benefits list
+              // Benefits list (only chooseable)
               Flexible(
                 child: ListView.builder(
                   shrinkWrap: true,
                   padding: const EdgeInsets.all(16),
-                  itemCount: benefits.length,
-                  itemBuilder: (context, index) {
-                    final benefit = benefits[index];
-                    final isSelected = _selectedTitles[titleId]!['selectedBenefitIndex'] == index;
+                  itemCount: choiceEntries.length,
+                  itemBuilder: (context, listIndex) {
+                    final originalIndex = choiceEntries[listIndex].key;
+                    final benefit = choiceEntries[listIndex].value;
+                    final isSelected = _selectedTitles[titleId]!['selectedBenefitIndex'] == originalIndex;
                     
                     return Container(
                       margin: const EdgeInsets.only(bottom: 8),
@@ -792,7 +1907,7 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                       child: InkWell(
                         borderRadius: BorderRadius.circular(10),
                         onTap: () {
-                          _changeBenefit(titleId, index);
+                          _changeBenefit(titleId, originalIndex);
                           Navigator.of(context).pop();
                         },
                         child: Padding(
@@ -803,7 +1918,9 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                               Row(
                                 children: [
                                   Text(
-                                    SheetStoryTitlesTabText.benefitLabel(index),
+                                    (benefit is Map<String, dynamic> && benefit['name'] != null)
+                                        ? benefit['name'] as String
+                                        : SheetStoryTitlesTabText.benefitLabel(listIndex),
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: isSelected ? _titlesColor : FormTheme.textBright,
@@ -820,7 +1937,7 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                                 ],
                               ),
                               const SizedBox(height: 8),
-                              _buildBenefitContent(context, benefit),
+                              _buildBenefitContent(context, benefit, titleId: titleId),
                             ],
                           ),
                         ),

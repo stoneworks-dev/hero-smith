@@ -14,22 +14,33 @@ import 'hero_main_stats_models.dart';
 /// 
 /// Returns one of: Healthy (green), Winded (orange), Dying (redAccent), Dead (red)
 StaminaState calculateStaminaState(HeroMainStats stats) {
-  final max = stats.staminaMaxEffective;
-  final half = (max / 2).floor();
-  final current = stats.staminaCurrent;
-  if (current > half) {
+  return calculateStaminaStateFromValues(
+    currentStamina: stats.staminaCurrent,
+    maxStamina: stats.staminaMaxEffective,
+  );
+}
+
+/// Calculates stamina state from raw numeric values.
+///
+/// Usable by both heroes and retainers.
+StaminaState calculateStaminaStateFromValues({
+  required int currentStamina,
+  required int maxStamina,
+}) {
+  final half = (maxStamina / 2).floor();
+  if (currentStamina > half) {
     return const StaminaState(
       HeroMainStatsModelsText.staminaStateHealthy,
       Colors.green,
     );
   }
-  if (current > 0) {
+  if (currentStamina > 0) {
     return const StaminaState(
       HeroMainStatsModelsText.staminaStateWinded,
       Colors.orange,
     );
   }
-  if (current > -half) {
+  if (currentStamina > -half) {
     return const StaminaState(
       HeroMainStatsModelsText.staminaStateDying,
       Colors.redAccent,

@@ -4588,6 +4588,779 @@ class HeroConfigCompanion extends UpdateCompanion<HeroConfigData> {
   }
 }
 
+class $HeroRetainersTable extends HeroRetainers
+    with TableInfo<$HeroRetainersTable, HeroRetainer> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $HeroRetainersTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _heroIdMeta = const VerificationMeta('heroId');
+  @override
+  late final GeneratedColumn<String> heroId = GeneratedColumn<String>(
+      'hero_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES heroes (id)'));
+  static const VerificationMeta _retainerComponentIdMeta =
+      const VerificationMeta('retainerComponentId');
+  @override
+  late final GeneratedColumn<String> retainerComponentId =
+      GeneratedColumn<String>('retainer_component_id', aliasedName, false,
+          type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _roleMeta = const VerificationMeta('role');
+  @override
+  late final GeneratedColumn<String> role = GeneratedColumn<String>(
+      'role', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _isCustomMeta =
+      const VerificationMeta('isCustom');
+  @override
+  late final GeneratedColumn<bool> isCustom = GeneratedColumn<bool>(
+      'is_custom', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("is_custom" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _customDataJsonMeta =
+      const VerificationMeta('customDataJson');
+  @override
+  late final GeneratedColumn<String> customDataJson = GeneratedColumn<String>(
+      'custom_data_json', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _advancementChoicesJsonMeta =
+      const VerificationMeta('advancementChoicesJson');
+  @override
+  late final GeneratedColumn<String> advancementChoicesJson =
+      GeneratedColumn<String>('advancement_choices_json', aliasedName, false,
+          type: DriftSqlType.string,
+          requiredDuringInsert: false,
+          defaultValue: const Constant('{}'));
+  static const VerificationMeta _characteristicChoicesJsonMeta =
+      const VerificationMeta('characteristicChoicesJson');
+  @override
+  late final GeneratedColumn<String> characteristicChoicesJson =
+      GeneratedColumn<String>('characteristic_choices_json', aliasedName, false,
+          type: DriftSqlType.string,
+          requiredDuringInsert: false,
+          defaultValue: const Constant('{}'));
+  static const VerificationMeta _currentStaminaMeta =
+      const VerificationMeta('currentStamina');
+  @override
+  late final GeneratedColumn<int> currentStamina = GeneratedColumn<int>(
+      'current_stamina', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _tempStaminaMeta =
+      const VerificationMeta('tempStamina');
+  @override
+  late final GeneratedColumn<int> tempStamina = GeneratedColumn<int>(
+      'temp_stamina', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _currentRecoveriesMeta =
+      const VerificationMeta('currentRecoveries');
+  @override
+  late final GeneratedColumn<int> currentRecoveries = GeneratedColumn<int>(
+      'current_recoveries', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(6));
+  static const VerificationMeta _isActiveMeta =
+      const VerificationMeta('isActive');
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+      'is_active', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("is_active" IN (0, 1))'),
+      defaultValue: const Constant(true));
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        heroId,
+        retainerComponentId,
+        name,
+        role,
+        isCustom,
+        customDataJson,
+        advancementChoicesJson,
+        characteristicChoicesJson,
+        currentStamina,
+        tempStamina,
+        currentRecoveries,
+        isActive,
+        createdAt,
+        updatedAt
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'hero_retainers';
+  @override
+  VerificationContext validateIntegrity(Insertable<HeroRetainer> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('hero_id')) {
+      context.handle(_heroIdMeta,
+          heroId.isAcceptableOrUnknown(data['hero_id']!, _heroIdMeta));
+    } else if (isInserting) {
+      context.missing(_heroIdMeta);
+    }
+    if (data.containsKey('retainer_component_id')) {
+      context.handle(
+          _retainerComponentIdMeta,
+          retainerComponentId.isAcceptableOrUnknown(
+              data['retainer_component_id']!, _retainerComponentIdMeta));
+    } else if (isInserting) {
+      context.missing(_retainerComponentIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('role')) {
+      context.handle(
+          _roleMeta, role.isAcceptableOrUnknown(data['role']!, _roleMeta));
+    } else if (isInserting) {
+      context.missing(_roleMeta);
+    }
+    if (data.containsKey('is_custom')) {
+      context.handle(_isCustomMeta,
+          isCustom.isAcceptableOrUnknown(data['is_custom']!, _isCustomMeta));
+    }
+    if (data.containsKey('custom_data_json')) {
+      context.handle(
+          _customDataJsonMeta,
+          customDataJson.isAcceptableOrUnknown(
+              data['custom_data_json']!, _customDataJsonMeta));
+    }
+    if (data.containsKey('advancement_choices_json')) {
+      context.handle(
+          _advancementChoicesJsonMeta,
+          advancementChoicesJson.isAcceptableOrUnknown(
+              data['advancement_choices_json']!, _advancementChoicesJsonMeta));
+    }
+    if (data.containsKey('characteristic_choices_json')) {
+      context.handle(
+          _characteristicChoicesJsonMeta,
+          characteristicChoicesJson.isAcceptableOrUnknown(
+              data['characteristic_choices_json']!,
+              _characteristicChoicesJsonMeta));
+    }
+    if (data.containsKey('current_stamina')) {
+      context.handle(
+          _currentStaminaMeta,
+          currentStamina.isAcceptableOrUnknown(
+              data['current_stamina']!, _currentStaminaMeta));
+    }
+    if (data.containsKey('temp_stamina')) {
+      context.handle(
+          _tempStaminaMeta,
+          tempStamina.isAcceptableOrUnknown(
+              data['temp_stamina']!, _tempStaminaMeta));
+    }
+    if (data.containsKey('current_recoveries')) {
+      context.handle(
+          _currentRecoveriesMeta,
+          currentRecoveries.isAcceptableOrUnknown(
+              data['current_recoveries']!, _currentRecoveriesMeta));
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(_isActiveMeta,
+          isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  HeroRetainer map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return HeroRetainer(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      heroId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}hero_id'])!,
+      retainerComponentId: attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}retainer_component_id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      role: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}role'])!,
+      isCustom: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_custom'])!,
+      customDataJson: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}custom_data_json']),
+      advancementChoicesJson: attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}advancement_choices_json'])!,
+      characteristicChoicesJson: attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}characteristic_choices_json'])!,
+      currentStamina: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}current_stamina']),
+      tempStamina: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}temp_stamina'])!,
+      currentRecoveries: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}current_recoveries']),
+      isActive: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_active'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+    );
+  }
+
+  @override
+  $HeroRetainersTable createAlias(String alias) {
+    return $HeroRetainersTable(attachedDatabase, alias);
+  }
+}
+
+class HeroRetainer extends DataClass implements Insertable<HeroRetainer> {
+  final String id;
+  final String heroId;
+
+  /// Component ID of the retainer template (from Components with type='retainer').
+  final String retainerComponentId;
+  final String name;
+
+  /// Role slug: ambusher, brute, artillery, controller, defender, harrier,
+  /// hexer, mount, support.
+  final String role;
+  final bool isCustom;
+
+  /// Full stat block JSON for custom retainers built from monster stat blocks.
+  final String? customDataJson;
+
+  /// JSON map of level (int) → chosen ability component ID at levels 4/7/10.
+  final String advancementChoicesJson;
+
+  /// JSON map of level (int) → characteristic name at levels 2/8.
+  final String characteristicChoicesJson;
+  final int? currentStamina;
+  final int tempStamina;
+  final int? currentRecoveries;
+  final bool isActive;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const HeroRetainer(
+      {required this.id,
+      required this.heroId,
+      required this.retainerComponentId,
+      required this.name,
+      required this.role,
+      required this.isCustom,
+      this.customDataJson,
+      required this.advancementChoicesJson,
+      required this.characteristicChoicesJson,
+      this.currentStamina,
+      required this.tempStamina,
+      this.currentRecoveries,
+      required this.isActive,
+      required this.createdAt,
+      required this.updatedAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['hero_id'] = Variable<String>(heroId);
+    map['retainer_component_id'] = Variable<String>(retainerComponentId);
+    map['name'] = Variable<String>(name);
+    map['role'] = Variable<String>(role);
+    map['is_custom'] = Variable<bool>(isCustom);
+    if (!nullToAbsent || customDataJson != null) {
+      map['custom_data_json'] = Variable<String>(customDataJson);
+    }
+    map['advancement_choices_json'] = Variable<String>(advancementChoicesJson);
+    map['characteristic_choices_json'] =
+        Variable<String>(characteristicChoicesJson);
+    if (!nullToAbsent || currentStamina != null) {
+      map['current_stamina'] = Variable<int>(currentStamina);
+    }
+    map['temp_stamina'] = Variable<int>(tempStamina);
+    if (!nullToAbsent || currentRecoveries != null) {
+      map['current_recoveries'] = Variable<int>(currentRecoveries);
+    }
+    map['is_active'] = Variable<bool>(isActive);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  HeroRetainersCompanion toCompanion(bool nullToAbsent) {
+    return HeroRetainersCompanion(
+      id: Value(id),
+      heroId: Value(heroId),
+      retainerComponentId: Value(retainerComponentId),
+      name: Value(name),
+      role: Value(role),
+      isCustom: Value(isCustom),
+      customDataJson: customDataJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(customDataJson),
+      advancementChoicesJson: Value(advancementChoicesJson),
+      characteristicChoicesJson: Value(characteristicChoicesJson),
+      currentStamina: currentStamina == null && nullToAbsent
+          ? const Value.absent()
+          : Value(currentStamina),
+      tempStamina: Value(tempStamina),
+      currentRecoveries: currentRecoveries == null && nullToAbsent
+          ? const Value.absent()
+          : Value(currentRecoveries),
+      isActive: Value(isActive),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory HeroRetainer.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return HeroRetainer(
+      id: serializer.fromJson<String>(json['id']),
+      heroId: serializer.fromJson<String>(json['heroId']),
+      retainerComponentId:
+          serializer.fromJson<String>(json['retainerComponentId']),
+      name: serializer.fromJson<String>(json['name']),
+      role: serializer.fromJson<String>(json['role']),
+      isCustom: serializer.fromJson<bool>(json['isCustom']),
+      customDataJson: serializer.fromJson<String?>(json['customDataJson']),
+      advancementChoicesJson:
+          serializer.fromJson<String>(json['advancementChoicesJson']),
+      characteristicChoicesJson:
+          serializer.fromJson<String>(json['characteristicChoicesJson']),
+      currentStamina: serializer.fromJson<int?>(json['currentStamina']),
+      tempStamina: serializer.fromJson<int>(json['tempStamina']),
+      currentRecoveries: serializer.fromJson<int?>(json['currentRecoveries']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'heroId': serializer.toJson<String>(heroId),
+      'retainerComponentId': serializer.toJson<String>(retainerComponentId),
+      'name': serializer.toJson<String>(name),
+      'role': serializer.toJson<String>(role),
+      'isCustom': serializer.toJson<bool>(isCustom),
+      'customDataJson': serializer.toJson<String?>(customDataJson),
+      'advancementChoicesJson':
+          serializer.toJson<String>(advancementChoicesJson),
+      'characteristicChoicesJson':
+          serializer.toJson<String>(characteristicChoicesJson),
+      'currentStamina': serializer.toJson<int?>(currentStamina),
+      'tempStamina': serializer.toJson<int>(tempStamina),
+      'currentRecoveries': serializer.toJson<int?>(currentRecoveries),
+      'isActive': serializer.toJson<bool>(isActive),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  HeroRetainer copyWith(
+          {String? id,
+          String? heroId,
+          String? retainerComponentId,
+          String? name,
+          String? role,
+          bool? isCustom,
+          Value<String?> customDataJson = const Value.absent(),
+          String? advancementChoicesJson,
+          String? characteristicChoicesJson,
+          Value<int?> currentStamina = const Value.absent(),
+          int? tempStamina,
+          Value<int?> currentRecoveries = const Value.absent(),
+          bool? isActive,
+          DateTime? createdAt,
+          DateTime? updatedAt}) =>
+      HeroRetainer(
+        id: id ?? this.id,
+        heroId: heroId ?? this.heroId,
+        retainerComponentId: retainerComponentId ?? this.retainerComponentId,
+        name: name ?? this.name,
+        role: role ?? this.role,
+        isCustom: isCustom ?? this.isCustom,
+        customDataJson:
+            customDataJson.present ? customDataJson.value : this.customDataJson,
+        advancementChoicesJson:
+            advancementChoicesJson ?? this.advancementChoicesJson,
+        characteristicChoicesJson:
+            characteristicChoicesJson ?? this.characteristicChoicesJson,
+        currentStamina:
+            currentStamina.present ? currentStamina.value : this.currentStamina,
+        tempStamina: tempStamina ?? this.tempStamina,
+        currentRecoveries: currentRecoveries.present
+            ? currentRecoveries.value
+            : this.currentRecoveries,
+        isActive: isActive ?? this.isActive,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+      );
+  HeroRetainer copyWithCompanion(HeroRetainersCompanion data) {
+    return HeroRetainer(
+      id: data.id.present ? data.id.value : this.id,
+      heroId: data.heroId.present ? data.heroId.value : this.heroId,
+      retainerComponentId: data.retainerComponentId.present
+          ? data.retainerComponentId.value
+          : this.retainerComponentId,
+      name: data.name.present ? data.name.value : this.name,
+      role: data.role.present ? data.role.value : this.role,
+      isCustom: data.isCustom.present ? data.isCustom.value : this.isCustom,
+      customDataJson: data.customDataJson.present
+          ? data.customDataJson.value
+          : this.customDataJson,
+      advancementChoicesJson: data.advancementChoicesJson.present
+          ? data.advancementChoicesJson.value
+          : this.advancementChoicesJson,
+      characteristicChoicesJson: data.characteristicChoicesJson.present
+          ? data.characteristicChoicesJson.value
+          : this.characteristicChoicesJson,
+      currentStamina: data.currentStamina.present
+          ? data.currentStamina.value
+          : this.currentStamina,
+      tempStamina:
+          data.tempStamina.present ? data.tempStamina.value : this.tempStamina,
+      currentRecoveries: data.currentRecoveries.present
+          ? data.currentRecoveries.value
+          : this.currentRecoveries,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HeroRetainer(')
+          ..write('id: $id, ')
+          ..write('heroId: $heroId, ')
+          ..write('retainerComponentId: $retainerComponentId, ')
+          ..write('name: $name, ')
+          ..write('role: $role, ')
+          ..write('isCustom: $isCustom, ')
+          ..write('customDataJson: $customDataJson, ')
+          ..write('advancementChoicesJson: $advancementChoicesJson, ')
+          ..write('characteristicChoicesJson: $characteristicChoicesJson, ')
+          ..write('currentStamina: $currentStamina, ')
+          ..write('tempStamina: $tempStamina, ')
+          ..write('currentRecoveries: $currentRecoveries, ')
+          ..write('isActive: $isActive, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id,
+      heroId,
+      retainerComponentId,
+      name,
+      role,
+      isCustom,
+      customDataJson,
+      advancementChoicesJson,
+      characteristicChoicesJson,
+      currentStamina,
+      tempStamina,
+      currentRecoveries,
+      isActive,
+      createdAt,
+      updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is HeroRetainer &&
+          other.id == this.id &&
+          other.heroId == this.heroId &&
+          other.retainerComponentId == this.retainerComponentId &&
+          other.name == this.name &&
+          other.role == this.role &&
+          other.isCustom == this.isCustom &&
+          other.customDataJson == this.customDataJson &&
+          other.advancementChoicesJson == this.advancementChoicesJson &&
+          other.characteristicChoicesJson == this.characteristicChoicesJson &&
+          other.currentStamina == this.currentStamina &&
+          other.tempStamina == this.tempStamina &&
+          other.currentRecoveries == this.currentRecoveries &&
+          other.isActive == this.isActive &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class HeroRetainersCompanion extends UpdateCompanion<HeroRetainer> {
+  final Value<String> id;
+  final Value<String> heroId;
+  final Value<String> retainerComponentId;
+  final Value<String> name;
+  final Value<String> role;
+  final Value<bool> isCustom;
+  final Value<String?> customDataJson;
+  final Value<String> advancementChoicesJson;
+  final Value<String> characteristicChoicesJson;
+  final Value<int?> currentStamina;
+  final Value<int> tempStamina;
+  final Value<int?> currentRecoveries;
+  final Value<bool> isActive;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const HeroRetainersCompanion({
+    this.id = const Value.absent(),
+    this.heroId = const Value.absent(),
+    this.retainerComponentId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.role = const Value.absent(),
+    this.isCustom = const Value.absent(),
+    this.customDataJson = const Value.absent(),
+    this.advancementChoicesJson = const Value.absent(),
+    this.characteristicChoicesJson = const Value.absent(),
+    this.currentStamina = const Value.absent(),
+    this.tempStamina = const Value.absent(),
+    this.currentRecoveries = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  HeroRetainersCompanion.insert({
+    required String id,
+    required String heroId,
+    required String retainerComponentId,
+    required String name,
+    required String role,
+    this.isCustom = const Value.absent(),
+    this.customDataJson = const Value.absent(),
+    this.advancementChoicesJson = const Value.absent(),
+    this.characteristicChoicesJson = const Value.absent(),
+    this.currentStamina = const Value.absent(),
+    this.tempStamina = const Value.absent(),
+    this.currentRecoveries = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        heroId = Value(heroId),
+        retainerComponentId = Value(retainerComponentId),
+        name = Value(name),
+        role = Value(role);
+  static Insertable<HeroRetainer> custom({
+    Expression<String>? id,
+    Expression<String>? heroId,
+    Expression<String>? retainerComponentId,
+    Expression<String>? name,
+    Expression<String>? role,
+    Expression<bool>? isCustom,
+    Expression<String>? customDataJson,
+    Expression<String>? advancementChoicesJson,
+    Expression<String>? characteristicChoicesJson,
+    Expression<int>? currentStamina,
+    Expression<int>? tempStamina,
+    Expression<int>? currentRecoveries,
+    Expression<bool>? isActive,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (heroId != null) 'hero_id': heroId,
+      if (retainerComponentId != null)
+        'retainer_component_id': retainerComponentId,
+      if (name != null) 'name': name,
+      if (role != null) 'role': role,
+      if (isCustom != null) 'is_custom': isCustom,
+      if (customDataJson != null) 'custom_data_json': customDataJson,
+      if (advancementChoicesJson != null)
+        'advancement_choices_json': advancementChoicesJson,
+      if (characteristicChoicesJson != null)
+        'characteristic_choices_json': characteristicChoicesJson,
+      if (currentStamina != null) 'current_stamina': currentStamina,
+      if (tempStamina != null) 'temp_stamina': tempStamina,
+      if (currentRecoveries != null) 'current_recoveries': currentRecoveries,
+      if (isActive != null) 'is_active': isActive,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  HeroRetainersCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? heroId,
+      Value<String>? retainerComponentId,
+      Value<String>? name,
+      Value<String>? role,
+      Value<bool>? isCustom,
+      Value<String?>? customDataJson,
+      Value<String>? advancementChoicesJson,
+      Value<String>? characteristicChoicesJson,
+      Value<int?>? currentStamina,
+      Value<int>? tempStamina,
+      Value<int?>? currentRecoveries,
+      Value<bool>? isActive,
+      Value<DateTime>? createdAt,
+      Value<DateTime>? updatedAt,
+      Value<int>? rowid}) {
+    return HeroRetainersCompanion(
+      id: id ?? this.id,
+      heroId: heroId ?? this.heroId,
+      retainerComponentId: retainerComponentId ?? this.retainerComponentId,
+      name: name ?? this.name,
+      role: role ?? this.role,
+      isCustom: isCustom ?? this.isCustom,
+      customDataJson: customDataJson ?? this.customDataJson,
+      advancementChoicesJson:
+          advancementChoicesJson ?? this.advancementChoicesJson,
+      characteristicChoicesJson:
+          characteristicChoicesJson ?? this.characteristicChoicesJson,
+      currentStamina: currentStamina ?? this.currentStamina,
+      tempStamina: tempStamina ?? this.tempStamina,
+      currentRecoveries: currentRecoveries ?? this.currentRecoveries,
+      isActive: isActive ?? this.isActive,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (heroId.present) {
+      map['hero_id'] = Variable<String>(heroId.value);
+    }
+    if (retainerComponentId.present) {
+      map['retainer_component_id'] =
+          Variable<String>(retainerComponentId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (role.present) {
+      map['role'] = Variable<String>(role.value);
+    }
+    if (isCustom.present) {
+      map['is_custom'] = Variable<bool>(isCustom.value);
+    }
+    if (customDataJson.present) {
+      map['custom_data_json'] = Variable<String>(customDataJson.value);
+    }
+    if (advancementChoicesJson.present) {
+      map['advancement_choices_json'] =
+          Variable<String>(advancementChoicesJson.value);
+    }
+    if (characteristicChoicesJson.present) {
+      map['characteristic_choices_json'] =
+          Variable<String>(characteristicChoicesJson.value);
+    }
+    if (currentStamina.present) {
+      map['current_stamina'] = Variable<int>(currentStamina.value);
+    }
+    if (tempStamina.present) {
+      map['temp_stamina'] = Variable<int>(tempStamina.value);
+    }
+    if (currentRecoveries.present) {
+      map['current_recoveries'] = Variable<int>(currentRecoveries.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HeroRetainersCompanion(')
+          ..write('id: $id, ')
+          ..write('heroId: $heroId, ')
+          ..write('retainerComponentId: $retainerComponentId, ')
+          ..write('name: $name, ')
+          ..write('role: $role, ')
+          ..write('isCustom: $isCustom, ')
+          ..write('customDataJson: $customDataJson, ')
+          ..write('advancementChoicesJson: $advancementChoicesJson, ')
+          ..write('characteristicChoicesJson: $characteristicChoicesJson, ')
+          ..write('currentStamina: $currentStamina, ')
+          ..write('tempStamina: $tempStamina, ')
+          ..write('currentRecoveries: $currentRecoveries, ')
+          ..write('isActive: $isActive, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -4603,6 +5376,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $HeroNotesTable heroNotes = $HeroNotesTable(this);
   late final $HeroEntriesTable heroEntries = $HeroEntriesTable(this);
   late final $HeroConfigTable heroConfig = $HeroConfigTable(this);
+  late final $HeroRetainersTable heroRetainers = $HeroRetainersTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4617,7 +5391,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         heroProjectSources,
         heroNotes,
         heroEntries,
-        heroConfig
+        heroConfig,
+        heroRetainers
       ];
 }
 
@@ -5022,6 +5797,19 @@ class $$HeroesTableFilterComposer
         builder: (joinBuilder, parentComposers) =>
             $$HeroConfigTableFilterComposer(ComposerState($state.db,
                 $state.db.heroConfig, joinBuilder, parentComposers)));
+    return f(composer);
+  }
+
+  ComposableFilter heroRetainersRefs(
+      ComposableFilter Function($$HeroRetainersTableFilterComposer f) f) {
+    final $$HeroRetainersTableFilterComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $state.db.heroRetainers,
+        getReferencedColumn: (t) => t.heroId,
+        builder: (joinBuilder, parentComposers) =>
+            $$HeroRetainersTableFilterComposer(ComposerState($state.db,
+                $state.db.heroRetainers, joinBuilder, parentComposers)));
     return f(composer);
   }
 }
@@ -6707,6 +7495,311 @@ class $$HeroConfigTableOrderingComposer
   }
 }
 
+typedef $$HeroRetainersTableCreateCompanionBuilder = HeroRetainersCompanion
+    Function({
+  required String id,
+  required String heroId,
+  required String retainerComponentId,
+  required String name,
+  required String role,
+  Value<bool> isCustom,
+  Value<String?> customDataJson,
+  Value<String> advancementChoicesJson,
+  Value<String> characteristicChoicesJson,
+  Value<int?> currentStamina,
+  Value<int> tempStamina,
+  Value<int?> currentRecoveries,
+  Value<bool> isActive,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<int> rowid,
+});
+typedef $$HeroRetainersTableUpdateCompanionBuilder = HeroRetainersCompanion
+    Function({
+  Value<String> id,
+  Value<String> heroId,
+  Value<String> retainerComponentId,
+  Value<String> name,
+  Value<String> role,
+  Value<bool> isCustom,
+  Value<String?> customDataJson,
+  Value<String> advancementChoicesJson,
+  Value<String> characteristicChoicesJson,
+  Value<int?> currentStamina,
+  Value<int> tempStamina,
+  Value<int?> currentRecoveries,
+  Value<bool> isActive,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<int> rowid,
+});
+
+class $$HeroRetainersTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $HeroRetainersTable,
+    HeroRetainer,
+    $$HeroRetainersTableFilterComposer,
+    $$HeroRetainersTableOrderingComposer,
+    $$HeroRetainersTableCreateCompanionBuilder,
+    $$HeroRetainersTableUpdateCompanionBuilder> {
+  $$HeroRetainersTableTableManager(_$AppDatabase db, $HeroRetainersTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$HeroRetainersTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$HeroRetainersTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> heroId = const Value.absent(),
+            Value<String> retainerComponentId = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String> role = const Value.absent(),
+            Value<bool> isCustom = const Value.absent(),
+            Value<String?> customDataJson = const Value.absent(),
+            Value<String> advancementChoicesJson = const Value.absent(),
+            Value<String> characteristicChoicesJson = const Value.absent(),
+            Value<int?> currentStamina = const Value.absent(),
+            Value<int> tempStamina = const Value.absent(),
+            Value<int?> currentRecoveries = const Value.absent(),
+            Value<bool> isActive = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updatedAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              HeroRetainersCompanion(
+            id: id,
+            heroId: heroId,
+            retainerComponentId: retainerComponentId,
+            name: name,
+            role: role,
+            isCustom: isCustom,
+            customDataJson: customDataJson,
+            advancementChoicesJson: advancementChoicesJson,
+            characteristicChoicesJson: characteristicChoicesJson,
+            currentStamina: currentStamina,
+            tempStamina: tempStamina,
+            currentRecoveries: currentRecoveries,
+            isActive: isActive,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String heroId,
+            required String retainerComponentId,
+            required String name,
+            required String role,
+            Value<bool> isCustom = const Value.absent(),
+            Value<String?> customDataJson = const Value.absent(),
+            Value<String> advancementChoicesJson = const Value.absent(),
+            Value<String> characteristicChoicesJson = const Value.absent(),
+            Value<int?> currentStamina = const Value.absent(),
+            Value<int> tempStamina = const Value.absent(),
+            Value<int?> currentRecoveries = const Value.absent(),
+            Value<bool> isActive = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updatedAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              HeroRetainersCompanion.insert(
+            id: id,
+            heroId: heroId,
+            retainerComponentId: retainerComponentId,
+            name: name,
+            role: role,
+            isCustom: isCustom,
+            customDataJson: customDataJson,
+            advancementChoicesJson: advancementChoicesJson,
+            characteristicChoicesJson: characteristicChoicesJson,
+            currentStamina: currentStamina,
+            tempStamina: tempStamina,
+            currentRecoveries: currentRecoveries,
+            isActive: isActive,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            rowid: rowid,
+          ),
+        ));
+}
+
+class $$HeroRetainersTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $HeroRetainersTable> {
+  $$HeroRetainersTableFilterComposer(super.$state);
+  ColumnFilters<String> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get retainerComponentId => $state.composableBuilder(
+      column: $state.table.retainerComponentId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get role => $state.composableBuilder(
+      column: $state.table.role,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get isCustom => $state.composableBuilder(
+      column: $state.table.isCustom,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get customDataJson => $state.composableBuilder(
+      column: $state.table.customDataJson,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get advancementChoicesJson => $state.composableBuilder(
+      column: $state.table.advancementChoicesJson,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get characteristicChoicesJson =>
+      $state.composableBuilder(
+          column: $state.table.characteristicChoicesJson,
+          builder: (column, joinBuilders) =>
+              ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get currentStamina => $state.composableBuilder(
+      column: $state.table.currentStamina,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get tempStamina => $state.composableBuilder(
+      column: $state.table.tempStamina,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get currentRecoveries => $state.composableBuilder(
+      column: $state.table.currentRecoveries,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get isActive => $state.composableBuilder(
+      column: $state.table.isActive,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get updatedAt => $state.composableBuilder(
+      column: $state.table.updatedAt,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  $$HeroesTableFilterComposer get heroId {
+    final $$HeroesTableFilterComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.heroId,
+        referencedTable: $state.db.heroes,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder, parentComposers) => $$HeroesTableFilterComposer(
+            ComposerState(
+                $state.db, $state.db.heroes, joinBuilder, parentComposers)));
+    return composer;
+  }
+}
+
+class $$HeroRetainersTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $HeroRetainersTable> {
+  $$HeroRetainersTableOrderingComposer(super.$state);
+  ColumnOrderings<String> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get retainerComponentId => $state.composableBuilder(
+      column: $state.table.retainerComponentId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get role => $state.composableBuilder(
+      column: $state.table.role,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get isCustom => $state.composableBuilder(
+      column: $state.table.isCustom,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get customDataJson => $state.composableBuilder(
+      column: $state.table.customDataJson,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get advancementChoicesJson =>
+      $state.composableBuilder(
+          column: $state.table.advancementChoicesJson,
+          builder: (column, joinBuilders) =>
+              ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get characteristicChoicesJson => $state
+      .composableBuilder(
+          column: $state.table.characteristicChoicesJson,
+          builder: (column, joinBuilders) =>
+              ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get currentStamina => $state.composableBuilder(
+      column: $state.table.currentStamina,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get tempStamina => $state.composableBuilder(
+      column: $state.table.tempStamina,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get currentRecoveries => $state.composableBuilder(
+      column: $state.table.currentRecoveries,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get isActive => $state.composableBuilder(
+      column: $state.table.isActive,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get updatedAt => $state.composableBuilder(
+      column: $state.table.updatedAt,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  $$HeroesTableOrderingComposer get heroId {
+    final $$HeroesTableOrderingComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.heroId,
+        referencedTable: $state.db.heroes,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder, parentComposers) =>
+            $$HeroesTableOrderingComposer(ComposerState(
+                $state.db, $state.db.heroes, joinBuilder, parentComposers)));
+    return composer;
+  }
+}
+
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
@@ -6730,4 +7823,6 @@ class $AppDatabaseManager {
       $$HeroEntriesTableTableManager(_db, _db.heroEntries);
   $$HeroConfigTableTableManager get heroConfig =>
       $$HeroConfigTableTableManager(_db, _db.heroConfig);
+  $$HeroRetainersTableTableManager get heroRetainers =>
+      $$HeroRetainersTableTableManager(_db, _db.heroRetainers);
 }

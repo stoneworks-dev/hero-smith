@@ -1,0 +1,77 @@
+[
+  {
+    "level": 2,
+    "stamina_bonus": 9,
+    "advancement_feature": "Increase one characteristic score by 1",
+    "characteristic_increase": "one",
+    "characteristic_max": 2,
+    "signature_damage_bonus_tier1": 1,
+    "signature_damage_bonus_tier2_3": 1
+  },
+  {
+    "level": 3,
+    "stamina_bonus": 9,
+    "advancement_feature": "+2 damage bonus to free strikes",
+    "free_strike_damage_bonus": 2,
+    "signature_damage_bonus_tier1": 0,
+    "signature_damage_bonus_tier2_3": 1
+  },
+  {
+    "level": 4,
+    "stamina_bonus": 9,
+    "advancement_feature": "Level 4 retainer advancement ability or level 4 role advancement ability",
+    "advancement_ability_level": 4,
+    "signature_damage_bonus_tier1": 1,
+    "signature_damage_bonus_tier2_3": 1
+  },
+  {
+    "level": 5,
+    "stamina_bonus": 9,
+    "advancement_feature": "Increase each characteristic score by 1",
+    "characteristic_increase": "all",
+    "characteristic_max": 3,
+    "signature_damage_bonus_tier1": 0,
+    "signature_damage_bonus_tier2_3": 1
+  },
+  {
+    "level": 6,
+    "stamina_bonus": 9,
+    "advancement_feature": "+2 damage bonus to free strikes",
+    "free_strike_damage_bonus": 2,
+    "signature_damage_bonus_tier1": 1,
+    "signature_damage_bonus_tier2_3": 1
+  },
+  {
+    "level": 7,
+    "stamina_bonus": 9,
+    "advancement_feature": "Level 7 retainer advancement ability or level 7 role advancement ability",
+    "advancement_ability_level": 7,
+    "signature_damage_bonus_tier1": 0,
+    "signature_damage_bonus_tier2_3": 1
+  },
+  {
+    "level": 8,
+    "stamina_bonus": 9,
+    "advancement_feature": "Increase one characteristic score by 1",
+    "characteristic_increase": "one",
+    "characteristic_max": 4,
+    "signature_damage_bonus_tier1": 1,
+    "signature_damage_bonus_tier2_3": 1
+  },
+  {
+    "level": 9,
+    "stamina_bonus": 9,
+    "advancement_feature": "+2 damage bonus to free strikes",
+    "free_strike_damage_bonus": 2,
+    "signature_damage_bonus_tier1": 0,
+    "signature_damage_bonus_tier2_3": 1
+  },
+  {
+    "level": 10,
+    "stamina_bonus": 9,
+    "advancement_feature": "Level 10 retainer advancement ability or level 10 role advancement ability",
+    "advancement_ability_level": 10,
+    "signature_damage_bonus_tier1": 1,
+    "signature_damage_bonus_tier2_3": 1
+  }
+]

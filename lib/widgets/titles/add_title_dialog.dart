@@ -60,12 +60,28 @@ class _AddTitleDialogState extends State<AddTitleDialog> {
     final benefits = title['benefits'] as List? ?? [];
 
     if (benefits.isEmpty) {
-      widget.onTitleSelected(title['id'] as String, 0);
+      widget.onTitleSelected(title['id'] as String, -1);
       return;
     }
 
-    if (benefits.length == 1) {
-      widget.onTitleSelected(title['id'] as String, 0);
+    // Separate auto vs chooseable benefits
+    final choiceIndices = <int>[];
+    for (int i = 0; i < benefits.length; i++) {
+      final b = benefits[i];
+      if (b is Map<String, dynamic> && b['auto'] != true) {
+        choiceIndices.add(i);
+      }
+    }
+
+    // If no choices needed (all auto or director-assigned), auto-select with -1
+    if (choiceIndices.isEmpty) {
+      widget.onTitleSelected(title['id'] as String, -1);
+      return;
+    }
+
+    // If only one chooseable benefit, auto-select it
+    if (choiceIndices.length == 1) {
+      widget.onTitleSelected(title['id'] as String, choiceIndices.first);
       return;
     }
 
@@ -128,14 +144,15 @@ class _AddTitleDialogState extends State<AddTitleDialog> {
                   ],
                 ),
               ),
-              // Benefits list
+              // Benefits list — only chooseable (non-auto) benefits
               Flexible(
                 child: ListView.builder(
                   shrinkWrap: true,
                   padding: const EdgeInsets.all(16),
-                  itemCount: benefits.length,
-                  itemBuilder: (context, index) {
-                    final benefit = benefits[index];
+                  itemCount: choiceIndices.length,
+                  itemBuilder: (context, listIndex) {
+                    final originalIndex = choiceIndices[listIndex];
+                    final benefit = benefits[originalIndex];
 
                     return Container(
                       margin: const EdgeInsets.only(bottom: 8),
@@ -147,7 +164,7 @@ class _AddTitleDialogState extends State<AddTitleDialog> {
                       child: InkWell(
                         borderRadius: BorderRadius.circular(10),
                         onTap: () {
-                          widget.onTitleSelected(title['id'] as String, index);
+                          widget.onTitleSelected(title['id'] as String, originalIndex);
                           Navigator.of(context).pop();
                         },
                         child: Padding(
@@ -171,7 +188,9 @@ class _AddTitleDialogState extends State<AddTitleDialog> {
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
-                                    SheetStoryTitlesTabText.benefitLabel(index),
+                                    (benefit is Map<String, dynamic> && benefit['name'] != null)
+                                        ? benefit['name'] as String
+                                        : SheetStoryTitlesTabText.benefitLabel(listIndex),
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: FormTheme.textBright,

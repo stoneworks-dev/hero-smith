@@ -288,7 +288,7 @@ class AbilityData {
         final json = {
           'id': component.id,
           'name': component.name,
-          'level': data['level'] ?? 1,
+          'level': data['level'] ?? data['advancement_level'] ?? 1,
           ...data,
         };
         return AbilitySimplified.fromJson(json);

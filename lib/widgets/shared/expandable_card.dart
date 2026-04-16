@@ -6,6 +6,7 @@ class ExpandableCard extends StatefulWidget {
   final String title;
   final Widget? leading;
   final Widget? badge;
+  final Widget? subtitle;
   final Widget expandedContent;
   final Color borderColor;
   final Widget? preview;
@@ -16,6 +17,7 @@ class ExpandableCard extends StatefulWidget {
     required this.title,
     this.leading,
     this.badge,
+    this.subtitle,
     required this.expandedContent,
     required this.borderColor,
     this.preview,
@@ -123,6 +125,9 @@ class _ExpandableCardState extends State<ExpandableCard>
                     ),
                   ],
                 ),
+                if (widget.subtitle != null) ...[                  const SizedBox(height: 4),
+                  widget.subtitle!,
+                ],
                 if (widget.preview != null) ...[
                   const SizedBox(height: 8),
                   widget.preview!,

@@ -16,6 +16,7 @@ import '../../../core/theme/form_theme.dart';
 import '../../../core/theme/navigation_theme.dart';
 import '../../../core/theme/semantic/semantic_tokens.dart';
 import '../../../core/text/heroes_sheet/main_stats/hero_main_stats_view_text.dart';
+import '../../../widgets/shared/stat_display_widgets.dart';
 import 'hero_stamina_helpers.dart';
 
 /// Callback for editing a stat.
@@ -89,7 +90,7 @@ class CombinedStatsCardWidget extends StatelessWidget {
             // 5-column characteristic grid
             Row(
               children: [
-                _buildGridStatItem(
+                _buildEditableStatTile(
                   context,
                   HeroMainStatsViewText.characteristicShortLabelM,
                   stats.mightBase,
@@ -98,7 +99,7 @@ class CombinedStatsCardWidget extends StatelessWidget {
                   HeroMainStatsViewText.characteristicFullLabelMight,
                   accentColor: AppColors.mightColor,
                 ),
-                _buildGridStatItem(
+                _buildEditableStatTile(
                   context,
                   HeroMainStatsViewText.characteristicShortLabelA,
                   stats.agilityBase,
@@ -107,7 +108,7 @@ class CombinedStatsCardWidget extends StatelessWidget {
                   HeroMainStatsViewText.characteristicFullLabelAgility,
                   accentColor: AppColors.agilityColor,
                 ),
-                _buildGridStatItem(
+                _buildEditableStatTile(
                   context,
                   HeroMainStatsViewText.characteristicShortLabelR,
                   stats.reasonBase,
@@ -116,7 +117,7 @@ class CombinedStatsCardWidget extends StatelessWidget {
                   HeroMainStatsViewText.characteristicFullLabelReason,
                   accentColor: AppColors.reasonColor,
                 ),
-                _buildGridStatItem(
+                _buildEditableStatTile(
                   context,
                   HeroMainStatsViewText.characteristicShortLabelI,
                   stats.intuitionBase,
@@ -125,7 +126,7 @@ class CombinedStatsCardWidget extends StatelessWidget {
                   HeroMainStatsViewText.characteristicFullLabelIntuition,
                   accentColor: AppColors.intuitionColor,
                 ),
-                _buildGridStatItem(
+                _buildEditableStatTile(
                   context,
                   HeroMainStatsViewText.characteristicShortLabelP,
                   stats.presenceBase,
@@ -166,7 +167,7 @@ class CombinedStatsCardWidget extends StatelessWidget {
               children: [
                 _buildGridSizeItem(
                     context, stats.sizeBase, stats.sizeTotal, HeroModKeys.size),
-                _buildGridStatItem(
+                _buildEditableStatTile(
                   context,
                   HeroMainStatsViewText.attributeShortLabelSpeed,
                   stats.speedBase,
@@ -176,7 +177,7 @@ class CombinedStatsCardWidget extends StatelessWidget {
                   featureBonus: stats.speedFeatureBonus,
                   accentColor: Colors.orange,
                 ),
-                _buildGridStatItem(
+                _buildEditableStatTile(
                   context,
                   HeroMainStatsViewText.attributeShortLabelDisengage,
                   stats.disengageBase,
@@ -186,7 +187,7 @@ class CombinedStatsCardWidget extends StatelessWidget {
                   featureBonus: stats.disengageFeatureBonus,
                   accentColor: Colors.orange,
                 ),
-                _buildGridStatItem(
+                _buildEditableStatTile(
                   context,
                   HeroMainStatsViewText.attributeShortLabelStability,
                   stats.stabilityBase,
@@ -289,7 +290,8 @@ class CombinedStatsCardWidget extends StatelessWidget {
     }
   }
 
-  Widget _buildGridStatItem(
+  /// Wraps [StatGridTile] with edit‑on‑tap for the hero stats card.
+  Widget _buildEditableStatTile(
     BuildContext context,
     String shortLabel,
     int baseValue,
@@ -299,101 +301,20 @@ class CombinedStatsCardWidget extends StatelessWidget {
     int featureBonus = 0,
     Color? accentColor,
   }) {
-    final theme = Theme.of(context);
     final modValue = totalValue - baseValue;
     final manualMod = getUserModValue(modKey);
-    final isPositive = totalValue >= 0;
 
-    return Expanded(
-      child: InkWell(
-        onTap: () => onEditStat(
-          label: fullLabel,
-          modKey: modKey,
-          baseValue: baseValue,
-          currentModValue: manualMod,
-          featureBonus: featureBonus,
-          accentColor: accentColor,
-        ),
-        borderRadius: BorderRadius.circular(8),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildCharacteristicLabel(shortLabel, theme),
-              const SizedBox(height: 4),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
-                  color: isPositive
-                      ? FormTheme.surfaceMuted
-                      : Colors.red.withAlpha(40),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      formatSigned(totalValue),
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: isPositive
-                            ? FormTheme.textBright
-                            : Colors.red.shade400,
-                      ),
-                    ),
-                    if (modValue != 0)
-                      Text(
-                        modValue > 0 ? ' +$modValue' : ' $modValue',
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          fontSize: 9,
-                          color: modValue > 0
-                              ? Colors.green.shade400
-                              : Colors.red.shade400,
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  /// Builds a styled characteristic label (M, A, R, I, P) matching the ability card style.
-  Widget _buildCharacteristicLabel(String label, ThemeData theme) {
-    // Only apply characteristic colors for M, A, R, I, P
-    final isCharacteristic =
-        ['M', 'A', 'R', 'I', 'P'].contains(label.toUpperCase());
-
-    if (!isCharacteristic) {
-      // For non-characteristic labels (SPD, DIS, STB), use default styling
-      return Text(
-        label,
-        style: theme.textTheme.labelSmall?.copyWith(
-          fontWeight: FontWeight.w500,
-          color: FormTheme.textSecondary,
-        ),
-      );
-    }
-
-    final color = CharacteristicTokens.color(label.toUpperCase());
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(6),
-        color: color.withValues(alpha: 0.18),
-        border: Border.all(color: color.withValues(alpha: 0.7)),
-      ),
-      child: Text(
-        label,
-        style: theme.textTheme.labelSmall?.copyWith(
-          color: color,
-          fontWeight: FontWeight.w700,
-        ),
+    return StatGridTile(
+      label: shortLabel,
+      value: totalValue,
+      modValue: modValue,
+      onTap: () => onEditStat(
+        label: fullLabel,
+        modKey: modKey,
+        baseValue: baseValue,
+        currentModValue: manualMod,
+        featureBonus: featureBonus,
+        accentColor: accentColor,
       ),
     );
   }

@@ -140,6 +140,37 @@ class HeroProjectSources extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+/// Retainer instances belonging to heroes.
+/// Each hero can have 0-1 active retainers.
+class HeroRetainers extends Table {
+  TextColumn get id => text()();
+  TextColumn get heroId => text().references(Heroes, #id)();
+  /// Component ID of the retainer template (from Components with type='retainer').
+  TextColumn get retainerComponentId => text()();
+  TextColumn get name => text()();
+  /// Role slug: ambusher, brute, artillery, controller, defender, harrier,
+  /// hexer, mount, support.
+  TextColumn get role => text()();
+  BoolColumn get isCustom => boolean().withDefault(const Constant(false))();
+  /// Full stat block JSON for custom retainers built from monster stat blocks.
+  TextColumn get customDataJson => text().nullable()();
+  /// JSON map of level (int) → chosen ability component ID at levels 4/7/10.
+  TextColumn get advancementChoicesJson =>
+      text().withDefault(const Constant('{}'))();
+  /// JSON map of level (int) → characteristic name at levels 2/8.
+  TextColumn get characteristicChoicesJson =>
+      text().withDefault(const Constant('{}'))();
+  // Combat state
+  IntColumn get currentStamina => integer().nullable()();
+  IntColumn get tempStamina => integer().withDefault(const Constant(0))();
+  IntColumn get currentRecoveries => integer().nullable().withDefault(const Constant(6))();
+  BoolColumn get isActive => boolean().withDefault(const Constant(true))();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 // Hero notes for character journals, session notes, etc.
 class HeroNotes extends Table {
   TextColumn get id => text()();
@@ -167,6 +198,7 @@ class HeroNotes extends Table {
   HeroNotes,
   HeroEntries,
   HeroConfig,
+  HeroRetainers,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase._internal() : super(_openConnection());
@@ -183,7 +215,7 @@ class AppDatabase extends _$AppDatabase {
   static bool databasePreexisted = false;
 
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 12;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -279,6 +311,16 @@ class AppDatabase extends _$AppDatabase {
             }
             await customStatement(
                 'CREATE UNIQUE INDEX IF NOT EXISTS idx_hero_config_unique ON hero_config(hero_id, config_key)');
+          }
+          if (from < 11) {
+            // v11: Add hero_retainers table for retainer instances
+            await m.createTable(heroRetainers);
+          }
+          if (from < 12) {
+            // v12: Add currentRecoveries column to hero_retainers
+            await customStatement(
+              'ALTER TABLE hero_retainers ADD COLUMN current_recoveries INTEGER NOT NULL DEFAULT 6',
+            );
           }
         },
       );

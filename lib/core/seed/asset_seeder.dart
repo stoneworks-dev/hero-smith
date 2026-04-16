@@ -30,7 +30,16 @@ class AssetSeeder {
           pathPredicate: (path) =>
               path.startsWith('data/classes_levels_and_stats/'),
         );
-        // Seed perk/title/complication abilities if missing (by specific IDs)
+        // Seed retainers if missing
+        await _seedTypeIfMissing(
+          db: db,
+          assets: assets,
+          type: 'retainer',
+          pathPredicate: (path) =>
+              path.startsWith('data/retainers/') &&
+              path.endsWith('retainers.json'),
+        );
+        // Seed perk/title/complication/retainer abilities if missing (by specific IDs)
         await _seedSupplementalAbilitiesIfMissing(db, assets);
         return;
       }
@@ -50,6 +59,8 @@ class AssetSeeder {
     'data/abilities/complication_abilities.json',
     'data/abilities/ancestry_abilities.json',
     'data/abilities/kit_abilities.json',
+    'data/abilities/retainer_abilities.json',
+    'data/retainers/role_advancement_abilities.json',
   ];
   
   /// Seed supplemental abilities (perk/title/etc) if not already present

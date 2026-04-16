@@ -26,10 +26,14 @@ class ExportOptions {
   /// Include personal notes.
   final bool includeNotes;
 
+  /// Include retainer data (retainer instances, choices).
+  final bool includeRetainers;
+
   const ExportOptions({
     this.includeDowntime = false,
     this.includeTitles = false,
     this.includeNotes = false,
+    this.includeRetainers = false,
   });
 
   /// All optional sections enabled.
@@ -37,32 +41,36 @@ class ExportOptions {
     includeDowntime: true,
     includeTitles: true,
     includeNotes: true,
+    includeRetainers: true,
   );
 
   /// Core build only (no optional sections).
   static const core = ExportOptions();
 
   /// Numeric flags bitmask stored in the export for import decoding.
-  /// Bit 0 = downtime, Bit 1 = titles, Bit 2 = notes.
+  /// Bit 0 = downtime, Bit 1 = titles, Bit 2 = notes, Bit 3 = retainers.
   int get flags =>
       (includeDowntime ? 1 : 0) |
       (includeTitles ? 2 : 0) |
-      (includeNotes ? 4 : 0);
+      (includeNotes ? 4 : 0) |
+      (includeRetainers ? 8 : 0);
 
   /// Reconstruct from flags bitmask.
   factory ExportOptions.fromFlags(int flags) => ExportOptions(
         includeDowntime: (flags & 1) != 0,
         includeTitles: (flags & 2) != 0,
         includeNotes: (flags & 4) != 0,
+        includeRetainers: (flags & 8) != 0,
       );
 
   /// Human-readable label for what's included.
   String get label {
-    if (includeDowntime && includeTitles && includeNotes) return 'Full Export';
+    if (includeDowntime && includeTitles && includeNotes && includeRetainers) return 'Full Export';
     final parts = <String>['Core Build'];
     if (includeDowntime) parts.add('Downtime');
     if (includeTitles) parts.add('Titles');
     if (includeNotes) parts.add('Notes');
+    if (includeRetainers) parts.add('Retainers');
     return parts.join(' + ');
   }
 
@@ -72,6 +80,7 @@ class ExportOptions {
     if (includeDowntime) extras.add('downtime projects');
     if (includeTitles) extras.add('title progress');
     if (includeNotes) extras.add('personal notes');
+    if (includeRetainers) extras.add('retainers');
     if (extras.isEmpty) return 'Hero build data only';
     return 'Includes ${extras.join(', ')}';
   }
@@ -277,6 +286,29 @@ class HeroExportService {
                   if (n.folderId != null) 'fi': n.folderId,
                   'if': n.isFolder,
                   'so': n.sortOrder,
+                })
+            .toList();
+      }
+    }
+
+    // =========================================================================
+    // OPTIONAL: Retainers
+    // =========================================================================
+    if (options.includeRetainers) {
+      final retainers = await (_db.select(_db.heroRetainers)
+            ..where((t) => t.heroId.equals(heroId)))
+          .get();
+      if (retainers.isNotEmpty) {
+        snapshot['retainers'] = retainers
+            .map((r) => {
+                  'rc': r.retainerComponentId,
+                  'na': r.name,
+                  'ro': r.role,
+                  'ic': r.isCustom,
+                  if (r.customDataJson != null) 'cd': r.customDataJson,
+                  'ac': r.advancementChoicesJson,
+                  'cc': r.characteristicChoicesJson,
+                  'ia': r.isActive,
                 })
             .toList();
       }
@@ -576,6 +608,35 @@ class HeroExportService {
                   type: map['ty']?.toString() ?? '',
                   language: Value(map['la']?.toString()),
                   description: Value(map['de']?.toString()),
+                ),
+              );
+        }
+      }
+
+      // Import retainers
+      final retainers = snapshot['retainers'] as List?;
+      if (retainers != null) {
+        for (final r in retainers) {
+          final map = r as Map<String, dynamic>;
+          final newId = _generateId();
+          final now = DateTime.now();
+
+          await _db.into(_db.heroRetainers).insert(
+                HeroRetainersCompanion.insert(
+                  id: newId,
+                  heroId: heroId,
+                  retainerComponentId: map['rc']?.toString() ?? '',
+                  name: map['na']?.toString() ?? '',
+                  role: map['ro']?.toString() ?? '',
+                  isCustom: Value(map['ic'] == true),
+                  customDataJson: Value(map['cd']?.toString()),
+                  advancementChoicesJson:
+                      Value(map['ac']?.toString() ?? '{}'),
+                  characteristicChoicesJson:
+                      Value(map['cc']?.toString() ?? '{}'),
+                  isActive: Value(map['ia'] != false),
+                  createdAt: Value(now),
+                  updatedAt: Value(now),
                 ),
               );
         }

@@ -5,7 +5,6 @@ library;
 
 import 'package:flutter/material.dart';
 
-import '../../../core/repositories/hero_repository.dart';
 import '../../../core/text/heroes_sheet/main_stats/stamina_bar_text.dart';
 import '../../../core/theme/form_theme.dart';
 import '../../../core/theme/main_stats_theme.dart';
@@ -15,23 +14,25 @@ import 'hero_main_stats_models.dart';
 /// - Top track: Current stamina with smooth blending gradient zones
 /// - Bottom track: Temp HP (only shown when temp HP > 0)
 /// - Labels positioned above for maximum clarity
+///
+/// Accepts raw numeric values so it can be used for both heroes and retainers.
 class StaminaBarWidget extends StatelessWidget {
   const StaminaBarWidget({
     super.key,
-    required this.stats,
+    required this.maxStamina,
+    required this.currentStamina,
     required this.staminaState,
+    this.tempHp = 0,
   });
 
-  final HeroMainStats stats;
+  final int maxStamina;
+  final int currentStamina;
+  final int tempHp;
   final StaminaState staminaState;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final maxStamina = stats.staminaMaxEffective;
-    final currentStamina = stats.staminaCurrent;
-    final tempHp = stats.staminaTemp;
-    final isDark = theme.brightness == Brightness.dark;
 
     if (maxStamina <= 0) {
       return const SizedBox(height: 48);

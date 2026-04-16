@@ -8,7 +8,6 @@ import '../../core/theme/app_icon.dart';
 import '../../core/theme/app_icon_data.dart';
 import '../../core/theme/form_theme.dart';
 import '../../core/theme/navigation_theme.dart';
-import '../../main.dart';
 
 // ─── SVG icon asset paths ───────────────────────────────────────────────────
 
@@ -18,7 +17,9 @@ const _kIconD10 = 'assets/icons/skoll/d10.svg';
 const _kIcon2D10 = 'assets/icons/delapouite/dice-twenty-faces-twenty.svg';
 const _kIconD100 = 'assets/icons/lorc/cubes.svg';
 
-// ─── Overlay FAB ────────────────────────────────────────────────────────────
+// ─── Overlay FAB + persistent panel ─────────────────────────────────────────
+
+const _kMaxTabs = 10;
 
 class DiceRollerOverlay extends ConsumerStatefulWidget {
   const DiceRollerOverlay({super.key, required this.child});
@@ -29,9 +30,57 @@ class DiceRollerOverlay extends ConsumerStatefulWidget {
 }
 
 class _DiceRollerOverlayState extends ConsumerState<DiceRollerOverlay> {
-  // Position state — starts lower-left.
+  // FAB position state — starts lower-left.
   double _dx = 0;
   double _dy = double.infinity; // sentinel: "not yet laid out"
+
+  // Panel open/close.
+  bool _panelOpen = false;
+
+  // Persistent tab state (survives panel close/open).
+  final List<_TabData> _tabs = [_TabData()];
+  int _activeIndex = 0;
+
+  _TabData get _active => _tabs[_activeIndex];
+
+  void _onFabTap() {
+    setState(() {
+      if (!_panelOpen) {
+        // First tap — open the panel.
+        _panelOpen = true;
+      } else if (_tabs.length < _kMaxTabs) {
+        // Already open — add a new tab.
+        _tabs.add(_TabData());
+        _activeIndex = _tabs.length - 1;
+      }
+    });
+  }
+
+  void _closePanel() => setState(() => _panelOpen = false);
+
+  void _addTab() {
+    if (_tabs.length >= _kMaxTabs) return;
+    setState(() {
+      _tabs.add(_TabData());
+      _activeIndex = _tabs.length - 1;
+    });
+  }
+
+  void _removeTab(int index) {
+    if (_tabs.length <= 1) return;
+    setState(() {
+      _tabs.removeAt(index);
+      if (_activeIndex >= _tabs.length) {
+        _activeIndex = _tabs.length - 1;
+      } else if (_activeIndex > index) {
+        _activeIndex--;
+      }
+    });
+  }
+
+  void _selectTab(int index) => setState(() => _activeIndex = index);
+
+  void _onTabDataChanged() => setState(() {});
 
   @override
   Widget build(BuildContext context) {
@@ -66,9 +115,43 @@ class _DiceRollerOverlayState extends ConsumerState<DiceRollerOverlay> {
                 bottomLeft: Radius.circular(24),
               );
 
+        // FAB icon matches the active tab's dice mode.
+        final fabIcon = _active.rollMode.icon;
+
         return Stack(
           children: [
             widget.child,
+
+            // ── Scrim (when panel open) ──
+            if (_panelOpen)
+              Positioned.fill(
+                child: GestureDetector(
+                  onTap: _closePanel,
+                  child: Container(
+                    color: Colors.black.withValues(alpha: 0.4),
+                  ),
+                ),
+              ),
+
+            // ── Persistent bottom panel ──
+            if (_panelOpen)
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: _DiceRollerPanel(
+                  tabs: _tabs,
+                  activeIndex: _activeIndex,
+                  canAddTab: _tabs.length < _kMaxTabs,
+                  onAddTab: _addTab,
+                  onRemoveTab: _removeTab,
+                  onSelectTab: _selectTab,
+                  onClose: _closePanel,
+                  onChanged: _onTabDataChanged,
+                ),
+              ),
+
+            // ── Draggable FAB ──
             Positioned(
               left: _dx,
               top: _dy,
@@ -87,18 +170,19 @@ class _DiceRollerOverlayState extends ConsumerState<DiceRollerOverlay> {
                 },
                 child: Material(
                   elevation: 8,
-                  shadowColor: NavigationTheme.strifeColor.withValues(alpha: 0.3),
+                  shadowColor:
+                      NavigationTheme.strifeColor.withValues(alpha: 0.3),
                   color: NavigationTheme.cardBackgroundDark,
                   borderRadius: borderRadius,
                   child: InkWell(
                     borderRadius: borderRadius,
-                    onTap: () => _openDiceRoller(context),
+                    onTap: _onFabTap,
                     child: Padding(
                       padding: onLeft
                           ? const EdgeInsets.fromLTRB(12, 12, 16, 12)
                           : const EdgeInsets.fromLTRB(16, 12, 12, 12),
                       child: AppIcon(
-                        const SvgAppIcon(_kIcon2D10),
+                        SvgAppIcon(fabIcon),
                         size: 24,
                         color: NavigationTheme.strifeColor,
                       ),
@@ -110,18 +194,6 @@ class _DiceRollerOverlayState extends ConsumerState<DiceRollerOverlay> {
           ],
         );
       },
-    );
-  }
-
-  Future<void> _openDiceRoller(BuildContext context) async {
-    final navContext = globalNavigatorKey.currentContext;
-    if (navContext == null) return;
-    await showModalBottomSheet<void>(
-      context: navContext,
-      isScrollControlled: true,
-      showDragHandle: true,
-      backgroundColor: NavigationTheme.navBarBackground,
-      builder: (_) => const _DiceRollerSheet(),
     );
   }
 }
@@ -241,27 +313,71 @@ class _RollResult {
   final bool isCritical;
 }
 
-// ─── Dice Roller Sheet ──────────────────────────────────────────────────────
+// ─── Per-tab state ──────────────────────────────────────────────────────────
 
-class _DiceRollerSheet extends StatefulWidget {
-  const _DiceRollerSheet();
-
-  @override
-  State<_DiceRollerSheet> createState() => _DiceRollerSheetState();
+class _TabData {
+  _RollMode rollMode = _RollMode.twoD10;
+  int edgeCount = 0;
+  int baneCount = 0;
+  _DoubleMode doubleMode = _DoubleMode.tierShift;
+  int quickModifier = 0;
+  int quantity = 1;
+  _RollResult? lastRoll;
 }
 
-class _DiceRollerSheetState extends State<_DiceRollerSheet> {
+// ─── Dice Roller Panel (persistent, managed by overlay) ─────────────────────
+
+class _DiceRollerPanel extends StatefulWidget {
+  const _DiceRollerPanel({
+    required this.tabs,
+    required this.activeIndex,
+    required this.canAddTab,
+    required this.onAddTab,
+    required this.onRemoveTab,
+    required this.onSelectTab,
+    required this.onClose,
+    required this.onChanged,
+  });
+
+  final List<_TabData> tabs;
+  final int activeIndex;
+  final bool canAddTab;
+  final VoidCallback onAddTab;
+  final ValueChanged<int> onRemoveTab;
+  final ValueChanged<int> onSelectTab;
+  final VoidCallback onClose;
+  final VoidCallback onChanged;
+
+  @override
+  State<_DiceRollerPanel> createState() => _DiceRollerPanelState();
+}
+
+class _DiceRollerPanelState extends State<_DiceRollerPanel> {
   final _rng = Random();
 
-  _RollMode _rollMode = _RollMode.twoD10;
-  int _edgeCount = 0;
-  int _baneCount = 0;
-  _DoubleMode _doubleMode = _DoubleMode.tierShift;
-  int _quickModifier = 0;
-  int _quantity = 1;
-  _RollResult? _lastRoll;
+  _TabData get _active => widget.tabs[widget.activeIndex];
+
+  _RollMode get _rollMode => _active.rollMode;
+  set _rollMode(_RollMode v) => _active.rollMode = v;
+  int get _edgeCount => _active.edgeCount;
+  set _edgeCount(int v) => _active.edgeCount = v;
+  int get _baneCount => _active.baneCount;
+  set _baneCount(int v) => _active.baneCount = v;
+  _DoubleMode get _doubleMode => _active.doubleMode;
+  set _doubleMode(_DoubleMode v) => _active.doubleMode = v;
+  int get _quickModifier => _active.quickModifier;
+  set _quickModifier(int v) => _active.quickModifier = v;
+  int get _quantity => _active.quantity;
+  set _quantity(int v) => _active.quantity = v;
+  _RollResult? get _lastRoll => _active.lastRoll;
+  set _lastRoll(_RollResult? v) => _active.lastRoll = v;
 
   bool get _supportsTiers => _rollMode == _RollMode.twoD10;
+
+  void _notifyChanged() {
+    setState(() {});
+    widget.onChanged();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -270,59 +386,104 @@ class _DiceRollerSheetState extends State<_DiceRollerSheet> {
     final netIsDouble = (max(0, _edgeCount - _baneCount) >= 2) ||
         (max(0, _baneCount - _edgeCount) >= 2);
 
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(
-          16, 0, 16, 16 + MediaQuery.viewInsetsOf(context).bottom,
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // ── Title ──
-              Center(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    AppIcon(
-                      const SvgAppIcon('assets/icons/lorc/crossed-axes.svg'),
-                      size: 18,
-                      color: NavigationTheme.strifeColor,
-                    ),
-                    const SizedBox(width: 10),
-                    Text(
-                      'DICE ROLLER',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 2.5,
-                        color: NavigationTheme.strifeColor,
+    return Material(
+      color: NavigationTheme.navBarBackground,
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+      elevation: 16,
+      child: SafeArea(
+        top: false,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.sizeOf(context).height * 0.85,
+          ),
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(
+              16, 0, 16, 16 + MediaQuery.viewInsetsOf(context).bottom,
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // ── Drag handle ──
+                  Center(
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 10),
+                      width: 32,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: FormTheme.textMuted.withValues(alpha: 0.4),
+                        borderRadius: BorderRadius.circular(2),
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    AppIcon(
-                      const SvgAppIcon('assets/icons/lorc/crossed-axes.svg'),
-                      size: 18,
-                      color: NavigationTheme.strifeColor,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 4),
-              Center(
-                child: Container(
-                  width: 60,
-                  height: 2,
-                  decoration: BoxDecoration(
-                    gradient: NavigationTheme.accentStripeGradient(
-                      NavigationTheme.strifeColor,
-                    ),
-                    borderRadius: BorderRadius.circular(1),
                   ),
-                ),
-              ),
-              const SizedBox(height: 20),
+
+                  // ── Title row ──
+                  Row(
+                    children: [
+                      const SizedBox(width: 36), // balance close button
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            AppIcon(
+                              const SvgAppIcon(
+                                  'assets/icons/lorc/crossed-axes.svg'),
+                              size: 18,
+                              color: NavigationTheme.strifeColor,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              'DICE ROLLER',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: 2.5,
+                                color: NavigationTheme.strifeColor,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            AppIcon(
+                              const SvgAppIcon(
+                                  'assets/icons/lorc/crossed-axes.svg'),
+                              size: 18,
+                              color: NavigationTheme.strifeColor,
+                            ),
+                          ],
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: widget.onClose,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Icon(
+                            Icons.close,
+                            size: 20,
+                            color: FormTheme.textMuted,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Center(
+                    child: Container(
+                      width: 60,
+                      height: 2,
+                      decoration: BoxDecoration(
+                        gradient: NavigationTheme.accentStripeGradient(
+                          NavigationTheme.strifeColor,
+                        ),
+                        borderRadius: BorderRadius.circular(1),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  // ── Tab bar ──
+                  _buildTabBar(theme),
+                  const SizedBox(height: 12),
 
               // ── Dice Selection ──
               _sectionLabel(theme, 'Dice'),
@@ -368,6 +529,8 @@ class _DiceRollerSheetState extends State<_DiceRollerSheet> {
           ),
         ),
       ),
+        ),
+      ),
     );
   }
 
@@ -382,6 +545,94 @@ class _DiceRollerSheetState extends State<_DiceRollerSheet> {
         fontWeight: FontWeight.w700,
         letterSpacing: 1.5,
       ),
+    );
+  }
+
+  // ── Tab bar ────────────────────────────────────────────────────────────────
+
+  Widget _buildTabBar(ThemeData theme) {
+    const accent = NavigationTheme.strifeColor;
+    final tabs = widget.tabs;
+    return Wrap(
+      spacing: 6,
+      runSpacing: 6,
+      children: [
+        for (int i = 0; i < tabs.length; i++)
+          () {
+            final selected = i == widget.activeIndex;
+            final tab = tabs[i];
+            final label = tab.lastRoll != null
+                ? '${tab.rollMode.label} = ${tab.lastRoll!.adjustedTotal}'
+                : tab.rollMode.label;
+            return GestureDetector(
+              onTap: () => widget.onSelectTab(i),
+              child: Container(
+                height: 36,
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                  color: selected
+                      ? accent.withValues(alpha: 0.15)
+                      : NavigationTheme.cardBackgroundDark,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: selected
+                        ? accent.withValues(alpha: 0.6)
+                        : FormTheme.borderDim,
+                    width: selected ? 1.5 : 1,
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AppIcon(
+                      SvgAppIcon(tab.rollMode.icon),
+                      size: 14,
+                      color: selected ? accent : FormTheme.textSecondary,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      label,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: selected ? accent : FormTheme.textSecondary,
+                      ),
+                    ),
+                    if (tabs.length > 1) ...[
+                      const SizedBox(width: 4),
+                      GestureDetector(
+                        onTap: () => widget.onRemoveTab(i),
+                        child: Icon(
+                          Icons.close,
+                          size: 14,
+                          color: selected
+                              ? accent.withValues(alpha: 0.7)
+                              : FormTheme.textMuted,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            );
+          }(),
+        if (widget.canAddTab)
+          GestureDetector(
+            onTap: widget.onAddTab,
+            child: Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: accent.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: accent.withValues(alpha: 0.3),
+                ),
+              ),
+              child: Icon(Icons.add, size: 18, color: accent),
+            ),
+          ),
+      ],
     );
   }
 
@@ -414,10 +665,11 @@ class _DiceRollerSheetState extends State<_DiceRollerSheet> {
       borderRadius: BorderRadius.circular(10),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: () => setState(() {
+        onTap: () {
           _rollMode = mode;
           if (!mode.supportsQuantity) _quantity = 1;
-        }),
+          _notifyChanged();
+        },
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
@@ -459,7 +711,7 @@ class _DiceRollerSheetState extends State<_DiceRollerSheet> {
       children: [
         _styledIconButton(
           Icons.remove,
-          onTap: _quantity > 1 ? () => setState(() => _quantity--) : null,
+          onTap: _quantity > 1 ? () { _quantity--; _notifyChanged(); } : null,
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -485,7 +737,7 @@ class _DiceRollerSheetState extends State<_DiceRollerSheet> {
           Padding(
             padding: const EdgeInsets.only(left: 4),
             child: GestureDetector(
-              onTap: () => setState(() => _quantity = 1),
+              onTap: () { _quantity = 1; _notifyChanged(); },
               child: const Icon(
                 Icons.refresh,
                 size: 20,
@@ -496,7 +748,7 @@ class _DiceRollerSheetState extends State<_DiceRollerSheet> {
         const SizedBox(width: 12),
         _styledIconButton(
           Icons.add,
-          onTap: _quantity < 99 ? () => setState(() => _quantity++) : null,
+          onTap: _quantity < 99 ? () { _quantity++; _notifyChanged(); } : null,
         ),
       ],
     );
@@ -515,7 +767,7 @@ class _DiceRollerSheetState extends State<_DiceRollerSheet> {
                 label: 'Edges',
                 value: _edgeCount,
                 color: NavigationTheme.heroesColor,
-                onChanged: (v) => setState(() => _edgeCount = v.clamp(0, 2)),
+                onChanged: (v) { _edgeCount = v.clamp(0, 2); _notifyChanged(); },
               ),
             ),
             const SizedBox(width: 16),
@@ -525,7 +777,7 @@ class _DiceRollerSheetState extends State<_DiceRollerSheet> {
                 label: 'Banes',
                 value: _baneCount,
                 color: theme.colorScheme.error,
-                onChanged: (v) => setState(() => _baneCount = v.clamp(0, 2)),
+                onChanged: (v) { _baneCount = v.clamp(0, 2); _notifyChanged(); },
               ),
             ),
           ],
@@ -638,11 +890,12 @@ class _DiceRollerSheetState extends State<_DiceRollerSheet> {
 
   Widget _buildDoubleModeToggle(ThemeData theme) {
     return GestureDetector(
-      onTap: () => setState(() {
+      onTap: () {
         _doubleMode = _doubleMode == _DoubleMode.flat
             ? _DoubleMode.tierShift
             : _DoubleMode.flat;
-      }),
+        _notifyChanged();
+      },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
@@ -680,7 +933,7 @@ class _DiceRollerSheetState extends State<_DiceRollerSheet> {
       children: [
         _styledIconButton(
           Icons.remove,
-          onTap: () => setState(() => _quickModifier--),
+          onTap: () { _quickModifier--; _notifyChanged(); },
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -711,14 +964,14 @@ class _DiceRollerSheetState extends State<_DiceRollerSheet> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: GestureDetector(
-              onTap: () => setState(() => _quickModifier = 0),
+              onTap: () { _quickModifier = 0; _notifyChanged(); },
               child: const Icon(Icons.refresh, size: 20, color: FormTheme.textMuted),
             ),
           ),
         const SizedBox(width: 8),
         _styledIconButton(
           Icons.add,
-          onTap: () => setState(() => _quickModifier++),
+          onTap: () { _quickModifier++; _notifyChanged(); },
         ),
       ],
     );
@@ -1131,6 +1384,7 @@ class _DiceRollerSheetState extends State<_DiceRollerSheet> {
         isCritical: isCritical,
       );
     });
+    widget.onChanged();
   }
 
   static int _tierFromTotal(int total) {
