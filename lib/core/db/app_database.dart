@@ -318,9 +318,18 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from < 12) {
             // v12: Add currentRecoveries column to hero_retainers
-            await customStatement(
-              'ALTER TABLE hero_retainers ADD COLUMN current_recoveries INTEGER NOT NULL DEFAULT 6',
+            // Guard: column may already exist if v11 created the table with the latest schema
+            final cols = await customSelect(
+              "PRAGMA table_info(hero_retainers)",
+            ).get();
+            final hasCol = cols.any(
+              (row) => row.data['name'] == 'current_recoveries',
             );
+            if (!hasCol) {
+              await customStatement(
+                'ALTER TABLE hero_retainers ADD COLUMN current_recoveries INTEGER NOT NULL DEFAULT 6',
+              );
+            }
           }
         },
       );

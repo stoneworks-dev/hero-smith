@@ -1,6 +1,6 @@
 name: hero_smith
 description: Hero Smith app - assemble heroes from modular Components.
-version: 0.1.8
+version: 0.1.8+1
 publish_to: "none"
 
 environment:

@@ -95,8 +95,12 @@ class _DiceRollerOverlayState extends ConsumerState<DiceRollerOverlay> {
         final maxX = max(0.0, constraints.maxWidth - fabW);
         final maxY = max(0.0, constraints.maxHeight - fabH);
 
-        // First layout: park on the lower-left.
-        if (_dy == double.infinity) _dy = max(0.0, maxY - 80);
+        // First layout: park just above the bottom navigation bar.
+        if (_dy == double.infinity) {
+          final bottomNav = kBottomNavigationBarHeight +
+              MediaQuery.of(context).padding.bottom;
+          _dy = max(0.0, maxY - bottomNav);
+        }
 
         // Clamp so it never goes off screen.
         _dx = _dx.clamp(0.0, maxX);
