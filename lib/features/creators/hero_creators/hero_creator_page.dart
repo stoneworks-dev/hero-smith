@@ -17,6 +17,23 @@ import 'package:hero_smith/features/hero_builder/domain/hero_draft.dart';
 import 'package:hero_smith/features/heroes_sheet/hero_sheet_page.dart';
 import 'package:hero_smith/features/heroes_sheet/main_stats/hero_main_stats_providers.dart';
 
+/// The app-bar Save action for the active creator tab. Keeping all three tabs
+/// in one mapping prevents a dirty section from becoming impossible to commit.
+@visibleForTesting
+String? heroCreatorSaveTooltipForTab({
+  required int tabIndex,
+  required bool storyDirty,
+  required bool strifeDirty,
+  required bool strengthDirty,
+}) {
+  return switch (tabIndex) {
+    0 when storyDirty => HeroCreatorPageText.saveHeroTooltip,
+    1 when strifeDirty => HeroCreatorPageText.saveStrifeTooltip,
+    2 when strengthDirty => HeroCreatorPageText.saveStrengthTooltip,
+    _ => null,
+  };
+}
+
 /// The three creator tabs share one [HeroBuilderController] per hero, so this
 /// shell no longer orchestrates the tabs through `GlobalKey`s: dirty state is
 /// read straight from the controller, and Save/Discard drive the controller's
@@ -318,6 +335,12 @@ class _HeroCreatorPageState extends ConsumerState<HeroCreatorPage>
         ? HeroCreatorPageText.heroTitleInitial
         : trimmedName;
     final heroNameForSheet = trimmedName.isEmpty ? heroTitle : trimmedName;
+    final saveTooltip = heroCreatorSaveTooltipForTab(
+      tabIndex: _tabController.index,
+      storyDirty: storyDirty,
+      strifeDirty: strifeDirty,
+      strengthDirty: strengthDirty,
+    );
 
     // Tab data with icons and colors
     const tabData = [
@@ -411,17 +434,11 @@ class _HeroCreatorPageState extends ConsumerState<HeroCreatorPage>
               icon: const Icon(Icons.visibility),
               tooltip: HeroCreatorPageText.viewHeroSheetTooltip,
             ),
-            if (_tabController.index == 0 && storyDirty)
+            if (saveTooltip != null)
               IconButton(
                 onPressed: _commit,
                 icon: const Icon(Icons.save),
-                tooltip: HeroCreatorPageText.saveHeroTooltip,
-              )
-            else if (_tabController.index == 1 && strifeDirty)
-              IconButton(
-                onPressed: _commit,
-                icon: const Icon(Icons.save),
-                tooltip: HeroCreatorPageText.saveStrifeTooltip,
+                tooltip: saveTooltip,
               ),
           ],
         ),

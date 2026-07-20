@@ -30,6 +30,7 @@ class HeroCreatorPageText {
   static const String viewHeroSheetTooltip = 'View Hero Sheet';
   static const String saveHeroTooltip = 'Save Hero';
   static const String saveStrifeTooltip = 'Save Strife';
+  static const String saveStrengthTooltip = 'Save Strength';
   static const String tabLabelStory = 'Story';
   static const String tabLabelStrife = 'Strife';
   static const String tabLabelStrength = 'Strength';
