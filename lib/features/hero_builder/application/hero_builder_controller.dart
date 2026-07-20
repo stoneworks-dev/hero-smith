@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/storage/hero_storage_contract.dart';
 import '../data/hero_builder_repository.dart';
 import '../domain/hero_claim.dart';
 import '../domain/hero_conflict_index.dart';
@@ -31,7 +32,11 @@ class HeroBuilderCommitResult {
         );
 
   const HeroBuilderCommitResult.staleDraft()
-      : this._(HeroBuilderCommitKind.staleDraft);
+      : this._(
+          HeroBuilderCommitKind.staleDraft,
+          message: 'This hero changed while the builder was open. Reload the '
+              'builder and try again.',
+        );
 
   const HeroBuilderCommitResult.storageFailure(String message)
       : this._(HeroBuilderCommitKind.storageFailure, message: message);
@@ -172,8 +177,8 @@ class HeroBuilderController extends StateNotifier<HeroBuilderState> {
 
   void setStrifeAbilitySlot(String slotKey, String? abilityId) {
     updateStrife(
-      (draft) =>
-          draft.withSlot(family: 'ability', slotKey: slotKey, entryId: abilityId),
+      (draft) => draft.withSlot(
+          family: 'ability', slotKey: slotKey, entryId: abilityId),
     );
   }
 
@@ -192,7 +197,8 @@ class HeroBuilderController extends StateNotifier<HeroBuilderState> {
   }
 
   void setFeatureSelection(String featureId, Set<String> optionKeys) {
-    updateStrength((draft) => draft.withFeatureSelection(featureId, optionKeys));
+    updateStrength(
+        (draft) => draft.withFeatureSelection(featureId, optionKeys));
   }
 
   /// Folds deterministic, load-time-derived Strength feature selections
@@ -316,7 +322,10 @@ class HeroBuilderController extends StateNotifier<HeroBuilderState> {
 
     final conflicts = blockingConflicts();
     if (conflicts.isNotEmpty) {
-      return HeroBuilderCommitResult.validationFailure(conflicts: conflicts);
+      return HeroBuilderCommitResult.validationFailure(
+        message: _describeConflicts(conflicts),
+        conflicts: conflicts,
+      );
     }
 
     final executor = _commitExecutor;
@@ -329,11 +338,27 @@ class HeroBuilderController extends StateNotifier<HeroBuilderState> {
 
     state = state.copyWith(isSaving: true, lastError: null);
     try {
-      final currentFingerprint =
-          await _repository.entriesFingerprint(heroId);
+      final currentFingerprint = await _repository.entriesFingerprint(heroId);
       if (currentFingerprint != state.baseline.entriesFingerprint) {
-        state = state.copyWith(isSaving: false);
-        return const HeroBuilderCommitResult.staleDraft();
+        final adopted = await _adoptImmediatePerkGrantWrites();
+        if (!adopted) {
+          state = state.copyWith(isSaving: false);
+          return const HeroBuilderCommitResult.staleDraft();
+        }
+
+        // Perk-nested choices still use their legacy immediate-persistence
+        // path. Refreshing their claims can reveal a conflict that was not in
+        // the session baseline, so validate the updated projection once more
+        // before any commit operation runs.
+        final refreshedConflicts = blockingConflicts();
+        if (refreshedConflicts.isNotEmpty) {
+          final message = _describeConflicts(refreshedConflicts);
+          state = state.copyWith(isSaving: false, lastError: message);
+          return HeroBuilderCommitResult.validationFailure(
+            message: message,
+            conflicts: refreshedConflicts,
+          );
+        }
       }
 
       final result = await executor.commit(heroId: heroId, state: state);
@@ -352,6 +377,70 @@ class HeroBuilderController extends StateNotifier<HeroBuilderState> {
       state = state.copyWith(isSaving: false, lastError: error.toString());
       return HeroBuilderCommitResult.storageFailure(error.toString());
     }
+  }
+
+  /// Adopts the one builder-owned write path that has not moved into the
+  /// in-memory draft yet: language/skill choices nested under a selected perk.
+  ///
+  /// Those pickers persist `(perk, perkId)` entries immediately. Without this
+  /// narrow reconciliation, the stale-draft guard mistakes the builder's own
+  /// write for an edit from another screen and refuses the later Save. Every
+  /// changed claim must belong to a perk selected in either the loaded or the
+  /// current draft; all other fingerprint changes remain stale failures.
+  Future<bool> _adoptImmediatePerkGrantWrites() async {
+    final previousBaseline = state.baseline;
+    final refreshed = await _repository.loadBaseline(heroId);
+
+    final allowedPerkIds = <String>{
+      ...previousBaseline.story.careerPerkIds,
+      ...state.story.careerPerkIds,
+      ...previousBaseline.strife.perkSelections.values.whereType<String>(),
+      ...state.strife.perkSelections.values.whereType<String>(),
+    }..removeWhere((id) => id.trim().isEmpty);
+    if (allowedPerkIds.isEmpty) return false;
+
+    final previousClaims = previousBaseline.persistedClaims.toSet();
+    final refreshedClaims = refreshed.persistedClaims.toSet();
+    final changedClaims = <HeroEntryClaim>{
+      ...previousClaims.difference(refreshedClaims),
+      ...refreshedClaims.difference(previousClaims),
+    };
+    if (changedClaims.isEmpty ||
+        changedClaims.any(
+          (claim) =>
+              claim.owner.source.normalizedSourceType !=
+                  HeroEntrySourceTypes.perk ||
+              !allowedPerkIds.contains(claim.owner.source.normalizedSourceId),
+        )) {
+      return false;
+    }
+
+    // Keep the user's original baseline drafts so dirty/discard semantics do
+    // not change. Only the persisted claim snapshot and its fingerprint move
+    // forward. The refreshed revision invalidates the memoized conflict index.
+    final reconciledBaseline = HeroBuilderBaseline(
+      revision: refreshed.revision,
+      story: previousBaseline.story,
+      strife: previousBaseline.strife,
+      strength: previousBaseline.strength,
+      persistedClaims: refreshed.persistedClaims,
+      entriesFingerprint: refreshed.entriesFingerprint,
+      compatibilityWarnings: previousBaseline.compatibilityWarnings,
+    );
+    state = state.copyWith(baseline: reconciledBaseline);
+    return true;
+  }
+
+  static String _describeConflicts(List<HeroConflict> conflicts) {
+    final details = conflicts.map((conflict) {
+      final owners = conflict.owners
+          .map(
+            (owner) => owner.displayLabel ?? owner.source.toString(),
+          )
+          .join(', ');
+      return '${conflict.key} is already selected by $owners';
+    }).join('; ');
+    return 'Resolve duplicate selections before saving: $details.';
   }
 
   void _update({
