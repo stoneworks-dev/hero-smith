@@ -35,10 +35,15 @@
     "type": "ward",
     "name": "Bastion Ward",
     "description": "Your god grants you a holy countenance that protects you at all times. You gain a +1 bonus to saving throws.",
-    "decrease_total": {
-      "stat": "saving throw",
-      "value": 1
-    },
+    "grants": [
+      {
+        "kind": "stat_mod",
+        "stat": "saving_throw",
+        "entry_id": "bastion_ward_decrease_saving_throw",
+        "mods": [{ "value": -1 }],
+        "payload": { "operation": "decrease_total" }
+      }
+    ],
     "available_to_classes": ["conduit"]
   },
   {

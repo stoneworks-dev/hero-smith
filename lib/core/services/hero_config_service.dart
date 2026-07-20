@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../db/app_database.dart';
 
 /// Service wrapper around hero_config for structured read/write.
@@ -32,8 +34,10 @@ class HeroConfigService {
     final result = <String, Map<String, dynamic>>{};
     for (final row in rows) {
       try {
-        result[row.configKey] =
-            (await getConfigValue(heroId, row.configKey)) ?? {};
+        final decoded = jsonDecode(row.valueJson);
+        if (decoded is Map) {
+          result[row.configKey] = Map<String, dynamic>.from(decoded);
+        }
       } catch (_) {
         // Ignore parse failures; keep entry absent.
       }

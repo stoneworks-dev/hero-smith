@@ -1,6 +1,4 @@
-
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,26 +8,31 @@ import '../../../core/models/abilities_models.dart';
 import '../../../core/models/class_data.dart';
 import '../../../core/models/characteristics_models.dart';
 import '../../../core/models/component.dart';
+import '../../../core/models/hero_model.dart';
 import '../../../core/models/perks_models.dart';
 import '../../../core/models/skills_models.dart';
 import '../../../core/models/subclass_models.dart';
 import '../../../core/repositories/hero_repository.dart';
-import '../../../core/services/class_feature_data_service.dart';
-import '../../../core/services/class_feature_grants_service.dart';
 import '../../../core/services/abilities_service.dart';
 import '../../../core/services/ability_data_service.dart';
 import '../../../core/services/class_data_service.dart';
-import '../../../core/services/kit_bonus_service.dart';
-import '../../../core/services/kit_grants_service.dart';
 import '../../../core/services/perk_data_service.dart';
+import '../../../core/services/perk_grants_service.dart';
 import '../../../core/services/perks_service.dart';
 import '../../../core/services/skill_data_service.dart';
 import '../../../core/services/skills_service.dart';
-import '../../../core/services/starting_characteristics_service.dart';
 import '../../../core/services/subclass_data_service.dart';
 import '../../../core/services/subclass_service.dart';
+import '../../../core/storage/hero_storage_contract.dart';
 import '../../../core/text/creators/hero_creators/strife_creator_page_text.dart';
-import '../../heroes_sheet/main_stats/hero_main_stats_providers.dart';
+import '../../hero_builder/application/hero_builder_controller.dart';
+import '../../hero_builder/application/hero_builder_providers.dart';
+import '../../hero_builder/application/hero_draft_conversions.dart';
+import '../../hero_builder/domain/hero_claim.dart';
+import '../../hero_builder/domain/hero_conflict_index.dart';
+import '../../hero_builder/domain/hero_draft.dart';
+import '../../hero_builder/domain/hero_draft_claims.dart';
+import '../../hero_builder/domain/hero_mutation_scope.dart';
 import '../widgets/strife_creator/choose_abilities_widget.dart';
 import '../widgets/strife_creator/choose_equipment_widget.dart';
 import '../widgets/strife_creator/choose_perks_widget.dart';
@@ -44,19 +47,25 @@ class StrifeCreatorPage extends ConsumerStatefulWidget {
   const StrifeCreatorPage({
     super.key,
     required this.heroId,
-    this.onDirtyChanged,
-    this.onSaveRequested,
   });
 
   final String heroId;
-  final ValueChanged<bool>? onDirtyChanged;
-  final VoidCallback? onSaveRequested;
 
   @override
   ConsumerState<StrifeCreatorPage> createState() => _StrifeCreatorPageState();
 }
 
-class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage> {
+class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage>
+    with AutomaticKeepAliveClientMixin {
+  // Ownership vocabulary is shared with the hero-builder draft mapping so the
+  // page and the controller cannot disagree about who owns a slot.
+  static const _strifeAbilityClaimSource = HeroDraftClaims.strifeAbilitySource;
+  static const _strifeSkillClaimSource = HeroDraftClaims.strifeSkillSource;
+  static const _strifePerkClaimSource = HeroDraftClaims.strifePerkSource;
+  static const _subclassSkillClaimSource = HeroDraftClaims.subclassSkillSource;
+  static const _strifeEquipmentClaimSource =
+      HeroDraftClaims.equipmentSlotsSource;
+
   final ClassDataService _classDataService = ClassDataService();
   final StartingAbilitiesService _startingAbilitiesService =
       const StartingAbilitiesService();
@@ -90,103 +99,115 @@ class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage> {
     'stormwight_kit',
   ];
 
-  bool _isLoading = true;
-  String? _errorMessage;
-  bool _isDirty = false;
-  bool _initialLoadComplete = false;
-  Map<String, dynamic> _lastSavedSnapshot = const {};
-
-  // Utility for deep map/set equality checks to avoid false dirty states
   static const _deepEq = DeepCollectionEquality();
 
-  // State variables
-  int _selectedLevel = 1;
-  ClassData? _selectedClass;
-  CharacteristicArray? _selectedArray;
-  Map<String, int> _assignedCharacteristics = {};
-  // ignore: unused_field
-  Map<String, int> _finalCharacteristics = {};
-  Map<String, String?> _levelChoiceSelections = {};
-  Map<String, String?> _selectedSkills = {};
-  Map<String, String?> _selectedAbilities = {};
-  Map<String, String?> _selectedPerks = {};
-  Set<String> _baseSkillIds = {};
-  Set<String> _skillGrantIds = {};
+  bool _isLoading = true;
+  String? _errorMessage;
+
+  // Load-time-only lookup used to normalize legacy skill names to IDs.
   Map<String, String> _skillIdLookup = {};
-  Set<String> _reservedSkillIds = {};
-  Set<String> _reservedAbilityIds = {};
-  Set<String> _reservedPerkIds = {};
-  Set<String> _reservedLanguageIds = {};
-  SubclassSelectionResult? _selectedSubclass;
-  List<String?> _selectedKitIds = [];
 
-  /// The skill ID saved in config as granted by the current subclass (to avoid self-flagging)
-  String? _savedSubclassSkillId;
+  // Fixed (non-choice) class skill grants for the current class/level/
+  // subclass. Recomputed on level/class/subclass change and after every
+  // skill-widget interaction (which reports its own authoritative value).
+  // Not part of StrifeDraft because it is derived, not a player choice.
+  Set<String> _skillGrantIds = {};
 
-  /// The class ID that was loaded from the database (to detect class changes on save)
-  String? _savedClassId;
+  HeroBuilderController get _controller =>
+      ref.read(heroBuilderControllerProvider(widget.heroId).notifier);
+
+  StrifeDraft get _strife =>
+      ref.watch(heroBuilderStrifeDraftProvider(widget.heroId));
+
+  /// Resolved from the draft's class id; the draft stores only the id.
+  ClassData? get _selectedClass {
+    final classId = _strife.classId;
+    if (classId == null) return null;
+    return _classDataService
+        .getAllClasses()
+        .firstWhereOrNull((c) => c.classId == classId);
+  }
+
+  CharacteristicArray? get _selectedArray {
+    final description = _strife.arrayDescription;
+    if (description == null) return null;
+    return CharacteristicArray(
+      description: description,
+      values: _strife.arrayValues,
+    );
+  }
+
+  SubclassSelectionResult? get _selectedSubclass =>
+      subclassSelectionFromDraft(_strife.subclass);
+
+  List<String?> get _selectedKitIds => _strife.equipmentIds;
+
+  Set<String> get _currentSelectedPerkIds => _strife.perkSelections.values
+      .whereType<String>()
+      .where((id) => id.trim().isNotEmpty)
+      .toSet();
 
   @override
   void initState() {
     super.initState();
-    _initializeData();
+    _load();
   }
 
-  Map<String, dynamic> _currentSnapshot() {
-    // Build a stable snapshot for dirty detection; keep ordering deterministic where possible
-    return {
-      'level': _selectedLevel,
-      'class': _selectedClass?.classId,
-      'array': _selectedArray?.description,
-      'arrayValues': _selectedArray?.values,
-      'assigned': Map<String, int>.from(_assignedCharacteristics),
-      'levelChoices': Map<String, String?>.from(_levelChoiceSelections),
-      'skills': Map<String, String?>.from(_selectedSkills),
-      'skillGrants': (_skillGrantIds.toList()..sort()),
-      'abilities': Map<String, String?>.from(_selectedAbilities),
-      'perks': Map<String, String?>.from(_selectedPerks),
-      'subclass': _selectedSubclass == null
-          ? null
-          : {
-              'key': _selectedSubclass!.subclassKey,
-              'name': _selectedSubclass!.subclassName,
-              'deity': _selectedSubclass!.deityId,
-              'domains': List<String>.from(_selectedSubclass!.domainNames),
-            },
-      'kits': List<String?>.from(_selectedKitIds),
-    };
-  }
+  Future<void> _load() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
 
-  void _syncSnapshot() {
-    _lastSavedSnapshot = _currentSnapshot();
-  }
-
-  Future<void> _initializeData() async {
     try {
       await _classDataService.initialize();
+      final repo = ref.read(heroRepositoryProvider);
+      final db = ref.read(appDatabaseProvider);
+      final hero = await repo.load(widget.heroId);
+
+      if (hero == null) {
+        setState(() {
+          _isLoading = false;
+        });
+        return;
+      }
+
+      // Load-time-only snapshots (see field docs above).
+      final skillOptions = await _skillDataService.loadSkills();
+      _skillIdLookup = {
+        for (final option in skillOptions) option.name.toLowerCase(): option.id,
+        for (final option in skillOptions) option.id.toLowerCase(): option.id,
+      };
+      // Adopt the persisted baseline first; legacy healing below reads it.
+      await _controller.reload();
       if (!mounted) return;
 
-      // Load existing hero data from database
-      await _loadHeroData();
+      final classId = hero.className?.trim();
+      final classData = classId == null
+          ? null
+          : _classDataService
+              .getAllClasses()
+              .firstWhereOrNull((c) => c.classId == classId);
 
-      if (!mounted) return;
+      if (classData != null) {
+        final healed = await _healLegacyStrifeData(
+          classData: classData,
+          hero: hero,
+          repo: repo,
+          db: db,
+        );
+        if (healed) {
+          await _controller.reload();
+          if (!mounted) return;
+        }
+      }
+
       setState(() {
         _isLoading = false;
+        _errorMessage = null;
       });
-      _syncSnapshot();
-
-      // Mark initial load complete after first frame to prevent false dirty detection
-      // Widgets may fire onChange callbacks during their first build
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        _initialLoadComplete = true;
-        if (_isDirty) {
-          setState(() {
-            _isDirty = false;
-          });
-          widget.onDirtyChanged?.call(false);
-        }
-      });
+      _updateGrantIdsForCurrentPlan();
+      _notifyDirty();
     } catch (e) {
       if (!mounted) return;
       setState(() {
@@ -197,271 +218,126 @@ class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage> {
     }
   }
 
-  Future<void> _loadHeroData() async {
-    try {
-      final repo = ref.read(heroRepositoryProvider);
-      final db = ref.read(appDatabaseProvider);
-      final hero = await repo.load(widget.heroId);
-
-      if (hero == null) return;
-
-      // Load level
-      _selectedLevel = hero.level;
-
-      // Load skill lookup for resolving names to IDs
-      final skillOptions = await _skillDataService.loadSkills();
-      _skillIdLookup = {
-        for (final option in skillOptions) option.name.toLowerCase(): option.id,
-        for (final option in skillOptions) option.id.toLowerCase(): option.id,
-      };
-
-      // Load characteristics (assigned values from stored assignments)
-      final savedAssignments =
-          await repo.getCharacteristicAssignments(widget.heroId);
-      if (savedAssignments.isNotEmpty) {
-        _assignedCharacteristics = savedAssignments;
-      } else if (hero.might != 0 ||
-          hero.agility != 0 ||
-          hero.reason != 0 ||
-          hero.intuition != 0 ||
-          hero.presence != 0) {
-        // Fallback: use hero base values if no assignments saved
-        _assignedCharacteristics = {
-          'Might': hero.might,
-          'Agility': hero.agility,
-          'Reason': hero.reason,
-          'Intuition': hero.intuition,
-          'Presence': hero.presence,
-        };
-      }
-
-      // Load class
-      if (hero.className != null) {
-        final classData = _classDataService.getAllClasses().firstWhere(
-            (c) => c.classId == hero.className,
-            orElse: () => _classDataService.getAllClasses().first);
-        _selectedClass = classData;
-        _savedClassId =
-            classData.classId; // Track the saved class for change detection
-
-        // Load characteristic array if available
-        final arrayConfig = await db.getHeroConfigValue(
-            widget.heroId, 'strife.characteristic_array');
-        final arrayDescription = arrayConfig?['name']?.toString();
-
-        final savedArrayValues =
-            await repo.getCharacteristicArrayValues(widget.heroId);
-
-        final matchingArray = _findSavedArraySelection(
-          classData: classData,
-          savedDescription: arrayDescription,
-          savedValues: savedArrayValues,
-        );
-
-        if (matchingArray != null) {
-          _selectedArray = matchingArray;
-        }
-
-        // Load level choice selections (for "Any" characteristic improvements)
-        final savedLevelChoiceSelections =
-            await repo.getLevelChoiceSelections(widget.heroId);
-        if (savedLevelChoiceSelections.isNotEmpty) {
-          _levelChoiceSelections = savedLevelChoiceSelections;
-        }
-
-        // Load subclass / deity / domain selections
-        final domainNames = hero.domain == null
-            ? <String>[]
-            : hero.domain!
-                .split(',')
-                .map((e) => e.trim())
-                .where((e) => e.isNotEmpty)
-                .toList();
-        final savedSubclassKey = await repo.getSubclassKey(widget.heroId);
-        final subclassName = hero.subclass?.trim();
-        final subclassKey = savedSubclassKey ??
-            (subclassName != null && subclassName.isNotEmpty
-                ? ClassFeatureDataService.slugify(subclassName)
-                : null);
-        if ((subclassName?.isNotEmpty ?? false) ||
-            (hero.deityId?.trim().isNotEmpty ?? false) ||
-            domainNames.isNotEmpty) {
-          _selectedSubclass = SubclassSelectionResult(
-            subclassKey: subclassKey,
-            subclassName: subclassName,
-            deityId: hero.deityId?.trim().isNotEmpty == true
-                ? hero.deityId!.trim()
-                : null,
-            deityName: hero.deityId?.trim().isNotEmpty == true
-                ? hero.deityId!.trim()
-                : null,
-            domainNames: domainNames,
-          );
-        } else {
-          _selectedSubclass = null;
-        }
-
-        if (_selectedSubclass != null) {
-          _selectedSubclass = await _hydrateSubclassSelection(
-            classData: classData,
-            selection: _selectedSubclass!,
-          );
-        }
-
-        // Load saved subclass skill ID to avoid self-flagging as duplicate
-        final savedSubclassSkillConfig = await db.getHeroConfigValue(
-          widget.heroId,
-          'strife.subclass_skill_id',
-        );
-        _savedSubclassSkillId = savedSubclassSkillConfig?['id']?.toString();
-
-        // Load equipment / modifications selections
-        final equipmentIds = await repo.getEquipmentIds(widget.heroId);
-        if (equipmentIds.isNotEmpty) {
-          final matched = await _matchEquipmentToSlots(
-            classData: classData,
-            equipmentIds: equipmentIds,
-            db: db,
-          );
-          _selectedKitIds = matched;
-        } else {
-          _selectedKitIds = <String?>[];
-        }
-      }
-
-      // Load abilities
-      if (_selectedClass != null) {
-        var abilityIds =
-            await db.getHeroComponentIds(widget.heroId, 'ability');
-        if (abilityIds.isEmpty) {
-          final importedConfig = await db.getHeroConfigValue(
-            widget.heroId,
-            'strife.import_ability_ids',
-          );
-          final importedList = importedConfig?['list'] as List?;
-          if (importedList != null && importedList.isNotEmpty) {
-            abilityIds =
-                importedList.map((e) => e.toString()).where((e) => e.isNotEmpty).toList();
-          }
-        }
-        if (kDebugMode) {
-          debugPrint('[StrifeCreatorPage] _loadHeroData: All abilityIds from DB: $abilityIds');
-        }
-
-        final languageIds =
-            await db.getHeroComponentIds(widget.heroId, 'language');
-        final skillIds = await db.getHeroComponentIds(widget.heroId, 'skill');
-        final perkIds = await db.getHeroComponentIds(widget.heroId, 'perk');
-        _baseSkillIds = _normalizeSkillIds(skillIds);
-
-        // First try to load saved strife ability selections directly
-        final savedStrifeAbilitySelections =
-            await _loadStrifeSelections('strife.ability_selections');
-        if (kDebugMode) {
-          debugPrint('[StrifeCreatorPage] _loadHeroData: savedStrifeAbilitySelections: $savedStrifeAbilitySelections');
-        }
-
-        if (savedStrifeAbilitySelections.isNotEmpty) {
-          _selectedAbilities = savedStrifeAbilitySelections;
-        } else {
-          // Fallback to inference (for legacy data or first-time setup)
-          _selectedAbilities = await _restoreAbilitySelections(
-            classData: _selectedClass!,
-            selectedLevel: _selectedLevel,
-            abilityIds: abilityIds,
-          );
-        }
-        if (kDebugMode) {
-          debugPrint('[StrifeCreatorPage] _loadHeroData: _selectedAbilities after load: $_selectedAbilities');
-        }
-
-        // ignore: unused_local_variable
-        final assignedAbilityIds =
-            _selectedAbilities.values.whereType<String>().toSet();
-        _reservedAbilityIds = abilityIds.toSet();
-        _reservedLanguageIds = languageIds.toSet();
-
-        // First try to load saved strife skill selections directly
-        final savedStrifeSkillSelections =
-            await _loadStrifeSelections('strife.skill_selections');
-        if (savedStrifeSkillSelections.isNotEmpty) {
-          _selectedSkills = savedStrifeSkillSelections;
-        } else {
-          // Fallback to inference (for legacy data or first-time setup)
-          _selectedSkills = await _restoreSkillSelections(
-            classData: _selectedClass!,
-            selectedLevel: _selectedLevel,
-            skillIds: skillIds,
-          );
-        }
-        _reservedSkillIds = _baseSkillIds;
-
-        // First try to load saved strife perk selections directly
-        final savedStrifePerkSelections =
-            await _loadStrifeSelections('strife.perk_selections');
-        if (savedStrifePerkSelections.isNotEmpty) {
-          _selectedPerks = savedStrifePerkSelections;
-        } else {
-          // Fallback to inference (for legacy data or first-time setup)
-          _selectedPerks = await _restorePerkSelections(
-            classData: _selectedClass!,
-            selectedLevel: _selectedLevel,
-            perkIds: perkIds,
-          );
-        }
-        _reservedPerkIds = perkIds.toSet();
-
-        _updateGrantIdsForCurrentPlan();
-      } else {
-        _selectedAbilities = const <String, String?>{};
-        _selectedSkills = const <String, String?>{};
-        _selectedPerks = const <String, String?>{};
-        _reservedAbilityIds = {};
-        _reservedSkillIds = {};
-        _reservedPerkIds = {};
-        _reservedLanguageIds = {};
-      }
-
-      _refreshReservedSkills();
-      _refreshReservedPerks();
-    } catch (e) {
-      if (kDebugMode) debugPrint('Failed to load hero data: $e');
-      // Don't fail the whole initialization if hero data can't be loaded
-    }
-  }
-
-  CharacteristicArray? _findSavedArraySelection({
+  /// Repairs legacy/imported Strife data in place so the controller's fresh
+  /// baseline reflects healed selections instead of opening dirty. Mirrors
+  /// what the page inferred purely in memory before this conversion; the
+  /// difference is that the inference is now persisted once (like Strength's
+  /// load-time healing) so the healed state becomes the baseline itself.
+  /// Returns whether anything was written.
+  Future<bool> _healLegacyStrifeData({
     required ClassData classData,
-    String? savedDescription,
-    required List<int> savedValues,
-  }) {
-    final arrays =
-        classData.startingCharacteristics.startingCharacteristicsArrays;
+    required HeroModel hero,
+    required HeroRepository repo,
+    required app_db.AppDatabase db,
+  }) async {
+    var healed = false;
+    final baseline =
+        ref.read(heroBuilderControllerProvider(widget.heroId)).baseline.strife;
 
-    if (savedDescription != null && savedDescription.isNotEmpty) {
-      final byDescription = arrays.firstWhereOrNull(
-        (arr) => arr.description == savedDescription,
+    // Subclass skill hydration: backfill skill/skillGroup for legacy heroes
+    // whose subclass choice predates the dedicated subclass:subclass_skill
+    // entry row.
+    final subclassSelection = subclassSelectionFromDraft(baseline.subclass);
+    if (subclassSelection != null &&
+        (subclassSelection.skill?.trim().isEmpty ?? true)) {
+      final hydrated = await _hydrateSubclassSelection(
+        classData: classData,
+        selection: subclassSelection,
       );
-      if (byDescription != null) {
-        return byDescription;
+      final hydratedSkillId = _resolveSkillId(hydrated?.skill);
+      if (hydratedSkillId != null && hydratedSkillId.isNotEmpty) {
+        await repo.saveSubclassSkill(widget.heroId, hydratedSkillId);
+        await db.setHeroConfig(
+          heroId: widget.heroId,
+          configKey: 'strife.subclass_skill_id',
+          value: {'id': hydratedSkillId},
+        );
+        healed = true;
       }
     }
 
-    final valueCandidates = savedValues.isNotEmpty
-        ? savedValues
-        : _assignedCharacteristics.values.toList();
-
-    if (valueCandidates.isEmpty) return null;
-
-    final target = List<int>.from(valueCandidates)..sort();
-    return arrays.firstWhereOrNull((arr) {
-      final arrValues = List<int>.from(arr.values)..sort();
-      if (arrValues.length != target.length) return false;
-      for (var i = 0; i < arrValues.length; i++) {
-        if (arrValues[i] != target[i]) return false;
+    if (baseline.abilitySelections.isEmpty) {
+      var abilityIds = await db.getHeroComponentIds(widget.heroId, 'ability');
+      if (abilityIds.isEmpty) {
+        final importedConfig = await db.getHeroConfigValue(
+          widget.heroId,
+          'strife.import_ability_ids',
+        );
+        final importedList = importedConfig?['list'] as List?;
+        if (importedList != null && importedList.isNotEmpty) {
+          abilityIds = importedList
+              .map((e) => e.toString())
+              .where((e) => e.isNotEmpty)
+              .toList();
+        }
       }
-      return true;
-    });
+      final inferred = await _restoreAbilitySelections(
+        classData: classData,
+        selectedLevel: baseline.level,
+        abilityIds: abilityIds,
+      );
+      if (inferred.isNotEmpty) {
+        await db.setHeroConfig(
+          heroId: widget.heroId,
+          configKey: 'strife.ability_selections',
+          value: inferred,
+        );
+        await db.deleteHeroConfig(widget.heroId, 'strife.import_ability_ids');
+        healed = true;
+      }
+    }
+
+    if (baseline.skillSelections.isEmpty) {
+      final skillIds = await db.getHeroComponentIds(widget.heroId, 'skill');
+      final inferred = await _restoreSkillSelections(
+        classData: classData,
+        selectedLevel: baseline.level,
+        skillIds: skillIds,
+        subclassSelection: subclassSelectionFromDraft(baseline.subclass),
+      );
+      if (inferred.isNotEmpty) {
+        await db.setHeroConfig(
+          heroId: widget.heroId,
+          configKey: 'strife.skill_selections',
+          value: inferred,
+        );
+        healed = true;
+      }
+    }
+
+    if (baseline.perkSelections.isEmpty) {
+      final perkIds = await db.getHeroComponentIds(widget.heroId, 'perk');
+      final inferred = await _restorePerkSelections(
+        classData: classData,
+        selectedLevel: baseline.level,
+        perkIds: perkIds,
+      );
+      if (inferred.isNotEmpty) {
+        await db.setHeroConfig(
+          heroId: widget.heroId,
+          configKey: 'strife.perk_selections',
+          value: inferred,
+        );
+        healed = true;
+      }
+    }
+
+    final equipmentIds = baseline.equipmentIds;
+    final hasEquipment =
+        equipmentIds.any((id) => id != null && id.trim().isNotEmpty);
+    if (hasEquipment) {
+      final matched = await _matchEquipmentToSlots(
+        classData: classData,
+        equipmentIds: equipmentIds,
+        db: db,
+      );
+      if (!const ListEquality<String?>().equals(matched, equipmentIds)) {
+        await repo.saveEquipmentIds(widget.heroId, matched);
+        healed = true;
+      }
+    }
+
+    return healed;
   }
 
   Future<Map<String, String?>> _restoreAbilitySelections({
@@ -528,6 +404,7 @@ class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage> {
     required ClassData classData,
     required int selectedLevel,
     required List<String> skillIds,
+    required SubclassSelectionResult? subclassSelection,
   }) async {
     if (skillIds.isEmpty) {
       return const <String, String?>{};
@@ -536,7 +413,7 @@ class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage> {
     final plan = _startingSkillsService.buildPlan(
       classData: classData,
       selectedLevel: selectedLevel,
-      subclassSelection: _selectedSubclass,
+      subclassSelection: subclassSelection,
       // Exclude level-based and subclass skill allowances - those are handled in Strength tab
       excludeLevelAllowances: true,
       excludeSubclassSkillAllowances: true,
@@ -581,16 +458,6 @@ class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage> {
     return selections.isEmpty ? const <String, String?>{} : selections;
   }
 
-  /// Load saved strife selections from hero_config
-  Future<Map<String, String?>> _loadStrifeSelections(String key) async {
-    final db = ref.read(appDatabaseProvider);
-    final config = await db.getHeroConfigValue(widget.heroId, key);
-    if (config != null) {
-      return config.map((k, v) => MapEntry(k.toString(), v?.toString()));
-    }
-    return const <String, String?>{};
-  }
-
   String? _resolveSkillId(String? value) {
     if (value == null) return null;
     final trimmed = value.trim();
@@ -599,95 +466,367 @@ class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage> {
     return _skillIdLookup[lower] ?? _skillIdLookup[trimmed] ?? trimmed;
   }
 
-  Set<String> _normalizeSkillIds(Iterable<String> values) {
-    final result = <String>{};
-    for (final value in values) {
-      final resolved = _resolveSkillId(value) ?? value.trim();
-      if (resolved.isNotEmpty) {
-        result.add(resolved);
-      }
-    }
-    return result;
+  HeroConflictIndex get _strifeAbilityConflictIndex {
+    final entries = ref.watch(heroEntriesProvider(widget.heroId)).valueOrNull;
+    if (entries == null) return HeroConflictIndex.empty;
+    final perks = ref.watch(componentsByTypeProvider(HeroEntryTypes.perk));
+    final abilities =
+        ref.watch(componentsByTypeProvider(HeroEntryTypes.ability));
+
+    return _buildStrifeAbilityConflictIndex(
+      entries: entries,
+      perks: perks.valueOrNull,
+      abilities: abilities.valueOrNull,
+    );
   }
 
-  /// Gets skill IDs saved in the database from other sources (story, ancestry, etc.)
-  Set<String> get _dbSavedSkillIds => ref.watch(
-        heroEntryIdsByTypeProvider((heroId: widget.heroId, entryType: 'skill')),
-      );
+  HeroConflictIndex _buildStrifeAbilityConflictIndex({
+    required List<app_db.HeroEntry> entries,
+    required List<Component>? perks,
+    required List<Component>? abilities,
+  }) {
+    final persistedClaims =
+        entries.where((entry) => entry.entryType == HeroEntryTypes.ability).map(
+              (entry) => HeroEntryClaim(
+                key: HeroEntryKey(
+                  entryType: entry.entryType,
+                  canonicalEntryId: entry.entryId,
+                ),
+                owner: HeroClaimOwner.persisted(
+                  source: HeroClaimSource(
+                    sourceType: entry.sourceType,
+                    sourceId: entry.sourceId,
+                  ),
+                  displayLabel: entry.sourceId.trim().isEmpty
+                      ? entry.sourceType
+                      : '${entry.sourceType}:${entry.sourceId}',
+                ),
+              ),
+            );
 
-  /// Gets perk IDs saved in the database from other sources.
-  Set<String> get _dbSavedPerkIds => ref.watch(
-        heroEntryIdsByTypeProvider((heroId: widget.heroId, entryType: 'perk')),
-      );
+    return HeroConflictIndex.projected(
+      persistedClaims: persistedClaims,
+      mutationScopes: [
+        HeroMutationScope.single(
+          _strifeAbilityClaimSource,
+          entryType: HeroEntryTypes.ability,
+        ),
+        for (final perkId in _currentSelectedPerkIds)
+          HeroMutationScope.single(
+            HeroClaimSource(
+              sourceType: HeroEntrySourceTypes.perk,
+              sourceId: perkId,
+            ),
+            entryType: HeroEntryTypes.ability,
+          ),
+      ],
+      draftClaims: perks == null || abilities == null
+          ? const []
+          : _strifePerkAbilityDraftClaims(
+              perks: perks,
+              abilities: abilities,
+            ),
+    );
+  }
 
-  /// Gets language IDs saved in the database from other sources.
-  Set<String> get _dbSavedLanguageIds => ref.watch(
-        heroEntryIdsByTypeProvider(
-            (heroId: widget.heroId, entryType: 'language')),
-      );
-
-  void _refreshReservedSkills() {
-    final normalizedSelections =
-        _normalizeSkillIds(_selectedSkills.values.whereType<String>());
-    final reserved = <String>{
-      ..._baseSkillIds,
-      ..._dbSavedSkillIds, // Include DB-saved skills from other sources
+  Iterable<HeroEntryClaim> _strifePerkAbilityDraftClaims({
+    required List<Component> perks,
+    required List<Component> abilities,
+  }) sync* {
+    final selectedPerkIds = _currentSelectedPerkIds;
+    final abilityIds = <String, String>{
+      for (final ability in abilities) ability.id.toLowerCase(): ability.id,
+      for (final ability in abilities) ability.name.toLowerCase(): ability.id,
     };
-    // Only remove picks that are NEW this session; keep anything already in DB
-    for (final id in normalizedSelections) {
-      if (!_dbSavedSkillIds.contains(id)) {
-        reserved.remove(id);
+
+    for (final perk
+        in perks.where((perk) => selectedPerkIds.contains(perk.id))) {
+      final grant = PerkGrant.fromJson(perk.data['grants']);
+      if (grant == null) continue;
+      for (final abilityGrant in _abilityGrantsFrom(grant)) {
+        final abilityId = abilityGrant.abilityId?.trim().isNotEmpty == true
+            ? abilityGrant.abilityId!.trim()
+            : abilityIds[abilityGrant.abilityName.trim().toLowerCase()];
+        if (abilityId == null || abilityId.isEmpty) continue;
+        yield HeroEntryClaim(
+          key: HeroEntryKey(
+            entryType: HeroEntryTypes.ability,
+            canonicalEntryId: abilityId,
+          ),
+          owner: HeroClaimOwner.draft(
+            source: HeroClaimSource(
+              sourceType: HeroEntrySourceTypes.perk,
+              sourceId: perk.id,
+            ),
+            slotKey: 'strife.perks:grant:${perk.id}:$abilityId',
+            displayLabel: '${perk.name} grant',
+          ),
+        );
       }
     }
+  }
+
+  Iterable<AbilityGrant> _abilityGrantsFrom(PerkGrant grant) sync* {
+    switch (grant) {
+      case AbilityGrant():
+        yield grant;
+      case MultiGrant(:final grants):
+        for (final nested in grants) {
+          yield* _abilityGrantsFrom(nested);
+        }
+      default:
+        break;
+    }
+  }
+
+  HeroConflictIndex get _strifeSkillConflictIndex {
+    final entries = ref.watch(heroEntriesProvider(widget.heroId)).valueOrNull;
+    if (entries == null) return HeroConflictIndex.empty;
+
+    final persistedClaims =
+        entries.where((entry) => entry.entryType == HeroEntryTypes.skill).map(
+              (entry) => HeroEntryClaim(
+                key: HeroEntryKey(
+                  entryType: entry.entryType,
+                  canonicalEntryId: entry.entryId,
+                ),
+                owner: HeroClaimOwner.persisted(
+                  source: HeroClaimSource(
+                    sourceType: entry.sourceType,
+                    sourceId: entry.sourceId,
+                  ),
+                  displayLabel: entry.sourceId.trim().isEmpty
+                      ? entry.sourceType
+                      : '${entry.sourceType}:${entry.sourceId}',
+                ),
+              ),
+            );
+
+    return HeroConflictIndex.projected(
+      persistedClaims: persistedClaims,
+      mutationScopes: [
+        HeroMutationScope.single(
+          _strifeSkillClaimSource,
+          entryType: HeroEntryTypes.skill,
+        ),
+        HeroMutationScope.single(
+          _subclassSkillClaimSource,
+          entryType: HeroEntryTypes.skill,
+        ),
+        ...entries
+            .where(
+              (entry) =>
+                  entry.entryType == HeroEntryTypes.skill &&
+                  entry.sourceType == HeroEntrySourceTypes.classEntry,
+            )
+            .map(
+              (entry) => HeroMutationScope.single(
+                HeroClaimSource(
+                  sourceType: entry.sourceType,
+                  sourceId: entry.sourceId,
+                ),
+                entryType: HeroEntryTypes.skill,
+              ),
+            ),
+      ],
+      draftClaims: _strifeSkillDraftClaims(),
+    );
+  }
+
+  HeroConflictIndex get _strifePerkConflictIndex {
+    final entries = ref.watch(heroEntriesProvider(widget.heroId)).valueOrNull;
+    if (entries == null) return HeroConflictIndex.empty;
+
+    final persistedClaims =
+        entries.where((entry) => entry.entryType == HeroEntryTypes.perk).map(
+              (entry) => HeroEntryClaim(
+                key: HeroEntryKey(
+                  entryType: entry.entryType,
+                  canonicalEntryId: entry.entryId,
+                ),
+                owner: HeroClaimOwner.persisted(
+                  source: HeroClaimSource(
+                    sourceType: entry.sourceType,
+                    sourceId: entry.sourceId,
+                  ),
+                  displayLabel: entry.sourceId.trim().isEmpty
+                      ? entry.sourceType
+                      : '${entry.sourceType}:${entry.sourceId}',
+                ),
+              ),
+            );
+
+    final draftClaims = _strife.perkSelections.entries
+        .where((selection) => selection.value?.trim().isNotEmpty == true)
+        .map(
+          (selection) => HeroEntryClaim(
+            key: HeroEntryKey(
+              entryType: HeroEntryTypes.perk,
+              canonicalEntryId: selection.value!,
+            ),
+            owner: HeroClaimOwner.draft(
+              source: _strifePerkClaimSource,
+              slotKey: HeroDraftClaims.strifePerkSlot(selection.key),
+              displayLabel: 'Strife perk choice',
+            ),
+          ),
+        );
+
+    return HeroConflictIndex.projected(
+      persistedClaims: persistedClaims,
+      mutationScopes: [
+        HeroMutationScope.single(
+          _strifePerkClaimSource,
+          entryType: HeroEntryTypes.perk,
+        ),
+      ],
+      draftClaims: draftClaims,
+    );
+  }
+
+  Iterable<HeroEntryClaim> _strifeSkillDraftClaims() sync* {
+    for (final selection in _strife.skillSelections.entries) {
+      final skillId = _resolveSkillId(selection.value);
+      if (skillId == null) continue;
+      yield HeroEntryClaim(
+        key: HeroEntryKey(
+          entryType: HeroEntryTypes.skill,
+          canonicalEntryId: skillId,
+        ),
+        owner: HeroClaimOwner.draft(
+          source: _strifeSkillClaimSource,
+          slotKey: HeroDraftClaims.strifeSkillSlot(selection.key),
+          displayLabel: 'Strife skill choice',
+        ),
+      );
+    }
+
     final subclassSkillId = _resolveSkillId(_selectedSubclass?.skill);
     if (subclassSkillId != null) {
-      reserved.add(subclassSkillId);
+      yield HeroEntryClaim(
+        key: HeroEntryKey(
+          entryType: HeroEntryTypes.skill,
+          canonicalEntryId: subclassSkillId,
+        ),
+        owner: const HeroClaimOwner.draft(
+          source: _subclassSkillClaimSource,
+          slotKey: HeroDraftClaims.subclassSkillSlot,
+          displayLabel: 'Subclass skill',
+        ),
+      );
     }
 
-    const equality = SetEquality<String>();
-    if (!equality.equals(reserved, _reservedSkillIds)) {
-      setState(() {
-        _reservedSkillIds = reserved;
-      });
+    for (final skillId in _skillGrantIds) {
+      yield HeroEntryClaim(
+        key: HeroEntryKey(
+          entryType: HeroEntryTypes.skill,
+          canonicalEntryId: skillId,
+        ),
+        owner: HeroClaimOwner.draft(
+          source: HeroClaimSource(
+            sourceType: HeroEntrySourceTypes.classEntry,
+            sourceId: _selectedClass?.classId ?? 'class_grant',
+          ),
+          slotKey: 'strife.skills:grant:$skillId',
+          displayLabel: 'Class skill grant',
+        ),
+      );
     }
   }
 
-  void _refreshReservedPerks() {
-    final currentSelections = _selectedPerks.values.whereType<String>().toSet();
-    final reserved = <String>{
-      ..._dbSavedPerkIds, // Include DB-saved perks from other sources (e.g., Story page)
-    };
-    for (final id in currentSelections) {
-      if (!_dbSavedPerkIds.contains(id)) {
-        reserved.remove(id);
-      }
-    }
+  HeroConflictIndex get _strifeEquipmentConflictIndex {
+    final entries = ref.watch(heroEntriesProvider(widget.heroId)).valueOrNull;
+    if (entries == null) return HeroConflictIndex.empty;
 
-    const equality = SetEquality<String>();
-    if (!equality.equals(reserved, _reservedPerkIds)) {
-      setState(() {
-        _reservedPerkIds = reserved;
-      });
-    }
+    return _buildStrifeEquipmentConflictIndex(entries);
   }
+
+  HeroConflictIndex _buildStrifeEquipmentConflictIndex(
+    List<app_db.HeroEntry> entries,
+  ) {
+    return HeroConflictIndex.projected(
+      persistedClaims: entries
+          .where((entry) => entry.entryType == HeroEntryTypes.equipment)
+          .map(
+            (entry) => HeroEntryClaim(
+              key: HeroEntryKey(
+                entryType: entry.entryType,
+                canonicalEntryId: entry.entryId,
+              ),
+              owner: HeroClaimOwner.persisted(
+                source: HeroClaimSource(
+                  sourceType: entry.sourceType,
+                  sourceId: entry.sourceId,
+                ),
+                displayLabel: entry.sourceId.trim().isEmpty
+                    ? entry.sourceType
+                    : '${entry.sourceType}:${entry.sourceId}',
+              ),
+            ),
+          ),
+      mutationScopes: [
+        HeroMutationScope.single(
+          _strifeEquipmentClaimSource,
+          entryType: HeroEntryTypes.equipment,
+        ),
+        ...entries
+            .where(
+              (entry) =>
+                  entry.entryType == HeroEntryTypes.equipment &&
+                  entry.sourceType == HeroEntrySourceTypes.kit,
+            )
+            .map(
+              (entry) => HeroMutationScope.single(
+                HeroClaimSource(
+                  sourceType: entry.sourceType,
+                  sourceId: entry.sourceId,
+                ),
+                entryType: HeroEntryTypes.equipment,
+              ),
+            ),
+      ],
+      draftClaims: _selectedKitIds
+          .asMap()
+          .entries
+          .where((slot) => slot.value?.trim().isNotEmpty == true)
+          .map(
+            (slot) => HeroEntryClaim(
+              key: HeroEntryKey(
+                entryType: HeroEntryTypes.equipment,
+                canonicalEntryId: slot.value!,
+              ),
+              owner: HeroClaimOwner.draft(
+                source: _strifeEquipmentClaimSource,
+                slotKey: _equipmentSlotKey(slot.key),
+                displayLabel: 'Strife equipment slot ${slot.key + 1}',
+              ),
+            ),
+          ),
+    );
+  }
+
+  String _equipmentSlotKey(int index) => HeroDraftClaims.equipmentSlot(index);
 
   void _updateGrantIdsForCurrentPlan() {
-    if (_selectedClass == null) {
-      _skillGrantIds = {};
+    final classData = _selectedClass;
+    if (classData == null) {
+      setState(() => _skillGrantIds = {});
       return;
     }
 
     final plan = _startingSkillsService.buildPlan(
-      classData: _selectedClass!,
-      selectedLevel: _selectedLevel,
+      classData: classData,
+      selectedLevel: _strife.level,
       subclassSelection: _selectedSubclass,
       // Exclude level-based and subclass skill allowances - those are handled in Strength tab
       excludeLevelAllowances: true,
       excludeSubclassSkillAllowances: true,
     );
-    _skillGrantIds =
+    final grantIds =
         plan.grantedSkillNames.map(_resolveSkillId).whereType<String>().toSet();
-    _refreshReservedSkills();
+    if (!const SetEquality<String>().equals(grantIds, _skillGrantIds)) {
+      setState(() => _skillGrantIds = grantIds);
+    }
   }
 
   Future<Map<String, String?>> _restorePerkSelections({
@@ -920,7 +1059,7 @@ class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage> {
     try {
       final plan = _subclassPlanService.buildPlan(
         classData: classData,
-        selectedLevel: _selectedLevel,
+        selectedLevel: _strife.level,
       );
       if (!plan.hasSubclassChoice || plan.subclassFeatureName == null) {
         return selection;
@@ -953,170 +1092,158 @@ class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage> {
     }
   }
 
-
-
-  void _markDirty() {
-    // Don't mark dirty during initial data loading or before first frame completes
-    if (_isLoading || !_initialLoadComplete) return;
-
-    const deepEq = DeepCollectionEquality();
-    final changed = !deepEq.equals(_lastSavedSnapshot, _currentSnapshot());
-
-    if (changed && !_isDirty) {
-      setState(() {
-        _isDirty = true;
-      });
-      widget.onDirtyChanged?.call(true);
-    } else if (!changed && _isDirty) {
-      setState(() {
-        _isDirty = false;
-      });
-      widget.onDirtyChanged?.call(false);
-    }
+  /// A picker signalled an edit. Dirty state is derived by the shell from the
+  /// controller; this just rebuilds the tab so any non-draft-backed local UI
+  /// (e.g. the fixed skill-grant display) stays in sync.
+  void _notifyDirty() {
+    if (mounted) setState(() {});
   }
 
   void _handleLevelChanged(int level) {
-    if (level == _selectedLevel) return;
-    setState(() {
-      _selectedLevel = level;
-    });
+    if (level == _strife.level) return;
+    _controller.updateStrife((d) => d.copyWith(level: level));
     _updateGrantIdsForCurrentPlan();
-    _refreshReservedSkills();
-    _refreshReservedPerks();
-    _markDirty();
+    _notifyDirty();
   }
 
   void _handleClassChanged(ClassData classData) {
-    if (_selectedClass?.classId == classData.classId) return;
-    setState(() {
-      _selectedClass = classData;
-      // Reset characteristic and skill selections when class changes
-      _selectedArray = null;
-      _assignedCharacteristics = {};
-      _levelChoiceSelections = {};
-      _selectedSkills = {};
-      _skillGrantIds = {};
-      _selectedAbilities = {};
-      _selectedPerks = {};
-      _reservedSkillIds = _baseSkillIds;
-      _reservedAbilityIds = {};
-      _reservedPerkIds = {};
-      _reservedLanguageIds = {};
-      _selectedSubclass = null;
-      _selectedKitIds = <String?>[];
-    });
+    if (_strife.classId == classData.classId) return;
+    _controller.updateStrife(
+      (d) => d.copyWith(
+        classId: classData.classId,
+        arrayDescription: null,
+        arrayValues: const [],
+        assignedCharacteristics: const {},
+        levelChoiceSelections: const {},
+        skillSelections: const {},
+        abilitySelections: const {},
+        perkSelections: const {},
+        subclass: null,
+        equipmentIds: const <String?>[],
+      ),
+    );
+    setState(() {});
     _updateGrantIdsForCurrentPlan();
-    _refreshReservedSkills();
-    _refreshReservedPerks();
-    _markDirty();
+    _notifyDirty();
   }
 
   void _handleArrayChanged(CharacteristicArray? array) {
     if (_selectedArray == array) return;
-    setState(() {
-      _selectedArray = array;
-      _assignedCharacteristics = {};
-    });
-    _markDirty();
+    _controller.updateStrife(
+      (d) => d.copyWith(
+        arrayDescription: array?.description,
+        arrayValues: array?.values ?? const [],
+        assignedCharacteristics: const {},
+      ),
+    );
+    _notifyDirty();
   }
 
   void _handleAssignmentsChanged(Map<String, int> assignments) {
-    if (_deepEq.equals(_assignedCharacteristics, assignments)) return;
-    setState(() {
-      _assignedCharacteristics = assignments;
-    });
-    _markDirty();
+    if (_deepEq.equals(_strife.assignedCharacteristics, assignments)) return;
+    _controller
+        .updateStrife((d) => d.copyWith(assignedCharacteristics: assignments));
+    _notifyDirty();
   }
 
   void _handleFinalTotalsChanged(Map<String, int> totals) {
-    if (_deepEq.equals(_finalCharacteristics, totals)) return;
-    setState(() {
-      _finalCharacteristics = totals;
-    });
-    _markDirty();
+    // Not tracked by the draft. The original page never used the final
+    // totals for anything beyond a dirty check that its own snapshot never
+    // actually included, so there is nothing to forward here.
   }
 
   void _handleLevelChoiceSelectionsChanged(Map<String, String?> selections) {
-    if (_deepEq.equals(_levelChoiceSelections, selections)) return;
-    setState(() {
-      _levelChoiceSelections = selections;
-    });
-    _markDirty();
+    if (_deepEq.equals(_strife.levelChoiceSelections, selections)) return;
+    _controller
+        .updateStrife((d) => d.copyWith(levelChoiceSelections: selections));
+    _notifyDirty();
   }
 
   void _handleSkillSelectionsChanged(StartingSkillSelectionResult result) {
-    final sameSlots = _deepEq.equals(_selectedSkills, result.selectionsBySlot);
+    final sameSlots =
+        _deepEq.equals(_strife.skillSelections, result.selectionsBySlot);
     final sameGrants =
         _deepEq.equals(_skillGrantIds, result.grantedSkillIds.toSet());
     if (sameSlots && sameGrants) return;
+    _controller.updateStrife(
+        (d) => d.copyWith(skillSelections: result.selectionsBySlot));
     setState(() {
-      _selectedSkills = result.selectionsBySlot;
       _skillGrantIds = Set<String>.from(result.grantedSkillIds);
     });
-    _refreshReservedSkills();
-    _markDirty();
+    _notifyDirty();
   }
 
   void _handlePerkSelectionsChanged(StartingPerkSelectionResult result) {
-    if (_deepEq.equals(_selectedPerks, result.selectionsBySlot)) return;
-    setState(() {
-      _selectedPerks = result.selectionsBySlot;
-    });
-    _refreshReservedPerks();
-    _markDirty();
+    if (_deepEq.equals(_strife.perkSelections, result.selectionsBySlot)) return;
+    _controller.updateStrife(
+        (d) => d.copyWith(perkSelections: result.selectionsBySlot));
+    _notifyDirty();
   }
 
   void _handleAbilitySelectionsChanged(StartingAbilitySelectionResult result) {
-    if (_deepEq.equals(_selectedAbilities, result.selectionsBySlot)) return;
-    setState(() {
-      _selectedAbilities = result.selectionsBySlot;
-    });
-    _markDirty();
+    if (_deepEq.equals(_strife.abilitySelections, result.selectionsBySlot)) {
+      return;
+    }
+    _controller.updateStrife(
+      (d) => d.copyWith(abilitySelections: result.selectionsBySlot),
+    );
+    _notifyDirty();
   }
 
   void _handleSubclassSelectionChanged(SubclassSelectionResult result) {
-    final sameDeity = _selectedSubclass?.deityId == result.deityId;
-    final sameSubclass =
-        _selectedSubclass?.subclassName == result.subclassName &&
-            _selectedSubclass?.subclassKey == result.subclassKey;
+    final current = _selectedSubclass;
+    final sameDeity = current?.deityId == result.deityId;
+    final sameSubclass = current?.subclassName == result.subclassName &&
+        current?.subclassKey == result.subclassKey;
     final sameDomains = _deepEq.equals(
-        _selectedSubclass?.domainNames ?? const <String>[], result.domainNames);
+        current?.domainNames ?? const <String>[], result.domainNames);
     if (sameDeity && sameSubclass && sameDomains) return;
-    setState(() {
-      _selectedSubclass = result;
-    });
+    _controller.updateStrife(
+      (d) => d.copyWith(
+        subclass: StrifeSubclassDraft(
+          subclassKey: result.subclassKey,
+          subclassName: result.subclassName,
+          skillId: _resolveSkillId(result.skill),
+          deityId: result.deityId,
+          domainNames: result.domainNames,
+        ),
+      ),
+    );
     _updateGrantIdsForCurrentPlan();
-    _refreshReservedSkills();
-    _refreshReservedPerks();
-    _markDirty();
+    _notifyDirty();
   }
 
   void _handleKitChangedAtSlot(int slotIndex, String? kitId) {
-    if (_selectedKitIds.length > slotIndex &&
-        _selectedKitIds[slotIndex] == kitId) {
+    final current = _selectedKitIds;
+    if (slotIndex < current.length && current[slotIndex] == kitId) {
       return;
     }
-    setState(() {
-      while (_selectedKitIds.length <= slotIndex) {
-        _selectedKitIds.add(null);
+    _controller.updateStrife((d) {
+      final ids = List<String?>.from(d.equipmentIds);
+      while (ids.length <= slotIndex) {
+        ids.add(null);
       }
-      _selectedKitIds[slotIndex] = kitId;
+      ids[slotIndex] = kitId;
+      return d.copyWith(equipmentIds: ids);
     });
-    _markDirty();
+    _notifyDirty();
   }
 
   List<Widget> _buildKitWidgets() {
-    if (_selectedClass == null) return [];
+    final classData = _selectedClass;
+    if (classData == null) return [];
 
-    final slots = _determineKitSlots(_selectedClass!);
+    final slots = _determineKitSlots(classData);
     if (slots.isEmpty) return [];
 
     final totalSlots = slots.fold<int>(0, (sum, slot) => sum + slot.count);
-    while (_selectedKitIds.length < totalSlots) {
-      _selectedKitIds.add(null);
+    final kitIds = List<String?>.from(_selectedKitIds);
+    while (kitIds.length < totalSlots) {
+      kitIds.add(null);
     }
 
     final equipmentSlots = <EquipmentSlot>[];
+    final equipmentConflictIndex = _strifeEquipmentConflictIndex;
     var kitIndex = 0;
 
     for (final slot in slots) {
@@ -1132,25 +1259,19 @@ class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage> {
             ? 'Allowed types: ${slot.allowedTypes.map(_formatKitTypeName).join(', ')}'
             : null;
 
-        // Collect IDs of kits selected in OTHER slots to prevent duplicates
-        final excludeIds = <String>[];
-        for (var j = 0; j < _selectedKitIds.length; j++) {
-          if (j != currentIndex && _selectedKitIds[j] != null) {
-            excludeIds.add(_selectedKitIds[j]!);
-          }
-        }
+        final currentSelection =
+            currentIndex < kitIds.length ? kitIds[currentIndex] : null;
 
         equipmentSlots.add(
           EquipmentSlot(
             label: label,
             allowedTypes: slot.allowedTypes,
-            selectedItemId: currentIndex < _selectedKitIds.length
-                ? _selectedKitIds[currentIndex]
-                : null,
+            selectedItemId: currentSelection,
             onChanged: (kitId) => _handleKitChangedAtSlot(currentIndex, kitId),
             helperText: helperText,
-            classId: _selectedClass?.classId,
-            excludeItemIds: excludeIds,
+            classId: classData.classId,
+            conflictIndex: equipmentConflictIndex,
+            slotKey: _equipmentSlotKey(currentIndex),
           ),
         );
         kitIndex++;
@@ -1196,7 +1317,7 @@ class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage> {
   Future<List<String?>> _matchEquipmentToSlots({
     required ClassData classData,
     required List<String?> equipmentIds,
-    required dynamic db,
+    required app_db.AppDatabase db,
   }) async {
     final slots = _determineKitSlots(classData);
     if (slots.isEmpty) return <String?>[];
@@ -1343,522 +1464,32 @@ class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage> {
     return sorted;
   }
 
-  bool _validateSelections() {
-    if (_selectedClass == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(StrifeCreatorPageText.pleaseSelectClassSnackBar),
-        ),
-      );
-      return false;
-    }
-
-    return true;
-  }
-
-  /// Applies a characteristic payload (setTo, increaseBy, max) to a stat value
-  void _applyCharacteristicPayload(
-    String stat,
-    AdjustmentPayload payload,
-    Map<String, int> characteristics,
-  ) {
-    var value = characteristics[stat] ?? 0;
-
-    // Apply increaseBy
-    final increase = payload.increaseBy;
-    if (increase != null) {
-      value += increase;
-    }
-
-    // Apply setTo (only if current value is lower)
-    final setTo = payload.setTo;
-    if (setTo != null && value < setTo) {
-      value = setTo;
-    }
-
-    // Apply max cap
-    final maxValue = payload.max;
-    if (maxValue != null && value > maxValue) {
-      value = maxValue;
-    }
-
-    characteristics[stat] = value;
-  }
-
-  Future<EquipmentBonuses> _applyEquipmentSelectionAndBonuses(
-    List<String?> equipmentSlotIds,
-    HeroRepository repo,
-    app_db.AppDatabase db,
-  ) async {
-    if (kDebugMode) {
-      debugPrint('[StrifeCreator] _applyEquipmentSelectionAndBonuses called with: $equipmentSlotIds');
-    }
-    
-    // EXACT copy of Kits tab flow - do not add extra logic here
-    await repo.saveEquipmentIds(widget.heroId, equipmentSlotIds);
-    await db.upsertHeroValue(
-      heroId: widget.heroId,
-      key: 'basics.equipment',
-      jsonMap: {'ids': equipmentSlotIds},
-    );
-
-    final level = _selectedLevel;
-    if (kDebugMode) {
-      debugPrint('[StrifeCreator] Calling applyKitGrants with heroLevel: $level');
-    }
-
-    // Use KitGrantsService to apply all kit grants (including stat mods like decrease_total)
-    // This is the ONLY thing that saves to hero_entries - do not duplicate or interfere
-    final kitGrantsService = KitGrantsService(db);
-    final bonuses = await kitGrantsService.applyKitGrants(
-      heroId: widget.heroId,
-      equipmentIds: equipmentSlotIds,
-      heroLevel: level,
-    );
-    
-    if (kDebugMode) {
-      debugPrint('[StrifeCreator] applyKitGrants returned bonuses: stamina=${bonuses.staminaBonus}, speed=${bonuses.speedBonus}, stability=${bonuses.stabilityBonus}, disengage=${bonuses.disengageBonus}');
-    }
-
-    // KitGrantsService now saves to both hero_entries AND hero_values.strife.equipment_bonuses
-    // No need to save separately here
-
-    // Also invalidate hero assembly to reload stat mods
-    ref.invalidate(heroAssemblyProvider(widget.heroId));
-    
-    return bonuses;
-  }
-
-  Future<void> handleSave() async {
-    await _handleSave();
-  }
-
-  Future<void> _handleSave() async {
-    if (!_validateSelections()) return;
-
-    final repo = ref.read(heroRepositoryProvider);
-    final db = ref.read(appDatabaseProvider);
-    final classData = _selectedClass!;
-    final startingChars = classData.startingCharacteristics;
-
-    try {
-      // Check if the class has changed - if so, clear all previous strife data first
-      final classChanged =
-          _savedClassId != null && _savedClassId != classData.classId;
-      if (classChanged) {
-        if (kDebugMode) {
-          debugPrint('Class changed from $_savedClassId to ${classData.classId} - clearing old strife data');
-        }
-        await repo.clearStrifeData(widget.heroId);
-      }
-
-      final updates = <Future>[];
-
-      // 1. Save level
-      await repo.updateMainStats(widget.heroId, level: _selectedLevel);
-
-      // 2. Save class name
-      await repo.updateClassName(widget.heroId, classData.classId);
-
-      // 3. Save subclass
-      if (_selectedSubclass != null) {
-        // Execute immediately to reduce batch size
-        await repo.updateSubclass(
-          widget.heroId,
-          _selectedSubclass!.subclassName,
-        );
-
-        // Save subclass key for proper restoration
-        if (_selectedSubclass!.subclassKey != null) {
-          await repo.saveSubclassKey(
-            widget.heroId,
-            _selectedSubclass!.subclassKey,
-          );
-        }
-
-        // Save deity if selected
-        if (_selectedSubclass!.deityId != null) {
-          await repo.updateDeity(
-            widget.heroId,
-            _selectedSubclass!.deityId,
-          );
-        }
-
-        // Save domain if selected (join multiple domains with comma)
-        if (_selectedSubclass!.domainNames.isNotEmpty) {
-          await repo.updateDomain(
-            widget.heroId,
-            _selectedSubclass!.domainNames.join(', '),
-          );
-        }
-      }
-
-      // 3.5. Apply kit grants (bonuses, abilities, stat mods like decrease_total) from selected equipment
-      final slotOrderedEquipmentIds = List<String?>.from(_selectedKitIds);
-      if (kDebugMode) {
-        debugPrint('[StrifeCreatorPage] _handleSave: Saving kits: $slotOrderedEquipmentIds');
-      }
-
-      // Persist equipment selection and recalc bonuses using the same flow as KitsTab
-      final equipmentBonuses = await _applyEquipmentSelectionAndBonuses(
-        slotOrderedEquipmentIds,
-        repo,
-        db,
-      );
-      if (kDebugMode) {
-        debugPrint('[StrifeCreatorPage] _handleSave: Calculated bonuses: $equipmentBonuses');
-      }
-
-      // Auto-favorite the selected equipment so it shows up in the gear page favorites
-      final equipmentIdsToFavorite =
-          slotOrderedEquipmentIds.whereType<String>().toList();
-      if (equipmentIdsToFavorite.isNotEmpty) {
-        // Get existing favorites and merge with new equipment
-        final existingFavorites = await repo.getFavoriteKitIds(widget.heroId);
-        final mergedFavorites =
-            <String>{...existingFavorites, ...equipmentIdsToFavorite}.toList();
-        await repo.saveFavoriteKitIds(widget.heroId, mergedFavorites);
-      }
-
-      // 4. Save selected characteristic array name
-      if (_selectedArray != null) {
-        updates.add(repo.updateCharacteristicArray(
-          widget.heroId,
-          arrayName: _selectedArray!.description,
-          arrayValues: _selectedArray!.values,
-        ));
-      }
-
-      // 4.5. Save characteristic assignments (the mapping of stat to value)
-      if (_assignedCharacteristics.isNotEmpty) {
-        updates.add(repo.saveCharacteristicAssignments(
-          widget.heroId,
-          _assignedCharacteristics,
-        ));
-      }
-
-      // 4.6. Save level choice selections (which characteristic to boost at each level)
-      if (_levelChoiceSelections.isNotEmpty) {
-        updates.add(repo.saveLevelChoiceSelections(
-          widget.heroId,
-          _levelChoiceSelections,
-        ));
-      }
-
-      // 5. Calculate and save characteristics (base values = fixed + array + level improvements)
-      // Use the service to calculate final characteristic values
-      const charService = StartingCharacteristicsService();
-      final adjustmentEntries = charService.collectAdjustmentEntries(
-        classData: classData,
-        selectedLevel: _selectedLevel,
-      );
-
-      // Build initial values from fixed starting characteristics
-      final baseCharacteristics = <String, int>{
-        for (final stat in CharacteristicUtils.characteristicOrder) stat: 0,
-      };
-
-      // Apply fixed values
-      startingChars.fixedStartingCharacteristics.forEach((key, value) {
-        final normalizedKey = CharacteristicUtils.normalizeKey(key);
-        if (normalizedKey != null) {
-          baseCharacteristics[normalizedKey] = value;
-        }
-      });
-
-      // Apply array assignments
-      _assignedCharacteristics.forEach((characteristic, value) {
-        final charLower = characteristic.toLowerCase();
-        if (baseCharacteristics.containsKey(charLower)) {
-          baseCharacteristics[charLower] =
-              (baseCharacteristics[charLower] ?? 0) + value;
-        }
-      });
-
-      // Apply level-based improvements
-      for (final entry in adjustmentEntries) {
-        final payload = entry.payload;
-        if (entry.target == 'all') {
-          // Apply to all characteristics
-          for (final stat in CharacteristicUtils.characteristicOrder) {
-            _applyCharacteristicPayload(stat, payload, baseCharacteristics);
-          }
-        } else if (entry.target == 'any') {
-          // Apply to the user's chosen characteristic
-          final choiceId = entry.choiceId;
-          if (choiceId != null) {
-            final chosenStat = _levelChoiceSelections[choiceId];
-            if (chosenStat != null) {
-              _applyCharacteristicPayload(
-                  chosenStat, payload, baseCharacteristics);
-            }
-          }
-        } else if (CharacteristicUtils.characteristicOrder
-            .contains(entry.target)) {
-          // Apply to specific characteristic
-          _applyCharacteristicPayload(
-              entry.target, payload, baseCharacteristics);
-        }
-      }
-
-      // Save the final base characteristics
-      for (final entry in baseCharacteristics.entries) {
-        updates.add(
-          repo.setCharacteristicBase(widget.heroId,
-              characteristic: entry.key, value: entry.value),
-        );
-      }
-
-      // 5.5. Load feature stat bonuses (from class features like "stamina_increase: 21")
-      // Note: speed/disengage bonuses may be characteristic-based ("Agility") so they're
-      // computed at runtime via dynamicModifiers, not added here.
-      final featureStatBonuses =
-          await repo.getFeatureStatBonuses(widget.heroId);
-      final featureStaminaBonus = featureStatBonuses['stamina'] ?? 0;
-
-      // 6. Calculate and save Stamina (class base + level scaling + equipment bonus + feature bonus)
-      final baseMaxStamina = startingChars.baseStamina +
-          (startingChars.staminaPerLevel * (_selectedLevel - 1));
-      final effectiveMaxStamina =
-          baseMaxStamina + equipmentBonuses.staminaBonus + featureStaminaBonus;
-      updates.add(repo.updateVitals(
-        widget.heroId,
-        staminaMax: baseMaxStamina,
-        staminaCurrent: effectiveMaxStamina, // Start at full health
-      ));
-
-      // 7. Calculate winded and dying values (based on effective max stamina)
-      final windedValue = effectiveMaxStamina ~/ 2; // Half of max stamina
-      final dyingValue =
-          -(effectiveMaxStamina ~/ 2); // Negative half of max stamina
-      updates.add(repo.updateVitals(
-        widget.heroId,
-        windedValue: windedValue,
-        dyingValue: dyingValue,
-      ));
-
-      // 8. Save Recoveries
-      final recoveriesMax = startingChars.baseRecoveries;
-      final recoveryValue =
-          (effectiveMaxStamina / 3).ceil(); // 1/3 of max HP, rounded up
-      updates.add(repo.updateVitals(
-        widget.heroId,
-        recoveriesMax: recoveriesMax,
-        recoveriesCurrent: recoveriesMax, // Start with all recoveries available
-      ));
-      updates.add(repo.updateRecoveryValue(widget.heroId, recoveryValue));
-
-      // 9. Save stats from class (equipment bonuses are stored separately)
-      updates.add(repo.updateCoreStats(
-        widget.heroId,
-        speed: startingChars.baseSpeed,
-        stability: startingChars.baseStability,
-        disengage: startingChars.baseDisengage,
-      ));
-
-      // 10. Save Heroic Resource name
-      updates.add(repo.updateHeroicResourceName(
-        widget.heroId,
-        startingChars.heroicResourceName,
-      ));
-
-      // 11. Calculate and save potencies based on class progression
-      final potencyChar = startingChars.potencyProgression.characteristic;
-      final potencyModifiers = startingChars.potencyProgression.modifiers;
-
-      // Get the characteristic value for potency calculation
-      final potencyCharValue = _assignedCharacteristics[potencyChar] ??
-          startingChars
-              .fixedStartingCharacteristics[potencyChar.toLowerCase()] ??
-          0;
-
-      // Calculate potency values (characteristic + modifier)
-      final strongPotency =
-          potencyCharValue + (potencyModifiers['strong'] ?? 0);
-      final averagePotency =
-          potencyCharValue + (potencyModifiers['average'] ?? 0);
-      final weakPotency = potencyCharValue + (potencyModifiers['weak'] ?? 0);
-
-      updates.add(repo.updatePotencies(
-        widget.heroId,
-        strong: '$strongPotency',
-        average: '$averagePotency',
-        weak: '$weakPotency',
-      ));
-
-      // 10. Save selected abilities to database (replaces all previous abilities)
-      final selectedAbilityIds = _selectedAbilities.values
-          .whereType<String>()
-          .where((id) => id.isNotEmpty)
-          .toList();
-
-      if (kDebugMode) {
-        debugPrint('[StrifeCreatorPage] _handleSave: Saving abilities: $selectedAbilityIds');
-        debugPrint('[StrifeCreatorPage] _handleSave: _selectedAbilities map: $_selectedAbilities');
-      }
-
-      // Save ONLY user-selected abilities from strife creator UI (not from other sources)
-      // Abilities from kits, class features, ancestry, etc. are already saved by their respective services
-      // We only need to save abilities that the user explicitly chose in the strife UI slots
-      updates.add(
-        ref.read(appDatabaseProvider).setHeroComponentIds(
-              heroId: widget.heroId,
-              category: 'ability',
-              componentIds: selectedAbilityIds,
-            ),
-      );
-
-      // 10b. Save strife ability slot selections separately for proper restoration
-      updates.add(db.setHeroConfig(
-        heroId: widget.heroId,
-        configKey: 'strife.ability_selections',
-        value: _selectedAbilities.map((k, v) => MapEntry(k, v)),
-      ));
-      updates.add(db.deleteHeroConfig(widget.heroId, 'strife.import_ability_ids'));
-
-      // 11. Save subclass skill via hero_entries (properly tracks source for removal on change)
-      final subclassSkillId = _resolveSkillId(_selectedSubclass?.skill);
-      updates.add(repo.saveSubclassSkill(widget.heroId, subclassSkillId));
-
-      // Save the new subclass skill ID for future reference
-      if (subclassSkillId != null && subclassSkillId.isNotEmpty) {
-        updates.add(db.setHeroConfig(
-          heroId: widget.heroId,
-          configKey: 'strife.subclass_skill_id',
-          value: {'id': subclassSkillId},
-        ));
-      } else {
-        updates.add(
-            db.deleteHeroConfig(widget.heroId, 'strife.subclass_skill_id'));
-      }
-
-      // 12. Save selected skills to database
-      // After clearStrifeData, only story-sourced skills remain - we add new strife selections
-      // Collect strife-selected skills (NOT including subclass skill - that's tracked via entries)
-      final strifeSkillIds = _selectedSkills.values
-          .whereType<String>()
-          .where((id) => id.isNotEmpty)
-          .toSet();
-      final grantSkillIds = Set<String>.from(_skillGrantIds);
-
-      // Get story-sourced skills (from ancestry, career, complication, culture)
-      // These are preserved across class changes
-      final storySkillIds = _dbSavedSkillIds;
-
-      // Save ONLY user-selected skills from strife creator UI slots
-      // (not including story skills from career/culture or class feature grants)
-      // Story skills and grants are already saved by their respective services
-      final strifeOnlySkills = strifeSkillIds.difference(storySkillIds).difference(grantSkillIds);
-      
-      updates.add(
-        db.setHeroComponentIds(
-          heroId: widget.heroId,
-          category: 'skill',
-          componentIds: strifeOnlySkills.toList(),
-        ),
-      );
-
-      // 12b. Save strife skill slot selections separately for proper restoration
-      updates.add(db.setHeroConfig(
-        heroId: widget.heroId,
-        configKey: 'strife.skill_selections',
-        value: _selectedSkills.map((k, v) => MapEntry(k, v)),
-      ));
-
-      // 13. Save selected perks to database
-      // After clearStrifeData, only story-sourced perks remain
-      final strifePerkIds = _selectedPerks.values
-          .whereType<String>()
-          .where((id) => id.isNotEmpty)
-          .toSet();
-
-      // Get story-sourced perks (from ancestry, career, complication, culture)
-      final storyPerkIds = _dbSavedPerkIds;
-
-      // Save ONLY user-selected perks from strife creator UI
-      // (not including story perks from career/complication)
-      // Story perks are already saved by their respective services
-      final strifeOnlyPerks = strifePerkIds.difference(storyPerkIds);
-      
-      updates.add(
-        db.setHeroComponentIds(
-          heroId: widget.heroId,
-          category: 'perk',
-          componentIds: strifeOnlyPerks.toList(),
-        ),
-      );
-
-      // 13b. Save strife perk slot selections separately for proper restoration
-      updates.add(db.setHeroConfig(
-        heroId: widget.heroId,
-        configKey: 'strife.perk_selections',
-        value: _selectedPerks.map((k, v) => MapEntry(k, v)),
-      ));
-
-      // Execute all updates
-      await Future.wait(updates);
-
-      if (!mounted) return;
-
-      // 14. Apply class feature grants so bonuses apply even without visiting the Strength page
-      // Load any existing feature selections and apply the grants
-      try {
-        final savedFeatureSelections =
-            await repo.getFeatureSelections(widget.heroId);
-        final grantService = ClassFeatureGrantsService(db);
-        await grantService.applyClassFeatureSelections(
-          heroId: widget.heroId,
-          classData: classData,
-          level: _selectedLevel,
-          selections: savedFeatureSelections,
-          subclassSelection: _selectedSubclass,
-        );
-      } catch (e) {
-        // Best-effort: class feature grants are non-critical for the main save
-        if (kDebugMode) debugPrint('Failed to apply class feature grants: $e');
-      }
-
-      if (!mounted) return;
-
-      // Invalidate providers so UI reflects the saved data (same as Kits tab)
-      ref.invalidate(heroRepositoryProvider);
-      ref.invalidate(heroEquipmentBonusesProvider(widget.heroId));
-      ref.invalidate(heroValuesProvider(widget.heroId));
-      ref.invalidate(heroAssemblyProvider(widget.heroId));
-
-      // Update local state with the new saved IDs
-      _savedSubclassSkillId = subclassSkillId;
-      _savedClassId =
-          classData.classId; // Update saved class ID after successful save
-
-      setState(() {
-        _isDirty = false;
-      });
-      widget.onDirtyChanged?.call(false);
-      _syncSnapshot();
-      widget.onSaveRequested?.call();
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text(StrifeCreatorPageText.saved),
-          duration: const Duration(seconds: 3),
-          backgroundColor: Colors.green,
-        ),
-      );
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${StrifeCreatorPageText.failedToSavePrefix}$e'),
-          duration: const Duration(seconds: 3),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  }
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
+    // Recompute the fixed class-skill grants when the class/level/subclass are
+    // changed by the controller rather than by a picker — i.e. on a shell-driven
+    // Discard or reload (the picker handlers already recompute inline). Grant ids
+    // are derived display state, not a player choice, so they live outside the
+    // draft and must be resynced explicitly.
+    ref.listen<StrifeDraft>(
+      heroBuilderStrifeDraftProvider(widget.heroId),
+      (previous, next) {
+        if (previous == null) return;
+        if (previous.classId != next.classId ||
+            previous.level != next.level ||
+            previous.subclass != next.subclass) {
+          _updateGrantIdsForCurrentPlan();
+        }
+      },
+    );
+
+    final strife = _strife;
+
     if (_isLoading) {
       return const Scaffold(
         body: Center(
@@ -1883,11 +1514,7 @@ class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage> {
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
-                  setState(() {
-                    _isLoading = true;
-                    _errorMessage = null;
-                  });
-                  _initializeData();
+                  _load();
                 },
                 child: const Text(StrifeCreatorPageText.retryLabel),
               ),
@@ -1897,6 +1524,9 @@ class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage> {
       );
     }
 
+    final selectedClass = _selectedClass;
+    final selectedSubclass = _selectedSubclass;
+
     return Scaffold(
       body: SingleChildScrollView(
         key: const PageStorageKey('strife_creator_scroll_view'),
@@ -1905,7 +1535,7 @@ class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage> {
             // Level Selector
             LevelSelectorWidget(
               key: const ValueKey('level_selector'),
-              selectedLevel: _selectedLevel,
+              selectedLevel: strife.level,
               onLevelChanged: _handleLevelChanged,
             ),
 
@@ -1913,37 +1543,28 @@ class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage> {
             ClassSelectorWidget(
               key: const ValueKey('class_selector'),
               availableClasses: _classDataService.getAllClasses(),
-              selectedClass: _selectedClass,
-              selectedLevel: _selectedLevel,
+              selectedClass: selectedClass,
+              selectedLevel: strife.level,
               onClassChanged: _handleClassChanged,
             ),
 
-            if (_selectedClass != null) ...[
+            if (selectedClass != null) ...[
               ChooseSubclassWidget(
                 key: const ValueKey('choose_subclass'),
-                classData: _selectedClass!,
-                selectedLevel: _selectedLevel,
-                selectedSubclass: _selectedSubclass,
+                classData: selectedClass,
+                selectedLevel: strife.level,
+                selectedSubclass: selectedSubclass,
                 onSelectionChanged: _handleSubclassSelectionChanged,
-                // Pass reserved skills excluding the current subclass's own skill
-                // so it doesn't flag itself as a duplicate
-                reservedSkillIds: {
-                  ..._baseSkillIds,
-                  ..._normalizeSkillIds(
-                      _selectedSkills.values.whereType<String>()),
-                  ..._dbSavedSkillIds,
-                },
+                skillConflictIndex: _strifeSkillConflictIndex,
                 skillNameToIdLookup: _skillIdLookup,
-                // Pass the saved subclass skill ID to avoid self-flagging
-                savedSubclassSkillId: _savedSubclassSkillId,
               ),
               StartingCharacteristicsWidget(
                 key: const ValueKey('starting_characteristics'),
-                classData: _selectedClass!,
-                selectedLevel: _selectedLevel,
+                classData: selectedClass,
+                selectedLevel: strife.level,
                 selectedArray: _selectedArray,
-                assignedCharacteristics: _assignedCharacteristics,
-                initialLevelChoiceSelections: _levelChoiceSelections,
+                assignedCharacteristics: strife.assignedCharacteristics,
+                initialLevelChoiceSelections: strife.levelChoiceSelections,
                 onArrayChanged: _handleArrayChanged,
                 onAssignmentsChanged: _handleAssignmentsChanged,
                 onFinalTotalsChanged: _handleFinalTotalsChanged,
@@ -1953,35 +1574,36 @@ class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage> {
               ..._buildKitWidgets(),
               StartingAbilitiesWidget(
                 key: const ValueKey('starting_abilities'),
-                classData: _selectedClass!,
-                selectedLevel: _selectedLevel,
-                selectedSubclassName: _selectedSubclass?.subclassName,
-                selectedDomainNames: _selectedSubclass?.domainNames ?? const [],
-                selectedAbilities: _selectedAbilities,
-                reservedAbilityIds: _reservedAbilityIds,
+                classData: selectedClass,
+                selectedLevel: strife.level,
+                selectedSubclassName: selectedSubclass?.subclassName,
+                selectedDomainNames: selectedSubclass?.domainNames ?? const [],
+                selectedAbilities: strife.abilitySelections,
+                conflictIndex: _strifeAbilityConflictIndex,
                 onSelectionChanged: _handleAbilitySelectionsChanged,
               ),
               StartingSkillsWidget(
                 key: const ValueKey('starting_skills'),
-                classData: _selectedClass!,
-                selectedLevel: _selectedLevel,
-                selectedSubclass: _selectedSubclass,
-                selectedSkills: _selectedSkills,
-                reservedSkillIds: _reservedSkillIds,
+                classData: selectedClass,
+                selectedLevel: strife.level,
+                selectedSubclass: selectedSubclass,
+                selectedSkills: strife.skillSelections,
+                conflictIndex: _strifeSkillConflictIndex,
                 onSelectionChanged: _handleSkillSelectionsChanged,
               ),
               StartingPerksWidget(
                 key: const ValueKey('starting_perks'),
                 heroId: widget.heroId,
-                classData: _selectedClass!,
-                selectedLevel: _selectedLevel,
-                selectedPerks: _selectedPerks,
-                reservedPerkIds: _reservedPerkIds,
-                reservedLanguageIds: {
-                  ..._reservedLanguageIds,
-                  ..._dbSavedLanguageIds
-                },
-                reservedSkillIds: _reservedSkillIds,
+                classData: selectedClass,
+                selectedLevel: strife.level,
+                selectedPerks: strife.perkSelections,
+                conflictIndex: _strifePerkConflictIndex,
+                skillConflictIndex: _strifeSkillConflictIndex,
+                // `one_owned` perk grants need the projected effective skill
+                // set. Duplicate filtering for new skill/language grants is
+                // source-scoped inside PerksSelectionWidget.
+                ownedSkillIds: _strifeSkillConflictIndex
+                    .claimedEntryIds(HeroEntryTypes.skill),
                 onSelectionChanged: _handlePerkSelectionsChanged,
               ),
             ],

@@ -22,9 +22,11 @@
     },
 
     "starting_skills": {
-      "skill_groups": ["interpersonal", "lore"],
-      "skill_count": 2,
-      "quick_build": ["Read Person", "Religion"]
+      "granted_skills": [],
+      "quick_build": ["Read Person", "Religion"],
+      "allowances": [
+        { "count": 2, "groups": ["interpersonal", "lore"] }
+      ]
     },
     "fixed_starting_characteristics": {
       "intuition": 2
@@ -101,7 +103,13 @@
     },
     {
       "level": 3,
-      "features": ["Minor Miracle"],
+      "features": [
+        {
+          "feature_id": "feature_conduit_minor_miracle",
+          "name": "Minor Miracle",
+          "grant_type": "granted"
+        }
+      ],
       "new_abilities": {
         "7_cost": 1
       }
@@ -200,7 +208,7 @@
       "perks": [
         {
           "count": 1,
-          "restrictions": ["crafting", "lore", "supernatural"]
+          "perk_groups": ["crafting", "lore", "supernatural"]
         }
       ],
       "skills": [{ "count": 1 }],

@@ -123,7 +123,8 @@ class _AddPerkDialogState extends ConsumerState<AddPerkDialog> {
                       color: _perksColor.withAlpha(51),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: AppIcon(PerkGroupIcons.tab, color: _perksColor, size: 24),
+                    child: AppIcon(PerkGroupIcons.tab,
+                        color: _perksColor, size: 24),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -288,8 +289,9 @@ class _AddPerkDialogState extends ConsumerState<AddPerkDialog> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color:
-              isSelected ? _perksColor.withAlpha(51) : StoryTheme.cardBackground,
+          color: isSelected
+              ? _perksColor.withAlpha(51)
+              : StoryTheme.cardBackground,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isSelected ? _perksColor : FormTheme.border,

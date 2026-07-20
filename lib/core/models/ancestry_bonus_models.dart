@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'canonical_grant_model.dart';
+
 /// Represents the different types of bonuses that ancestry traits can provide.
 enum AncestryBonusType {
   setBaseStatIfNotAlreadyHigher,
@@ -9,6 +11,7 @@ enum AncestryBonusType {
   decreaseTotal,
   conditionImmunity,
   pickAbilityName,
+  pickSkill,
 }
 
 /// Base class for ancestry bonuses.
@@ -43,6 +46,7 @@ sealed class AncestryBonus {
       AncestryBonusType.conditionImmunity =>
         ConditionImmunityBonus.fromJson(json),
       AncestryBonusType.pickAbilityName => PickAbilityBonus.fromJson(json),
+      AncestryBonusType.pickSkill => PickSkillBonus.fromJson(json),
     };
   }
 
@@ -50,6 +54,15 @@ sealed class AncestryBonus {
       Map<String, dynamic> traitData, String traitId, String traitName,
       [Map<String, String> traitChoices = const {}]) {
     final bonuses = <AncestryBonus>[];
+
+    if (_isCanonicalGrantValue(traitData['grants'])) {
+      bonuses.addAll(_parseCanonicalBonuses(
+        traitData['grants'],
+        traitId,
+        traitName,
+        traitChoices,
+      ));
+    }
 
     // set_base_stat_if_not_already_higher
     if (traitData['set_base_stat_if_not_already_higher'] != null) {
@@ -179,6 +192,291 @@ sealed class AncestryBonus {
     }
 
     return bonuses;
+  }
+
+  static bool _isCanonicalGrantValue(Object? value) {
+    if (value is List) {
+      return value.any((item) => item is Map && item.containsKey('kind'));
+    }
+    if (value is Map) {
+      return value['schema'] == canonicalGrantSchemaId ||
+          value.containsKey('kind');
+    }
+    return false;
+  }
+
+  static List<AncestryBonus> _parseCanonicalBonuses(
+    Object? grantsData,
+    String traitId,
+    String traitName,
+    Map<String, String> traitChoices,
+  ) {
+    final parsed = CanonicalGrant.parseList(
+      grantsData,
+      defaultSource: traitName,
+    );
+    final bonuses = <AncestryBonus>[];
+
+    for (final grant in parsed) {
+      switch (grant) {
+        case CanonicalEntryGrant():
+          bonuses.addAll(_parseCanonicalEntryGrant(grant, traitId, traitName));
+        case CanonicalStatModGrant():
+          bonuses
+              .addAll(_parseCanonicalStatModGrant(grant, traitId, traitName));
+        case CanonicalResistanceGrant():
+          bonuses.addAll(_parseCanonicalResistanceGrant(
+            grant,
+            traitId,
+            traitName,
+          ));
+        case CanonicalChoiceGrant():
+          bonuses.addAll(_parseCanonicalChoiceGrant(
+            grant,
+            traitId,
+            traitName,
+            traitChoices,
+          ));
+        default:
+          break;
+      }
+    }
+
+    return bonuses;
+  }
+
+  static List<AncestryBonus> _parseCanonicalEntryGrant(
+    CanonicalEntryGrant grant,
+    String traitId,
+    String traitName,
+  ) {
+    switch (grant.entryType) {
+      case 'ability':
+        final abilityName = _firstText([
+          grant.payload?['name'],
+          grant.label,
+          grant.entryId,
+        ]);
+        if (abilityName.isEmpty) return const [];
+        return [
+          GrantsAbilityBonus(
+            sourceTraitId: traitId,
+            sourceTraitName: traitName,
+            abilityNames: [abilityName],
+          ),
+        ];
+      case 'condition_immunity':
+        final conditionName = _firstText([
+          grant.payload?['name'],
+          grant.payload?['condition'],
+          grant.label,
+          grant.entryId,
+        ]);
+        if (conditionName.isEmpty) return const [];
+        return [
+          ConditionImmunityBonus(
+            sourceTraitId: traitId,
+            sourceTraitName: traitName,
+            conditionName: conditionName,
+          ),
+        ];
+      default:
+        return const [];
+    }
+  }
+
+  static List<AncestryBonus> _parseCanonicalStatModGrant(
+    CanonicalStatModGrant grant,
+    String traitId,
+    String traitName,
+  ) {
+    final stat = _firstText([grant.stat, grant.entryId]);
+    if (stat.isEmpty) return const [];
+
+    final operation = grant.payload?['operation']?.toString().trim();
+    if (operation == 'set_base_if_not_already_higher') {
+      final value = _firstText([
+        grant.payload?['value'],
+        grant.payload?['set_value'],
+        grant.modifications.isNotEmpty
+            ? grant.modifications.first.baseValue
+            : null,
+      ]);
+      if (value.isEmpty) return const [];
+      return [
+        SetBaseStatBonus(
+          sourceTraitId: traitId,
+          sourceTraitName: traitName,
+          stat: stat,
+          value: value,
+        ),
+      ];
+    }
+
+    final bonuses = <AncestryBonus>[];
+    for (final modification in grant.modifications) {
+      final modJson = modification.toJson();
+      if (modJson['perEchelon'] == true) {
+        final valuePerEchelon = _parseIntValue(
+          modJson['valuePerEchelon'] ?? modification.baseValue,
+        );
+        if (valuePerEchelon != 0) {
+          bonuses.add(IncreaseTotalPerEchelonBonus(
+            sourceTraitId: traitId,
+            sourceTraitName: traitName,
+            stat: stat,
+            valuePerEchelon: valuePerEchelon,
+          ));
+        }
+        continue;
+      }
+
+      if (modification.isDynamic) continue;
+
+      final value = modification.baseValue;
+      if (value < 0) {
+        bonuses.add(DecreaseTotalBonus(
+          sourceTraitId: traitId,
+          sourceTraitName: traitName,
+          stat: stat,
+          value: value.abs(),
+        ));
+      } else if (value > 0) {
+        bonuses.add(IncreaseTotalBonus(
+          sourceTraitId: traitId,
+          sourceTraitName: traitName,
+          stat: stat,
+          value: value.toString(),
+        ));
+      }
+    }
+
+    return bonuses;
+  }
+
+  static List<AncestryBonus> _parseCanonicalResistanceGrant(
+    CanonicalResistanceGrant grant,
+    String traitId,
+    String traitName,
+  ) {
+    final damageType = grant.damageType.trim();
+    if (damageType.isEmpty) return const [];
+
+    final bonuses = <AncestryBonus>[];
+    void addResistanceBonus(String stat, Object? value) {
+      final parsedValue = _firstText([value]);
+      if (parsedValue.isEmpty || parsedValue == '0') return;
+      bonuses.add(IncreaseTotalBonus(
+        sourceTraitId: traitId,
+        sourceTraitName: traitName,
+        stat: stat,
+        value: parsedValue,
+        damageTypes: [damageType],
+      ));
+    }
+
+    addResistanceBonus('immunity', grant.dynamicImmunity ?? grant.immunity);
+    addResistanceBonus('weakness', grant.dynamicWeakness ?? grant.weakness);
+
+    return bonuses;
+  }
+
+  static List<AncestryBonus> _parseCanonicalChoiceGrant(
+    CanonicalChoiceGrant grant,
+    String traitId,
+    String traitName,
+    Map<String, String> traitChoices,
+  ) {
+    switch (grant.choiceType.trim().toLowerCase()) {
+      case 'skill':
+        return [
+          PickSkillBonus(
+            sourceTraitId: traitId,
+            sourceTraitName: traitName,
+            choiceKey: grant.choiceKey,
+            groups: grant.groups,
+            count: grant.count,
+            options: grant.options,
+            selectedSkillIds: _parseSelectedSkillIds(
+              traitChoices,
+              grant.choiceKey,
+              traitId,
+              grant.count,
+            ),
+          ),
+        ];
+      case 'damage_type':
+        break;
+      default:
+        return const [];
+    }
+
+    final selectedType = _firstText([
+      traitChoices[grant.choiceKey],
+      traitChoices[traitId],
+      traitId.startsWith('signature')
+          ? traitChoices['signature_immunity']
+          : null,
+    ]);
+    if (selectedType.isEmpty) return const [];
+
+    final stat = _firstText([
+      grant.payload?['stat'],
+      grant.payload?['resistance_type'],
+      grant.payload?['type'],
+      'immunity',
+    ]);
+    final value = _firstText([
+      grant.payload?['value'],
+      grant.payload?['dynamic_value'],
+      grant.payload?['dynamicValue'],
+      0,
+    ]);
+    if (stat.isEmpty || value.isEmpty || value == '0') return const [];
+
+    return [
+      IncreaseTotalBonus(
+        sourceTraitId: traitId,
+        sourceTraitName: traitName,
+        stat: stat,
+        value: value,
+        damageTypes: [selectedType],
+      ),
+    ];
+  }
+
+  static List<String> _parseSelectedSkillIds(
+    Map<String, String> traitChoices,
+    String choiceKey,
+    String traitId,
+    int count,
+  ) {
+    final selected = <String>[];
+    void add(String? value) {
+      final skillId = value?.trim();
+      if (skillId != null && skillId.isNotEmpty) selected.add(skillId);
+    }
+
+    add(traitChoices[choiceKey]);
+    add(traitChoices[traitId]);
+    if (traitId.startsWith('signature')) {
+      add(traitChoices['signature_skill']);
+    }
+    for (var i = 0; i < count; i++) {
+      add(traitChoices['${choiceKey}_$i']);
+      add(traitChoices['${traitId}_skill_$i']);
+    }
+
+    final seen = <String>{};
+    return selected.where((skillId) => seen.add(skillId)).toList();
+  }
+
+  static String _firstText(Iterable<Object?> values) {
+    for (final value in values) {
+      final text = value?.toString().trim();
+      if (text != null && text.isNotEmpty) return text;
+    }
+    return '';
   }
 
   /// Parse an increase_total bonus, handling pick_one for immunity/weakness choices.
@@ -535,6 +833,71 @@ class PickAbilityBonus extends AncestryBonus {
           options is List ? options.map((e) => e.toString()).toList() : [],
       selectedAbilityName: json['selectedAbilityName'] as String?,
     );
+  }
+}
+
+/// Allows picking one or more skills from groups or explicit options.
+class PickSkillBonus extends AncestryBonus {
+  const PickSkillBonus({
+    required super.sourceTraitId,
+    required super.sourceTraitName,
+    required this.choiceKey,
+    this.groups = const [],
+    this.count = 1,
+    this.options = const [],
+    this.selectedSkillIds = const [],
+  });
+
+  final String choiceKey;
+  final List<String> groups;
+  final int count;
+  final List<String> options;
+  final List<String> selectedSkillIds;
+
+  @override
+  AncestryBonusType get type => AncestryBonusType.pickSkill;
+
+  PickSkillBonus copyWith({List<String>? selectedSkillIds}) {
+    return PickSkillBonus(
+      sourceTraitId: sourceTraitId,
+      sourceTraitName: sourceTraitName,
+      choiceKey: choiceKey,
+      groups: groups,
+      count: count,
+      options: options,
+      selectedSkillIds: selectedSkillIds ?? this.selectedSkillIds,
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'type': type.name,
+        'sourceTraitId': sourceTraitId,
+        'sourceTraitName': sourceTraitName,
+        'choiceKey': choiceKey,
+        'groups': groups,
+        'count': count,
+        'options': options,
+        'selectedSkillIds': selectedSkillIds,
+      };
+
+  factory PickSkillBonus.fromJson(Map<String, dynamic> json) {
+    return PickSkillBonus(
+      sourceTraitId: json['sourceTraitId'] as String? ?? '',
+      sourceTraitName: json['sourceTraitName'] as String? ?? '',
+      choiceKey: json['choiceKey'] as String? ?? '',
+      groups: _stringList(json['groups']),
+      count: (json['count'] as num?)?.toInt() ?? 1,
+      options: _stringList(json['options']),
+      selectedSkillIds: _stringList(json['selectedSkillIds']),
+    );
+  }
+
+  static List<String> _stringList(Object? value) {
+    if (value is List) {
+      return value.map((e) => e.toString()).toList();
+    }
+    return const [];
   }
 }
 

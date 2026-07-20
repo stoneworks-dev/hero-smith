@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import '../models/canonical_grant_model.dart';
 import '../models/component.dart';
 
 /// Represents all bonuses extracted from equipment (kits, augmentations, prayers, etc.)
@@ -167,6 +168,38 @@ class _SingleEquipmentBonuses {
 class KitBonusService {
   const KitBonusService();
 
+  static const _flatCanonicalBonusFields = {
+    'stamina': 'stamina_bonus',
+    'speed': 'speed_bonus',
+    'stability': 'stability_bonus',
+    'disengage': 'disengage_bonus',
+    'damage': 'damage_bonus',
+    'bonus_damage': 'bonus_damage',
+  };
+
+  static const _tieredCanonicalBonusFields = {
+    'melee_damage': 'melee_damage_bonus',
+    'ranged_damage': 'ranged_damage_bonus',
+  };
+
+  static const _echelonCanonicalBonusFields = {
+    'melee_distance': 'melee_distance_bonus',
+    'ranged_distance': 'ranged_distance_bonus',
+  };
+
+  static const _legacyBonusFields = {
+    'stamina_bonus',
+    'speed_bonus',
+    'stability_bonus',
+    'disengage_bonus',
+    'damage_bonus',
+    'bonus_damage',
+    'melee_damage_bonus',
+    'ranged_damage_bonus',
+    'melee_distance_bonus',
+    'ranged_distance_bonus',
+  };
+
   /// Calculate tier based on level (1-3 = tier 1, 4-6 = tier 2, 7-10 = tier 3)
   static int tierForLevel(int level) {
     if (level <= 3) return 1;
@@ -179,6 +212,21 @@ class KitBonusService {
     if (level <= 3) return 1;
     if (level <= 6) return 2;
     return 3;
+  }
+
+  /// Return equipment bonus data in the legacy field shape while kit JSON is
+  /// converted to canonical grants in small batches.
+  Map<String, dynamic> extractBonusData(Map<String, dynamic> data) {
+    final bonusData = <String, dynamic>{};
+    bonusData.addAll(_extractCanonicalBonusData(data['grants']));
+
+    for (final key in _legacyBonusFields) {
+      if (!bonusData.containsKey(key) && data.containsKey(key)) {
+        bonusData[key] = data[key];
+      }
+    }
+
+    return bonusData;
   }
 
   /// Extract and combine bonuses from multiple equipment components.
@@ -225,16 +273,19 @@ class KitBonusService {
 
     for (final bonus in allBonuses) {
       ids.add(bonus.id);
-      
+
       // Take highest value for all stat bonuses (no stacking)
       maxStamina = math.max(maxStamina, bonus.staminaForLevel(heroLevel));
       maxSpeed = math.max(maxSpeed, bonus.speed);
       maxStability = math.max(maxStability, bonus.stability);
       maxDisengage = math.max(maxDisengage, bonus.disengage);
       maxMeleeDamage = math.max(maxMeleeDamage, bonus.meleeDamageForTier(tier));
-      maxRangedDamage = math.max(maxRangedDamage, bonus.rangedDamageForTier(tier));
-      maxMeleeDistance = math.max(maxMeleeDistance, bonus.meleeDistanceForEchelon(echelon));
-      maxRangedDistance = math.max(maxRangedDistance, bonus.rangedDistanceForEchelon(echelon));
+      maxRangedDamage =
+          math.max(maxRangedDamage, bonus.rangedDamageForTier(tier));
+      maxMeleeDistance =
+          math.max(maxMeleeDistance, bonus.meleeDistanceForEchelon(echelon));
+      maxRangedDistance =
+          math.max(maxRangedDistance, bonus.rangedDistanceForEchelon(echelon));
     }
 
     return EquipmentBonuses(
@@ -252,8 +303,8 @@ class KitBonusService {
 
   /// Extract bonuses from a single equipment component
   _SingleEquipmentBonuses? _extractBonuses(Component component) {
-    final data = component.data;
-    
+    final data = extractBonusData(component.data);
+
     // Parse basic stats
     final baseStamina = _parseIntOrNull(data['stamina_bonus']) ?? 0;
     final speed = _parseIntOrNull(data['speed_bonus']) ?? 0;
@@ -328,5 +379,89 @@ class KitBonusService {
       return _parseIntOrNull(tierData[key]) ?? 0;
     }
     return 0;
+  }
+
+  Map<String, dynamic> _extractCanonicalBonusData(Object? grantsValue) {
+    if (!_looksLikeCanonicalGrants(grantsValue)) return const {};
+
+    final grants = tryParseCanonicalGrants(grantsValue);
+    if (grants.isEmpty) return const {};
+
+    final bonusData = <String, dynamic>{};
+    for (final grant in grants.whereType<CanonicalEquipmentBonusesGrant>()) {
+      for (final entry in grant.bonuses.entries) {
+        _writeFlatCanonicalBonus(bonusData, entry.key, entry.value);
+      }
+      for (final entry in grant.tieredBonuses.entries) {
+        final legacyField = _tieredCanonicalBonusFields[entry.key];
+        if (legacyField != null) {
+          bonusData[legacyField] = entry.value;
+        }
+      }
+      for (final entry in grant.echelonBonuses.entries) {
+        final legacyField = _echelonCanonicalBonusFields[entry.key];
+        if (legacyField != null) {
+          bonusData[legacyField] = entry.value;
+        }
+      }
+    }
+
+    return bonusData;
+  }
+
+  List<CanonicalGrant> tryParseCanonicalGrants(Object? grantsValue) {
+    if (!_looksLikeCanonicalGrants(grantsValue)) return const [];
+    try {
+      return CanonicalGrant.parseList(grantsValue, defaultSource: 'kit');
+    } on FormatException {
+      return const [];
+    }
+  }
+
+  void _writeFlatCanonicalBonus(
+    Map<String, dynamic> bonusData,
+    String key,
+    int value,
+  ) {
+    final legacyField = _flatCanonicalBonusFields[key];
+    if (legacyField != null) {
+      bonusData[legacyField] = value;
+      return;
+    }
+
+    final tieredField = _tieredCanonicalBonusFields[key];
+    if (tieredField != null) {
+      bonusData[tieredField] = _uniformTieredBonus(value);
+      return;
+    }
+
+    final echelonField = _echelonCanonicalBonusFields[key];
+    if (echelonField != null) {
+      bonusData[echelonField] = _uniformEchelonBonus(value);
+    }
+  }
+
+  Map<String, int> _uniformTieredBonus(int value) => {
+        '1st_tier': value,
+        '2nd_tier': value,
+        '3rd_tier': value,
+      };
+
+  Map<String, int> _uniformEchelonBonus(int value) => {
+        '1st_echelon': value,
+        '2nd_echelon': value,
+        '3rd_echelon': value,
+      };
+
+  bool _looksLikeCanonicalGrants(Object? grants) {
+    if (grants is Map) {
+      if (grants['schema'] == canonicalGrantSchemaId) return true;
+      if (grants.containsKey('kind')) return true;
+      return _looksLikeCanonicalGrants(grants['grants']);
+    }
+    if (grants is List) {
+      return grants.any((grant) => grant is Map && grant.containsKey('kind'));
+    }
+    return false;
   }
 }

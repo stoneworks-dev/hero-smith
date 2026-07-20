@@ -10,6 +10,9 @@ import '../../../../core/theme/creator_theme.dart';
 import '../../../../core/theme/navigation_theme.dart';
 import '../../../../core/theme/form_theme.dart';
 import '../../../../core/text/creators/widgets/story_creator/story_ancestry_section_text.dart';
+import '../../../../core/storage/hero_storage_contract.dart';
+import '../../../hero_builder/domain/hero_claim.dart';
+import '../../../hero_builder/domain/hero_conflict_index.dart';
 
 class _SearchOption<T> {
   const _SearchOption({
@@ -39,7 +42,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
 }) {
   final accentColor = accent ?? CreatorTheme.ancestryAccent;
   final effectiveIcon = icon ?? const MaterialIcon(Icons.search);
-  
+
   return showDialog<_PickerSelection<T>>(
     context: context,
     builder: (dialogContext) {
@@ -56,8 +59,8 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                     (option) =>
                         option.label.toLowerCase().contains(normalizedQuery) ||
                         (option.subtitle?.toLowerCase().contains(
-                              normalizedQuery,
-                            ) ??
+                                  normalizedQuery,
+                                ) ??
                             false),
                   )
                   .toList();
@@ -110,7 +113,8 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                               color: accentColor.withValues(alpha: 0.4),
                             ),
                           ),
-                          child: AppIcon(effectiveIcon, color: accentColor, size: 20),
+                          child: AppIcon(effectiveIcon,
+                              color: accentColor, size: 20),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -125,7 +129,8 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                         ),
                         IconButton(
                           onPressed: () => Navigator.of(context).pop(),
-                          icon: Icon(Icons.close, color: FormTheme.textSecondary),
+                          icon:
+                              Icon(Icons.close, color: FormTheme.textSecondary),
                           splashRadius: 20,
                         ),
                       ],
@@ -141,7 +146,8 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                       decoration: InputDecoration(
                         hintText: StoryAncestrySectionText.searchHint,
                         hintStyle: TextStyle(color: FormTheme.textMuted),
-                        prefixIcon: Icon(Icons.search, color: FormTheme.textMuted),
+                        prefixIcon:
+                            Icon(Icons.search, color: FormTheme.textMuted),
                         filled: true,
                         fillColor: FormTheme.surface,
                         border: OutlineInputBorder(
@@ -215,7 +221,8 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                                           : Colors.transparent,
                                   border: isSelected
                                       ? Border.all(
-                                          color: accentColor.withValues(alpha: 0.4),
+                                          color: accentColor.withValues(
+                                              alpha: 0.4),
                                         )
                                       : isNoneOption
                                           ? Border.all(
@@ -300,6 +307,10 @@ class StoryAncestrySection extends ConsumerWidget {
     required this.selectedAncestryId,
     required this.selectedTraitIds,
     required this.traitChoices,
+    this.skillConflictIndex = HeroConflictIndex.empty,
+    this.abilityConflictIndex = HeroConflictIndex.empty,
+    this.traitConflictIndex = HeroConflictIndex.empty,
+    this.ancestryConflictIndex = HeroConflictIndex.empty,
     required this.onAncestryChanged,
     required this.onTraitSelectionChanged,
     required this.onTraitChoiceChanged,
@@ -309,9 +320,14 @@ class StoryAncestrySection extends ConsumerWidget {
   final String? selectedAncestryId;
   final Set<String> selectedTraitIds;
   final Map<String, String> traitChoices;
+  final HeroConflictIndex skillConflictIndex;
+  final HeroConflictIndex abilityConflictIndex;
+  final HeroConflictIndex traitConflictIndex;
+  final HeroConflictIndex ancestryConflictIndex;
   final ValueChanged<String?> onAncestryChanged;
   final void Function(String traitId, bool isSelected) onTraitSelectionChanged;
-  final void Function(String traitOrSignatureId, String choiceValue) onTraitChoiceChanged;
+  final void Function(String traitOrSignatureId, String choiceValue)
+      onTraitChoiceChanged;
   final VoidCallback onDirty;
 
   static const _accent = CreatorTheme.ancestryAccent;
@@ -319,7 +335,10 @@ class StoryAncestrySection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ancestriesAsync = ref.watch(componentsByTypeProvider('ancestry'));
-    final ancestryTraitsAsync = ref.watch(componentsByTypeProvider('ancestry_trait'));
+    final ancestryTraitsAsync =
+        ref.watch(componentsByTypeProvider('ancestry_trait'));
+    final skillsAsync = ref.watch(componentsByTypeProvider('skill'));
+    final abilitiesAsync = ref.watch(componentsByTypeProvider('ability'));
 
     return Container(
       margin: CreatorTheme.sectionMargin,
@@ -347,6 +366,8 @@ class StoryAncestrySection extends ConsumerWidget {
                     context,
                     ancestries,
                     ancestryTraitsAsync,
+                    skillsAsync,
+                    abilitiesAsync,
                   ),
                 ),
               ],
@@ -361,6 +382,8 @@ class StoryAncestrySection extends ConsumerWidget {
     BuildContext context,
     List<model.Component> ancestries,
     AsyncValue<List<model.Component>> traitsAsync,
+    AsyncValue<List<model.Component>> skillsAsync,
+    AsyncValue<List<model.Component>> abilitiesAsync,
   ) {
     ancestries = List.of(ancestries)..sort((a, b) => a.name.compareTo(b.name));
     final selectedAncestry = ancestries.firstWhere(
@@ -384,12 +407,22 @@ class StoryAncestrySection extends ConsumerWidget {
                 label: StoryAncestrySectionText.chooseAncestryOption,
                 value: null,
               ),
-              ...ancestries.map(
-                (a) => _SearchOption<String?>(
-                  label: a.name,
-                  value: a.id,
-                ),
-              ),
+              ...ancestries
+                  .where(
+                    (ancestry) => !ancestryConflictIndex.isClaimed(
+                      HeroEntryKey(
+                        entryType: HeroEntryTypes.ancestry,
+                        canonicalEntryId: ancestry.id,
+                      ),
+                      ignoredDraftSlotKey: 'story.ancestry:selection#0',
+                    ),
+                  )
+                  .map(
+                    (a) => _SearchOption<String?>(
+                      label: a.name,
+                      value: a.id,
+                    ),
+                  ),
             ];
             final result = await _showSearchablePicker<String?>(
               context: context,
@@ -448,6 +481,12 @@ class StoryAncestrySection extends ConsumerWidget {
                 traitsComp: traitsForSelected,
                 allAncestries: ancestries,
                 allAncestryTraits: traitsComps,
+                allSkills: skillsAsync.valueOrNull ?? const <model.Component>[],
+                allAbilities:
+                    abilitiesAsync.valueOrNull ?? const <model.Component>[],
+                skillConflictIndex: skillConflictIndex,
+                abilityConflictIndex: abilityConflictIndex,
+                traitConflictIndex: traitConflictIndex,
                 selectedTraitIds: selectedTraitIds,
                 traitChoices: traitChoices,
                 onTraitSelectionChanged: onTraitSelectionChanged,
@@ -468,6 +507,11 @@ class _AncestryDetails extends StatelessWidget {
     required this.traitsComp,
     required this.allAncestries,
     required this.allAncestryTraits,
+    required this.allSkills,
+    required this.allAbilities,
+    required this.skillConflictIndex,
+    required this.abilityConflictIndex,
+    required this.traitConflictIndex,
     required this.selectedTraitIds,
     required this.traitChoices,
     required this.onTraitSelectionChanged,
@@ -479,10 +523,16 @@ class _AncestryDetails extends StatelessWidget {
   final model.Component traitsComp;
   final List<model.Component> allAncestries;
   final List<model.Component> allAncestryTraits;
+  final List<model.Component> allSkills;
+  final List<model.Component> allAbilities;
+  final HeroConflictIndex skillConflictIndex;
+  final HeroConflictIndex abilityConflictIndex;
+  final HeroConflictIndex traitConflictIndex;
   final Set<String> selectedTraitIds;
   final Map<String, String> traitChoices;
   final void Function(String traitId, bool isSelected) onTraitSelectionChanged;
-  final void Function(String traitOrSignatureId, String choiceValue) onTraitChoiceChanged;
+  final void Function(String traitOrSignatureId, String choiceValue)
+      onTraitChoiceChanged;
   final VoidCallback onDirty;
 
   static const _accent = CreatorTheme.ancestryAccent;
@@ -505,7 +555,10 @@ class _AncestryDetails extends StatelessWidget {
     final signatureRaw = traitsComp.data['signature'];
     final List<Map<String, dynamic>> signatures;
     if (signatureRaw is List) {
-      signatures = signatureRaw.cast<Map>().map((m) => m.cast<String, dynamic>()).toList();
+      signatures = signatureRaw
+          .cast<Map>()
+          .map((m) => m.cast<String, dynamic>())
+          .toList();
     } else if (signatureRaw is Map) {
       signatures = [signatureRaw.cast<String, dynamic>()];
     } else {
@@ -574,7 +627,8 @@ class _AncestryDetails extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           // Render all signatures (supports both single and multiple like Revenant)
-          ...signatures.map((signature) => _buildSignatureCard(context, signature)),
+          ...signatures
+              .map((signature) => _buildSignatureCard(context, signature)),
           // Points display
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -591,7 +645,9 @@ class _AncestryDetails extends StatelessWidget {
                 const SizedBox(width: 12),
                 _pointsBadge(
                   '${StoryAncestrySectionText.remainingLabelPrefix}$remaining',
-                  remaining >= 0 ? const Color(0xFF66BB6A) : const Color(0xFFEF5350),
+                  remaining >= 0
+                      ? const Color(0xFF66BB6A)
+                      : const Color(0xFFEF5350),
                 ),
               ],
             ),
@@ -604,26 +660,34 @@ class _AncestryDetails extends StatelessWidget {
             final desc = (traitData['description'] ?? '').toString();
             final cost = (traitData['cost'] as int?) ?? 0;
             final selected = selectedTraitIds.contains(id);
-            final canSelect = selected || remaining - cost >= 0;
+            final isDuplicate = traitConflictIndex.isClaimed(
+              HeroEntryKey(
+                entryType: HeroEntryTypes.ancestryTrait,
+                canonicalEntryId: id,
+              ),
+              ignoredDraftSlotKey: 'story.ancestry:trait:$id',
+            );
+            final canSelect =
+                selected || (!isDuplicate && remaining - cost >= 0);
             final isUnavailable = !selected && !canSelect;
-            
+
             // Check if this trait has choices
             final hasImmunityChoice = _traitHasImmunityChoice(traitData);
             final abilityOptions = _getAbilityOptions(traitData);
-            
+
             return Opacity(
               opacity: isUnavailable ? 0.45 : 1.0,
               child: Container(
                 margin: const EdgeInsets.only(bottom: 8),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: selected 
+                  color: selected
                       ? _accent.withValues(alpha: 0.1)
                       : isUnavailable
                           ? const Color(0xFF1A1A1A)
                           : FormTheme.surface,
                   border: Border.all(
-                    color: selected 
+                    color: selected
                         ? _accent.withValues(alpha: 0.4)
                         : isUnavailable
                             ? FormTheme.borderDim
@@ -636,17 +700,22 @@ class _AncestryDetails extends StatelessWidget {
                     if (isUnavailable)
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
                           color: FormTheme.surfaceMuted,
-                          borderRadius: const BorderRadius.vertical(top: Radius.circular(9)),
+                          borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(9)),
                         ),
                         child: Row(
                           children: [
-                            Icon(Icons.block, size: 14, color: FormTheme.textMuted),
+                            Icon(Icons.block,
+                                size: 14, color: FormTheme.textMuted),
                             const SizedBox(width: 6),
                             Text(
-                              StoryAncestrySectionText.notEnoughPoints,
+                              isDuplicate
+                                  ? StoryAncestrySectionText.duplicateTrait
+                                  : StoryAncestrySectionText.notEnoughPoints,
                               style: TextStyle(
                                 fontSize: 11,
                                 color: FormTheme.textMuted,
@@ -668,10 +737,10 @@ class _AncestryDetails extends StatelessWidget {
                       title: Text(
                         name,
                         style: TextStyle(
-                          color: selected 
-                              ? _accent 
-                              : isUnavailable 
-                                  ? FormTheme.borderLight 
+                          color: selected
+                              ? _accent
+                              : isUnavailable
+                                  ? FormTheme.borderLight
                                   : FormTheme.textSecondary,
                           fontWeight: FontWeight.w600,
                         ),
@@ -681,8 +750,8 @@ class _AncestryDetails extends StatelessWidget {
                         child: Text(
                           desc,
                           style: TextStyle(
-                            color: isUnavailable 
-                                ? FormTheme.borderLight 
+                            color: isUnavailable
+                                ? FormTheme.borderLight
                                 : FormTheme.textSecondary,
                             height: 1.4,
                           ),
@@ -690,7 +759,8 @@ class _AncestryDetails extends StatelessWidget {
                       ),
                       isThreeLine: true,
                       secondary: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
                           color: isUnavailable
                               ? Colors.red.withValues(alpha: 0.15)
@@ -699,7 +769,8 @@ class _AncestryDetails extends StatelessWidget {
                           border: Border.all(
                             color: isUnavailable
                                 ? Colors.red.withValues(alpha: 0.3)
-                                : const Color(0xFF5C6BC0).withValues(alpha: 0.4),
+                                : const Color(0xFF5C6BC0)
+                                    .withValues(alpha: 0.4),
                           ),
                         ),
                         child: Text(
@@ -716,56 +787,58 @@ class _AncestryDetails extends StatelessWidget {
                       activeColor: _accent,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                     ),
-                  // Show immunity dropdown for traits like Prismatic Scales
-                  if (selected && hasImmunityChoice) ...[
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(48, 0, 16, 12),
-                      child: _buildImmunityDropdown(
-                        context: context,
-                        signatureId: id,
-                        currentValue: traitChoices[id],
-                        // Exclude signature immunity and other trait immunity choices
-                        excludedValues: _getExcludedImmunities(id, traitChoices),
-                        onChanged: (value) {
-                          if (value != null) {
-                            onTraitChoiceChanged(id, value);
-                            onDirty();
-                          }
-                        },
+                    // Show immunity dropdown for traits like Prismatic Scales
+                    if (selected && hasImmunityChoice) ...[
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(48, 0, 16, 12),
+                        child: _buildImmunityDropdown(
+                          context: context,
+                          signatureId: id,
+                          currentValue: traitChoices[id],
+                          availableTypes: _immunityChoiceOptions(traitData),
+                          // Exclude signature immunity and other trait immunity choices
+                          excludedValues:
+                              _getExcludedImmunities(id, traitChoices),
+                          onChanged: (value) {
+                            if (value != null) {
+                              onTraitChoiceChanged(id, value);
+                              onDirty();
+                            }
+                          },
+                        ),
                       ),
-                    ),
-                  ],
-                  // Show ability dropdown for traits like Psionic Gift
-                  if (selected && abilityOptions.isNotEmpty) ...[
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(48, 0, 16, 12),
-                      child: _buildAbilityDropdown(
-                        context: context,
-                        traitId: id,
-                        options: abilityOptions,
-                        currentValue: traitChoices[id],
-                        onChanged: (value) {
-                          if (value != null) {
-                            onTraitChoiceChanged(id, value);
-                            onDirty();
-                          }
-                        },
+                    ],
+                    // Show ability dropdown for traits like Psionic Gift
+                    if (selected && abilityOptions.isNotEmpty) ...[
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(48, 0, 16, 12),
+                        child: _buildAbilityDropdown(
+                          context: context,
+                          traitId: id,
+                          options: abilityOptions,
+                          currentValue: traitChoices[id],
+                          onChanged: (value) {
+                            if (value != null) {
+                              onTraitChoiceChanged(id, value);
+                              onDirty();
+                            }
+                          },
+                        ),
                       ),
-                    ),
-                  ],
-                  // Show Previous Life trait picker for Revenant
-                  if (selected && _isPreviousLifeTrait(traitData)) ...[
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(48, 0, 16, 12),
-                      child: _buildPreviousLifeTraitPicker(
-                        context: context,
-                        traitId: id,
-                        cost: _getPreviousLifePointCost(traitData),
+                    ],
+                    // Show Previous Life trait picker for Revenant
+                    if (selected && _isPreviousLifeTrait(traitData)) ...[
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(48, 0, 16, 12),
+                        child: _buildPreviousLifeTraitPicker(
+                          context: context,
+                          traitId: id,
+                          cost: _getPreviousLifePointCost(traitData),
+                        ),
                       ),
-                    ),
+                    ],
                   ],
-                ],
-              ),
+                ),
               ),
             );
           }),
@@ -775,44 +848,50 @@ class _AncestryDetails extends StatelessWidget {
   }
 
   Widget _statChip(String text, Color color) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(16),
-      color: color.withValues(alpha: 0.15),
-      border: Border.all(color: color.withValues(alpha: 0.4)),
-    ),
-    child: Text(
-      text,
-      style: TextStyle(
-        color: color,
-        fontSize: 12,
-        fontWeight: FontWeight.w500,
-      ),
-    ),
-  );
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: color.withValues(alpha: 0.15),
+          border: Border.all(color: color.withValues(alpha: 0.4)),
+        ),
+        child: Text(
+          text,
+          style: TextStyle(
+            color: color,
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      );
 
   Widget _pointsBadge(String text, Color color) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(8),
-      color: color.withValues(alpha: 0.2),
-      border: Border.all(color: color.withValues(alpha: 0.4)),
-    ),
-    child: Text(
-      text,
-      style: TextStyle(
-        color: color,
-        fontWeight: FontWeight.w600,
-      ),
-    ),
-  );
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: color.withValues(alpha: 0.2),
+          border: Border.all(color: color.withValues(alpha: 0.4)),
+        ),
+        child: Text(
+          text,
+          style: TextStyle(
+            color: color,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      );
 
   /// Build a signature card widget for a single signature trait
-  Widget _buildSignatureCard(BuildContext context, Map<String, dynamic> signature) {
+  Widget _buildSignatureCard(
+      BuildContext context, Map<String, dynamic> signature) {
     final name = (signature['name'] as String?) ?? '';
     final description = (signature['description'] as String?) ?? '';
     final isFormerLife = name == 'Former Life';
-    
+    final signatureSkillKey = _signatureSkillChoiceKey(signature);
+    final currentSignatureSkillId =
+        traitChoices[signatureSkillKey] ?? traitChoices['signature_skill'];
+    final signatureSkillOptions = _skillChoiceOptions(signature['grants'],
+        choiceId: signatureSkillKey, currentValue: currentSignatureSkillId);
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Container(
@@ -855,6 +934,21 @@ class _AncestryDetails extends StatelessWidget {
               const SizedBox(height: 12),
               _buildFormerAncestryPicker(context),
             ],
+            if (signatureSkillOptions.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              _buildSkillDropdown(
+                context: context,
+                choiceId: signatureSkillKey,
+                options: signatureSkillOptions,
+                currentValue: currentSignatureSkillId,
+                onChanged: (value) {
+                  if (value != null) {
+                    onTraitChoiceChanged(signatureSkillKey, value);
+                    onDirty();
+                  }
+                },
+              ),
+            ],
             // Show dropdown for signature immunity choice (e.g., Wyrmplate)
             if (_signatureHasImmunityChoice(signature)) ...[
               const SizedBox(height: 12),
@@ -862,6 +956,7 @@ class _AncestryDetails extends StatelessWidget {
                 context: context,
                 signatureId: 'signature_immunity',
                 currentValue: traitChoices['signature_immunity'],
+                availableTypes: _immunityChoiceOptions(signature),
                 excludedValues: const {}, // Signature has no exclusions
                 onChanged: (value) {
                   if (value != null) {
@@ -884,12 +979,12 @@ class _AncestryDetails extends StatelessWidget {
         .where((a) => a.id != 'ancestry_revenant')
         .toList()
       ..sort((a, b) => a.name.compareTo(b.name));
-    
+
     final selectedAncestry = eligibleAncestries.firstWhere(
       (a) => a.id == _formerAncestryId,
       orElse: () => const model.Component(id: '', type: 'ancestry', name: ''),
     );
-    
+
     const formerLifeAccent = Color(0xFF7E57C2);
 
     return InkWell(
@@ -905,7 +1000,8 @@ class _AncestryDetails extends StatelessWidget {
               value: a.id,
               subtitle: (a.data['short_description'] as String?)?.substring(
                 0,
-                ((a.data['short_description'] as String?)?.length ?? 0).clamp(0, 80),
+                ((a.data['short_description'] as String?)?.length ?? 0)
+                    .clamp(0, 80),
               ),
             ),
           ),
@@ -939,9 +1035,10 @@ class _AncestryDetails extends StatelessWidget {
                   ? selectedAncestry.name
                   : StoryAncestrySectionText.formerLifeHint,
               style: TextStyle(
-                color: _formerAncestryId != null && selectedAncestry.id.isNotEmpty
-                    ? FormTheme.textBright
-                    : FormTheme.textMuted,
+                color:
+                    _formerAncestryId != null && selectedAncestry.id.isNotEmpty
+                        ? FormTheme.textBright
+                        : FormTheme.textMuted,
                 fontSize: 14,
               ),
             ),
@@ -972,16 +1069,18 @@ class _AncestryDetails extends StatelessWidget {
   /// Get traits from the former ancestry that match the given cost
   List<Map<String, dynamic>> _getFormerAncestryTraits(int cost) {
     if (_formerAncestryId == null) return [];
-    
+
     // Find the traits component for the former ancestry
     final formerTraitsComp = allAncestryTraits.firstWhere(
       (t) => t.data['ancestry_id'] == _formerAncestryId,
-      orElse: () => const model.Component(id: '', type: 'ancestry_trait', name: ''),
+      orElse: () =>
+          const model.Component(id: '', type: 'ancestry_trait', name: ''),
     );
-    
+
     if (formerTraitsComp.id.isEmpty) return [];
-    
-    final traitsList = (formerTraitsComp.data['traits'] as List?)?.cast<Map>() ?? [];
+
+    final traitsList =
+        (formerTraitsComp.data['traits'] as List?)?.cast<Map>() ?? [];
     return traitsList
         .map((t) => t.cast<String, dynamic>())
         .where((t) => (t['cost'] as int?) == cost)
@@ -993,7 +1092,8 @@ class _AncestryDetails extends StatelessWidget {
   Set<String> _getAlreadyChosenPreviousLifeTraitIds(String excludeTraitId) {
     final chosen = <String>{};
     for (final entry in traitChoices.entries) {
-      if (entry.key.startsWith('revenant_previous_life') && entry.key != excludeTraitId) {
+      if (entry.key.startsWith('revenant_previous_life') &&
+          entry.key != excludeTraitId) {
         if (entry.value.isNotEmpty) {
           chosen.add(entry.value);
         }
@@ -1011,25 +1111,23 @@ class _AncestryDetails extends StatelessWidget {
     final currentChoiceId = traitChoices[traitId];
     final availableTraits = _getFormerAncestryTraits(cost);
     final alreadyChosen = _getAlreadyChosenPreviousLifeTraitIds(traitId);
-    
+
     // Filter out already chosen traits
-    final filteredTraits = availableTraits
-        .where((t) {
-          final id = (t['id'] ?? t['name']).toString();
-          // Keep the current selection visible, filter out other already-chosen ones
-          return id == currentChoiceId || !alreadyChosen.contains(id);
-        })
-        .toList();
-    
+    final filteredTraits = availableTraits.where((t) {
+      final id = (t['id'] ?? t['name']).toString();
+      // Keep the current selection visible, filter out other already-chosen ones
+      return id == currentChoiceId || !alreadyChosen.contains(id);
+    }).toList();
+
     // Find the current selected trait
     final selectedTrait = filteredTraits.firstWhere(
       (t) => (t['id'] ?? t['name']).toString() == currentChoiceId,
       orElse: () => <String, dynamic>{},
     );
-    final selectedTraitName = selectedTrait.isNotEmpty 
-        ? (selectedTrait['name'] as String?) ?? '' 
+    final selectedTraitName = selectedTrait.isNotEmpty
+        ? (selectedTrait['name'] as String?) ?? ''
         : '';
-    
+
     const previousLifeAccent = Color(0xFF9575CD);
 
     if (_formerAncestryId == null) {
@@ -1056,7 +1154,7 @@ class _AncestryDetails extends StatelessWidget {
         InkWell(
           onTap: () async {
             if (filteredTraits.isEmpty) return;
-            
+
             final options = [
               _SearchOption<String?>(
                 label: StoryAncestrySectionText.previousLifeTraitHint,
@@ -1070,7 +1168,9 @@ class _AncestryDetails extends StatelessWidget {
                   return _SearchOption<String?>(
                     label: name,
                     value: id,
-                    subtitle: desc.length > 100 ? '${desc.substring(0, 100)}...' : desc,
+                    subtitle: desc.length > 100
+                        ? '${desc.substring(0, 100)}...'
+                        : desc,
                   );
                 },
               ),
@@ -1131,7 +1231,8 @@ class _AncestryDetails extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
               color: previousLifeAccent.withValues(alpha: 0.08),
-              border: Border.all(color: previousLifeAccent.withValues(alpha: 0.2)),
+              border:
+                  Border.all(color: previousLifeAccent.withValues(alpha: 0.2)),
             ),
             child: Text(
               (selectedTrait['description'] as String?) ?? '',
@@ -1149,8 +1250,10 @@ class _AncestryDetails extends StatelessWidget {
               context: context,
               signatureId: '${traitId}_immunity',
               currentValue: traitChoices['${traitId}_immunity'],
+              availableTypes: _immunityChoiceOptions(selectedTrait),
               // Exclude signature immunity and other trait immunity choices
-              excludedValues: _getExcludedImmunities('${traitId}_immunity', traitChoices),
+              excludedValues:
+                  _getExcludedImmunities('${traitId}_immunity', traitChoices),
               onChanged: (value) {
                 if (value != null) {
                   onTraitChoiceChanged('${traitId}_immunity', value);
@@ -1183,33 +1286,173 @@ class _AncestryDetails extends StatelessWidget {
   /// Check if signature has immunity choice (type: "pick_one")
   bool _signatureHasImmunityChoice(Map<String, dynamic> signature) {
     final increaseTotal = signature['increase_total'];
-    if (increaseTotal == null) return false;
-    
-    // Handle both single Map and List of Maps
     if (increaseTotal is Map) {
-      return increaseTotal['type'] == 'pick_one' && increaseTotal['stat'] == 'immunity';
+      return increaseTotal['type'] == 'pick_one' &&
+          increaseTotal['stat'] == 'immunity';
     } else if (increaseTotal is List) {
-      return increaseTotal.any((entry) => 
-        entry is Map && entry['type'] == 'pick_one' && entry['stat'] == 'immunity'
-      );
+      return increaseTotal.any((entry) =>
+          entry is Map &&
+          entry['type'] == 'pick_one' &&
+          entry['stat'] == 'immunity');
     }
-    return false;
+    return _hasCanonicalImmunityChoice(signature['grants']);
   }
 
   /// Check if trait has immunity choice
   bool _traitHasImmunityChoice(Map<String, dynamic> trait) {
     final increaseTotal = trait['increase_total'];
-    if (increaseTotal == null) return false;
-    
-    // Handle both single Map and List of Maps
     if (increaseTotal is Map) {
-      return increaseTotal['type'] == 'pick_one' && increaseTotal['stat'] == 'immunity';
+      return increaseTotal['type'] == 'pick_one' &&
+          increaseTotal['stat'] == 'immunity';
     } else if (increaseTotal is List) {
-      return increaseTotal.any((entry) => 
-        entry is Map && entry['type'] == 'pick_one' && entry['stat'] == 'immunity'
-      );
+      return increaseTotal.any((entry) =>
+          entry is Map &&
+          entry['type'] == 'pick_one' &&
+          entry['stat'] == 'immunity');
+    }
+    return _hasCanonicalImmunityChoice(trait['grants']);
+  }
+
+  bool _hasCanonicalImmunityChoice(Object? grants) {
+    if (grants is List) {
+      return grants.any(_isCanonicalImmunityChoiceGrant);
+    }
+    if (grants is Map) {
+      if (grants['grants'] is List) {
+        return _hasCanonicalImmunityChoice(grants['grants']);
+      }
+      return _isCanonicalImmunityChoiceGrant(grants);
     }
     return false;
+  }
+
+  bool _isCanonicalImmunityChoiceGrant(Object? grant) {
+    if (grant is! Map) return false;
+    final payload = grant['payload'];
+    final stat = payload is Map ? payload['stat']?.toString() : null;
+    return grant['kind'] == 'choice' &&
+        grant['choice_type'] == 'damage_type' &&
+        (stat == null || stat == 'immunity');
+  }
+
+  String _signatureSkillChoiceKey(Map<String, dynamic> signature) {
+    final grant = _canonicalSkillChoiceGrant(signature['grants']);
+    final choiceKey = grant?['choice_key']?.toString().trim();
+    if (choiceKey != null && choiceKey.isNotEmpty) return choiceKey;
+    return 'signature_skill';
+  }
+
+  Map<String, dynamic>? _canonicalSkillChoiceGrant(Object? grants) {
+    if (grants is List) {
+      for (final grant in grants) {
+        final match = _canonicalSkillChoiceGrant(grant);
+        if (match != null) return match;
+      }
+      return null;
+    }
+    if (grants is Map) {
+      if (grants['grants'] is List) {
+        return _canonicalSkillChoiceGrant(grants['grants']);
+      }
+      if (_isCanonicalSkillChoiceGrant(grants)) {
+        return Map<String, dynamic>.from(grants);
+      }
+    }
+    return null;
+  }
+
+  bool _isCanonicalSkillChoiceGrant(Object? grant) {
+    if (grant is! Map) return false;
+    final entryType = grant['entry_type']?.toString();
+    return grant['kind'] == 'choice' &&
+        grant['choice_type'] == 'skill' &&
+        (entryType == null || entryType == 'skill');
+  }
+
+  List<model.Component> _skillChoiceOptions(
+    Object? grants, {
+    required String choiceId,
+    String? currentValue,
+  }) {
+    final grant = _canonicalSkillChoiceGrant(grants);
+    if (grant == null || allSkills.isEmpty) return const <model.Component>[];
+
+    final groups = _stringList(grant['groups'])
+        .map((group) => group.toLowerCase())
+        .toSet();
+    final explicitOptions = _stringList(grant['options'])
+        .map((option) => option.toLowerCase())
+        .toSet();
+
+    final matches = <model.Component>[];
+    for (final skill in allSkills) {
+      final group = skill.data['group']?.toString().toLowerCase();
+      final skillId = skill.id.toLowerCase();
+      final skillName = skill.name.toLowerCase();
+      final matchesGroup = group != null && groups.contains(group);
+      final matchesExplicit = explicitOptions.contains(skillId) ||
+          explicitOptions.contains(skillName);
+      final includeAll = groups.isEmpty && explicitOptions.isEmpty;
+      if (matchesGroup || matchesExplicit || includeAll) {
+        matches.add(skill);
+      }
+    }
+
+    if (currentValue != null && currentValue.isNotEmpty) {
+      final currentSkill = allSkills.cast<model.Component?>().firstWhere(
+            (skill) => skill?.id == currentValue,
+            orElse: () => null,
+          );
+      if (currentSkill != null &&
+          !matches.any((skill) => skill.id == currentSkill.id)) {
+        matches.add(currentSkill);
+      }
+    }
+
+    final slotKey = 'story.ancestry:$choiceId';
+    final allowedMatches = matches.where((skill) {
+      final claimedByAnotherSlot = skillConflictIndex.isClaimed(
+        HeroEntryKey(
+          entryType: HeroEntryTypes.skill,
+          canonicalEntryId: skill.id,
+        ),
+        ignoredDraftSlotKey: slotKey,
+      );
+      return !claimedByAnotherSlot;
+    }).toList();
+    allowedMatches.sort((a, b) => a.name.compareTo(b.name));
+    return allowedMatches;
+  }
+
+  List<String> _immunityChoiceOptions(Map<String, dynamic> node) {
+    final canonicalOptions = _canonicalImmunityChoiceOptions(node['grants']);
+    return canonicalOptions.isEmpty ? _immunityTypes : canonicalOptions;
+  }
+
+  List<String> _canonicalImmunityChoiceOptions(Object? grants) {
+    if (grants is List) {
+      for (final grant in grants) {
+        final options = _canonicalImmunityChoiceOptions(grant);
+        if (options.isNotEmpty) return options;
+      }
+      return const [];
+    }
+    if (grants is Map) {
+      if (grants['grants'] is List) {
+        return _canonicalImmunityChoiceOptions(grants['grants']);
+      }
+      if (!_isCanonicalImmunityChoiceGrant(grants)) return const [];
+      return _stringList(grants['options']);
+    }
+    return const [];
+  }
+
+  List<String> _stringList(Object? value) {
+    if (value is! List) return const [];
+    return value
+        .map((item) => item?.toString().trim() ?? '')
+        .where((item) => item.isNotEmpty)
+        .toList(growable: false);
   }
 
   /// Get ability options for pick_ability_name traits
@@ -1221,15 +1464,16 @@ class _AncestryDetails extends StatelessWidget {
 
   /// Get immunity types that should be excluded from a trait's dropdown.
   /// Excludes signature immunity and other traits' immunity choices.
-  Set<String> _getExcludedImmunities(String currentTraitId, Map<String, String> choices) {
+  Set<String> _getExcludedImmunities(
+      String currentTraitId, Map<String, String> choices) {
     final excluded = <String>{};
-    
+
     // Exclude signature immunity choice
     final signatureImmunity = choices['signature_immunity'];
     if (signatureImmunity != null && signatureImmunity.isNotEmpty) {
       excluded.add(signatureImmunity);
     }
-    
+
     // Exclude other traits' immunity choices (but not the current trait's choice)
     for (final entry in choices.entries) {
       if (entry.key == currentTraitId) continue;
@@ -1239,7 +1483,7 @@ class _AncestryDetails extends StatelessWidget {
         excluded.add(entry.value.toLowerCase());
       }
     }
-    
+
     return excluded;
   }
 
@@ -1250,11 +1494,15 @@ class _AncestryDetails extends StatelessWidget {
     required BuildContext context,
     required String signatureId,
     required String? currentValue,
+    List<String>? availableTypes,
     required Set<String> excludedValues,
     required ValueChanged<String?> onChanged,
   }) {
+    final choiceTypes = availableTypes == null || availableTypes.isEmpty
+        ? _immunityTypes
+        : availableTypes;
     // Filter out excluded immunity types (but keep current value if it was previously selected)
-    final availableTypes = _immunityTypes.where((type) {
+    final visibleTypes = choiceTypes.where((type) {
       if (type == currentValue) return true; // Always show current selection
       return !excludedValues.contains(type);
     }).toList();
@@ -1268,7 +1516,7 @@ class _AncestryDetails extends StatelessWidget {
             label: StoryAncestrySectionText.immunityDropdownHint,
             value: null,
           ),
-          ...availableTypes.map(
+          ...visibleTypes.map(
             (type) => _SearchOption<String?>(
               label: type[0].toUpperCase() + type.substring(1),
               value: type,
@@ -1327,6 +1575,29 @@ class _AncestryDetails extends StatelessWidget {
     required ValueChanged<String?> onChanged,
   }) {
     const abilityAccent = Color(0xFF26C6DA);
+    final slotKey = 'story.ancestry:$traitId';
+    String? abilityId(String value) {
+      for (final ability in allAbilities) {
+        if (ability.id == value ||
+            ability.name.trim().toLowerCase() == value.trim().toLowerCase()) {
+          return ability.id;
+        }
+      }
+      return null;
+    }
+
+    final visibleOptions = options.where((ability) {
+      if (ability == currentValue) return true;
+      final id = abilityId(ability);
+      return id == null ||
+          !abilityConflictIndex.isClaimed(
+            HeroEntryKey(
+              entryType: HeroEntryTypes.ability,
+              canonicalEntryId: id,
+            ),
+            ignoredDraftSlotKey: slotKey,
+          );
+    }).toList();
 
     return InkWell(
       onTap: () async {
@@ -1335,7 +1606,7 @@ class _AncestryDetails extends StatelessWidget {
             label: StoryAncestrySectionText.abilityDropdownHint,
             value: null,
           ),
-          ...options.map(
+          ...visibleOptions.map(
             (ability) => _SearchOption<String?>(
               label: ability,
               value: ability,
@@ -1383,5 +1654,82 @@ class _AncestryDetails extends StatelessWidget {
       ),
     );
   }
-}
 
+  Widget _buildSkillDropdown({
+    required BuildContext context,
+    required String choiceId,
+    required List<model.Component> options,
+    required String? currentValue,
+    required ValueChanged<String?> onChanged,
+  }) {
+    const skillAccent = Color(0xFF5C6BC0);
+    final skillIcon = SkillGroupIcons.fromGroup(
+      options.first.data['group']?.toString() ?? '',
+    );
+
+    return InkWell(
+      onTap: () async {
+        final pickerOptions = [
+          _SearchOption<String?>(
+            label: StoryAncestrySectionText.skillDropdownHint,
+            value: null,
+          ),
+          ...options.map(
+            (skill) => _SearchOption<String?>(
+              label: skill.name,
+              value: skill.id,
+              subtitle: skill.data['group']?.toString(),
+            ),
+          ),
+        ];
+
+        final result = await _showSearchablePicker<String?>(
+          context: context,
+          title: StoryAncestrySectionText.selectSkillTitle,
+          options: pickerOptions,
+          selected: currentValue,
+          accent: skillAccent,
+          icon: skillIcon,
+        );
+
+        if (result != null) {
+          onChanged(result.value);
+        }
+      },
+      borderRadius: BorderRadius.circular(10),
+      child: InputDecorator(
+        decoration: CreatorTheme.dropdownDecoration(
+          label: StoryAncestrySectionText.skillDropdownLabel,
+          accent: skillAccent,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Text(
+                options
+                        .cast<model.Component?>()
+                        .firstWhere(
+                          (skill) => skill?.id == currentValue,
+                          orElse: () => null,
+                        )
+                        ?.name ??
+                    StoryAncestrySectionText.skillDropdownHint,
+                style: TextStyle(
+                  color: currentValue != null
+                      ? FormTheme.textBright
+                      : FormTheme.textMuted,
+                  fontSize: 14,
+                ),
+              ),
+            ),
+            Icon(
+              Icons.arrow_drop_down,
+              color: FormTheme.textSecondary,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

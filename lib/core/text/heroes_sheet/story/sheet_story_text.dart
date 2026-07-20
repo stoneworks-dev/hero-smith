@@ -2,6 +2,7 @@ export 'sheet_story_ancestry_section_text.dart';
 export 'sheet_story_career_section_text.dart';
 export 'sheet_story_common_text.dart';
 export 'sheet_story_complication_section_text.dart';
+export 'sheet_story_complications_tab_text.dart';
 export 'sheet_story_culture_section_text.dart';
 export 'sheet_story_features_tab_text.dart';
 export 'sheet_story_languages_tab_text.dart';

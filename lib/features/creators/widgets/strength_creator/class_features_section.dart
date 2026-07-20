@@ -6,7 +6,12 @@ import '../../../../core/models/subclass_models.dart';
 import '../../../../core/services/class_feature_data_service.dart';
 import '../../../../core/text/creators/widgets/strength_creator/class_features_section_text.dart';
 import '../../../../core/theme/creator_theme.dart';
+import '../../../hero_builder/domain/hero_conflict_index.dart';
 import 'class_features_widget.dart';
+
+typedef FeatureSelectionsChangeRequested = Future<bool> Function(
+  Map<String, Set<String>> selections,
+);
 
 class ClassFeaturesSection extends StatefulWidget {
   const ClassFeaturesSection({
@@ -16,10 +21,11 @@ class ClassFeaturesSection extends StatefulWidget {
     this.selectedSubclass,
     this.initialSelections = const {},
     this.onSelectionsChanged,
+    this.onSelectionsChangeRequested,
     this.equipmentIds = const [],
     this.skillGroupSelections = const {},
     this.onSkillGroupSelectionChanged,
-    this.reservedSkillIds = const {},
+    this.skillConflictIndex = HeroConflictIndex.empty,
     this.onPendingChoicesChanged,
   });
 
@@ -28,19 +34,20 @@ class ClassFeaturesSection extends StatefulWidget {
   final SubclassSelectionResult? selectedSubclass;
   final Map<String, Set<String>> initialSelections;
   final ValueChanged<Map<String, Set<String>>>? onSelectionsChanged;
-  
+  final FeatureSelectionsChangeRequested? onSelectionsChangeRequested;
+
   /// Equipment IDs for determining kit (used for Stormwight progression)
   final List<String?> equipmentIds;
-  
+
   /// skill_group skill selections: Map<featureId, Map<grantKey, skillId>>
   final Map<String, Map<String, String>> skillGroupSelections;
-  
+
   /// Callback when a skill_group skill selection changes
   final SkillGroupSelectionChanged? onSkillGroupSelectionChanged;
-  
-  /// Set of skill IDs that are already selected elsewhere (for duplicate prevention)
-  final Set<String> reservedSkillIds;
-  
+
+  /// Effective persisted and draft skill claims for duplicate prevention.
+  final HeroConflictIndex skillConflictIndex;
+
   /// Callback when the number of pending choices changes
   final ValueChanged<int>? onPendingChoicesChanged;
 
@@ -79,7 +86,7 @@ class _ClassFeaturesSectionState extends State<ClassFeaturesSection>
         oldWidget.selectedSubclass != widget.selectedSubclass;
     final initialSelectionsChanged =
         !_mapsEqual(oldWidget.initialSelections, widget.initialSelections);
-    final skillGroupSelectionsChanged = 
+    final skillGroupSelectionsChanged =
         oldWidget.skillGroupSelections != widget.skillGroupSelections;
 
     if (classChanged) {
@@ -99,17 +106,17 @@ class _ClassFeaturesSectionState extends State<ClassFeaturesSection>
       });
       _notifyPendingChoicesIfChanged();
     }
-    
+
     if (skillGroupSelectionsChanged) {
       _notifyPendingChoicesIfChanged();
     }
   }
-  
+
   void _notifyPendingChoicesIfChanged() {
     if (widget.onPendingChoicesChanged == null) return;
     final data = _data;
     if (data == null) return;
-    
+
     // Compute active slugs for filtering
     final activeSubclassSlugs =
         ClassFeatureDataService.activeSubclassSlugs(widget.selectedSubclass);
@@ -117,7 +124,7 @@ class _ClassFeaturesSectionState extends State<ClassFeaturesSection>
         ClassFeatureDataService.selectedDomainSlugs(widget.selectedSubclass);
     final deitySlugs =
         ClassFeatureDataService.selectedDeitySlugs(widget.selectedSubclass);
-    
+
     final count = ClassFeatureDataService.countPendingChoices(
       featureDetailsById: data.featureDetailsById,
       featureIds: data.features.map((f) => f.id),
@@ -127,7 +134,7 @@ class _ClassFeaturesSectionState extends State<ClassFeaturesSection>
       selectedDomainSlugs: domainSlugs,
       selectedDeitySlugs: deitySlugs,
     );
-    
+
     if (count != _lastPendingChoicesCount) {
       _lastPendingChoicesCount = count;
       widget.onPendingChoicesChanged!(count);
@@ -239,7 +246,10 @@ class _ClassFeaturesSectionState extends State<ClassFeaturesSection>
     return normalized;
   }
 
-  void _handleSelectionChanged(String featureId, Set<String> selections) {
+  Future<void> _handleSelectionChanged(
+    String featureId,
+    Set<String> selections,
+  ) async {
     final trimmedId = featureId.trim();
     if (trimmedId.isEmpty) return;
 
@@ -283,10 +293,12 @@ class _ClassFeaturesSectionState extends State<ClassFeaturesSection>
       );
     }
 
-    setState(() {
-      _selections = updated;
-    });
-    _notifySelectionsChanged();
+    final request = widget.onSelectionsChangeRequested;
+    if (request != null && !await request(updated)) return;
+    if (!mounted) return;
+
+    setState(() => _selections = updated);
+    if (request == null) _notifySelectionsChanged();
     _notifyPendingChoicesIfChanged();
   }
 
@@ -328,7 +340,8 @@ class _ClassFeaturesSectionState extends State<ClassFeaturesSection>
       return Padding(
         padding: CreatorTheme.sectionMargin,
         child: Container(
-          decoration: CreatorTheme.sectionDecoration(CreatorTheme.strengthAccent),
+          decoration:
+              CreatorTheme.sectionDecoration(CreatorTheme.strengthAccent),
           padding: const EdgeInsets.all(16),
           child: Row(
             children: [
@@ -434,7 +447,7 @@ class _ClassFeaturesSectionState extends State<ClassFeaturesSection>
         equipmentIds: widget.equipmentIds,
         skillGroupSelections: widget.skillGroupSelections,
         onSkillGroupSelectionChanged: widget.onSkillGroupSelectionChanged,
-        reservedSkillIds: widget.reservedSkillIds,
+        skillConflictIndex: widget.skillConflictIndex,
       ),
     );
   }
@@ -452,4 +465,3 @@ class _ClassFeaturesSectionState extends State<ClassFeaturesSection>
     return map;
   }
 }
-

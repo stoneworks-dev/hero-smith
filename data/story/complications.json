@@ -20,14 +20,21 @@
       "drawback": "You take a bane on any test made to recall lore.",
       "both": null
     },
-    "grants": {
-      "treasures": [
-        {
-          "type": "trinket",
+    "grants": [
+      {
+        "kind": "choice",
+        "choice_key": "complication_amnesia.treasure_0",
+        "choice_type": "treasure",
+        "config_key": "complication.choices",
+        "entry_type": "treasure",
+        "count": 1,
+        "payload": {
+          "treasure_type": "trinket",
           "echelon": 1
-        }
-      ]
-    }
+        },
+        "label": "Choose 1st-echelon trinket"
+      }
+    ]
   },
   {
     "id": "complication_animal_form",
@@ -39,13 +46,16 @@
       "drawback": "At the start of any turn while you are winded, the Director can spend 1 Malice to force you to take your animal form. Once the Director has done so, they can’t do so again until you have finished a respite.",
       "both": null
     },
-    "grants": {
-      "abilities": [
-        {
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "animal_form",
+        "payload": {
           "name": "Animal Form"
         }
-      ]
-    }
+      }
+    ]
   },
   {
     "id": "complication_antihero",
@@ -57,12 +67,13 @@
       "drawback": "While you have fewer than 3 antihero tokens, you exude a villainous aspect. You and each ally within 5 squares of you take a bane on any test made to interact with other creatures.",
       "both": null
     },
-    "grants": {
-      "tokens": {
-        "name": "antihero",
-        "count": 3
+    "grants": [
+      {
+        "kind": "token",
+        "token": "antihero",
+        "max_value": 3
       }
-    }
+    ]
   },
   {
     "id": "complication_artifact_bonded",
@@ -74,13 +85,20 @@
       "drawback": "Each time the artifact appears, you lose a Recovery. If you have no Recoveries remaining, you take 1d10 damage instead, which can’t be reduced in any way.",
       "both": null
     },
-    "grants": {
-      "treasures": [
-        {
-          "type": "artifact"
-        }
-      ]
-    }
+    "grants": [
+      {
+        "kind": "choice",
+        "choice_key": "complication_artifact_bonded.treasure_0",
+        "choice_type": "treasure",
+        "config_key": "complication.choices",
+        "entry_type": "treasure",
+        "count": 1,
+        "payload": {
+          "treasure_type": "artifact"
+        },
+        "label": "Choose artifact"
+      }
+    ]
   },
   {
     "id": "complication_bereaved",
@@ -92,13 +110,14 @@
       "drawback": "You have corruption weakness 5.",
       "both": null
     },
-    "grants": {
-      "increase_total": {
-        "stat": "weakness",
-        "type": "corruption",
-        "value": 5
+    "grants": [
+      {
+        "kind": "resistance",
+        "damage_type": "corruption",
+        "weakness": 5,
+        "label": "Corruption weakness 5"
       }
-    }
+    ]
   },
   {
     "id": "complication_betrothed",
@@ -110,14 +129,21 @@
       "drawback": "All those who learn of you running out on your commitment think less of you and spread nasty rumors about you. Your Renown can’t ever be more than your level − 1.",
       "both": null
     },
-    "grants": {
-      "treasures": [
-        {
-          "type": "trinket",
+    "grants": [
+      {
+        "kind": "choice",
+        "choice_key": "complication_betrothed.treasure_0",
+        "choice_type": "treasure",
+        "config_key": "complication.choices",
+        "entry_type": "treasure",
+        "count": 1,
+        "payload": {
+          "treasure_type": "trinket",
           "echelon": 1
-        }
-      ]
-    }
+        },
+        "label": "Choose 1st-echelon trinket"
+      }
+    ]
   },
   {
     "id": "complication_chaos_touched",
@@ -140,12 +166,13 @@
       "drawback": "Whenever you spend 1 or more destiny points, you take 1d10 psychic damage that can’t be reduced in any way, and the cult that seeks you becomes aware of your location.",
       "both": null
     },
-    "grants": {
-      "tokens": {
-        "name": "destiny",
-        "count": 3
+    "grants": [
+      {
+        "kind": "token",
+        "token": "destiny",
+        "max_value": 3
       }
-    }
+    ]
   },
   {
     "id": "complication_consuming_interest",
@@ -157,14 +184,18 @@
       "drawback": "You can’t imagine ever being wrong on the topic of your obsession. Whenever you make a test to recall lore using your chosen skill, the Director makes the test in secret. Instead of informing you whether you’re right or wrong, they provide you with correct information if you succeeded and false information if you failed.\nStudy Lore\nItem Prerequisite: None\nProject Source: A significant source of information on the topic of your obsession, such as a major library or a world-renowned sage\nProject Roll Characteristic: Reason\nProject Goal: 120, 150, 180\nEach time you complete this project, your knowledge of your chosen field expands, and the bonus to tests provided by your chosen skill increases by 1.",
       "both": null
     },
-    "grants": {
-      "skills": [
-        {
-          "group": "lore",
-          "count": 1
-        }
-      ]
-    }
+    "grants": [
+      {
+        "kind": "choice",
+        "choice_key": "complication_consuming_interest.skills",
+        "choice_type": "skill",
+        "config_key": "complication.choices",
+        "entry_type": "skill",
+        "count": 1,
+        "groups": ["lore"],
+        "label": "Choose 1 lore skill"
+      }
+    ]
   },
   {
     "id": "complication_corrupted_mentor",
@@ -176,18 +207,22 @@
       "drawback": "You have holy weakness 1. Each time you use Corrupt Spirit, your holy weakness increases by 1, to a maximum equal to your recovery value. Whenever you take holy damage, this weakness resets to 1.",
       "both": null
     },
-    "grants": {
-      "abilities": [
-        {
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "corrupt_spirit",
+        "payload": {
           "name": "Corrupt Spirit"
         }
-      ],
-      "increase_total": {
-        "stat": "weakness",
-        "type": "holy",
-        "value": 1
+      },
+      {
+        "kind": "resistance",
+        "damage_type": "holy",
+        "weakness": 1,
+        "label": "Holy weakness 1"
       }
-    }
+    ]
   },
   {
     "id": "complication_coward",
@@ -210,18 +245,24 @@
       "drawback": "You take a bane on any test made to know about anything related to the world where you crash landed.",
       "both": null
     },
-    "grants": {
-      "skills": [
-        {
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "skill",
+        "entry_id": "skill_timescape",
+        "payload": {
           "name": "Timescape"
         }
-      ],
-      "abilities": [
-        {
+      },
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "crash_landed_power_pack",
+        "payload": {
           "name": "Crash Landed: Power Pack"
         }
-      ]
-    }
+      }
+    ]
   },
   {
     "id": "complication_cult_victim",
@@ -233,13 +274,14 @@
       "drawback": "You have corruption weakness 5.",
       "both": null
     },
-    "grants": {
-      "increase_total": {
-        "stat": "weakness",
-        "type": "corruption",
-        "value": 5
+    "grants": [
+      {
+        "kind": "resistance",
+        "damage_type": "corruption",
+        "weakness": 5,
+        "label": "Corruption weakness 5"
       }
-    }
+    ]
   },
   {
     "id": "complication_curse_of_caution",
@@ -251,14 +293,18 @@
       "drawback": "You have a −1 penalty to speed.",
       "both": null
     },
-    "grants": {
-      "decrease_total": [
-        {
-          "stat": "speed",
-          "value": 1
-        }
-      ]
-    }
+    "grants": [
+      {
+        "kind": "stat_mod",
+        "stat": "speed",
+        "mods": [
+          {
+            "value": -1
+          }
+        ],
+        "label": "Speed -1"
+      }
+    ]
   },
   {
     "id": "complication_curse_of_immortality",
@@ -303,12 +349,18 @@
       "drawback": "When you are out of Recoveries, you are dying, no matter what your current Stamina is.",
       "both": null
     },
-    "grants": {
-      "increase_total": {
+    "grants": [
+      {
+        "kind": "stat_mod",
         "stat": "recoveries",
-        "value": 1
+        "mods": [
+          {
+            "value": 1
+          }
+        ],
+        "label": "Recoveries +1"
       }
-    }
+    ]
   },
   {
     "id": "complication_curse_of_stone",
@@ -320,24 +372,32 @@
       "drawback": "You have sonic weakness 5. Additionally, while you are winded, you are dazed.",
       "both": null
     },
-    "grants": {
-      "increase_total": [
-        {
-          "stat": "weakness",
-          "type": "sonic",
-          "value": 5
-        },
-        {
-          "stat": "stability",
-          "value": 1
-        }
-      ],
-      "abilities": [
-        {
+    "grants": [
+      {
+        "kind": "resistance",
+        "damage_type": "sonic",
+        "weakness": 5,
+        "label": "Sonic weakness 5"
+      },
+      {
+        "kind": "stat_mod",
+        "stat": "stability",
+        "mods": [
+          {
+            "value": 1
+          }
+        ],
+        "label": "Stability +1"
+      },
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "curse_of_stone",
+        "payload": {
           "name": "Curse of Stone"
         }
-      ]
-    }
+      }
+    ]
   },
   {
     "id": "complication_cursed_weapon",
@@ -349,18 +409,28 @@
       "drawback": "You have damage weakness 2.",
       "both": null
     },
-    "grants": {
-      "treasures": [
-        {
-          "type": "leveled_weapon"
-        }
-      ],
-      "increase_total": {
-        "stat": "weakness",
-        "type": "damage",
-        "value": 2
+    "grants": [
+      {
+        "kind": "choice",
+        "choice_key": "complication_cursed_weapon.treasure_0",
+        "choice_type": "treasure",
+        "config_key": "complication.choices",
+        "entry_type": "treasure",
+        "count": 1,
+        "payload": {
+          "treasure_type": "leveled_weapon",
+          "leveled": true,
+          "category": "weapon"
+        },
+        "label": "Choose leveled weapon"
+      },
+      {
+        "kind": "resistance",
+        "damage_type": "damage",
+        "weakness": 2,
+        "label": "Damage weakness 2"
       }
-    }
+    ]
   },
   {
     "id": "complication_disgraced",
@@ -372,18 +442,28 @@
       "drawback": "Anyone who has heard of you and is influenced by your Renown treats you as infamous. Whenever you are part of a negotiation with an NPC who has an interest of 2 or lower, that NPC makes a plan to hurt you personally after the negotiation ends—and carries that plan out.",
       "both": null
     },
-    "grants": {
-      "increase_total": {
+    "grants": [
+      {
+        "kind": "stat_mod",
         "stat": "renown",
-        "value": 1
+        "mods": [
+          {
+            "value": 1
+          }
+        ],
+        "label": "Renown +1"
       },
-      "skills": [
-        {
-          "group": ["interpersonal", "intrigue"],
-          "count": 1
-        }
-      ]
-    }
+      {
+        "kind": "choice",
+        "choice_key": "complication_disgraced.skills",
+        "choice_type": "skill",
+        "config_key": "complication.choices",
+        "entry_type": "skill",
+        "count": 1,
+        "groups": ["interpersonal", "intrigue"],
+        "label": "Choose 1 interpersonal or intrigue skill"
+      }
+    ]
   },
   {
     "id": "complication_dragon_dreams",
@@ -395,12 +475,20 @@
       "drawback": "Whenever you are reduced to 0 Stamina, you explode with heat and fire. You and each creature within 5 squares of you takes fire damage equal to twice your level. You can’t reduce this damage for yourself in any way.",
       "both": null
     },
-    "grants": {
-      "ancestry_traits": {
-        "ancestry_points": 2,
-        "ancestry": "dragon_knight"
+    "grants": [
+      {
+        "kind": "choice",
+        "choice_key": "complication_dragon_dreams.ancestry_traits",
+        "choice_type": "ancestry_trait",
+        "config_key": "complication.choices",
+        "count": 2,
+        "payload": {
+          "ancestry": "dragon_knight",
+          "ancestry_points": 2
+        },
+        "label": "Choose 2 dragon knight ancestry points"
       }
-    }
+    ]
   },
   {
     "id": "complication_elemental_inside",
@@ -412,15 +500,19 @@
       "drawback": "While you are dying, your possessing elemental takes control of your body. The elemental yearns for destruction, causing you to attack the nearest creature you notice without regard for your desires or your body’s safety. If you don’t do your best to fulfill the elemental’s rage, the Director can take temporary control of your hero.",
       "both": null
     },
-    "grants": {
-      "increase_total": [
-        {
-          "stat": "stamina",
-          "value": 3,
-          "per_echelon": true
-        }
-      ]
-    }
+    "grants": [
+      {
+        "kind": "stat_mod",
+        "stat": "stamina",
+        "mods": [
+          {
+            "perEchelon": true,
+            "valuePerEchelon": 3
+          }
+        ],
+        "label": "Stamina +3 per echelon"
+      }
+    ]
   },
   {
     "id": "complication_evanesceria",
@@ -443,9 +535,17 @@
       "drawback": "If any NPC from your homeland recognizes you, whether in your homeland or elsewhere, they attempt to harm you at the Director’s discretion.",
       "both": null
     },
-    "grants": {
-      "languages": 1
-    }
+    "grants": [
+      {
+        "kind": "choice",
+        "choice_key": "complication_exile.languages",
+        "choice_type": "language",
+        "config_key": "complication.choices",
+        "entry_type": "language",
+        "count": 1,
+        "label": "Choose 1 extant language"
+      }
+    ]
   },
   {
     "id": "complication_fallen_immortal",
@@ -457,13 +557,16 @@
       "drawback": "You will never fully gain a mortal’s comfort with untruth. Any test you make to deceive another creature takes a bane.",
       "both": null
     },
-    "grants": {
-      "skills": [
-        {
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "skill",
+        "entry_id": "skill_religion",
+        "payload": {
           "name": "Religion"
         }
-      ]
-    }
+      }
+    ]
   },
   {
     "id": "complication_famous_relative",
@@ -475,13 +578,16 @@
       "drawback": "You earn no Victories from combat encounters or other challenges for which your relative was present. Additionally, each time you summon your relative, the next time you gain Renown, your relative gains that Renown instead.",
       "both": null
     },
-    "grants": {
-      "abilities": [
-        {
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "famous_relative",
+        "payload": {
           "name": "Famous Relative"
         }
-      ]
-    }
+      }
+    ]
   },
   {
     "id": "complication_feytouched",
@@ -515,20 +621,20 @@
       "drawback": "You have cold weakness 5.",
       "both": null
     },
-    "grants": {
-      "increase_total": [
-        {
-          "stat": "immunity",
-          "type": "fire",
-          "value": 5
-        },
-        {
-          "stat": "weakness",
-          "type": "cold",
-          "value": 5
-        }
-      ]
-    }
+    "grants": [
+      {
+        "kind": "resistance",
+        "damage_type": "fire",
+        "immunity": 5,
+        "label": "Fire immunity 5"
+      },
+      {
+        "kind": "resistance",
+        "damage_type": "cold",
+        "weakness": 5,
+        "label": "Cold weakness 5"
+      }
+    ]
   },
   {
     "id": "complication_following_in_the_footsteps",
@@ -562,20 +668,20 @@
       "drawback": "You have fire weakness 5.",
       "both": null
     },
-    "grants": {
-      "increase_total": [
-        {
-          "stat": "immunity",
-          "type": "cold",
-          "value": 5
-        },
-        {
-          "stat": "weakness",
-          "type": "fire",
-          "value": 5
-        }
-      ]
-    }
+    "grants": [
+      {
+        "kind": "resistance",
+        "damage_type": "cold",
+        "immunity": 5,
+        "label": "Cold immunity 5"
+      },
+      {
+        "kind": "resistance",
+        "damage_type": "fire",
+        "weakness": 5,
+        "label": "Fire weakness 5"
+      }
+    ]
   },
   {
     "id": "complication_getting_too_old_for_this",
@@ -598,13 +704,16 @@
       "drawback": "While you are dazed, if you start your turn adjacent to one or more creatures, you must use your main action to make a melee free strike against an adjacent creature.\nSpecial: You can’t take this complication if you can’t be made dazed.",
       "both": null
     },
-    "grants": {
-      "abilities": [
-        {
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "gnoll_mauled",
+        "payload": {
           "name": "Gnoll-Mauled"
         }
-      ]
-    }
+      }
+    ]
   },
   {
     "id": "complication_greening",
@@ -616,20 +725,20 @@
       "drawback": "You have fire weakness 5.",
       "both": null
     },
-    "grants": {
-      "increase_total": [
-        {
-          "stat": "immunity",
-          "type": "corruption",
-          "value": 5
-        },
-        {
-          "stat": "weakness",
-          "type": "fire",
-          "value": 5
-        }
-      ]
-    }
+    "grants": [
+      {
+        "kind": "resistance",
+        "damage_type": "corruption",
+        "immunity": 5,
+        "label": "Corruption immunity 5"
+      },
+      {
+        "kind": "resistance",
+        "damage_type": "fire",
+        "weakness": 5,
+        "label": "Fire weakness 5"
+      }
+    ]
   },
   {
     "id": "complication_grifter",
@@ -641,14 +750,18 @@
       "drawback": "Whenever you meet an NPC for the first time, the Director can decide that NPC was a victim of one of your previous cons and remembers you. If they do so, the party gains a hero token.",
       "both": null
     },
-    "grants": {
-      "skills": [
-        {
-          "group": "intrigue",
-          "count": 1
-        }
-      ]
-    }
+    "grants": [
+      {
+        "kind": "choice",
+        "choice_key": "complication_grifter.skills",
+        "choice_type": "skill",
+        "config_key": "complication.choices",
+        "entry_type": "skill",
+        "count": 1,
+        "groups": ["intrigue"],
+        "label": "Choose 1 intrigue skill"
+      }
+    ]
   },
   {
     "id": "complication_grounded",
@@ -660,13 +773,16 @@
       "drawback": "You attract lightning. Whenever any creature within 2 squares of you takes lightning damage, you take 5 lightning damage that can’t be reduced in any way.",
       "both": null
     },
-    "grants": {
-      "abilities": [
-        {
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "motivate-earth",
+        "payload": {
           "name": "Motivate Earth"
         }
-      ]
-    }
+      }
+    ]
   },
   {
     "id": "complication_guilty_conscience",
@@ -678,13 +794,16 @@
       "drawback": "Many people blame you for the evils you caused. They might be unfriendly or hostile to you—and you can understand their point of view. You take a bane on any test made to interact with those who know what you did, and on strikes made against such creatures.",
       "both": null
     },
-    "grants": {
-      "abilities": [
-        {
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "guilty_conscience",
+        "payload": {
           "name": "Guilty Conscience"
         }
-      ]
-    }
+      }
+    ]
   },
   {
     "id": "complication_hawk_rider",
@@ -696,9 +815,17 @@
       "drawback": "People aware of the origin of your mount are afraid to interact with you, since they worry the Hawklords will come after them by association. You take a bane on any test made to influence anyone who knows of the Hawklords and who has observed you with your giant hawk. Such people might also report you to the Hawklords, who come looking for you at the Director’s discretion.",
       "both": null
     },
-    "grants": {
-      "features": [{ "name": "Giant Hawk Mount", "type": "mount" }]
-    }
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "feature",
+        "entry_id": "giant_hawk_mount",
+        "payload": {
+          "name": "Giant Hawk Mount",
+          "type": "mount"
+        }
+      }
+    ]
   },
   {
     "id": "complication_host_body",
@@ -710,18 +837,22 @@
       "drawback": "You have fire weakness 5. Additionally, you take a bane on any test made to read a humanoid creature’s emotions or body language.",
       "both": null
     },
-    "grants": {
-      "increase_total": {
-        "stat": "weakness",
-        "type": "fire",
-        "value": 5
+    "grants": [
+      {
+        "kind": "resistance",
+        "damage_type": "fire",
+        "weakness": 5,
+        "label": "Fire weakness 5"
       },
-      "abilities": [
-        {
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "host_body",
+        "payload": {
           "name": "Host Body"
         }
-      ]
-    }
+      }
+    ]
   },
   {
     "id": "complication_hunted",
@@ -733,14 +864,18 @@
       "drawback": "Each time you earn Renown, your pursuer learns your location. Unless you lay low or move to a new location, you’ll be visited by agents of the pursuer within 1d10 days. If you linger after that, your pursuer finds you.",
       "both": null
     },
-    "grants": {
-      "skills": [
-        {
-          "group": "intrigue",
-          "count": 1
-        }
-      ]
-    }
+    "grants": [
+      {
+        "kind": "choice",
+        "choice_key": "complication_hunted.skills",
+        "choice_type": "skill",
+        "config_key": "complication.choices",
+        "entry_type": "skill",
+        "count": 1,
+        "groups": ["intrigue"],
+        "label": "Choose 1 intrigue skill"
+      }
+    ]
   },
   {
     "id": "complication_hunter",
@@ -752,22 +887,27 @@
       "drawback": "You are so obsessed with finding your quarry that you take a bane on any test made to track other creatures.",
       "both": null
     },
-    "grants": {
-      "skills": [
-        {
-          "options": [
-            "Interrogate",
-            "Alertness",
-            "Eavesdrop",
-            "Search",
-            "Track",
-            "Criminal Underworld",
-            "Rumors",
-            "Society"
-          ]
-        }
-      ]
-    }
+    "grants": [
+      {
+        "kind": "choice",
+        "choice_key": "complication_hunter.skill",
+        "choice_type": "skill",
+        "config_key": "complication.choices",
+        "entry_type": "skill",
+        "count": 1,
+        "options": [
+          "Interrogate",
+          "Alertness",
+          "Eavesdrop",
+          "Search",
+          "Track",
+          "Criminal Underworld",
+          "Rumors",
+          "Society"
+        ],
+        "label": "Choose 1 quarry skill"
+      }
+    ]
   },
   {
     "id": "complication_indebted",
@@ -779,12 +919,21 @@
       "drawback": "Your starting Wealth is −5. While your Wealth is lower than 1, you can purchase items as if you had 1 Wealth, but you’re frequently visited by threatening creditors, and shopkeepers often lock their doors when they see you coming.",
       "both": null
     },
-    "grants": {
-      "set_base_stat_if_not_already_lower": {
+    "grants": [
+      {
+        "kind": "stat_mod",
         "stat": "Wealth",
-        "value": -5
+        "mods": [
+          {
+            "value": -5
+          }
+        ],
+        "payload": {
+          "operation": "set_base_if_not_already_lower"
+        },
+        "label": "Set starting Wealth to -5 if higher"
       }
-    }
+    ]
   },
   {
     "id": "complication_infernal_contract",
@@ -807,28 +956,66 @@
       "drawback": "Your body bears a fiendish mark. Any creature who understands religion and notes the mark can tell that your soul belongs to Hell, imposing a bane on any test you make to interact with those creatures (unless they’re into that). Additionally, when you die, your soul goes to Hell and you can’t be restored to life.",
       "both": null
     },
-    "grants": {
-      "pick_one": [
-        {
-          "increase_total": {
-            "stat": "renown",
-            "value": 2
-          }
+    "grants": [
+      {
+        "kind": "choice",
+        "choice_key": "complication_infernal_contract_but_like_bad.pick_one",
+        "choice_type": "option",
+        "config_key": "complication.choices",
+        "count": 1,
+        "options": ["+2 renown", "+2 wealth", "+3 stamina"],
+        "payload": {
+          "options": [
+            {
+              "label": "+2 renown",
+              "grants": [
+                {
+                  "kind": "stat_mod",
+                  "stat": "renown",
+                  "mods": [
+                    {
+                      "value": 2
+                    }
+                  ],
+                  "label": "+2 renown"
+                }
+              ]
+            },
+            {
+              "label": "+2 wealth",
+              "grants": [
+                {
+                  "kind": "stat_mod",
+                  "stat": "wealth",
+                  "mods": [
+                    {
+                      "value": 2
+                    }
+                  ],
+                  "label": "+2 wealth"
+                }
+              ]
+            },
+            {
+              "label": "+3 stamina",
+              "grants": [
+                {
+                  "kind": "stat_mod",
+                  "stat": "stamina",
+                  "mods": [
+                    {
+                      "value": 3
+                    }
+                  ],
+                  "label": "+3 stamina"
+                }
+              ]
+            }
+          ]
         },
-        {
-          "increase_total": {
-            "stat": "wealth",
-            "value": 2
-          }
-        },
-        {
-          "increase_total": {
-            "stat": "stamina",
-            "value": 3
-          }
-        }
-      ]
-    }
+        "label": "Choose infernal benefit"
+      }
+    ]
   },
   {
     "id": "complication_ivory_tower",
@@ -840,15 +1027,27 @@
       "drawback": "The Director chooses one of the skills you have from this complication. You lose that skill and can’t ever learn it again. Additionally, you take a bane on any test to which that skill would apply.",
       "both": null
     },
-    "grants": {
-      "skills": [
-        {
-          "group": "any",
-          "count": 3
-        }
-      ],
-      "languages": [{ "type": "dead", "count": 1 }]
-    }
+    "grants": [
+      {
+        "kind": "choice",
+        "choice_key": "complication_ivory_tower.skills",
+        "choice_type": "skill",
+        "config_key": "complication.choices",
+        "entry_type": "skill",
+        "count": 3,
+        "groups": ["any"],
+        "label": "Choose 3 skills"
+      },
+      {
+        "kind": "choice",
+        "choice_key": "complication_ivory_tower.dead_language",
+        "choice_type": "dead_language",
+        "config_key": "complication.choices",
+        "entry_type": "language",
+        "count": 1,
+        "label": "Choose 1 dead language"
+      }
+    ]
   },
   {
     "id": "complication_lifebonded",
@@ -904,9 +1103,16 @@
       "drawback": "Having no head, you can’t see, hear, smell, taste, or verbalize except by using the Share Head ability. Additionally, you can’t wear gear that requires a head, such as a helmet or hat.",
       "both": null
     },
-    "grants": {
-      "abilities": { "name": "Share Head" }
-    }
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "share_head",
+        "payload": {
+          "name": "Share Head"
+        }
+      }
+    ]
   },
   {
     "id": "complication_lucky",
@@ -929,9 +1135,16 @@
       "drawback": "The first time each day you eat food you didn’t prepare, you lose 2 Recoveries.",
       "both": null
     },
-    "grants": {
-      "skills": { "name": "Cooking" }
-    }
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "skill",
+        "entry_id": "skill_cooking",
+        "payload": {
+          "name": "Cooking"
+        }
+      }
+    ]
   },
   {
     "id": "complication_meddling_butler",
@@ -943,9 +1156,17 @@
       "drawback": "Outside of combat, your retainer is under the Director’s control. The retainer sometimes acts without orders—always with your best interests at heart, but often in embarrassing or inconvenient ways.",
       "both": null
     },
-    "grants": {
-      "features": [{ "name": "Retainer", "type": "follower" }]
-    }
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "feature",
+        "entry_id": "retainer",
+        "payload": {
+          "name": "Retainer",
+          "type": "follower"
+        }
+      }
+    ]
   },
   {
     "id": "complication_medium",
@@ -957,9 +1178,16 @@
       "drawback": null,
       "both": "Incorporeal undead within 10 squares of you can communicate telepathically with you. Additionally, you have the Contact Spirits ability."
     },
-    "grants": {
-      "abilities": { "name": "Contact Spirits" }
-    }
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "contact_spirits",
+        "payload": {
+          "name": "Contact Spirits"
+        }
+      }
+    ]
   },
   {
     "id": "complication_medusa_blood",
@@ -971,9 +1199,16 @@
       "drawback": "Out of combat, you use your Stone Eyes ability on anyone who meets your gaze, whether you intend to or not. Your companions know not to make eye contact, but strangers are likely to trigger the ability unless you cover your eyes.",
       "both": null
     },
-    "grants": {
-      "abilities": { "name": "Stone Eyes" }
-    }
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "stone_eyes",
+        "payload": {
+          "name": "Stone Eyes"
+        }
+      }
+    ]
   },
   {
     "id": "complication_misunderstood",
@@ -996,25 +1231,26 @@
       "drawback": "Whenever you carry more than three magic treasures, you take a bane on power rolls.",
       "both": null
     },
-    "grants": {
-      "increase_total": [
-        {
-          "stat": "immunity",
-          "type": "corruption",
-          "value": "level"
-        },
-        {
-          "stat": "immunity",
-          "type": "holy",
-          "value": "level"
-        },
-        {
-          "stat": "immunity",
-          "type": "psychic",
-          "value": "level"
-        }
-      ]
-    }
+    "grants": [
+      {
+        "kind": "resistance",
+        "damage_type": "corruption",
+        "dynamic_immunity": "level",
+        "label": "Corruption immunity equal to level"
+      },
+      {
+        "kind": "resistance",
+        "damage_type": "holy",
+        "dynamic_immunity": "level",
+        "label": "Holy immunity equal to level"
+      },
+      {
+        "kind": "resistance",
+        "damage_type": "psychic",
+        "dynamic_immunity": "level",
+        "label": "Psychic immunity equal to level"
+      }
+    ]
   },
   {
     "id": "complication_outlaw",
@@ -1026,12 +1262,18 @@
       "drawback": "Law enforcement officials and bounty hunters who recognize you attempt to arrest you.",
       "both": null
     },
-    "grants": {
-      "increase_total": {
+    "grants": [
+      {
+        "kind": "stat_mod",
         "stat": "renown",
-        "value": 1
+        "mods": [
+          {
+            "value": 1
+          }
+        ],
+        "label": "Renown +1"
       }
-    }
+    ]
   },
   {
     "id": "complication_pirate",
@@ -1065,24 +1307,30 @@
       "drawback": "Your number of Recoveries is permanently reduced by 1.",
       "both": null
     },
-    "grants": {
-      "increase_total": [
-        {
-          "stat": "immunity",
-          "type": "corruption",
-          "value": 5
-        },
-        {
-          "stat": "immunity",
-          "type": "poison",
-          "value": 5
-        }
-      ],
-      "decrease_total": {
+    "grants": [
+      {
+        "kind": "resistance",
+        "damage_type": "corruption",
+        "immunity": 5,
+        "label": "Corruption immunity 5"
+      },
+      {
+        "kind": "resistance",
+        "damage_type": "poison",
+        "immunity": 5,
+        "label": "Poison immunity 5"
+      },
+      {
+        "kind": "stat_mod",
         "stat": "recoveries",
-        "value": 1
+        "mods": [
+          {
+            "value": -1
+          }
+        ],
+        "label": "Recoveries -1"
       }
-    }
+    ]
   },
   {
     "id": "complication_prisoner_of_the_synlirii",
@@ -1105,9 +1353,18 @@
       "drawback": "Whoever killed your mentor cursed you. You take a bane on any test that doesn’t use one of your skills.",
       "both": null
     },
-    "grants": {
-      "skills": { "group": "crafting", "count": 1 }
-    }
+    "grants": [
+      {
+        "kind": "choice",
+        "choice_key": "complication_promising_apprentice.skills",
+        "choice_type": "skill",
+        "config_key": "complication.choices",
+        "entry_type": "skill",
+        "count": 1,
+        "groups": ["crafting"],
+        "label": "Choose 1 crafting skill"
+      }
+    ]
   },
   {
     "id": "complication_psychic_eruption",
@@ -1119,9 +1376,16 @@
       "drawback": "Whenever you become bleeding, frightened, or weakened, you must use Psychic Blast as a free triggered action.",
       "both": null
     },
-    "grants": {
-      "abilities": { "name": "Psychic Blast" }
-    }
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "psychic_blast",
+        "payload": {
+          "name": "Psychic Blast"
+        }
+      }
+    ]
   },
   {
     "id": "complication_raised_by_beasts",
@@ -1133,9 +1397,16 @@
       "drawback": "You don’t have a culture, though you can speak Caelian.",
       "both": null
     },
-    "grants": {
-      "skills": { "name": "Handle Animals" }
-    }
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "skill",
+        "entry_id": "skill_handle_animals",
+        "payload": {
+          "name": "Handle Animals"
+        }
+      }
+    ]
   },
   {
     "id": "complication_refugee",
@@ -1169,14 +1440,22 @@
       "drawback": "You have psychic weakness 5.",
       "both": null
     },
-    "grants": {
-      "abilities": { "name": "Telekinetic Grasp" },
-      "increase_total": {
-        "stat": "weakness",
-        "type": "psychic",
-        "value": 5
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "telekinetic_grasp",
+        "payload": {
+          "name": "Telekinetic Grasp"
+        }
+      },
+      {
+        "kind": "resistance",
+        "damage_type": "psychic",
+        "weakness": 5,
+        "label": "Psychic weakness 5"
       }
-    }
+    ]
   },
   {
     "id": "complication_runaway",
@@ -1188,9 +1467,18 @@
       "drawback": "Members of your extended family are looking for you, intending to drag you home—and you’ve never been able to stand up to them.",
       "both": null
     },
-    "grants": {
-      "skills": { "group": "crafting", "count": 1 }
-    }
+    "grants": [
+      {
+        "kind": "choice",
+        "choice_key": "complication_runaway.skills",
+        "choice_type": "skill",
+        "config_key": "complication.choices",
+        "entry_type": "skill",
+        "count": 1,
+        "groups": ["crafting"],
+        "label": "Choose 1 crafting skill"
+      }
+    ]
   },
   {
     "id": "complication_searching_for_a_cure",
@@ -1213,9 +1501,18 @@
       "drawback": "Each time you resume your true identity while you are still hunted, you have a 20 percent cumulative chance each day that your enemies will find you. This chance resets if you resume your secret identity for 1 day.",
       "both": null
     },
-    "grants": {
-      "skills": [{ "group": "intrigue", "count": 1 }]
-    }
+    "grants": [
+      {
+        "kind": "choice",
+        "choice_key": "complication_secret_identity.skills",
+        "choice_type": "skill",
+        "config_key": "complication.choices",
+        "entry_type": "skill",
+        "count": 1,
+        "groups": ["intrigue"],
+        "label": "Choose 1 intrigue skill"
+      }
+    ]
   },
   {
     "id": "complication_secret_twin",
@@ -1227,9 +1524,21 @@
       "drawback": "Your twin disappeared because someone wanted them dead. Whenever you finish a respite, roll a d10. On a 1 or 2, the Director can decide that your past catches up with you in the near future in some way—an assassin seeking your twin, someone who knows your real identity and threatens to reveal it, and so forth.",
       "both": null
     },
-    "grants": {
-      "treasures": [{ "type": "trinket", "echelon": 1 }]
-    }
+    "grants": [
+      {
+        "kind": "choice",
+        "choice_key": "complication_secret_twin.treasure_0",
+        "choice_type": "treasure",
+        "config_key": "complication.choices",
+        "entry_type": "treasure",
+        "count": 1,
+        "payload": {
+          "treasure_type": "trinket",
+          "echelon": 1
+        },
+        "label": "Choose 1st-echelon trinket"
+      }
+    ]
   },
   {
     "id": "complication_self_taught",
@@ -1252,13 +1561,14 @@
       "drawback": "You have poison weakness 5.",
       "both": null
     },
-    "grants": {
-      "increase_total": {
-        "stat": "weakness",
-        "type": "poison",
-        "value": 5
+    "grants": [
+      {
+        "kind": "resistance",
+        "damage_type": "poison",
+        "weakness": 5,
+        "label": "Poison weakness 5"
       }
-    }
+    ]
   },
   {
     "id": "complication_shadow_born",
@@ -1270,13 +1580,14 @@
       "drawback": "You have holy weakness 5.",
       "both": null
     },
-    "grants": {
-      "increase_total": {
-        "stat": "weakness",
-        "type": "holy",
-        "value": 5
+    "grants": [
+      {
+        "kind": "resistance",
+        "damage_type": "holy",
+        "weakness": 5,
+        "label": "Holy weakness 5"
       }
-    }
+    ]
   },
   {
     "id": "complication_shared_spirit",
@@ -1299,10 +1610,30 @@
       "drawback": "The chosen leveled treasure is broken and completely inoperative. Repairing the treasure requires that you complete the Craft Treasure project for it. The project goal is half of what it would cost to create such an item, and you already have the project source you need. You must seek out any item prerequisite.",
       "both": null
     },
-    "grants": {
-      "languages": { "count": 1 },
-      "treasures": { "type": "leveled" }
-    }
+    "grants": [
+      {
+        "kind": "choice",
+        "choice_key": "complication_shattered_legacy.languages",
+        "choice_type": "language",
+        "config_key": "complication.choices",
+        "entry_type": "language",
+        "count": 1,
+        "label": "Choose 1 language"
+      },
+      {
+        "kind": "choice",
+        "choice_key": "complication_shattered_legacy.treasure_0",
+        "choice_type": "treasure",
+        "config_key": "complication.choices",
+        "entry_type": "treasure",
+        "count": 1,
+        "payload": {
+          "treasure_type": "leveled",
+          "leveled": true
+        },
+        "label": "Choose leveled treasure"
+      }
+    ]
   },
   {
     "id": "complication_shipwrecked",
@@ -1314,9 +1645,18 @@
       "drawback": "You have forgotten one language you know of your choice.",
       "both": null
     },
-    "grants": {
-      "skills": { "group": "exploration", "count": 2 }
-    }
+    "grants": [
+      {
+        "kind": "choice",
+        "choice_key": "complication_shipwrecked.skills",
+        "choice_type": "skill",
+        "config_key": "complication.choices",
+        "entry_type": "skill",
+        "count": 2,
+        "groups": ["exploration"],
+        "label": "Choose 2 exploration skills"
+      }
+    ]
   },
   {
     "id": "complication_siblings_shield",
@@ -1339,18 +1679,40 @@
       "drawback": "You have sonic weakness 5. Additionally, whenever you take sonic damage, you are dazed until the end of your next turn.",
       "both": null
     },
-    "grants": {
-      "skills": [
-        { "name": "Eavesdrop" },
-        { "name": "Sneak" },
-        { "group": "lore", "count": 1 }
-      ],
-      "increase_total": {
-        "stat": "weakness",
-        "type": "sonic",
-        "value": 5
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "skill",
+        "entry_id": "skill_eavesdrop",
+        "payload": {
+          "name": "Eavesdrop"
+        }
+      },
+      {
+        "kind": "entry",
+        "entry_type": "skill",
+        "entry_id": "skill_sneak",
+        "payload": {
+          "name": "Sneak"
+        }
+      },
+      {
+        "kind": "choice",
+        "choice_key": "complication_silent_sentinel.skills",
+        "choice_type": "skill",
+        "config_key": "complication.choices",
+        "entry_type": "skill",
+        "count": 1,
+        "groups": ["lore"],
+        "label": "Choose 1 lore skill"
+      },
+      {
+        "kind": "resistance",
+        "damage_type": "sonic",
+        "weakness": 5,
+        "label": "Sonic weakness 5"
       }
-    }
+    ]
   },
   {
     "id": "complication_slight_case_of_lycanthropy",
@@ -1384,9 +1746,21 @@
       "drawback": "With no other inheritance, you accumulated debts. The first time your Wealth exceeds 1, you lose 1 Wealth.",
       "both": null
     },
-    "grants": {
-      "treasures": { "type": "trinket", "echelon": 2 }
-    }
+    "grants": [
+      {
+        "kind": "choice",
+        "choice_key": "complication_strange_inheritance.treasure_0",
+        "choice_type": "treasure",
+        "config_key": "complication.choices",
+        "entry_type": "treasure",
+        "count": 1,
+        "payload": {
+          "treasure_type": "trinket",
+          "echelon": 2
+        },
+        "label": "Choose 2nd-echelon trinket"
+      }
+    ]
   },
   {
     "id": "complication_stripped_of_rank",
@@ -1398,9 +1772,16 @@
       "drawback": "Rather than attracting followers at 3, 6, 9, and 12 Renown, you can attract followers only when your Renown reaches 4, 8, 12, and 16.",
       "both": null
     },
-    "grants": {
-      "abilities": { "name": "Issue Order" }
-    }
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "issue_order",
+        "payload": {
+          "name": "Issue Order"
+        }
+      }
+    ]
   },
   {
     "id": "complication_thrill_seeker",
@@ -1445,12 +1826,18 @@
       "drawback": "If you are ever forced to disobey your organization’s orders, your stability becomes 0 until your doubts are resolved or you find a new organization to pledge yourself to.",
       "both": null
     },
-    "grants": {
-      "increase_total": {
+    "grants": [
+      {
+        "kind": "stat_mod",
         "stat": "stability",
-        "value": 1
+        "mods": [
+          {
+            "value": 1
+          }
+        ],
+        "label": "Stability +1"
       }
-    }
+    ]
   },
   {
     "id": "complication_vow_of_honesty",
@@ -1484,9 +1871,16 @@
       "drawback": "Each time you use your Posthumous Retirement ability, the Director can spend 3 Malice to make your collar malfunction and deal its damage to you in addition to the usual targets.",
       "both": null
     },
-    "grants": {
-      "abilities": { "name": "Posthumous Retirement" }
-    }
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "posthumous_retirement",
+        "payload": {
+          "name": "Posthumous Retirement"
+        }
+      }
+    ]
   },
   {
     "id": "complication_war_of_assassins",
@@ -1520,14 +1914,22 @@
       "drawback": "You have lightning weakness 5. Additionally, the ocean or a creature it sends to seek you can assign you a quest. If you don’t do the ocean’s bidding, it might temporarily deny you this complication’s benefits—including being able to breathe underwater—at an inconvenient time.",
       "both": null
     },
-    "grants": {
-      "abilities": { "name": "Rogue Wave" },
-      "increase_total": {
-        "stat": "weakness",
-        "type": "lightning",
-        "value": 5
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "rogue_wave",
+        "payload": {
+          "name": "Rogue Wave"
+        }
+      },
+      {
+        "kind": "resistance",
+        "damage_type": "lightning",
+        "weakness": 5,
+        "label": "Lightning weakness 5"
       }
-    }
+    ]
   },
   {
     "id": "complication_wodewalker",
@@ -1539,16 +1941,28 @@
       "drawback": "You have fire weakness 5.",
       "both": null
     },
-    "grants": {
-      "increase_total": {
-        "stat": "weakness",
-        "type": "fire",
-        "value": 5
+    "grants": [
+      {
+        "kind": "resistance",
+        "damage_type": "fire",
+        "weakness": 5,
+        "label": "Fire weakness 5"
       },
-      "increase_recovery": {
-        "value": "highest_characteristic"
+      {
+        "kind": "stat_mod",
+        "stat": "recovery_value",
+        "mods": [
+          {
+            "value": 0
+          }
+        ],
+        "payload": {
+          "operation": "increase_recovery",
+          "value": "highest_characteristic"
+        },
+        "label": "Recovery value increases by highest characteristic"
       }
-    }
+    ]
   },
   {
     "id": "complication_wrathful_spirit",
@@ -1571,8 +1985,17 @@
       "drawback": "Your health suffered in prison. Whenever you are winded, you are stricken with a hacking cough that makes it impossible for you to hide or sneak.",
       "both": null
     },
-    "grants": {
-      "skills": { "group": "any", "count": 2 }
-    }
+    "grants": [
+      {
+        "kind": "choice",
+        "choice_key": "complication_wrongly_imprisoned.skills",
+        "choice_type": "skill",
+        "config_key": "complication.choices",
+        "entry_type": "skill",
+        "count": 2,
+        "groups": ["any"],
+        "label": "Choose 2 skills"
+      }
+    ]
   }
 ]

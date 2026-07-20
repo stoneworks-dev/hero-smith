@@ -5,17 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/db/app_database.dart' as app_db;
 import '../../../core/db/providers.dart';
 import '../../../core/models/class_data.dart';
+import '../../../core/models/canonical_grant_model.dart';
 import '../../../core/models/component.dart' as model;
 import '../../../core/models/subclass_models.dart';
 import '../../../core/services/class_data_service.dart';
 import '../../../core/services/class_feature_data_service.dart';
-import '../../../core/services/class_feature_grants_service.dart';
 import '../../../core/services/complication_grants_service.dart';
 import '../../../core/services/skill_data_service.dart';
 import '../../../core/services/story_creator_service.dart';
 import '../../../core/services/subclass_data_service.dart';
+import '../../../core/storage/hero_storage_contract.dart';
 
 import '../../../core/theme/form_theme.dart';
 import '../../../core/theme/navigation_theme.dart';
@@ -24,10 +26,17 @@ import '../../../core/theme/app_icon.dart';
 import '../../../core/theme/app_icon_data.dart';
 import '../../../core/theme/app_icons.dart';
 import '../../../core/text/heroes_sheet/story/sheet_story_text.dart';
+import '../../../core/text/widgets/perks_widget_text.dart';
 import '../../../core/utils/searchable_picker.dart';
 import '../../creators/widgets/strength_creator/class_features_section.dart';
+import '../../creators/widgets/story_creator/story_complication_section.dart';
+import '../../hero_builder/domain/hero_claim.dart';
+import '../../hero_builder/domain/hero_conflict_index.dart';
+import '../../hero_builder/domain/hero_mutation_scope.dart';
+import '../../hero_builder/domain/strength_skill_conflict_projection.dart';
 
-import '../../../widgets/perks/perks_selection_widget.dart' hide showSearchablePicker;
+import '../../../widgets/perks/perks_selection_widget.dart'
+    hide showSearchablePicker;
 import '../../../widgets/perks/add_perk_dialog.dart';
 import '../../../widgets/titles/add_title_dialog.dart';
 import '../../../widgets/titles/title_ancestry_traits_dialog.dart';
@@ -40,6 +49,7 @@ import 'title_progress_page.dart';
 part 'sheet_story_story_tab.dart';
 part 'sheet_story_skills_tab.dart';
 part 'sheet_story_languages_tab.dart';
+part 'sheet_story_complications_tab.dart';
 part 'sheet_story_titles_tab.dart';
 part 'sheet_story_features_tab.dart';
 part 'sheet_story_perks_tab.dart';
@@ -83,7 +93,7 @@ class _SheetStoryState extends ConsumerState<SheetStory>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 6, vsync: this);
+    _tabController = TabController(length: 7, vsync: this);
     _loadStoryData();
   }
 
@@ -102,7 +112,7 @@ class _SheetStoryState extends ConsumerState<SheetStory>
     try {
       final service = ref.read(storyCreatorServiceProvider);
       final result = await service.loadInitialData(widget.heroId);
-      
+
       if (mounted) {
         setState(() {
           _storyData = result;
@@ -145,15 +155,28 @@ class _SheetStoryState extends ConsumerState<SheetStory>
                 ),
                 labelColor: FormTheme.textBright,
                 unselectedLabelColor: FormTheme.textMuted,
-                labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-                unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.normal, fontSize: 13),
+                labelStyle:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                unselectedLabelStyle: const TextStyle(
+                    fontWeight: FontWeight.normal, fontSize: 13),
                 tabs: [
-                  _buildTab(SheetStoryTabsText.features, AbilityIcons.feature, 0, NavigationTheme.kitsColor),
-                  _buildTab(SheetStoryTabsText.story, StoryIcons.yourHeroes, 1, StoryTheme.storyAccent),
-                  _buildTab(SheetStoryTabsText.skills, SkillGroupIcons.crafting, 2, StoryTheme.skillsAccent),
-                  _buildTab(SheetStoryTabsText.languages, LanguageTypeIcons.tab, 3, StoryTheme.languagesAccent),
-                  _buildTab(SheetStoryTabsText.perks, PerkGroupIcons.tab, 4, StoryTheme.perksAccent),
-                  _buildTab(SheetStoryTabsText.titles, TitleIcons.tab, 5, StoryTheme.titlesAccent),
+                  _buildTab(SheetStoryTabsText.features, AbilityIcons.feature,
+                      0, NavigationTheme.kitsColor),
+                  _buildTab(SheetStoryTabsText.story, StoryIcons.yourHeroes, 1,
+                      StoryTheme.storyAccent),
+                  _buildTab(SheetStoryTabsText.skills, SkillGroupIcons.crafting,
+                      2, StoryTheme.skillsAccent),
+                  _buildTab(SheetStoryTabsText.languages, LanguageTypeIcons.tab,
+                      3, StoryTheme.languagesAccent),
+                  _buildTab(SheetStoryTabsText.perks, PerkGroupIcons.tab, 4,
+                      StoryTheme.perksAccent),
+                  _buildTab(SheetStoryTabsText.titles, TitleIcons.tab, 5,
+                      StoryTheme.titlesAccent),
+                  _buildTab(
+                      SheetStoryTabsText.complications,
+                      StoryIcons.complication,
+                      6,
+                      NavigationTheme.complicationsColor),
                 ],
               );
             },
@@ -169,6 +192,12 @@ class _SheetStoryState extends ConsumerState<SheetStory>
               _LanguagesTab(heroId: widget.heroId),
               _PerksTab(heroId: widget.heroId),
               _TitlesTab(heroId: widget.heroId),
+              _ComplicationsTab(
+                heroId: widget.heroId,
+                onChanged: () {
+                  _loadStoryData();
+                },
+              ),
             ],
           ),
         ),
@@ -184,6 +213,7 @@ class _SheetStoryState extends ConsumerState<SheetStory>
       StoryTheme.languagesAccent, // Languages - Blue
       StoryTheme.perksAccent, // Perks - Orange
       StoryTheme.titlesAccent, // Titles - Gold
+      NavigationTheme.complicationsColor, // Complications
     ];
     return colors[index.clamp(0, colors.length - 1)];
   }

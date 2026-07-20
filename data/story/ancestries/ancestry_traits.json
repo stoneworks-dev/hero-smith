@@ -7,7 +7,17 @@
     "points": 3,
     "signature": {
       "name": "Silver Tongue",
-      "description": "Your innate magic allows you to twist how your words are perceived to get a better read on people and convince them to see things your way. You gain an edge on tests when attempting to discover an NPC’s motivations and pitfalls during a negotiation."
+      "description": "Your innate magic allows you to twist how your words are perceived to get a better read on people and convince them to see things your way. You have one skill of your choice from the interpersonal skill group, and you gain an edge on tests when attempting to discover an NPC’s motivations and pitfalls during a negotiation.",
+      "grants": [
+        {
+          "kind": "choice",
+          "choice_key": "signature_skill",
+          "choice_type": "skill",
+          "entry_type": "skill",
+          "count": 1,
+          "groups": ["interpersonal"]
+        }
+      ]
     },
     "traits": [
       {
@@ -15,24 +25,53 @@
         "name": "Barbed Tail",
         "cost": 1,
         "description": "Your pointy tail allows you to punctuate all your actions. Once per round when you make a melee strike, you can deal extra damage with the strike equal to your highest characteristic score.",
-        "grants_ability_name": "Barbed Tail"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "barbed_tail",
+            "payload": {
+              "name": "Barbed Tail"
+            }
+          }
+        ]
       },
       {
         "id": "devil_beast_legs",
         "name": "Beast Legs",
         "cost": 1,
         "description": "Your powerful legs improve your speed. Your Speed is 6.",
-        "set_base_stat_if_not_already_higher": {
-          "stat": "speed",
-          "value": 6
-        }
+        "grants": [
+          {
+            "kind": "stat_mod",
+            "stat": "speed",
+            "mods": [
+              {
+                "value": 6
+              }
+            ],
+            "payload": {
+              "operation": "set_base_if_not_already_higher",
+              "value": 6
+            }
+          }
+        ]
       },
       {
         "id": "devil_glowing_eyes",
         "name": "Glowing Eyes",
         "cost": 1,
         "description": "Your eyes are a solid, vibrant color that flares to show your excitement or rage. Whenever you take damage from a creature, you can use a triggered action to deal that creature psychic damage equal to 1d10 + your level",
-        "grants_ability_name": "Glowing Eyes"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "glowing_eyes",
+            "payload": {
+              "name": "Glowing Eyes"
+            }
+          }
+        ]
       },
       {
         "id": "devil_hellsight",
@@ -45,10 +84,17 @@
         "name": "Impressive Horns",
         "cost": 2,
         "description": "Your cherished horns are larger than your average devil’s, and a hardened representation of your force of will. Whenever you make a saving throw, you succeed on a roll of 5 or higher.",
-        "decrease_total": {
-          "stat": "saving throw",
-          "value": 1
-        }
+        "grants": [
+          {
+            "kind": "stat_mod",
+            "stat": "saving throw",
+            "mods": [
+              {
+                "value": -1
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "devil_prehensile_tail",
@@ -73,11 +119,25 @@
     "signature": {
       "name": "Wyrmplate",
       "description": "Your hardened scales grant you damage immunity equal to your level to one of the following damage types: acid, cold, corruption, fire, lightning, or poison. You can change your damage immunity type when you finish a respite.",
-      "increase_total": {
-        "stat": "immunity",
-        "type": "pick_one",
-        "value": "level"
-      }
+      "grants": [
+        {
+          "kind": "choice",
+          "choice_key": "signature_immunity",
+          "choice_type": "damage_type",
+          "options": [
+            "acid",
+            "cold",
+            "corruption",
+            "fire",
+            "lightning",
+            "poison"
+          ],
+          "payload": {
+            "stat": "immunity",
+            "value": "level"
+          }
+        }
+      ]
     },
     "traits": [
       {
@@ -85,39 +145,89 @@
         "name": "Draconian Guard",
         "cost": 1,
         "description": "You can swing your wings around and guard against a blow.",
-        "grants_ability_name": "Draconian Guard"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "draconian_guard",
+            "payload": {
+              "name": "Draconian Guard"
+            }
+          }
+        ]
       },
       {
         "id": "dk_draconian_pride",
         "name": "Draconian Pride",
         "cost": 2,
         "description": "You let loose a mighty roar to shake your foes’ spirits.",
-        "grants_ability_name": "Draconian Pride"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "draconian_pride",
+            "payload": {
+              "name": "Draconian Pride"
+            }
+          }
+        ]
       },
       {
         "id": "dk_dragon_breath",
         "name": "Dragon Breath",
         "cost": 2,
         "description": "A furious exhalation of energy washes over your foes.",
-        "grants_ability_name": "Dragon Breath"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "dragon_breath",
+            "payload": {
+              "name": "Dragon Breath"
+            }
+          }
+        ]
       },
       {
         "id": "dk_prismatic_scales",
         "name": "Prismatic Scales",
         "cost": 1,
         "description": "Select one damage immunity granted by your Wyrmplate trait. You always have this immunity, in addition to the immunity granted by Wyrmplate.",
-        "increase_total": {
-          "stat": "immunity",
-          "type": "pick_one",
-          "value": "level"
-        }
+        "grants": [
+          {
+            "kind": "choice",
+            "choice_key": "dk_prismatic_scales",
+            "choice_type": "damage_type",
+            "options": [
+              "acid",
+              "cold",
+              "corruption",
+              "fire",
+              "lightning",
+              "poison"
+            ],
+            "payload": {
+              "stat": "immunity",
+              "value": "level"
+            }
+          }
+        ]
       },
       {
         "id": "dk_remember_your_oath",
         "name": "Remember Your Oath",
         "cost": 1,
         "description": "As a maneuver, you can recite the following oath. Until the start of your next turn, whenever you make a saving throw, you succeed on a 4 or higher.\n\n> Even should the sun stop in the sky\n> Even should the night last a thousand years\n> I will stand forever\n> I shall not yield\n> Those who suffer and yearn for justice\n> I am your sword and shield\n> I will yield no ground\n> I will speak no lies\n> I will stand against all tyrants\n> Until the last villain dies.",
-        "grants_ability_name": "Remember Your Oath"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "remember_your_oath",
+            "payload": {
+              "name": "Remember Your Oath"
+            }
+          }
+        ]
       },
       {
         "id": "dk_wings",
@@ -144,27 +254,51 @@
         "name": "Great Fortitude",
         "cost": 2,
         "description": "Your hearty constitution prevents you from losing strength. You can’t be made weakened.",
-        "condition_immunity": "weakened"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "condition_immunity",
+            "entry_id": "weakened",
+            "payload": {
+              "name": "weakened"
+            }
+          }
+        ]
       },
       {
         "id": "dwarf_grounded",
         "name": "Grounded",
         "cost": 1,
         "description": " Your heavy stone body and connection to the earth make it difficult for others to move you. You have a +1 bonus to stability.",
-        "increase_total": {
-          "stat": "stability",
-          "value": 1
-        }
+        "grants": [
+          {
+            "kind": "stat_mod",
+            "stat": "stability",
+            "mods": [
+              {
+                "value": 1
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "dwarf_spark_off_your_skin",
         "name": "Spark Off Your Skin",
         "cost": 2,
         "description": " Your stone skin affords you potent protection. You have a +6 bonus to Stamina, and that bonus increases by 6 at 4th, 7th, and 10th levels.",
-        "increase_total_per_echelon": {
-          "stat": "stamina",
-          "value": 6
-        }
+        "grants": [
+          {
+            "kind": "stat_mod",
+            "stat": "stamina",
+            "mods": [
+              {
+                "perEchelon": true,
+                "valuePerEchelon": 6
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "dwarf_stand_tough",
@@ -208,10 +342,17 @@
         "name": "Otherworldly Grace",
         "cost": 2,
         "description": "Your elf body and mind can’t be contained for long. Whenever you make a saving throw, you succeed on a roll of 5 or higher.",
-        "decrease_total": {
-          "stat": "saving throw",
-          "value": 1
-        }
+        "grants": [
+          {
+            "kind": "stat_mod",
+            "stat": "saving throw",
+            "mods": [
+              {
+                "value": -1
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "wode_revisit_memory",
@@ -224,17 +365,37 @@
         "name": "Swift",
         "cost": 1,
         "description": "You have speed 6.",
-        "set_base_stat_if_not_already_higher": {
-          "stat": "speed",
-          "value": 6
-        }
+        "grants": [
+          {
+            "kind": "stat_mod",
+            "stat": "speed",
+            "mods": [
+              {
+                "value": 6
+              }
+            ],
+            "payload": {
+              "operation": "set_base_if_not_already_higher",
+              "value": 6
+            }
+          }
+        ]
       },
       {
         "id": "wode_the_wode_defends",
         "name": "The Wode Defends",
         "cost": 2,
         "description": "Thorny vines erupt into existence and attempt to bind your foe.",
-        "grants_ability_name": "The Wode Defends"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "the_wode_defends",
+            "payload": {
+              "name": "The Wode Defends"
+            }
+          }
+        ]
       }
     ]
   },
@@ -254,17 +415,33 @@
         "name": "Glamor of Terror",
         "cost": 2,
         "description": "When a foe strikes, you reverse the magic of your glamor to instill fear into their heart.",
-        "grants_ability_name": "Glamor of Terror"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "glamor_of_terror",
+            "payload": {
+              "name": "Glamor of Terror"
+            }
+          }
+        ]
       },
       {
         "id": "high_elf_graceful_retreat",
         "name": "Graceful Retreat",
         "cost": 1,
         "description": "You gain a +1 bonus to the distance you can shift when you take the Disengage move action.",
-        "increase_total": {
-          "stat": "disengage",
-          "value": 1
-        }
+        "grants": [
+          {
+            "kind": "stat_mod",
+            "stat": "disengage",
+            "mods": [
+              {
+                "value": 1
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "high_elf_high_senses",
@@ -277,10 +454,17 @@
         "name": "Otherworldly Grace",
         "cost": 2,
         "description": "Your elf body and mind can’t be contained for long. Whenever you make a saving throw, you succeed on a roll of 5 or higher.",
-        "decrease_total": {
-          "stat": "saving throw",
-          "value": 1
-        }
+        "grants": [
+          {
+            "kind": "stat_mod",
+            "stat": "saving throw",
+            "mods": [
+              {
+                "value": -1
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "high_elf_revisit_memory",
@@ -293,7 +477,16 @@
         "name": "Unstoppable Mind",
         "cost": 2,
         "description": "Your mind allows you to maintain your focus in any situation. You can’t be made dazed.",
-        "condition_immunity": "dazed"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "condition_immunity",
+            "entry_id": "dazed",
+            "payload": {
+              "name": "dazed"
+            }
+          }
+        ]
       }
     ]
   },
@@ -306,10 +499,21 @@
     "signature": {
       "name": "Big!",
       "description": "Size 1L.",
-      "set_base_stat_if_not_already_higher": {
-        "stat": "size",
-        "value": "1L"
-      }
+      "grants": [
+        {
+          "kind": "stat_mod",
+          "stat": "size",
+          "mods": [
+            {
+              "value": 0
+            }
+          ],
+          "payload": {
+            "operation": "set_base_if_not_already_higher",
+            "value": "1L"
+          }
+        }
+      ]
     },
     "traits": [
       {
@@ -335,7 +539,16 @@
         "name": "Great Fortitude",
         "cost": 2,
         "description": "Your hearty constitution prevents you from losing strength. You can’t be made weakened.",
-        "condition_immunity": "weakened"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "condition_immunity",
+            "entry_id": "weakened",
+            "payload": {
+              "name": "weakened"
+            }
+          }
+        ]
       },
       {
         "id": "hakaan_stand_tough",
@@ -354,7 +567,16 @@
     "signature": {
       "name": "Detect the Supernatural",
       "description": "As a maneuver, you can open your awareness to detect supernatural creatures and phenomena. Until the end of your next turn, you know the location of any supernatural object, or any undead, construct, or creature from another world within 5 squares, even if you don’t have line of effect to that object or creature. You know if you’re detecting an item or a creature, and you know the nature of any creature you detect.",
-      "grants_ability_name": "Detect the Supernatural"
+      "grants": [
+        {
+          "kind": "entry",
+          "entry_type": "ability",
+          "entry_id": "detect_the_supernatural",
+          "payload": {
+            "name": "Detect the Supernatural"
+          }
+        }
+      ]
     },
     "traits": [
       {
@@ -368,7 +590,16 @@
         "name": "Determination",
         "cost": 2,
         "description": "A tolerance for pain and distress allows you to push through difficult situations. If you are frightened, slowed, or weakened, you can use a maneuver to immediately end one of those conditions.",
-        "grants_ability_name": "Determination"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "determination",
+            "payload": {
+              "name": "Determination"
+            }
+          }
+        ]
       },
       {
         "id": "human_perseverance",
@@ -381,17 +612,33 @@
         "name": "Resist the Unnatural",
         "cost": 1,
         "description": "Your instinctive resilience protects you from injuries beyond the routine. Whenever you take damage that isn’t untyped, you can use a triggered action to take half the damage.",
-        "grants_ability_name": "Resist the Unnatural"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "resist_the_unnatural",
+            "payload": {
+              "name": "Resist the Unnatural"
+            }
+          }
+        ]
       },
       {
         "id": "human_staying_power",
         "name": "Staying Power",
         "cost": 2,
         "description": "Your human physiology allows you to fight, run, and stay awake longer than others. You increase your number of Recoveries by 2.",
-        "increase_total": {
-          "stat": "recoveries",
-          "value": 2
-        }
+        "grants": [
+          {
+            "kind": "stat_mod",
+            "stat": "recoveries",
+            "mods": [
+              {
+                "value": 2
+              }
+            ]
+          }
+        ]
       }
     ]
   },
@@ -417,24 +664,53 @@
         "name": "Keeper of Order",
         "cost": 2,
         "description": " Your connection to Axiom, the plane of Uttermost Law, allows you to manage chaos around you. Once per round when you or an adjacent creature makes a power roll, you can use a free triggered action to remove an edge or a bane on the roll, to turn a double edge into an edge, or to turn a double bane into a bane",
-        "grants_ability_name": "Keeper of Order"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "keeper_of_order",
+            "payload": {
+              "name": "Keeper of Order"
+            }
+          }
+        ]
       },
       {
         "id": "memonek_lightning_nimbleness",
         "name": "Lightning Nimbleness",
         "cost": 2,
         "description": "You can push your body to move at incredible speeds. Your Speed is 7.",
-        "set_base_stat_if_not_already_higher": {
-          "stat": "speed",
-          "value": 7
-        }
+        "grants": [
+          {
+            "kind": "stat_mod",
+            "stat": "speed",
+            "mods": [
+              {
+                "value": 7
+              }
+            ],
+            "payload": {
+              "operation": "set_base_if_not_already_higher",
+              "value": 7
+            }
+          }
+        ]
       },
       {
         "id": "memonek_nonstop",
         "name": "Nonstop",
         "cost": 2,
         "description": "Your connection to Axiom allows you to regulate your movement.  You can’t be made slowed.",
-        "condition_immunity": "slowed"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "condition_immunity",
+            "entry_id": "slowed",
+            "payload": {
+              "name": "slowed"
+            }
+          }
+        ]
       },
       {
         "id": "memonek_systematic_mind",
@@ -447,7 +723,16 @@
         "name": "Unphased",
         "cost": 1,
         "description": "Your ordered mind can’t be caught off guard. You can’t be made surprised.",
-        "condition_immunity": "surprised"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "condition_immunity",
+            "entry_id": "surprised",
+            "payload": {
+              "name": "surprised"
+            }
+          }
+        ]
       },
       {
         "id": "memonek_useful_emotion",
@@ -466,7 +751,16 @@
     "signature": {
       "name": "Relentless",
       "description": "Whenever a creature deals damage to you that leaves you dying, you can make a free strike against any creature. If the creature is reduced to 0 Stamina by your strike, you can spend a Recovery.",
-      "grants_ability_name": "Relentless"
+      "grants": [
+        {
+          "kind": "entry",
+          "entry_type": "ability",
+          "entry_id": "relentless",
+          "payload": {
+            "name": "Relentless"
+          }
+        }
+      ]
     },
     "traits": [
       {
@@ -486,17 +780,33 @@
         "name": "Grounded",
         "cost": 1,
         "description": "The magic in your blood makes it difficult for others to move you. You have a +1 bonus to stability.",
-        "increase_total": {
-          "stat": "stability",
-          "value": 1
-        }
+        "grants": [
+          {
+            "kind": "stat_mod",
+            "stat": "stability",
+            "mods": [
+              {
+                "value": 1
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "orc_nonstop",
         "name": "Nonstop",
         "cost": 2,
         "description": "Your bloodfire supplies you with a constant rush of adrenaline. You can’t be made slowed.",
-        "condition_immunity": "slowed"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "condition_immunity",
+            "entry_id": "slowed",
+            "payload": {
+              "name": "slowed"
+            }
+          }
+        ]
       },
       {
         "id": "orc_passionate_artisan",
@@ -515,11 +825,29 @@
     "signature": {
       "name": "Shadowmeld",
       "description": "You become an actual shadow.",
-      "grants_ability_name": "Shadowmeld",
-      "set_base_stat_if_not_already_higher": {
-        "stat": "size",
-        "value": "1S"
-      }
+      "grants": [
+        {
+          "kind": "entry",
+          "entry_type": "ability",
+          "entry_id": "shadowmeld",
+          "payload": {
+            "name": "Shadowmeld"
+          }
+        },
+        {
+          "kind": "stat_mod",
+          "stat": "size",
+          "mods": [
+            {
+              "value": 0
+            }
+          ],
+          "payload": {
+            "operation": "set_base_if_not_already_higher",
+            "value": "1S"
+          }
+        }
+      ]
     },
     "traits": [
       {
@@ -527,28 +855,46 @@
         "name": "Corruption Immunity",
         "cost": 1,
         "description": "Your innate shadow magic grants you resilience against the unnatural. You have corruption immunity equal to your level + 2.",
-        "increase_total": {
-          "stat": "immunity",
-          "type": "corruption",
-          "value": "level + 2"
-        }
+        "grants": [
+          {
+            "kind": "resistance",
+            "damage_type": "corruption",
+            "dynamic_immunity": "level + 2"
+          }
+        ]
       },
       {
         "id": "polder_fearless",
         "name": "Fearless",
         "cost": 2,
         "description": "Courage is all you know. You can’t be made frightened.",
-        "condition_immunity": "frightened"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "condition_immunity",
+            "entry_id": "frightened",
+            "payload": {
+              "name": "frightened"
+            }
+          }
+        ]
       },
       {
         "id": "polder_graceful_retreat",
         "name": "Graceful Retreat",
         "cost": 1,
         "description": "Your small size makes it easier for you to slip away from the fray. You gain a +1 bonus to the distance you can shift when you take the Disengage move action.",
-        "increase_total": {
-          "stat": "disengage",
-          "value": 1
-        }
+        "grants": [
+          {
+            "kind": "stat_mod",
+            "stat": "disengage",
+            "mods": [
+              {
+                "value": 1
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "polder_nimblestep",
@@ -567,7 +913,16 @@
         "name": "Reactive Tumble",
         "cost": 1,
         "description": "Staying light on your feet lets you quickly get back into position.",
-        "grants_ability_name": "Reactive Tumble"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "reactive_tumble",
+            "payload": {
+              "name": "Reactive Tumble"
+            }
+          }
+        ]
       }
     ]
   },
@@ -584,17 +939,32 @@
       },
       {
         "name": "Tough But Withered",
-        "description": "Your undead body grants you immunity to cold, corruption, lightning, and poison damage equal to your level, but you have fire weakness 5. You can’t suffocate, and you don’t need to eat or drink to stay alive.\n\nAdditionally, when your Stamina reaches the negative of your winded value, you become inert instead of dying. You fall prone and can’t stand. You continue to observe your surroundings, but you can’t speak, take main actions, maneuvers, move actions, or triggered actions. While inert this way, if you take any fire damage, your body is destroyed and you die. Otherwise, after 12 hours, you regain Stamina equal to your recovery value." ,
-        "increase_total": [
+        "description": "Your undead body grants you immunity to cold, corruption, lightning, and poison damage equal to your level, but you have fire weakness 5. You can’t suffocate, and you don’t need to eat or drink to stay alive.\n\nAdditionally, when your Stamina reaches the negative of your winded value, you become inert instead of dying. You fall prone and can’t stand. You continue to observe your surroundings, but you can’t speak, take main actions, maneuvers, move actions, or triggered actions. While inert this way, if you take any fire damage, your body is destroyed and you die. Otherwise, after 12 hours, you regain Stamina equal to your recovery value.",
+        "grants": [
           {
-            "stat": "immunity",
-            "type": ["cold", "corruption", "lightning", "poison"],
-            "value": "level"
+            "kind": "resistance",
+            "damage_type": "cold",
+            "dynamic_immunity": "level"
           },
           {
-            "stat": "weakness",
-            "type": "fire",
-            "value": 5
+            "kind": "resistance",
+            "damage_type": "corruption",
+            "dynamic_immunity": "level"
+          },
+          {
+            "kind": "resistance",
+            "damage_type": "lightning",
+            "dynamic_immunity": "level"
+          },
+          {
+            "kind": "resistance",
+            "damage_type": "poison",
+            "dynamic_immunity": "level"
+          },
+          {
+            "kind": "resistance",
+            "damage_type": "fire",
+            "weakness": 5
           }
         ]
       }
@@ -605,7 +975,16 @@
         "name": "Bloodless",
         "cost": 2,
         "description": "For you, an open wound is indistinguishable from a scratch. You can’t be made bleeding even while dying.",
-        "condition_immunity": "bleeding"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "condition_immunity",
+            "entry_id": "bleeding",
+            "payload": {
+              "name": "bleeding"
+            }
+          }
+        ]
       },
       {
         "id": "revenant_previous_life_1",
@@ -636,7 +1015,24 @@
         "name": "Vengeance Mark",
         "cost": 2,
         "description": "As a maneuver, you place a magic sigil on a creature within 10 squares of you. When you place a sigil, you can decide where it appears on the creature’s body, and whether the sigil is visible to only you or to all creatures.\n\nYou always know the direction to the exact location of a creature who bears one of your sigils and is on the same world. You can have an active number of sigils equal to your level, and can remove a sigil from a creature at will (no action required). If you already have the maximum number of sigils activated and you place a new one, your oldest sigil disappears with no other effect.",
-        "grants_ability_name": ["Vengeance Mark", "Detonate Sigil"]
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "vengeance_mark",
+            "payload": {
+              "name": "Vengeance Mark"
+            }
+          },
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "detonate_sigil",
+            "payload": {
+              "name": "Detonate Sigil"
+            }
+          }
+        ]
       }
     ]
   },
@@ -649,11 +1045,13 @@
     "signature": {
       "name": "Psychic Scar",
       "description": "Your mind is a formidable layer of defense. You have psychic immunity equal to your level.",
-      "increase_total": {
-        "stat": "immunity",
-        "type": "psychic",
-        "value": "level"
-      }
+      "grants": [
+        {
+          "kind": "resistance",
+          "damage_type": "psychic",
+          "dynamic_immunity": "level"
+        }
+      ]
     },
     "traits": [
       {
@@ -661,14 +1059,32 @@
         "name": "Beyondsight",
         "cost": 1,
         "description": "As a maneuver, you can adjust your vision to allow you to see through mundane obstructions that are 1 square thick or less. While your vision is adjusted this way, you can’t see the area within 1 square of you and you don’t have line of effect to any creature or object in that area. You can restore your usual vision as a maneuver.",
-        "grants_ability_name": "Beyondsight"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "beyondsight",
+            "payload": {
+              "name": "Beyondsight"
+            }
+          }
+        ]
       },
       {
         "id": "tr_foresight",
         "name": "Foresight",
         "cost": 1,
         "description": " Your senses extend past mundane obscuration and the veil of the future alike. You automatically know the location of any creature with concealment who isn’t hidden from you within 20, and you negate the usual bane on strikes against such creatures. Additionally, whenever you are targeted by a strike, you can use a triggered action to impose a bane on the power roll.",
-        "grants_ability_name": "Foresight"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "foresight",
+            "payload": {
+              "name": "Foresight"
+            }
+          }
+        ]
       },
       {
         "id": "tr_four_armed_athletics",
@@ -698,7 +1114,16 @@
         "name": "Unstoppable Mind",
         "cost": 2,
         "description": "Your mind allows you to maintain your focus in any situation. You can’t be made dazed.",
-        "condition_immunity": "dazed"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "condition_immunity",
+            "entry_id": "dazed",
+            "payload": {
+              "name": "dazed"
+            }
+          }
+        ]
       }
     ]
   }

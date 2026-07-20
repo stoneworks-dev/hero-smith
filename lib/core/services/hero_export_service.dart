@@ -1,16 +1,27 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:async';
 
 import 'package:drift/drift.dart';
 
 import '../db/app_database.dart';
+import '../repositories/hero_entry_repository.dart';
+import '../storage/hero_storage_contract.dart';
+import 'hero_config_service.dart';
+import 'hero_entry_normalizer.dart';
 import 'hero_export_models.dart';
+import 'hero_export_source.dart';
+import 'native_snapshot_migrator.dart';
+import 'native_snapshot_exceptions.dart';
 
 /// Version of the export format. Increment when making breaking changes.
 const int kExportVersion = 2;
 
 /// Magic prefix for database snapshot exports
 const String kExportMagic = 'HS2:';
+
+/// Internal import lifecycle seam used to verify transaction rollback.
+typedef NativeImportStageHook = FutureOr<void> Function(String stage);
 
 /// Options controlling what data is included in an export.
 ///
@@ -65,7 +76,9 @@ class ExportOptions {
 
   /// Human-readable label for what's included.
   String get label {
-    if (includeDowntime && includeTitles && includeNotes && includeRetainers) return 'Full Export';
+    if (includeDowntime && includeTitles && includeNotes && includeRetainers) {
+      return 'Full Export';
+    }
     final parts = <String>['Core Build'];
     if (includeDowntime) parts.add('Downtime');
     if (includeTitles) parts.add('Titles');
@@ -97,8 +110,19 @@ class ExportOptions {
 ///
 /// Format: HS2:<base64-gzip-json>
 class HeroExportService {
-  HeroExportService(this._db);
+  HeroExportService(this._db, {NativeImportStageHook? onImportStage})
+      : _entries = HeroEntryRepository(_db),
+        _config = HeroConfigService(_db),
+        _normalizer = HeroEntryNormalizer(_db),
+        _sourceLoader = HeroExportSourceLoader(_db),
+        _onImportStage = onImportStage;
+
   final AppDatabase _db;
+  final HeroEntryRepository _entries;
+  final HeroConfigService _config;
+  final HeroEntryNormalizer _normalizer;
+  final HeroExportSourceLoader _sourceLoader;
+  final NativeImportStageHook? _onImportStage;
 
   // ===========================================================================
   // EXPORT
@@ -111,17 +135,21 @@ class HeroExportService {
   Future<String> exportHeroToCode(
     String heroId, {
     ExportOptions options = ExportOptions.full,
-  }) async {
-    // Fetch hero row
-    final heroRow = await (_db.select(_db.heroes)
-          ..where((t) => t.id.equals(heroId)))
-        .getSingleOrNull();
-    if (heroRow == null) {
-      throw ArgumentError('Hero not found: $heroId');
-    }
+  }) async =>
+      (await exportHeroToArtifact(heroId, options: options)).content;
 
-    // Build the snapshot data
-    final snapshot = await _buildSnapshot(heroId, heroRow, options);
+  /// Builds the native backup and its deterministic inclusion report together.
+  /// The legacy string API delegates here to keep the `.hero` wire format
+  /// unchanged while callers migrate to the report-aware workflow.
+  Future<ExportArtifact> exportHeroToArtifact(
+    String heroId, {
+    ExportOptions options = ExportOptions.full,
+  }) async {
+    // Legacy migration is still needed to produce the current snapshot shape,
+    // but export must never repair the live hero. Build from the normalized
+    // transaction view and roll those temporary writes back afterwards.
+    final source = await _buildReadOnlySource(heroId);
+    final snapshot = _buildSnapshot(source, options);
 
     // Convert to JSON, compress with gzip, encode as base64
     final jsonStr = jsonEncode(snapshot);
@@ -129,15 +157,104 @@ class HeroExportService {
     final compressed = gzip.encode(jsonBytes);
     final base64Str = base64Url.encode(compressed);
 
-    return '$kExportMagic$base64Str';
+    final issues = <ExportIssue>[
+      if (!options.includeDowntime)
+        const ExportIssue(
+          code: 'native.section_excluded',
+          severity: ExportIssueSeverity.info,
+          origin: ExportIssueOrigin.heroSmith,
+          fieldPath: 'downtime',
+          message: 'Downtime data was not included in this backup.',
+        ),
+      if (!options.includeTitles)
+        const ExportIssue(
+          code: 'native.section_excluded',
+          severity: ExportIssueSeverity.info,
+          origin: ExportIssueOrigin.heroSmith,
+          fieldPath: 'titles',
+          message: 'Title progress was not included in this backup.',
+        ),
+      if (!options.includeNotes)
+        const ExportIssue(
+          code: 'native.section_excluded',
+          severity: ExportIssueSeverity.info,
+          origin: ExportIssueOrigin.heroSmith,
+          fieldPath: 'notes',
+          message: 'Notes were not included in this backup.',
+        ),
+      if (!options.includeRetainers)
+        const ExportIssue(
+          code: 'native.section_excluded',
+          severity: ExportIssueSeverity.info,
+          origin: ExportIssueOrigin.heroSmith,
+          fieldPath: 'retainers',
+          message: 'Retainers were not included in this backup.',
+        ),
+    ];
+    const sections = [
+      'entries',
+      'config',
+      'values',
+      'projects',
+      'followers',
+      'sources',
+      'notes',
+      'retainers',
+    ];
+    final sourceCounts = <String, int>{
+      'entries': source.entries.length,
+      'config': source.config.length,
+      'values': source.values.length,
+      'projects': source.projects.length,
+      'followers': source.followers.length,
+      'sources': source.sources.length,
+      'notes': source.notes.length,
+      'retainers': source.retainers.length,
+    };
+    final coverage = sections
+        .map((section) {
+          final emittedCount = (snapshot[section] as List?)?.length ?? 0;
+          return ExportSectionCoverage(
+            section: section,
+            inputCount: sourceCounts[section] ?? 0,
+            emittedCount: emittedCount,
+          );
+        })
+        .toList(growable: false);
+
+    return ExportArtifact(
+      content: '$kExportMagic$base64Str',
+      suggestedExtension: 'hero',
+      report: ExportReport(
+        target: HeroExportTarget.nativeBackup,
+        heroId: heroId,
+        formatVersion: kExportVersion,
+        coverage: coverage,
+        issues: issues,
+      ),
+    );
+  }
+
+  Future<HeroExportSource> _buildReadOnlySource(String heroId) async {
+    late HeroExportSource source;
+    try {
+      await _db.transaction(() async {
+        await _normalizer.normalize(heroId);
+        source = await _sourceLoader.load(heroId) ??
+            (throw ArgumentError('Hero not found: $heroId'));
+        throw const _ReadOnlyExportComplete();
+      });
+    } on _ReadOnlyExportComplete {
+      return source;
+    }
+    throw StateError('Native export completed without a snapshot.');
   }
 
   /// Build a complete snapshot of all hero data based on options
-  Future<Map<String, dynamic>> _buildSnapshot(
-    String heroId,
-    dynamic heroRow,
+  Map<String, dynamic> _buildSnapshot(
+    HeroExportSource source,
     ExportOptions options,
-  ) async {
+  ) {
     final snapshot = <String, dynamic>{
       'v': kExportVersion,
       'flags': options.flags,
@@ -146,14 +263,12 @@ class HeroExportService {
 
     // Hero row (minimal fields needed to recreate)
     snapshot['hero'] = {
-      'name': heroRow.name,
-      'classComponentId': heroRow.classComponentId,
+      'name': source.hero.name,
+      'classComponentId': source.hero.classComponentId,
     };
 
     // Hero entries
-    final entries = await (_db.select(_db.heroEntries)
-          ..where((t) => t.heroId.equals(heroId)))
-        .get();
+    final entries = source.entries;
     if (entries.isNotEmpty) {
       snapshot['entries'] = entries
           .map((e) => {
@@ -168,9 +283,7 @@ class HeroExportService {
     }
 
     // Hero config (filter out title_progress unless titles included)
-    final configs = await (_db.select(_db.heroConfig)
-          ..where((t) => t.heroId.equals(heroId)))
-        .get();
+    final configs = source.config;
     if (configs.isNotEmpty) {
       final filteredConfigs = options.includeTitles
           ? configs
@@ -186,8 +299,10 @@ class HeroExportService {
       }
     }
 
-    // Hero values
-    final values = await _db.getHeroValues(heroId);
+    // Hero values: export only numeric/current-state rows from the storage contract.
+    final values = source.values
+        .where((value) => HeroValueKeys.isAllowed(value.key))
+        .toList();
     if (values.isNotEmpty) {
       snapshot['values'] = values
           .map((v) => {
@@ -206,9 +321,7 @@ class HeroExportService {
     // =========================================================================
     if (options.includeDowntime) {
       // Downtime projects
-      final projects = await (_db.select(_db.heroDowntimeProjects)
-            ..where((t) => t.heroId.equals(heroId)))
-          .get();
+      final projects = source.projects;
       if (projects.isNotEmpty) {
         snapshot['projects'] = projects
             .map((p) => {
@@ -232,9 +345,7 @@ class HeroExportService {
       }
 
       // Followers
-      final followers = await (_db.select(_db.heroFollowers)
-            ..where((t) => t.heroId.equals(heroId)))
-          .get();
+      final followers = source.followers;
       if (followers.isNotEmpty) {
         snapshot['followers'] = followers
             .map((f) => {
@@ -253,9 +364,7 @@ class HeroExportService {
       }
 
       // Project sources
-      final sources = await (_db.select(_db.heroProjectSources)
-            ..where((t) => t.heroId.equals(heroId)))
-          .get();
+      final sources = source.sources;
       if (sources.isNotEmpty) {
         snapshot['sources'] = sources
             .map((s) => {
@@ -274,9 +383,7 @@ class HeroExportService {
     // =========================================================================
     if (options.includeNotes) {
       // Hero notes
-      final notes = await (_db.select(_db.heroNotes)
-            ..where((t) => t.heroId.equals(heroId)))
-          .get();
+      final notes = source.notes;
       if (notes.isNotEmpty) {
         snapshot['notes'] = notes
             .map((n) => {
@@ -295,9 +402,7 @@ class HeroExportService {
     // OPTIONAL: Retainers
     // =========================================================================
     if (options.includeRetainers) {
-      final retainers = await (_db.select(_db.heroRetainers)
-            ..where((t) => t.heroId.equals(heroId)))
-          .get();
+      final retainers = source.retainers;
       if (retainers.isNotEmpty) {
         snapshot['retainers'] = retainers
             .map((r) => {
@@ -308,6 +413,10 @@ class HeroExportService {
                   if (r.customDataJson != null) 'cd': r.customDataJson,
                   'ac': r.advancementChoicesJson,
                   'cc': r.characteristicChoicesJson,
+                  if (r.currentStamina != null) 'cs': r.currentStamina,
+                  if (r.tempStamina != 0) 'ts': r.tempStamina,
+                  if (r.currentRecoveries != null && r.currentRecoveries != 6)
+                    'rr': r.currentRecoveries,
                   'ia': r.isActive,
                 })
             .toList();
@@ -395,17 +504,107 @@ class HeroExportService {
   Future<String> importHeroFromCode(String code) async {
     final snapshot = _decodeSnapshot(code);
     if (snapshot == null) {
-      throw const FormatException('Invalid hero code format');
-    }
-
-    final version = snapshot['v'] as int? ?? 0;
-    if (version != kExportVersion) {
-      throw FormatException(
-        'Incompatible export version: $version (expected $kExportVersion)',
+      throw const NativeSnapshotException(
+        code: 'native.snapshot_decode_failed',
+        fieldPath: r'$',
+        message: 'Invalid hero code format',
       );
     }
 
-    return await _importSnapshot(snapshot);
+    final migratedSnapshot = NativeSnapshotMigrator.migrateToCurrent(
+      snapshot,
+      currentVersion: kExportVersion,
+    );
+
+    _validateCurrentSnapshot(migratedSnapshot);
+
+    return await _importSnapshot(
+      NativeHeroSnapshotV2.fromValidatedMap(migratedSnapshot),
+    );
+  }
+
+  /// Validates the current wire schema before an import transaction can create
+  /// a root hero. Older schemas will move through a migrator here once native
+  /// version migrations are introduced; malformed current data is never
+  /// repaired by guessing defaults.
+  void _validateCurrentSnapshot(Map<String, dynamic> snapshot) {
+    final hero = snapshot['hero'];
+    if (hero is! Map) {
+      throw const NativeSnapshotValidationException(
+        code: 'native.snapshot_invalid',
+        fieldPath: 'hero',
+        message: 'Invalid native snapshot: missing hero data',
+      );
+    }
+    final name = hero['name'];
+    if (name is! String || name.trim().isEmpty) {
+      throw const NativeSnapshotValidationException(
+        code: 'native.snapshot_invalid',
+        fieldPath: 'hero.name',
+        message: 'Invalid native snapshot: hero name is required',
+      );
+    }
+
+    _validateRows(
+      snapshot['entries'],
+      section: 'entries',
+      requiredFields: const ['et', 'ei'],
+    );
+    _validateRows(
+      snapshot['config'],
+      section: 'config',
+      requiredFields: const ['k', 'v'],
+    );
+    _validateRows(
+      snapshot['values'],
+      section: 'values',
+      requiredFields: const ['k'],
+    );
+    for (final section in const [
+      'projects',
+      'followers',
+      'sources',
+      'notes',
+      'retainers',
+    ]) {
+      _validateRows(snapshot[section], section: section);
+    }
+  }
+
+  void _validateRows(
+    dynamic value, {
+    required String section,
+    List<String> requiredFields = const [],
+  }) {
+    if (value == null) return;
+    if (value is! List) {
+      throw NativeSnapshotValidationException(
+        code: 'native.snapshot_invalid',
+        fieldPath: section,
+        message: 'Invalid native snapshot: $section must be a list',
+      );
+    }
+    for (var index = 0; index < value.length; index++) {
+      final row = value[index];
+      if (row is! Map) {
+        throw NativeSnapshotValidationException(
+          code: 'native.snapshot_invalid',
+          fieldPath: '$section[$index]',
+          message: 'Invalid native snapshot: $section[$index] must be an object',
+        );
+      }
+      for (final field in requiredFields) {
+        final fieldValue = row[field];
+        if (fieldValue is! String || fieldValue.trim().isEmpty) {
+          throw NativeSnapshotValidationException(
+            code: 'native.snapshot_invalid',
+            fieldPath: '$section[$index].$field',
+            message:
+                'Invalid native snapshot: $section[$index].$field is required',
+          );
+        }
+      }
+    }
   }
 
   /// Decode and decompress a snapshot from an export code
@@ -424,34 +623,32 @@ class HeroExportService {
   }
 
   /// Import a snapshot into the database
-  Future<String> _importSnapshot(Map<String, dynamic> snapshot) async {
-    final heroData = snapshot['hero'] as Map<String, dynamic>?;
-    final heroName = heroData?['name']?.toString() ?? 'Imported Hero';
-    final classComponentId = heroData?['classComponentId']?.toString();
-
-    // Create new hero with fresh ID
-    final heroId = await _db.createHero(name: heroName);
-
-    // Update class component ID if present
-    if (classComponentId != null && classComponentId.isNotEmpty) {
-      await (_db.update(_db.heroes)..where((t) => t.id.equals(heroId))).write(
-        HeroesCompanion(
-          classComponentId: Value(classComponentId),
-          updatedAt: Value(DateTime.now()),
-        ),
-      );
-    }
+  Future<String> _importSnapshot(NativeHeroSnapshotV2 snapshot) async {
+    final heroName = snapshot.hero['name']!.toString();
+    final classComponentId = snapshot.hero['classComponentId']?.toString();
 
     // Map old IDs to new IDs for cross-references (notes, projects, etc.)
     final idMap = <String, String>{};
+    late String heroId;
 
-    await _db.transaction(() async {
+    try {
+      await _db.transaction(() async {
+      // Root creation must be in the same transaction as every dependent row.
+      heroId = await _db.createHero(name: heroName);
+      await _onImportStage?.call('root-created');
+
+      if (classComponentId != null && classComponentId.isNotEmpty) {
+        await (_db.update(_db.heroes)..where((t) => t.id.equals(heroId))).write(
+          HeroesCompanion(
+            classComponentId: Value(classComponentId),
+            updatedAt: Value(DateTime.now()),
+          ),
+        );
+      }
       // Import entries
-      final entries = snapshot['entries'] as List?;
-      if (entries != null) {
-        for (final e in entries) {
-          final map = e as Map<String, dynamic>;
-          await _db.upsertHeroEntry(
+      if (snapshot.entries.isNotEmpty) {
+        for (final map in snapshot.entries) {
+          await _entries.addEntry(
             heroId: heroId,
             entryType: map['et']?.toString() ?? '',
             entryId: map['ei']?.toString() ?? '',
@@ -463,53 +660,48 @@ class HeroExportService {
           );
         }
       }
+      await _onImportStage?.call('entries-written');
 
       // Import config
-      final configs = snapshot['config'] as List?;
-      if (configs != null) {
-        for (final c in configs) {
-          final map = c as Map<String, dynamic>;
+      if (snapshot.config.isNotEmpty) {
+        for (final map in snapshot.config) {
           final key = map['k']?.toString() ?? '';
           final valueJson = map['v']?.toString() ?? '{}';
           if (key.isEmpty) continue;
 
-          await _db.setHeroConfig(
+          await _config.setConfigValue(
             heroId: heroId,
-            configKey: key,
+            key: key,
             value: _tryParseJson(valueJson) ?? {},
+            metadata: map['m']?.toString(),
           );
         }
       }
+      await _onImportStage?.call('config-written');
 
       // Import values
-      final values = snapshot['values'] as List?;
-      if (values != null) {
-        for (final v in values) {
-          final map = v as Map<String, dynamic>;
+      if (snapshot.values.isNotEmpty) {
+        for (final map in snapshot.values) {
           final key = map['k']?.toString() ?? '';
           if (key.isEmpty) continue;
 
-          await _db.into(_db.heroValues).insert(
-                HeroValuesCompanion.insert(
-                  heroId: heroId,
-                  key: key,
-                  value: Value(map['i'] as int?),
-                  maxValue: Value(map['mx'] as int?),
-                  doubleValue: Value(map['d'] as double?),
-                  textValue: Value(map['t']?.toString()),
-                  jsonValue: Value(map['j']?.toString()),
-                ),
-                mode: InsertMode.insertOrReplace,
-              );
+          await _db.upsertHeroValue(
+            heroId: heroId,
+            key: key,
+            value: _toIntOrNull(map['i']),
+            maxValue: _toIntOrNull(map['mx']),
+            doubleValue: _toDoubleOrNull(map['d']),
+            textValue: map['t']?.toString(),
+            rawJsonValue: map['j']?.toString(),
+          );
         }
       }
+      await _onImportStage?.call('values-written');
 
       // Import notes (with ID mapping for folder references)
-      final notes = snapshot['notes'] as List?;
-      if (notes != null) {
+      if (snapshot.notes.isNotEmpty) {
         // First pass: create ID mappings
-        for (final n in notes) {
-          final map = n as Map<String, dynamic>;
+        for (final map in snapshot.notes) {
           final oldId = map['id']?.toString();
           if (oldId != null && oldId.isNotEmpty) {
             idMap[oldId] = _generateId();
@@ -517,8 +709,7 @@ class HeroExportService {
         }
 
         // Second pass: insert with mapped folder IDs
-        for (final n in notes) {
-          final map = n as Map<String, dynamic>;
+        for (final map in snapshot.notes) {
           final oldId = map['id']?.toString() ?? '';
           final newId = idMap[oldId] ?? _generateId();
           final oldFolderId = map['fi']?.toString();
@@ -539,10 +730,8 @@ class HeroExportService {
       }
 
       // Import projects
-      final projects = snapshot['projects'] as List?;
-      if (projects != null) {
-        for (final p in projects) {
-          final map = p as Map<String, dynamic>;
+      if (snapshot.projects.isNotEmpty) {
+        for (final map in snapshot.projects) {
           final newId = _generateId();
 
           await _db.into(_db.heroDowntimeProjects).insert(
@@ -569,10 +758,8 @@ class HeroExportService {
       }
 
       // Import followers
-      final followers = snapshot['followers'] as List?;
-      if (followers != null) {
-        for (final f in followers) {
-          final map = f as Map<String, dynamic>;
+      if (snapshot.followers.isNotEmpty) {
+        for (final map in snapshot.followers) {
           final newId = _generateId();
 
           await _db.into(_db.heroFollowers).insert(
@@ -594,10 +781,8 @@ class HeroExportService {
       }
 
       // Import project sources
-      final sources = snapshot['sources'] as List?;
-      if (sources != null) {
-        for (final s in sources) {
-          final map = s as Map<String, dynamic>;
+      if (snapshot.sources.isNotEmpty) {
+        for (final map in snapshot.sources) {
           final newId = _generateId();
 
           await _db.into(_db.heroProjectSources).insert(
@@ -614,10 +799,8 @@ class HeroExportService {
       }
 
       // Import retainers
-      final retainers = snapshot['retainers'] as List?;
-      if (retainers != null) {
-        for (final r in retainers) {
-          final map = r as Map<String, dynamic>;
+      if (snapshot.retainers.isNotEmpty) {
+        for (final map in snapshot.retainers) {
           final newId = _generateId();
           final now = DateTime.now();
 
@@ -630,10 +813,12 @@ class HeroExportService {
                   role: map['ro']?.toString() ?? '',
                   isCustom: Value(map['ic'] == true),
                   customDataJson: Value(map['cd']?.toString()),
-                  advancementChoicesJson:
-                      Value(map['ac']?.toString() ?? '{}'),
+                  advancementChoicesJson: Value(map['ac']?.toString() ?? '{}'),
                   characteristicChoicesJson:
                       Value(map['cc']?.toString() ?? '{}'),
+                  currentStamina: Value(_toIntOrNull(map['cs'])),
+                  tempStamina: Value(_toIntOrNull(map['ts']) ?? 0),
+                  currentRecoveries: Value(_toIntOrNull(map['rr']) ?? 6),
                   isActive: Value(map['ia'] != false),
                   createdAt: Value(now),
                   updatedAt: Value(now),
@@ -641,7 +826,23 @@ class HeroExportService {
               );
         }
       }
-    });
+      // Normalization can create dependent rows too, so it belongs to the
+      // import transaction rather than being allowed to leave a partial hero.
+        await _normalizer.normalize(heroId);
+      });
+    } on NativeSnapshotException {
+      rethrow;
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(
+        NativeSnapshotImportException(
+          code: 'native.import_rollback',
+          fieldPath: r'$',
+          message: 'Native import failed and was rolled back.',
+          cause: error,
+        ),
+        stackTrace,
+      );
+    }
 
     return heroId;
   }
@@ -669,4 +870,26 @@ class HeroExportService {
       return null;
     }
   }
+
+  int? _toIntOrNull(dynamic value) {
+    if (value == null) return null;
+    if (value is int) return value;
+    if (value is num) return value.toInt();
+    if (value is String) return int.tryParse(value);
+    return null;
+  }
+
+  double? _toDoubleOrNull(dynamic value) {
+    if (value == null) return null;
+    if (value is double) return value;
+    if (value is num) return value.toDouble();
+    if (value is String) return double.tryParse(value);
+    return null;
+  }
+}
+
+/// Ends a transaction after its export snapshot has been captured. Drift rolls
+/// the transaction back, leaving the hero exactly as it was before export.
+class _ReadOnlyExportComplete implements Exception {
+  const _ReadOnlyExportComplete();
 }

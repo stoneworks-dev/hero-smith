@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/db/providers.dart';
 import '../../../../core/models/component.dart' as model;
+import '../../../../core/storage/hero_storage_contract.dart';
 import '../../../../core/theme/app_icon.dart';
 import '../../../../core/theme/app_icon_data.dart';
 import '../../../../core/theme/app_icons.dart';
@@ -13,8 +14,10 @@ import '../../../../core/theme/creator_theme.dart';
 import '../../../../core/theme/navigation_theme.dart';
 import '../../../../core/theme/form_theme.dart';
 import '../../../../core/text/creators/widgets/story_creator/story_career_section_text.dart';
-import '../../../../core/utils/selection_guard.dart';
 import '../../../../widgets/perks/perks_selection_widget.dart';
+import '../../../hero_builder/domain/hero_claim.dart';
+import '../../../hero_builder/domain/hero_conflict_index.dart';
+import '../../../hero_builder/domain/hero_draft_claims.dart';
 
 class StoryCareerSection extends ConsumerWidget {
   const StoryCareerSection({
@@ -25,12 +28,9 @@ class StoryCareerSection extends ConsumerWidget {
     required this.chosenPerkIds,
     required this.incidentName,
     required this.careerLanguageIds,
-    required this.primaryLanguageId,
-    required this.selectedLanguageIds,
-    required this.selectedSkillIds,
-    required this.reservedLanguageIds,
-    required this.reservedSkillIds,
-    required this.reservedPerkIds,
+    required this.languageConflictIndex,
+    required this.skillConflictIndex,
+    required this.perkConflictIndex,
     required this.onCareerChanged,
     required this.onCareerLanguageSlotsChanged,
     required this.onCareerLanguageChanged,
@@ -46,12 +46,9 @@ class StoryCareerSection extends ConsumerWidget {
   final Set<String> chosenPerkIds;
   final String? incidentName;
   final List<String?> careerLanguageIds;
-  final String? primaryLanguageId;
-  final Set<String> selectedLanguageIds;
-  final Set<String> selectedSkillIds;
-  final Set<String> reservedLanguageIds;
-  final Set<String> reservedSkillIds;
-  final Set<String> reservedPerkIds;
+  final HeroConflictIndex languageConflictIndex;
+  final HeroConflictIndex skillConflictIndex;
+  final HeroConflictIndex perkConflictIndex;
 
   final ValueChanged<String?> onCareerChanged;
   final ValueChanged<int> onCareerLanguageSlotsChanged;
@@ -96,12 +93,9 @@ class StoryCareerSection extends ConsumerWidget {
                 chosenPerkIds: chosenPerkIds,
                 incidentName: incidentName,
                 careerLanguageIds: careerLanguageIds,
-                primaryLanguageId: primaryLanguageId,
-                selectedLanguageIds: selectedLanguageIds,
-                selectedSkillIds: selectedSkillIds,
-                reservedLanguageIds: reservedLanguageIds,
-                reservedSkillIds: reservedSkillIds,
-                reservedPerkIds: reservedPerkIds,
+                languageConflictIndex: languageConflictIndex,
+                skillConflictIndex: skillConflictIndex,
+                perkConflictIndex: perkConflictIndex,
                 skillsAsync: skillsAsync,
                 langsAsync: langsAsync,
                 onCareerChanged: onCareerChanged,
@@ -129,12 +123,9 @@ class _CareerContent extends StatefulWidget {
     required this.chosenPerkIds,
     required this.incidentName,
     required this.careerLanguageIds,
-    required this.primaryLanguageId,
-    required this.selectedLanguageIds,
-    required this.selectedSkillIds,
-    required this.reservedLanguageIds,
-    required this.reservedSkillIds,
-    required this.reservedPerkIds,
+    required this.languageConflictIndex,
+    required this.skillConflictIndex,
+    required this.perkConflictIndex,
     required this.skillsAsync,
     required this.langsAsync,
     required this.onCareerChanged,
@@ -153,12 +144,9 @@ class _CareerContent extends StatefulWidget {
   final Set<String> chosenPerkIds;
   final String? incidentName;
   final List<String?> careerLanguageIds;
-  final String? primaryLanguageId;
-  final Set<String> selectedLanguageIds;
-  final Set<String> selectedSkillIds;
-  final Set<String> reservedLanguageIds;
-  final Set<String> reservedSkillIds;
-  final Set<String> reservedPerkIds;
+  final HeroConflictIndex languageConflictIndex;
+  final HeroConflictIndex skillConflictIndex;
+  final HeroConflictIndex perkConflictIndex;
 
   final AsyncValue<List<model.Component>> skillsAsync;
   final AsyncValue<List<model.Component>> langsAsync;
@@ -178,6 +166,7 @@ class _CareerContent extends StatefulWidget {
 class _CareerContentState extends State<_CareerContent> {
   late List<model.Component> _careers;
   int? _lastEmittedLanguageSlots;
+
   /// Internal slot assignments to preserve position when user picks skill for slot 2 before slot 1
   List<String?> _skillSlots = [];
 
@@ -383,15 +372,8 @@ class _CareerContentState extends State<_CareerContent> {
                         value: i < widget.careerLanguageIds.length
                             ? widget.careerLanguageIds[i]
                             : null,
-                        exclude: {
-                          ...widget.reservedLanguageIds,
-                          if (widget.primaryLanguageId != null)
-                            widget.primaryLanguageId,
-                          for (var j = 0;
-                              j < widget.careerLanguageIds.length;
-                              j++)
-                            if (j != i) widget.careerLanguageIds[j],
-                        },
+                        conflictIndex: widget.languageConflictIndex,
+                        slotKey: HeroDraftClaims.careerLanguageSlot(i),
                         label:
                             '${StoryCareerSectionText.bonusLanguageLabelPrefix}${i + 1}',
                         onChanged: (val) {
@@ -419,8 +401,8 @@ class _CareerContentState extends State<_CareerContent> {
           const SizedBox(height: 8),
           widget.skillsAsync.when(
             loading: () => const LinearProgressIndicator(),
-            error: (e, _) => Text(
-                '${StoryCareerSectionText.failedToLoadSkillsPrefix}$e'),
+            error: (e, _) =>
+                Text('${StoryCareerSectionText.failedToLoadSkillsPrefix}$e'),
             data: (skills) {
               // Resolve granted skill names to IDs for exclusion
               final grantedSkillIds = <String>{};
@@ -428,7 +410,8 @@ class _CareerContentState extends State<_CareerContent> {
                 final normalizedGranted = grantedName.trim().toLowerCase();
                 final matchingSkill = skills.firstWhere(
                   (s) => s.name.trim().toLowerCase() == normalizedGranted,
-                  orElse: () => const model.Component(id: '', type: '', name: ''),
+                  orElse: () =>
+                      const model.Component(id: '', type: '', name: ''),
                 );
                 if (matchingSkill.id.isNotEmpty) {
                   grantedSkillIds.add(matchingSkill.id);
@@ -453,15 +436,26 @@ class _CareerContentState extends State<_CareerContent> {
               final skillMap = {
                 for (final skill in eligible) skill.id: skill,
               };
-              final grantedSkillConflicts = grantedSkillIds.intersection({
-                ...widget.reservedSkillIds,
-                ...widget.selectedSkillIds,
-              });
+              final currentCareerSource = HeroClaimSource(
+                sourceType: 'career',
+                sourceId: widget.careerId ?? '',
+              );
+              final grantedSkillConflicts = grantedSkillIds.where((skillId) {
+                final owners = widget.skillConflictIndex.ownersFor(
+                  HeroEntryKey(
+                    entryType: 'skill',
+                    canonicalEntryId: skillId,
+                  ),
+                );
+                return owners.any(
+                  (owner) => owner.source != currentCareerSource,
+                );
+              }).toSet();
               final grantedConflictNames = grantedSkillConflicts
                   .map((id) => skillMap[id]?.name ?? id)
                   .where((name) => name.isNotEmpty)
                   .toList();
-              
+
               // Ensure _skillSlots has correct size and only valid skills
               while (_skillSlots.length < picksNeeded) {
                 _skillSlots.add(null);
@@ -498,6 +492,26 @@ class _CareerContentState extends State<_CareerContent> {
                 return List<String?>.from(_skillSlots);
               }
 
+              // The draft stores career skills as an unordered set, and
+              // `HeroDraftClaims` assigns slot keys `#0, #1, ...` by the set's
+              // (compacted) order. The UI, however, keeps positions — a skill
+              // can sit in slot 2 while slot 1 is empty. So a slot's own draft
+              // claim lives at its *compacted* index (the count of non-empty
+              // slots before it), not its visual index. Using the visual index
+              // here would make a skill conflict with itself. An empty slot owns
+              // no claim, so it ignores nothing (a key no claim uses).
+              String ownSlotKey(int uiIndex, List<String?> slotList) {
+                final value = uiIndex >= 0 && uiIndex < slotList.length
+                    ? slotList[uiIndex]
+                    : null;
+                if (value == null) {
+                  return HeroDraftClaims.careerSkillSlot(-1);
+                }
+                final compact =
+                    slotList.take(uiIndex).where((s) => s != null).length;
+                return HeroDraftClaims.careerSkillSlot(compact);
+              }
+
               void applySelection(int index, String? value) {
                 // Update the slot at the specific index
                 _skillSlots[index] = value;
@@ -532,51 +546,66 @@ class _CareerContentState extends State<_CareerContent> {
                   ),
                 ];
 
-                final excludedIds = <String>{
-                  ...widget.reservedSkillIds,
-                  ...grantedSkillIds,
-                };
-                for (var i = 0; i < slots.length; i++) {
-                  if (i == currentIndex) continue;
-                  final pick = slots[i];
-                  if (pick != null) {
-                    excludedIds.add(pick);
-                  }
-                }
                 final currentValue = slots[currentIndex];
+                final slotKey = ownSlotKey(currentIndex, slots);
+
+                String subtitleFor(String skillId, String fallback) {
+                  if (skillId != currentValue) return fallback;
+                  final conflict = widget.skillConflictIndex.conflictFor(
+                    HeroEntryKey(
+                      entryType: 'skill',
+                      canonicalEntryId: skillId,
+                    ),
+                    ignoredDraftSlotKey: slotKey,
+                  );
+                  if (conflict == null && !grantedSkillIds.contains(skillId)) {
+                    return fallback;
+                  }
+                  final owners = <String>{
+                    if (grantedSkillIds.contains(skillId))
+                      'Current career grant',
+                    ...?conflict?.owners.map(
+                      (owner) => owner.displayLabel ?? owner.source.toString(),
+                    ),
+                  };
+                  return '${StoryCareerSectionText.skillConflictPrefix}${owners.join(', ')}';
+                }
+
+                bool isBlocked(model.Component skill) {
+                  if (skill.id == currentValue) return false;
+                  if (grantedSkillIds.contains(skill.id)) return true;
+                  return widget.skillConflictIndex.isClaimed(
+                    HeroEntryKey(
+                      entryType: 'skill',
+                      canonicalEntryId: skill.id,
+                    ),
+                    ignoredDraftSlotKey: slotKey,
+                  );
+                }
 
                 for (final groupKey in sortedGroups) {
                   for (final skill in grouped[groupKey]!) {
-                    if (ComponentSelectionGuard.isBlocked(
-                      skill.id,
-                      excludedIds,
-                      currentId: currentValue,
-                    )) {
-                      continue;
-                    }
+                    if (isBlocked(skill)) continue;
                     options.add(
                       _SearchOption<String?>(
                         label: skill.name,
                         value: skill.id,
-                        subtitle: groupKey,
+                        subtitle: subtitleFor(skill.id, groupKey),
                       ),
                     );
                   }
                 }
 
                 for (final skill in ungrouped) {
-                  if (ComponentSelectionGuard.isBlocked(
-                    skill.id,
-                    excludedIds,
-                    currentId: currentValue,
-                  )) {
-                    continue;
-                  }
+                  if (isBlocked(skill)) continue;
                   options.add(
                     _SearchOption<String?>(
                       label: skill.name,
                       value: skill.id,
-                      subtitle: StoryCareerSectionText.otherGroupLabel,
+                      subtitle: subtitleFor(
+                        skill.id,
+                        StoryCareerSectionText.otherGroupLabel,
+                      ),
                     ),
                   );
                 }
@@ -598,8 +627,8 @@ class _CareerContentState extends State<_CareerContent> {
 
               final border = OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide:
-                    BorderSide(color: accent.withValues(alpha: 0.6), width: 1.4),
+                borderSide: BorderSide(
+                    color: accent.withValues(alpha: 0.6), width: 1.4),
               );
 
               final slots = currentSlots();
@@ -612,7 +641,8 @@ class _CareerContentState extends State<_CareerContent> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8),
                       child: Text(
-                        StoryCareerSectionText.careerGrantsConflict(grantedConflictNames.join(', ')),
+                        StoryCareerSectionText.careerGrantsConflict(
+                            grantedConflictNames.join(', ')),
                         style: const TextStyle(
                           color: Colors.orange,
                           fontSize: 13,
@@ -624,10 +654,48 @@ class _CareerContentState extends State<_CareerContent> {
                     '${StoryCareerSectionText.skillPickInstructionPrefix}$picksNeeded'
                     '${picksNeeded == 1 ? StoryCareerSectionText.skillPickInstructionSingularSuffix : StoryCareerSectionText.skillPickInstructionPluralSuffix}'
                     '${StoryCareerSectionText.skillPickInstructionSuffix}',
-                    style: TextStyle(fontWeight: FontWeight.w600, color: FormTheme.textBright),
+                    style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: FormTheme.textBright),
                   ),
                   const SizedBox(height: 6),
                   for (var index = 0; index < picksNeeded; index++) ...[
+                    Builder(
+                      builder: (context) {
+                        final selectedSkillId = slots[index];
+                        final slotKey = ownSlotKey(index, slots);
+                        final conflict = selectedSkillId == null
+                            ? null
+                            : widget.skillConflictIndex.conflictFor(
+                                HeroEntryKey(
+                                  entryType: 'skill',
+                                  canonicalEntryId: selectedSkillId,
+                                ),
+                                ignoredDraftSlotKey: slotKey,
+                              );
+                        final owners = <String>{
+                          if (selectedSkillId != null &&
+                              grantedSkillIds.contains(selectedSkillId))
+                            'Current career grant',
+                          ...?conflict?.owners.map(
+                            (owner) =>
+                                owner.displayLabel ?? owner.source.toString(),
+                          ),
+                        };
+                        if (owners.isEmpty) return const SizedBox.shrink();
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 6),
+                          child: Text(
+                            '${StoryCareerSectionText.skillConflictPrefix}${owners.join(', ')}',
+                            style: const TextStyle(
+                              color: Colors.orange,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                     InkWell(
                       onTap: () => openSearchForIndex(index),
                       child: InputDecorator(
@@ -687,28 +755,25 @@ class _CareerContentState extends State<_CareerContent> {
                       PerksSelectionWidget(
                         heroId: widget.heroId,
                         selectedPerkIds: widget.chosenPerkIds,
-                        reservedPerkIds: widget.reservedPerkIds,
+                        perkConflictIndex: widget.perkConflictIndex,
+                        languageConflictIndex: widget.languageConflictIndex,
+                        skillConflictIndex: widget.skillConflictIndex,
+                        perkSlotKeyPrefix: HeroDraftClaims.careerPerkSlotPrefix,
                         perkType: hasPerkType ? perkType : null,
-                        allowedGroups: allowedGroups.isNotEmpty ? allowedGroups : null,
+                        allowedGroups:
+                            allowedGroups.isNotEmpty ? allowedGroups : null,
                         pickCount: perksNumber,
                         languages: languages,
                         skills: skills,
-                        reservedLanguageIds: {
-                          ...widget.reservedLanguageIds,
-                          ...widget.selectedLanguageIds,
-                        },
-                        reservedSkillIds: {
-                          ...widget.reservedSkillIds,
-                          ...widget.selectedSkillIds,
-                        },
+                        ownedSkillIds: widget.skillConflictIndex
+                            .claimedEntryIds(HeroEntryTypes.skill),
                         onSelectionChanged: widget.onPerkSelectionChanged,
                         onDirty: widget.onDirty,
                         showHeader: true,
                         headerTitle: StoryCareerSectionText.careerPerksTitle,
-                        headerSubtitle:
-                            hasPerkType
-                                ? '${StoryCareerSectionText.allowedTypePrefix}$perkType'
-                                : null,
+                        headerSubtitle: hasPerkType
+                            ? '${StoryCareerSectionText.allowedTypePrefix}$perkType'
+                            : null,
                       ),
                       const SizedBox(height: 12),
                     ],
@@ -815,14 +880,16 @@ class _CareerLanguageDropdown extends StatelessWidget {
   const _CareerLanguageDropdown({
     required this.languages,
     required this.value,
-    required this.exclude,
+    required this.conflictIndex,
+    required this.slotKey,
     required this.label,
     required this.onChanged,
   });
 
   final List<model.Component> languages;
   final String? value;
-  final Set<String?> exclude;
+  final HeroConflictIndex conflictIndex;
+  final String slotKey;
   final String label;
   final ValueChanged<String?> onChanged;
 
@@ -847,6 +914,15 @@ class _CareerLanguageDropdown extends StatelessWidget {
         value != null && languages.any((language) => language.id == value)
             ? value
             : null;
+    final conflict = validValue == null
+        ? null
+        : conflictIndex.conflictFor(
+            HeroEntryKey(
+              entryType: 'language',
+              canonicalEntryId: validValue,
+            ),
+            ignoredDraftSlotKey: slotKey,
+          );
 
     Future<void> openSearch() async {
       final options = <_SearchOption<String?>>[
@@ -860,7 +936,16 @@ class _CareerLanguageDropdown extends StatelessWidget {
       for (final key in ['human', 'ancestral', 'dead']) {
         for (final lang in groups[key]!) {
           final isCurrent = lang.id == validValue;
-          if (!isCurrent && exclude.contains(lang.id)) continue;
+          if (!isCurrent &&
+              conflictIndex.isClaimed(
+                HeroEntryKey(
+                  entryType: 'language',
+                  canonicalEntryId: lang.id,
+                ),
+                ignoredDraftSlotKey: slotKey,
+              )) {
+            continue;
+          }
           options.add(
             _SearchOption<String?>(
               label: lang.name,
@@ -882,28 +967,53 @@ class _CareerLanguageDropdown extends StatelessWidget {
       onChanged(selected.value);
     }
 
-    return InkWell(
-      onTap: openSearch,
-      child: InputDecorator(
-        decoration: InputDecoration(
-          labelText: label,
-          border: const OutlineInputBorder(),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          suffixIcon: const Icon(Icons.search),
-        ),
-        child: Text(
-          validValue != null
-              ? languages.firstWhere((l) => l.id == validValue).name
-              : StoryCareerSectionText.chooseLanguagePlaceholder,
-          style: TextStyle(
-            fontSize: 16,
-            color: validValue != null
-                ? FormTheme.textBright
-                : FormTheme.textMuted,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        InkWell(
+          onTap: openSearch,
+          child: InputDecorator(
+            decoration: InputDecoration(
+              labelText: label,
+              border: const OutlineInputBorder(),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              suffixIcon: const Icon(Icons.search),
+            ),
+            child: Text(
+              validValue != null
+                  ? languages.firstWhere((l) => l.id == validValue).name
+                  : StoryCareerSectionText.chooseLanguagePlaceholder,
+              style: TextStyle(
+                fontSize: 16,
+                color: validValue != null
+                    ? FormTheme.textBright
+                    : FormTheme.textMuted,
+              ),
+            ),
           ),
         ),
-      ),
+        if (conflict != null) ...[
+          const SizedBox(height: 6),
+          Text(
+            '${StoryCareerSectionText.languageConflictPrefix}${_conflictLabels(conflict)}',
+            style: TextStyle(
+              color: Colors.orange.shade200,
+              fontSize: 12,
+            ),
+          ),
+        ],
+      ],
     );
+  }
+
+  String _conflictLabels(HeroConflict conflict) {
+    final labels = conflict.owners
+        .map((owner) => owner.displayLabel ?? owner.source.toString())
+        .toSet()
+        .toList()
+      ..sort();
+    return labels.join(', ');
   }
 
   String _titleForGroup(String key) {
@@ -920,28 +1030,29 @@ class _CareerLanguageDropdown extends StatelessWidget {
   String _buildLanguageSubtitle(model.Component lang, String groupKey) {
     final data = lang.data;
     final parts = <String>[];
-    
+
     // Add language type/group
     parts.add(_titleForGroup(groupKey));
-    
+
     // Add region if available
     final region = data['region'] as String?;
     if (region != null && region.isNotEmpty) {
       parts.add(StoryCareerSectionText.regionSubtitle(region));
     }
-    
+
     // Add ancestry if available
     final ancestry = data['ancestry'] as String?;
     if (ancestry != null && ancestry.isNotEmpty) {
       parts.add('Ancestry: $ancestry');
     }
-    
+
     // Add common topics if available
     final topics = (data['common_topics'] as List?)?.cast<String>();
     if (topics != null && topics.isNotEmpty) {
-      parts.add('Topics: ${topics.take(3).join(', ')}${topics.length > 3 ? '...' : ''}');
+      parts.add(
+          'Topics: ${topics.take(3).join(', ')}${topics.length > 3 ? '...' : ''}');
     }
-    
+
     return parts.join(' • ');
   }
 }
@@ -972,7 +1083,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
   Color? accent,
 }) {
   final accentColor = accent ?? CreatorTheme.careerAccent;
-  
+
   return showDialog<_PickerSelection<T>>(
     context: context,
     builder: (dialogContext) {
@@ -989,8 +1100,8 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                     (option) =>
                         option.label.toLowerCase().contains(normalizedQuery) ||
                         (option.subtitle?.toLowerCase().contains(
-                              normalizedQuery,
-                            ) ??
+                                  normalizedQuery,
+                                ) ??
                             false),
                   )
                   .toList();
@@ -1043,7 +1154,8 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                               color: accentColor.withValues(alpha: 0.4),
                             ),
                           ),
-                          child: Icon(Icons.search, color: accentColor, size: 20),
+                          child:
+                              Icon(Icons.search, color: accentColor, size: 20),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -1058,7 +1170,8 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                         ),
                         IconButton(
                           onPressed: () => Navigator.of(context).pop(),
-                          icon: Icon(Icons.close, color: FormTheme.textSecondary),
+                          icon:
+                              Icon(Icons.close, color: FormTheme.textSecondary),
                           splashRadius: 20,
                         ),
                       ],
@@ -1074,7 +1187,8 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                       decoration: InputDecoration(
                         hintText: StoryCareerSectionText.searchHint,
                         hintStyle: TextStyle(color: FormTheme.textMuted),
-                        prefixIcon: Icon(Icons.search, color: FormTheme.textMuted),
+                        prefixIcon:
+                            Icon(Icons.search, color: FormTheme.textMuted),
                         filled: true,
                         fillColor: FormTheme.surface,
                         border: OutlineInputBorder(
@@ -1148,7 +1262,8 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                                           : Colors.transparent,
                                   border: isSelected
                                       ? Border.all(
-                                          color: accentColor.withValues(alpha: 0.4),
+                                          color: accentColor.withValues(
+                                              alpha: 0.4),
                                         )
                                       : isNoneOption
                                           ? Border.all(
@@ -1187,7 +1302,8 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                                         )
                                       : null,
                                   trailing: isSelected
-                                      ? Icon(Icons.check_circle, color: accentColor, size: 22)
+                                      ? Icon(Icons.check_circle,
+                                          color: accentColor, size: 22)
                                       : null,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
@@ -1225,4 +1341,3 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
     },
   );
 }
-

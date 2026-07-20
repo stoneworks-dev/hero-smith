@@ -6,8 +6,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../db/app_database.dart';
+import 'forge_steel_hero_export_service.dart';
 import 'hero_export_models.dart';
 import 'hero_export_service.dart';
+import 'hero_export_workflow.dart';
 
 /// Service for exporting/importing hero data as `.hero` files.
 ///
@@ -16,8 +18,6 @@ import 'hero_export_service.dart';
 class HeroFileService {
   HeroFileService(this._db);
   final AppDatabase _db;
-
-  static const String _fileExtension = 'hero';
 
   // ===========================================================================
   // SINGLE HERO EXPORT
@@ -32,14 +32,49 @@ class HeroFileService {
     required String heroName,
     ExportOptions options = ExportOptions.full,
   }) async {
-    final exportService = HeroExportService(_db);
-    final code = await exportService.exportHeroToCode(heroId, options: options);
+    final artifact = await buildNativeArtifact(heroId, options: options);
+    return saveArtifactToFile(artifact, heroName: heroName);
+  }
+
+  /// Export a single hero to a Codex-compatible Forge Steel `.ds-hero` file.
+  Future<bool> exportHeroToCodexFile(
+    String heroId, {
+    required String heroName,
+  }) async {
+    final artifact = await buildCodexArtifact(heroId);
+    return saveArtifactToFile(artifact, heroName: heroName);
+  }
+
+  Future<ExportArtifact> buildNativeArtifact(
+    String heroId, {
+    ExportOptions options = ExportOptions.full,
+  }) =>
+      HeroExportService(_db).exportHeroToArtifact(heroId, options: options);
+
+  Future<ExportArtifact> buildCodexArtifact(String heroId) =>
+      ForgeSteelHeroExportService(_db).buildArtifact(heroId);
+
+  /// Saves or shares an already reviewed artifact without rebuilding it.
+  Future<bool> saveArtifactToFile(
+    ExportArtifact artifact, {
+    required String heroName,
+    bool allowWarnings = false,
+  }) async {
+    final decision = HeroExportWorkflow.decisionFor(artifact.report);
+    if (decision == ExportProceedDecision.blocked) {
+      throw StateError('Export is blocked by report errors.');
+    }
+    if (decision == ExportProceedDecision.confirmationRequired &&
+        !allowWarnings) {
+      throw StateError('Export warnings require user confirmation.');
+    }
     final fileName = _sanitizeFileName(heroName);
+    final fileNameWithExtension = '$fileName.${artifact.suggestedExtension}';
 
     if (_isMobile) {
-      return _shareFile(code, '$fileName.$_fileExtension');
+      return _shareFile(artifact.content, fileNameWithExtension);
     } else {
-      return _saveFileWithPicker(code, '$fileName.$_fileExtension');
+      return _saveFileWithPicker(artifact.content, fileNameWithExtension);
     }
   }
 
@@ -52,32 +87,63 @@ class HeroFileService {
   /// On mobile, shares them all via the share sheet.
   /// On desktop, asks for a folder and saves each file there.
   /// Returns the number of heroes successfully exported.
-  Future<int> exportAllHeroesToFiles({
+  Future<HeroBatchExportResult> exportAllHeroesToFiles({
     ExportOptions options = ExportOptions.full,
   }) async {
     final heroes = await _db.select(_db.heroes).get();
-    if (heroes.isEmpty) return 0;
+    if (heroes.isEmpty) {
+      return const HeroBatchExportResult(entries: [], savedCount: 0);
+    }
 
     final exportService = HeroExportService(_db);
     final exportedFiles = <MapEntry<String, String>>[]; // fileName → code
 
+    final entries = <HeroBatchExportEntry>[];
     for (final hero in heroes) {
       try {
-        final code = await exportService.exportHeroToCode(hero.id, options: options);
+        final artifact =
+            await exportService.exportHeroToArtifact(hero.id, options: options);
+        if (HeroExportWorkflow.decisionFor(artifact.report) !=
+            ExportProceedDecision.allowed) {
+          entries.add(HeroBatchExportEntry(
+            heroId: hero.id,
+            heroName: hero.name,
+            artifact: artifact,
+            decision: HeroExportWorkflow.decisionFor(artifact.report),
+          ));
+          throw StateError('Batch export requires review for ${hero.name}.');
+        }
         final fileName = _sanitizeFileName(hero.name);
-        exportedFiles.add(MapEntry('$fileName.$_fileExtension', code));
+        exportedFiles.add(
+          MapEntry('$fileName.${artifact.suggestedExtension}', artifact.content),
+        );
+        entries.add(HeroBatchExportEntry(
+          heroId: hero.id,
+          heroName: hero.name,
+          artifact: artifact,
+          decision: ExportProceedDecision.allowed,
+        ));
       } catch (e) {
+        if (!entries.any((entry) => entry.heroId == hero.id)) {
+          entries.add(HeroBatchExportEntry(
+            heroId: hero.id,
+            heroName: hero.name,
+            error: e,
+            decision: ExportProceedDecision.blocked,
+          ));
+        }
         if (kDebugMode) debugPrint('Failed to export hero ${hero.name}: $e');
       }
     }
 
-    if (exportedFiles.isEmpty) return 0;
-
-    if (_isMobile) {
-      return _shareMultipleFiles(exportedFiles);
-    } else {
-      return _saveMultipleFilesWithPicker(exportedFiles);
+    if (exportedFiles.isEmpty) {
+      return HeroBatchExportResult(entries: entries, savedCount: 0);
     }
+
+    final savedCount = _isMobile
+        ? await _shareMultipleFiles(exportedFiles)
+        : await _saveMultipleFilesWithPicker(exportedFiles);
+    return HeroBatchExportResult(entries: entries, savedCount: savedCount);
   }
 
   // ===========================================================================
@@ -144,9 +210,8 @@ class HeroFileService {
         final preview = exportService.validateCode(content.trim());
         if (preview == null || !preview.isCompatible) continue;
 
-        final heroId =
-            await exportService.importHeroFromCode(content.trim());
-        imported.add(MapEntry(heroId, preview.name ?? 'Unknown'));
+        final heroId = await exportService.importHeroFromCode(content.trim());
+        imported.add(MapEntry(heroId, preview.name));
       } catch (e) {
         if (kDebugMode) debugPrint('Failed to import file ${file.name}: $e');
       }
@@ -256,4 +321,38 @@ class HeroFileService {
         .replaceAll(RegExp(r'^_|_$'), '')
         .toLowerCase();
   }
+}
+
+/// One hero's outcome from a batch export attempt.
+class HeroBatchExportEntry {
+  const HeroBatchExportEntry({
+    required this.heroId,
+    required this.heroName,
+    required this.decision,
+    this.artifact,
+    this.error,
+  });
+
+  final String heroId;
+  final String heroName;
+  final ExportProceedDecision decision;
+  final ExportArtifact? artifact;
+  final Object? error;
+
+  ExportReport? get report => artifact?.report;
+  bool get isReady => artifact != null && decision == ExportProceedDecision.allowed;
+}
+
+/// Aggregate batch result that retains non-exported heroes and their reports.
+class HeroBatchExportResult {
+  const HeroBatchExportResult({
+    required this.entries,
+    required this.savedCount,
+  });
+
+  final List<HeroBatchExportEntry> entries;
+  final int savedCount;
+
+  int get readyCount => entries.where((entry) => entry.isReady).length;
+  int get notReadyCount => entries.length - readyCount;
 }

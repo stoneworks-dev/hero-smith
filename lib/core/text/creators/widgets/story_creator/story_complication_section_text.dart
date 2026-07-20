@@ -19,6 +19,8 @@ class StoryComplicationSectionText {
   static const String effectDrawbackLabel = 'Drawback';
   static const String effectMixedLabel = 'Mixed Effect';
   static const String grantsTitle = 'Grants';
+  static const String duplicateGrantLabel = 'Already owned by this hero';
+  static const String duplicateChoiceLabel = 'Already selected elsewhere';
   static const String echelonPrefix = ' (echelon ';
   static const String echelonSuffix = ')';
   static const String skillGrantPrefix = 'Skill: ';
@@ -31,7 +33,8 @@ class StoryComplicationSectionText {
   static const String baseStatPrefix = 'Base ';
   static const String baseStatSeparator = ': ';
   static const String perEchelonSuffix = ' per echelon';
-  static const String recoveryHighestCharacteristic = 'by highest characteristic';
+  static const String recoveryHighestCharacteristic =
+      'by highest characteristic';
   static const String recoveryByPrefix = 'by ';
   static const String increaseRecoveryPrefix = 'Increase recovery ';
   static const String featureTypeDisplayPrefix = '';
@@ -82,10 +85,12 @@ class StoryComplicationSectionText {
   static const String deadLanguageAncestryPrefix = 'Ancestry: ';
   static const String deadLanguageTopicsSeparator = ' • Topics: ';
   static const String selectDeadLanguageTitlePrefix = 'Select Dead Language ';
-  static const String tapToSelectDeadLanguagePrefix = 'Tap to select dead language ';
+  static const String tapToSelectDeadLanguagePrefix =
+      'Tap to select dead language ';
   static const String tapToSelectDeadLanguageSuffix = '...';
   static const String chooseOneLabel = 'Choose one:';
-  static const String ancestryTraitPointSingularSuffix = ' ancestry trait point';
+  static const String ancestryTraitPointSingularSuffix =
+      ' ancestry trait point';
   static const String ancestryTraitPointPluralSuffix = ' ancestry trait points';
   static const String errorLoadingAncestryTraitsPrefix =
       'Error loading ancestry traits: ';
@@ -93,7 +98,8 @@ class StoryComplicationSectionText {
   static const String noTraitsAvailablePrefix = 'No traits available for ';
   static const String pointsLabelPrefix = 'Points: ';
   static const String remainingLabelPrefix = 'Remaining: ';
-  static const String alreadySelectedAncestry = '(Already selected in ancestry)';
+  static const String alreadySelectedAncestry =
+      '(Already selected in ancestry)';
   static const String abilityGrantPrefix = 'Ability: ';
   static const String loadingAbilityPrefix = 'Loading ';
   static const String loadingAbilitySuffix = '...';

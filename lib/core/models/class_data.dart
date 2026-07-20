@@ -113,18 +113,14 @@ class PotencyProgression {
 }
 
 class StartingSkills {
-  final List<String> skillGroups;
-  final int skillCount;
   final List<String> quickBuild;
   final List<String> grantedSkills;
-  final Map<String, dynamic> rawData;
+  final List<StartingSkillAllowanceData> allowances;
 
   StartingSkills({
-    required this.skillGroups,
-    required this.skillCount,
     required this.quickBuild,
     required this.grantedSkills,
-    required this.rawData,
+    required this.allowances,
   });
 
   factory StartingSkills.fromJson(Map<String, dynamic> json) {
@@ -138,15 +134,48 @@ class StartingSkills {
       return const [];
     }
 
-    final rawCopy = Map<String, dynamic>.from(json);
     return StartingSkills(
-      skillGroups: _toStringList(json['skill_groups']),
-      skillCount: (json['skill_count'] as num?)?.toInt() ?? 0,
       quickBuild: _toStringList(json['quick_build']),
-      grantedSkills: _toStringList(json['granted_skills'] ?? json['granted']),
-      rawData: rawCopy,
+      grantedSkills: _toStringList(json['granted_skills']),
+      allowances: _parseAllowances(json['allowances'], _toStringList),
     );
   }
+
+  static List<StartingSkillAllowanceData> _parseAllowances(
+    dynamic value,
+    List<String> Function(dynamic value) toStringList,
+  ) {
+    if (value is! List) {
+      return const [];
+    }
+    final result = <StartingSkillAllowanceData>[];
+    for (final item in value) {
+      if (item is! Map) continue;
+      final map = Map<String, dynamic>.from(item);
+      result.add(
+        StartingSkillAllowanceData(
+          count: (map['count'] as num?)?.toInt() ?? 0,
+          groups: toStringList(map['groups']),
+          individualSkillChoices: toStringList(
+            map['individual_skill_choices'],
+          ),
+        ),
+      );
+    }
+    return result;
+  }
+}
+
+class StartingSkillAllowanceData {
+  final int count;
+  final List<String> groups;
+  final List<String> individualSkillChoices;
+
+  const StartingSkillAllowanceData({
+    required this.count,
+    required this.groups,
+    this.individualSkillChoices = const [],
+  });
 }
 
 class CharacteristicArray {
@@ -201,15 +230,13 @@ class LevelProgression {
   });
 
   factory LevelProgression.fromJson(Map<String, dynamic> json) {
-    // Helper to normalize perks/skills/characteristics that can be either object or array
-    List<Map<String, dynamic>>? _normalizeToList(dynamic value) {
+    List<Map<String, dynamic>>? _mapListOrNull(String key) {
+      final value = json[key];
       if (value == null) return null;
       if (value is List) {
         return value.map((e) => e as Map<String, dynamic>).toList();
-      } else if (value is Map) {
-        return [value as Map<String, dynamic>];
       }
-      return null;
+      throw FormatException('$key must be a list of objects.');
     }
 
     // Helper to safely get Map or null
@@ -220,17 +247,12 @@ class LevelProgression {
       return null;
     }
 
-    // Helper to parse features that can be either objects or strings
     List<Feature> _parseFeatures(List<dynamic> featuresJson) {
       return featuresJson.map((e) {
-        if (e is String) {
-          // If it's just a string, treat it as a granted feature with just a name
-          return Feature(name: e, grantType: 'granted');
-        } else if (e is Map<String, dynamic>) {
+        if (e is Map<String, dynamic>) {
           return Feature.fromJson(e);
-        } else {
-          throw FormatException('Invalid feature format: $e');
         }
+        throw FormatException('Invalid feature format: $e');
       }).toList();
     }
 
@@ -239,14 +261,15 @@ class LevelProgression {
       features: _parseFeatures(json['features'] as List<dynamic>),
       newAbilities: _safeGetMap(json['new_abilities']),
       newSubclassAbilities: _safeGetMap(json['new_subclass_abilities']),
-      perks: _normalizeToList(json['perks']),
-      skills: _normalizeToList(json['skills']),
-      characteristics: _normalizeToList(json['characteristics']),
+      perks: _mapListOrNull('perks'),
+      skills: _mapListOrNull('skills'),
+      characteristics: _mapListOrNull('characteristics'),
     );
   }
 }
 
 class Feature {
+  final String? featureId;
   final String name;
   final String? grantType;
   final String? type;
@@ -255,6 +278,7 @@ class Feature {
   final int? count;
 
   Feature({
+    this.featureId,
     required this.name,
     this.grantType,
     this.type,
@@ -265,6 +289,7 @@ class Feature {
 
   factory Feature.fromJson(Map<String, dynamic> json) {
     return Feature(
+      featureId: json['feature_id'] as String?,
       name: json['name'] as String,
       grantType: json['grant_type'] as String?,
       type: json['type'] as String?,

@@ -5,7 +5,17 @@
     "group": "crafting",
     "name": "Area of Expertise",
     "description": "Choose one skill you already have from the crafting skill group. Whenever you obtain a tier 1 outcome on an easy or medium test using this skill, you treat it as a tier 2 outcome instead. Additionally, if you spend 1 minute inspecting an object related to the chosen skill, you can estimate its value and learn of any flaws in its construction.",
-    "grants": { "skill": { "group": "crafting", "count": "one_owned" } }
+    "grants": [
+      {
+        "kind": "choice",
+        "choice_key": "area_of_expertise.skill_owned",
+        "choice_type": "skill",
+        "entry_type": "skill",
+        "count": 1,
+        "groups": ["crafting"],
+        "allow_owned": true
+      }
+    ]
   },
   {
     "id": "expert_artisan",
@@ -69,7 +79,14 @@
     "group": "exploration",
     "name": "Friend Catapult",
     "description": "As a maneuver, you grab a willing adjacent ally or object of your size or smaller, then vertical push that target up to a number of squares equal to twice your Might score. If a creature you push falls as a result of this movement, the effective distance of the fall is reduced by a number of squares equal to twice your Might score. When you use this perk, you can't use it again until you earn 1 or more Victories.",
-    "grants": [{ "ability": "Friend Catapult" }]
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "friend_catapult",
+        "payload": { "name": "Friend Catapult" }
+      }
+    ]
   },
   {
     "id": "ive_got_you",
@@ -77,7 +94,14 @@
     "group": "exploration",
     "name": "I've Got You!",
     "description": "Whenever a willing ally falls and would land on you or adjacent to you, you can safely catch them as a free triggered action. Neither of you takes damage from the ally's fall.",
-    "grants": [{ "ability": "I've Got You!" }]
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "ive_got_you",
+        "payload": { "name": "I've Got You!" }
+      }
+    ]
   },
   {
     "id": "monster_whisperer",
@@ -204,7 +228,14 @@
     "group": "intrigue",
     "name": "Gum Up the Works",
     "description": "Whenever a mundane trap activates within 3 squares, you can use a triggered action to move up to 3 squares toward it. If this movement brings you adjacent to any of the trap's mechanisms, you can jam the trap, preventing it from activating. As long as you stay adjacent to the mechanism, the trap can't go off unless an attempt to disarm it fails.",
-    "grants": [{ "ability": "Gum Up the Works" }]
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "gum_up_the_works",
+        "payload": { "name": "Gum Up the Works" }
+      }
+    ]
   },
   {
     "id": "lucky_dog",
@@ -240,7 +271,17 @@
     "group": "lore",
     "name": "Eidetic Memory",
     "description": "Your mind is an encyclopedia, though not always an easy one to organize. When you finish a respite, choose one skill from the lore skill group that you don't have. You have that skill until you finish your next respite. Additionally, if you spend 1 uninterrupted minute or more reading any page of text, you can memorize its contents, allowing you to memorize entire books with sufficient time.",
-    "grants": { "skill": { "group": "lore", "count": 1 } }
+    "grants": [
+      {
+        "kind": "choice",
+        "choice_key": "eidetic_memory.skill_pick",
+        "choice_type": "skill",
+        "entry_type": "skill",
+        "count": 1,
+        "groups": ["lore"],
+        "allow_owned": false
+      }
+    ]
   },
   {
     "id": "expert_sage",
@@ -262,7 +303,15 @@
     "group": "lore",
     "name": "Linguist",
     "description": "You automatically learn two new languages, as long as you have regularly heard those languages spoken or seen them written before. Additionally, if you spend 7 days or more in a place where you regularly hear or read a language you don't know, you can pick up enough of that language to hold a conversation or understand basic written information. Having picked up a language this way, you can subsequently learn it using the Learn New Language research project at half the usual project goal cost.",
-    "grants": { "languages": 2 }
+    "grants": [
+      {
+        "kind": "choice",
+        "choice_key": "linguist.languages",
+        "choice_type": "language",
+        "entry_type": "language",
+        "count": 2
+      }
+    ]
   },
   {
     "id": "polymath",
@@ -277,7 +326,17 @@
     "group": "lore",
     "name": "Specialist",
     "description": "You are a leading expert on a particular subject. Choose one skill you have from the lore skill group. You always have a double edge on tests made to recall lore using this skill. Additionally, your specialist knowledge grants you notoriety in fields related to the chosen skill. You treat your Renown as 1 higher when negotiating with an NPC who knows your reputation, or 2 higher if they have the same skill you chose for this perk.",
-    "grants": { "skill": { "group": "lore", "count": "one_owned" } }
+    "grants": [
+      {
+        "kind": "choice",
+        "choice_key": "specialist.skill_owned",
+        "choice_type": "skill",
+        "entry_type": "skill",
+        "count": 1,
+        "groups": ["lore"],
+        "allow_owned": true
+      }
+    ]
   },
   {
     "id": "traveling_sage",
@@ -292,7 +351,14 @@
     "group": "supernatural",
     "name": "Arcane Trick",
     "description": "You have the following ability.",
-    "grants": [{ "ability": "Arcane Trick" }]
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "arcane_trick",
+        "payload": { "name": "Arcane Trick" }
+      }
+    ]
   },
   {
     "id": "creature_sense",
@@ -300,7 +366,14 @@
     "group": "supernatural",
     "name": "Creature Sense",
     "description": "You have the following ability.",
-    "grants": [{ "ability": "Creature Sense" }]
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "creature_sense",
+        "payload": { "name": "Creature Sense" }
+      }
+    ]
   },
   {
     "id": "familiar",
@@ -308,7 +381,15 @@
     "group": "supernatural",
     "name": "Familiar",
     "description": "A supernatural spirit who has taken the form of a specific small animal or animated object has chosen to be your familiar—or to adopt you as their familiar. The spirit uses the familiar stat block. The familiar can hold small objects in their mouth or claws, but can't perform activities that would typically require hands (opening a door, unrolling a scroll, and so forth). They can't harm other creatures or objects. They can flank in combat, but only with you. If your familiar is destroyed, you can restore them as a respite activity, or by spending a Recovery as a main action to bring them back into existence in an unoccupied space adjacent to you.",
-    "grants": [{ "creature": "Familiar" }]
+    "grants": [
+      {
+        "kind": "choice",
+        "choice_key": "familiar.creature",
+        "choice_type": "creature",
+        "count": 1,
+        "options": ["Familiar"]
+      }
+    ]
   },
   {
     "id": "invisible_force",
@@ -316,7 +397,14 @@
     "group": "supernatural",
     "name": "Invisible Force",
     "description": "You have the following ability.",
-    "grants": [{ "ability": "Invisible Force" }]
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "invisible_force",
+        "payload": { "name": "Invisible Force" }
+      }
+    ]
   },
   {
     "id": "psychic_whisper",
@@ -324,7 +412,14 @@
     "group": "supernatural",
     "name": "Psychic Whisper",
     "description": "You have the following ability.",
-    "grants": [{ "ability": "Psychic Whisper" }]
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "psychic_whisper",
+        "payload": { "name": "Psychic Whisper" }
+      }
+    ]
   },
   {
     "id": "ritualist",

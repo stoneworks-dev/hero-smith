@@ -11,29 +11,46 @@ class ClassDataService {
   final Map<String, ClassData> _classCache = {};
   bool _isInitialized = false;
 
-  /// List of all available class file names (without .json extension)
-  static const List<String> availableClasses = [
-    'censor',
-    'conduit',
-    'elementalist',
-    'fury',
-    'null',
-    'shadow',
-    'tactician',
-    'talent',
-    'troubadour',
-  ];
+  static const String _manifestPath =
+      'data/classes_levels_and_stats/classes_manifest.json';
 
   /// Initialize and load all class data
   Future<void> initialize() async {
     if (_isInitialized) return;
 
+    final availableClasses = await _loadClassManifest();
     for (final className in availableClasses) {
       final classData = await _loadClassData(className);
       _classCache[classData.classId] = classData;
     }
 
     _isInitialized = true;
+  }
+
+  Future<List<String>> _loadClassManifest() async {
+    try {
+      final jsonString = await rootBundle.loadString(_manifestPath);
+      final decoded = json.decode(jsonString);
+      final classes = decoded is Map<String, dynamic>
+          ? decoded['classes']
+          : decoded is List<dynamic>
+              ? decoded
+              : null;
+      if (classes is! List<dynamic>) {
+        throw const FormatException('classes must be a list');
+      }
+      final slugs = classes
+          .whereType<String>()
+          .map((slug) => slug.trim())
+          .where((slug) => slug.isNotEmpty)
+          .toList(growable: false);
+      if (slugs.isEmpty) {
+        throw const FormatException('classes must not be empty');
+      }
+      return slugs;
+    } catch (e, stackTrace) {
+      throw Exception('Failed to load class manifest: $e\n$stackTrace');
+    }
   }
 
   /// Load a specific class data from JSON file
@@ -52,7 +69,8 @@ class ClassDataService {
   /// Get all available classes
   List<ClassData> getAllClasses() {
     if (!_isInitialized) {
-      throw StateError('ClassDataService not initialized. Call initialize() first.');
+      throw StateError(
+          'ClassDataService not initialized. Call initialize() first.');
     }
     return _classCache.values.toList();
   }

@@ -1,30 +1,29 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:hero_smith/core/db/providers.dart';
-import 'package:hero_smith/core/models/hero_model.dart';
-import 'package:hero_smith/core/models/story_creator_models.dart';
-import 'package:hero_smith/core/services/story_creator_service.dart';
+import 'package:hero_smith/core/storage/hero_storage_contract.dart';
 import 'package:hero_smith/core/text/creators/hero_creators/story_creator_page_text.dart';
 import 'package:hero_smith/features/creators/widgets/story_creator/story_ancestry_section.dart';
 import 'package:hero_smith/features/creators/widgets/story_creator/story_career_section.dart';
 import 'package:hero_smith/features/creators/widgets/story_creator/story_complication_section.dart';
 import 'package:hero_smith/features/creators/widgets/story_creator/story_culture_section.dart';
 import 'package:hero_smith/features/creators/widgets/story_creator/story_name_section.dart';
+import 'package:hero_smith/features/hero_builder/application/hero_builder_controller.dart';
+import 'package:hero_smith/features/hero_builder/application/hero_builder_providers.dart';
+import 'package:hero_smith/features/hero_builder/domain/hero_claim.dart';
+import 'package:hero_smith/features/hero_builder/domain/hero_conflict_index.dart';
+import 'package:hero_smith/features/hero_builder/domain/hero_draft.dart';
+import 'package:hero_smith/features/hero_builder/domain/hero_draft_claims.dart';
+import 'package:hero_smith/features/hero_builder/domain/hero_mutation_scope.dart';
 
 class StoryCreatorTab extends ConsumerStatefulWidget {
   const StoryCreatorTab({
     super.key,
     required this.heroId,
-    required this.onDirtyChanged,
-    required this.onTitleChanged,
   });
 
   final String heroId;
-  final ValueChanged<bool> onDirtyChanged;
-  final ValueChanged<String> onTitleChanged;
 
   @override
   ConsumerState<StoryCreatorTab> createState() => StoryCreatorTabState();
@@ -32,125 +31,416 @@ class StoryCreatorTab extends ConsumerStatefulWidget {
 
 class StoryCreatorTabState extends ConsumerState<StoryCreatorTab>
     with AutomaticKeepAliveClientMixin {
+  // Ownership vocabulary is shared with the hero-builder draft mapping so the
+  // page and the controller cannot disagree about who owns a slot.
+  static const _cultureLanguageSource = HeroDraftClaims.cultureLanguageSource;
+  static const _careerLanguageSource = HeroDraftClaims.careerChoiceSource;
+  static const _cultureEnvironmentSource =
+      HeroDraftClaims.cultureEnvironmentSource;
+  static const _cultureOrganisationSource =
+      HeroDraftClaims.cultureOrganisationSource;
+  static const _cultureUpbringingSource =
+      HeroDraftClaims.cultureUpbringingSource;
+  static const _careerChoiceSource = HeroDraftClaims.careerChoiceSource;
+
   final TextEditingController _nameCtrl = TextEditingController();
 
-  bool _loading = true;
-  bool _saving = false;
-  String? _error;
-  HeroModel? _hero;
-  bool _dirty = false;
+  bool _hasLoadedOnce = false;
 
-  String? _selectedAncestryId;
-  final LinkedHashSet<String> _selectedTraitIds = LinkedHashSet<String>();
-  final Map<String, String> _ancestryTraitChoices = {};
+  HeroBuilderController get _controller =>
+      ref.read(heroBuilderControllerProvider(widget.heroId).notifier);
 
-  String? _environmentId;
-  String? _organisationId;
-  String? _upbringingId;
-  String? _environmentSkillId;
-  String? _organisationSkillId;
-  String? _upbringingSkillId;
-  String? _selectedLanguageId;
+  /// The Story section's current draft. Ancestry and complication grants are
+  /// still page-local (they need async expansion before joining
+  /// [HeroDraftClaims]), but their values now live on this same draft object
+  /// so discard and commit stay in sync automatically.
+  StoryDraft get _story =>
+      ref.watch(heroBuilderStoryDraftProvider(widget.heroId));
 
-  int _careerLanguageSlots = 0;
-  List<String?> _careerLanguageIds = <String?>[];
+  HeroConflictIndex get _storyLanguageConflictIndex {
+    return _storyConflictIndex(
+      entryType: HeroEntryTypes.language,
+      mutationScopes: [
+        HeroMutationScope.single(
+          _cultureLanguageSource,
+          entryType: HeroEntryTypes.language,
+        ),
+        HeroMutationScope.single(
+          _careerLanguageSource,
+          entryType: HeroEntryTypes.language,
+        ),
+      ],
+      draftClaims: _storyLanguageDraftClaims(),
+    );
+  }
 
-  String? _careerId;
-  final LinkedHashSet<String> _careerSkillIds = LinkedHashSet<String>();
-  final LinkedHashSet<String> _careerPerkIds = LinkedHashSet<String>();
-  String? _careerIncidentName;
+  HeroConflictIndex get _storySkillConflictIndex {
+    return _storyConflictIndex(
+      entryType: HeroEntryTypes.skill,
+      mutationScopes: [
+        ..._persistedSourceScopes(
+          sourceType: HeroEntrySourceTypes.ancestry,
+          entryType: HeroEntryTypes.skill,
+        ),
+        HeroMutationScope.single(
+          _cultureEnvironmentSource,
+          entryType: HeroEntryTypes.skill,
+        ),
+        HeroMutationScope.single(
+          _cultureOrganisationSource,
+          entryType: HeroEntryTypes.skill,
+        ),
+        HeroMutationScope.single(
+          _cultureUpbringingSource,
+          entryType: HeroEntryTypes.skill,
+        ),
+        HeroMutationScope.single(
+          _careerChoiceSource,
+          entryType: HeroEntryTypes.skill,
+        ),
+      ],
+      draftClaims: _storySkillDraftClaims(),
+    );
+  }
 
-  String? _complicationId;
-  final Map<String, String> _complicationChoices = {};
-
-  bool get isDirty => _dirty;
-
-  Set<String> get _selectedLanguageIdsForPerks {
-    final ids = <String>{};
-    ids.addAll(_hero?.languages ?? const <String>[]);
-    if (_selectedLanguageId != null && _selectedLanguageId!.trim().isNotEmpty) {
-      ids.add(_selectedLanguageId!.trim());
+  HeroConflictIndex get _complicationConflictIndex {
+    final story = _story;
+    final baselineStory =
+        ref.watch(heroBuilderControllerProvider(widget.heroId)).baseline.story;
+    final complicationSources = <HeroClaimSource>{};
+    for (final id in [baselineStory.complicationId, story.complicationId]) {
+      final normalized = id?.trim();
+      if (normalized == null || normalized.isEmpty) continue;
+      complicationSources.add(
+        HeroClaimSource(
+          sourceType: HeroEntrySourceTypes.complication,
+          sourceId: normalized,
+        ),
+      );
+      complicationSources.add(
+        HeroClaimSource(
+          sourceType: HeroEntrySourceTypes.complicationAncestryTrait,
+          sourceId: normalized,
+        ),
+      );
     }
-    for (final lang in _careerLanguageIds) {
-      if (lang != null && lang.trim().isNotEmpty) {
-        ids.add(lang.trim());
+
+    return _storyConflictIndex(
+      mutationScopes: [
+        ...complicationSources.map(HeroMutationScope.single),
+        HeroMutationScope.single(
+          const HeroClaimSource(
+            sourceType: 'manual_choice',
+            sourceId: HeroEntryTypes.complication,
+          ),
+          entryType: HeroEntryTypes.complication,
+        ),
+        ..._persistedSourceScopes(
+          sourceType: HeroEntrySourceTypes.ancestry,
+          entryType: HeroEntryTypes.skill,
+        ),
+        HeroMutationScope.single(
+          _cultureLanguageSource,
+          entryType: HeroEntryTypes.language,
+        ),
+        HeroMutationScope.single(
+          _careerLanguageSource,
+          entryType: HeroEntryTypes.language,
+        ),
+        HeroMutationScope.single(
+          _cultureEnvironmentSource,
+          entryType: HeroEntryTypes.skill,
+        ),
+        HeroMutationScope.single(
+          _cultureOrganisationSource,
+          entryType: HeroEntryTypes.skill,
+        ),
+        HeroMutationScope.single(
+          _cultureUpbringingSource,
+          entryType: HeroEntryTypes.skill,
+        ),
+        HeroMutationScope.single(
+          _careerChoiceSource,
+          entryType: HeroEntryTypes.skill,
+        ),
+        HeroMutationScope.single(
+          _careerChoiceSource,
+          entryType: HeroEntryTypes.perk,
+        ),
+      ],
+      draftClaims: [
+        ..._storyLanguageDraftClaims(),
+        ..._storySkillDraftClaims(),
+        ..._storyPerkDraftClaims(),
+        ..._complicationSelectionDraftClaims(),
+      ],
+    );
+  }
+
+  Iterable<HeroMutationScope> _persistedSourceScopes({
+    required String sourceType,
+    required String entryType,
+  }) sync* {
+    final entries = ref.watch(heroEntriesProvider(widget.heroId)).valueOrNull;
+    final sources = (entries ?? const [])
+        .where(
+          (entry) =>
+              entry.entryType == entryType && entry.sourceType == sourceType,
+        )
+        .map(
+          (entry) => HeroClaimSource(
+            sourceType: entry.sourceType,
+            sourceId: entry.sourceId,
+          ),
+        )
+        .toSet();
+    for (final source in sources) {
+      yield HeroMutationScope.single(source, entryType: entryType);
+    }
+  }
+
+  HeroConflictIndex get _storyPerkConflictIndex {
+    return _storyConflictIndex(
+      entryType: HeroEntryTypes.perk,
+      mutationScopes: [
+        HeroMutationScope.single(
+          _careerChoiceSource,
+          entryType: HeroEntryTypes.perk,
+        ),
+      ],
+      draftClaims: _storyPerkDraftClaims(),
+    );
+  }
+
+  HeroConflictIndex _storyConflictIndex({
+    String? entryType,
+    required Iterable<HeroMutationScope> mutationScopes,
+    required Iterable<HeroEntryClaim> draftClaims,
+  }) {
+    final entries = ref.watch(heroEntriesProvider(widget.heroId)).valueOrNull;
+    final persistedClaims = (entries ?? const [])
+        .where((entry) => entryType == null || entry.entryType == entryType)
+        .map(
+          (entry) => HeroEntryClaim(
+            key: HeroEntryKey(
+              entryType: entry.entryType,
+              canonicalEntryId: entry.entryId,
+            ),
+            owner: HeroClaimOwner.persisted(
+              source: HeroClaimSource(
+                sourceType: entry.sourceType,
+                sourceId: entry.sourceId,
+              ),
+              displayLabel: entry.sourceId.trim().isEmpty
+                  ? entry.sourceType
+                  : '${entry.sourceType}:${entry.sourceId}',
+            ),
+          ),
+        );
+    return HeroConflictIndex.projected(
+      persistedClaims: persistedClaims,
+      mutationScopes: mutationScopes,
+      draftClaims: draftClaims,
+    );
+  }
+
+  /// Shared culture/career claims for one entry type. Sources and slot keys
+  /// come from [HeroDraftClaims], so this page and the draft controller stay
+  /// interchangeable.
+  Iterable<HeroEntryClaim> _sharedStoryDraftClaims(String entryType) {
+    return HeroDraftClaims.draftClaims(
+      story: _story,
+      strife: StrifeDraft(),
+      strength: StrengthDraft(),
+    ).where((claim) => claim.key.normalizedEntryType == entryType);
+  }
+
+  Iterable<HeroEntryClaim> _storyLanguageDraftClaims() =>
+      _sharedStoryDraftClaims(HeroEntryTypes.language);
+
+  Iterable<HeroEntryClaim> _storySkillDraftClaims() sync* {
+    yield* _ancestrySkillDraftClaims();
+    yield* _sharedStoryDraftClaims(HeroEntryTypes.skill);
+  }
+
+  Iterable<HeroEntryClaim> _ancestrySkillDraftClaims() sync* {
+    final ancestrySource = HeroClaimSource(
+      sourceType: HeroEntrySourceTypes.ancestry,
+      sourceId: _story.ancestryId?.trim() ?? '',
+    );
+    for (final choice in _story.ancestryTraitChoices.entries) {
+      final entryId = choice.value.trim();
+      if (!entryId.startsWith('skill_')) continue;
+      yield HeroEntryClaim(
+        key: HeroEntryKey(
+          entryType: HeroEntryTypes.skill,
+          canonicalEntryId: entryId,
+        ),
+        owner: HeroClaimOwner.draft(
+          source: ancestrySource,
+          slotKey: 'story.ancestry:${choice.key}',
+          displayLabel: 'Ancestry skill choice',
+        ),
+      );
+    }
+  }
+
+  Iterable<HeroEntryClaim> _storyPerkDraftClaims() =>
+      _sharedStoryDraftClaims(HeroEntryTypes.perk);
+
+  HeroConflictIndex get _storyAncestryAbilityConflictIndex {
+    final baselineStory =
+        ref.watch(heroBuilderControllerProvider(widget.heroId)).baseline.story;
+    final loadedAncestryId = baselineStory.ancestryId?.trim();
+    final selectedAncestryId = _story.ancestryId?.trim();
+    final scopes = <HeroMutationScope>[];
+    if (loadedAncestryId != null && loadedAncestryId.isNotEmpty) {
+      final source = HeroClaimSource(
+        sourceType: HeroEntrySourceTypes.ancestry,
+        sourceId: loadedAncestryId,
+      );
+      if (loadedAncestryId != selectedAncestryId) {
+        scopes.add(
+          HeroMutationScope.single(source, entryType: HeroEntryTypes.ability),
+        );
+      } else {
+        scopes.add(
+          HeroMutationScope.single(
+            source,
+            entryType: HeroEntryTypes.ability,
+            entryIds: _abilityIdsForChoices(baselineStory.ancestryTraitChoices),
+          ),
+        );
+      }
+    }
+    return _storyConflictIndex(
+      entryType: HeroEntryTypes.ability,
+      mutationScopes: scopes,
+      draftClaims: _ancestryAbilityDraftClaims(),
+    );
+  }
+
+  HeroConflictIndex get _storyAncestryTraitConflictIndex => _storyConflictIndex(
+        entryType: HeroEntryTypes.ancestryTrait,
+        mutationScopes: _persistedSourceScopes(
+          sourceType: HeroEntrySourceTypes.ancestry,
+          entryType: HeroEntryTypes.ancestryTrait,
+        ),
+        draftClaims: _ancestryTraitDraftClaims(),
+      );
+
+  HeroConflictIndex get _storyAncestrySelectionConflictIndex =>
+      _storyConflictIndex(
+        entryType: HeroEntryTypes.ancestry,
+        mutationScopes: _persistedSourceScopes(
+          sourceType: HeroEntrySourceTypes.ancestry,
+          entryType: HeroEntryTypes.ancestry,
+        ),
+        draftClaims: _ancestrySelectionDraftClaims(),
+      );
+
+  Iterable<HeroEntryClaim> _complicationSelectionDraftClaims() sync* {
+    final complicationId = _story.complicationId?.trim();
+    if (complicationId == null || complicationId.isEmpty) return;
+    yield HeroEntryClaim(
+      key: HeroEntryKey(
+        entryType: HeroEntryTypes.complication,
+        canonicalEntryId: complicationId,
+      ),
+      owner: const HeroClaimOwner.draft(
+        source: HeroClaimSource(
+          sourceType: 'manual_choice',
+          sourceId: HeroEntryTypes.complication,
+        ),
+        slotKey: 'story.complication:selection#0',
+        displayLabel: 'Story complication',
+      ),
+    );
+  }
+
+  Iterable<HeroEntryClaim> _ancestryAbilityDraftClaims() sync* {
+    final source = HeroClaimSource(
+      sourceType: HeroEntrySourceTypes.ancestry,
+      sourceId: _story.ancestryId?.trim() ?? '',
+    );
+    for (final choice in _story.ancestryTraitChoices.entries) {
+      final abilityIds = _abilityIdsForChoices({choice.key: choice.value});
+      if (abilityIds.isEmpty) continue;
+      yield HeroEntryClaim(
+        key: HeroEntryKey(
+          entryType: HeroEntryTypes.ability,
+          canonicalEntryId: abilityIds.single,
+        ),
+        owner: HeroClaimOwner.draft(
+          source: source,
+          slotKey: 'story.ancestry:${choice.key}',
+          displayLabel: 'Ancestry ability choice',
+        ),
+      );
+    }
+  }
+
+  Set<String> _abilityIdsForChoices(Map<String, String> choices) {
+    final abilities =
+        ref.watch(componentsByTypeProvider('ability')).valueOrNull ?? const [];
+    final ids = <String>{};
+    for (final value in choices.values) {
+      final normalized = value.trim();
+      if (normalized.isEmpty) continue;
+      for (final ability in abilities) {
+        if (ability.id == normalized ||
+            ability.name.trim().toLowerCase() == normalized.toLowerCase()) {
+          ids.add(ability.id);
+          break;
+        }
       }
     }
     return ids;
   }
 
-  Set<String> get _selectedSkillIdsForPerks {
-    final ids = <String>{};
-    ids.addAll(_hero?.skills ?? const <String>[]);
-    if (_environmentSkillId != null && _environmentSkillId!.isNotEmpty) {
-      ids.add(_environmentSkillId!);
-    }
-    if (_organisationSkillId != null && _organisationSkillId!.isNotEmpty) {
-      ids.add(_organisationSkillId!);
-    }
-    if (_upbringingSkillId != null && _upbringingSkillId!.isNotEmpty) {
-      ids.add(_upbringingSkillId!);
-    }
-    ids.addAll(_careerSkillIds);
-    return ids;
-  }
-
-  // Cache for DB-saved IDs during save operation to prevent flicker
-  Set<String> _cachedDbLanguageIds = const {};
-  Set<String> _cachedDbSkillIds = const {};
-  Set<String> _cachedDbPerkIds = const {};
-
-  /// Gets all language IDs saved in the database for this hero.
-  Set<String> get _dbSavedLanguageIds {
-    if (_saving) return _cachedDbLanguageIds;
-    final result = ref.watch(
-      heroEntryIdsByTypeProvider((heroId: widget.heroId, entryType: 'language')),
+  Iterable<HeroEntryClaim> _ancestryTraitDraftClaims() sync* {
+    final source = HeroClaimSource(
+      sourceType: HeroEntrySourceTypes.ancestry,
+      sourceId: _story.ancestryId?.trim() ?? '',
     );
-    _cachedDbLanguageIds = result;
-    return result;
+    for (final traitId in _story.ancestryTraitIds) {
+      yield HeroEntryClaim(
+        key: HeroEntryKey(
+          entryType: HeroEntryTypes.ancestryTrait,
+          canonicalEntryId: traitId,
+        ),
+        owner: HeroClaimOwner.draft(
+          source: source,
+          slotKey: 'story.ancestry:trait:$traitId',
+          displayLabel: 'Ancestry trait',
+        ),
+      );
+    }
   }
 
-  /// Gets all skill IDs saved in the database for this hero.
-  Set<String> get _dbSavedSkillIds {
-    if (_saving) return _cachedDbSkillIds;
-    final result = ref.watch(
-      heroEntryIdsByTypeProvider((heroId: widget.heroId, entryType: 'skill')),
+  Iterable<HeroEntryClaim> _ancestrySelectionDraftClaims() sync* {
+    final ancestryId = _story.ancestryId?.trim();
+    if (ancestryId == null || ancestryId.isEmpty) return;
+    yield HeroEntryClaim(
+      key: HeroEntryKey(
+        entryType: HeroEntryTypes.ancestry,
+        canonicalEntryId: ancestryId,
+      ),
+      owner: HeroClaimOwner.draft(
+        source: HeroClaimSource(
+          sourceType: HeroEntrySourceTypes.ancestry,
+          sourceId: ancestryId,
+        ),
+        slotKey: 'story.ancestry:selection#0',
+        displayLabel: 'Story ancestry',
+      ),
     );
-    _cachedDbSkillIds = result;
-    return result;
   }
-
-  /// Gets all perk IDs saved in the database for this hero.
-  Set<String> get _dbSavedPerkIds {
-    if (_saving) return _cachedDbPerkIds;
-    final result = ref.watch(
-      heroEntryIdsByTypeProvider((heroId: widget.heroId, entryType: 'perk')),
-    );
-    _cachedDbPerkIds = result;
-    return result;
-  }
-
-  Set<String> get _reservedLanguageIds => {
-        ..._selectedLanguageIdsForPerks,
-        ..._dbSavedLanguageIds,
-      };
-
-  Set<String> get _reservedSkillIds => {
-        ..._selectedSkillIdsForPerks,
-        ..._dbSavedSkillIds,
-      };
-
-  Set<String> get _reservedPerkIds => {
-        ...(_hero?.perks ?? const <String>[]),
-        ..._careerPerkIds,
-        ..._dbSavedPerkIds,
-      };
 
   @override
   void initState() {
     super.initState();
     _nameCtrl.addListener(_handleNameChanged);
-    _load();
   }
 
   @override
@@ -160,347 +450,278 @@ class StoryCreatorTabState extends ConsumerState<StoryCreatorTab>
     super.dispose();
   }
 
-  Future<void> save() async {
-    // Set saving flag to prevent rebuild flicker during save
-    _saving = true;
-
-    final service = ref.read(storyCreatorServiceProvider);
-    final languageIds = <String>{
-      if (_selectedLanguageId != null && _selectedLanguageId!.trim().isNotEmpty)
-        _selectedLanguageId!,
-      ..._careerLanguageIds
-          .whereType<String>()
-          .map((id) => id.trim())
-          .where((id) => id.isNotEmpty),
-    };
-
-    final payload = StoryCreatorSavePayload(
-      heroId: widget.heroId,
-      name: _nameCtrl.text.trim().isEmpty ? 'New Hero' : _nameCtrl.text.trim(),
-      ancestryId: _selectedAncestryId,
-      ancestryTraitIds: LinkedHashSet<String>.of(_selectedTraitIds),
-      ancestryTraitChoices: Map<String, String>.from(_ancestryTraitChoices),
-      environmentId: _environmentId,
-      organisationId: _organisationId,
-      upbringingId: _upbringingId,
-      environmentSkillId: _environmentSkillId,
-      organisationSkillId: _organisationSkillId,
-      upbringingSkillId: _upbringingSkillId,
-      languageIds: languageIds,
-      careerId: _careerId,
-      careerSkillIds: LinkedHashSet<String>.of(_careerSkillIds),
-      careerPerkIds: LinkedHashSet<String>.of(_careerPerkIds),
-      careerIncidentName: _careerIncidentName,
-      complicationId: _complicationId,
-      complicationChoices: Map<String, String>.from(_complicationChoices),
-    );
-
-    try {
-      await service.saveStory(payload);
-    } finally {
-      _saving = false;
-    }
-    if (!mounted) return;
-
-    final wasDirty = _dirty;
-    setState(() {
-      _dirty = false;
-      _hero?.name = payload.name;
-      _hero?.ancestry = payload.ancestryId;
-      _hero?.career = payload.careerId;
-    });
-    if (wasDirty) {
-      widget.onDirtyChanged(false);
-    }
-    widget.onTitleChanged(
-      payload.name.isNotEmpty
-          ? payload.name
-          : StoryCreatorPageText.heroTitleFallbackOnSave,
-    );
-  }
-
-  Future<void> _load() async {
-    setState(() {
-      _loading = true;
-      _error = null;
-    });
-    try {
-      final service = ref.read(storyCreatorServiceProvider);
-      final result = await service.loadInitialData(widget.heroId);
-      final hero = result.hero;
-      final languages = hero?.languages ?? const <String>[];
-      final primaryLanguage = languages.isNotEmpty ? languages.first : null;
-      final additionalLanguages = languages.length > 1
-          ? List<String?>.from(languages.skip(1))
-          : <String?>[];
-
-      setState(() {
-        _hero = hero;
-        _nameCtrl.text = hero?.name ?? '';
-        _selectedAncestryId = hero?.ancestry;
-        _selectedTraitIds
-          ..clear()
-          ..addAll(result.ancestryTraitIds);
-        _ancestryTraitChoices
-          ..clear()
-          ..addAll(result.ancestryTraitChoices);
-        _environmentId = result.cultureSelection.environmentId;
-        _organisationId = result.cultureSelection.organisationId;
-        _upbringingId = result.cultureSelection.upbringingId;
-        _environmentSkillId = result.cultureSelection.environmentSkillId;
-        _organisationSkillId = result.cultureSelection.organisationSkillId;
-        _upbringingSkillId = result.cultureSelection.upbringingSkillId;
-        _selectedLanguageId = primaryLanguage;
-        _careerLanguageIds = additionalLanguages;
-        _careerLanguageSlots = additionalLanguages.length;
-        _careerId = result.careerSelection.careerId ?? hero?.career;
-        _careerSkillIds
-          ..clear()
-          ..addAll(result.careerSelection.chosenSkillIds);
-        _careerPerkIds
-          ..clear()
-          ..addAll(result.careerSelection.chosenPerkIds);
-        _careerIncidentName = result.careerSelection.incitingIncidentName;
-        _complicationId = result.complicationId;
-        _complicationChoices
-          ..clear()
-          ..addAll(result.complicationChoices);
-        _dirty = false;
-        _loading = false;
-      });
-      widget.onDirtyChanged(false);
-      _handleNameChanged();
-    } catch (e) {
-      if (!mounted) return;
-      setState(() {
-        _error = e.toString();
-        _loading = false;
-      });
-    }
-  }
-
   void _handleNameChanged() {
-    final fallback =
-        _hero?.name ?? StoryCreatorPageText.heroTitleFallbackOnNameChanged;
-    final trimmed = _nameCtrl.text.trim();
-    widget.onTitleChanged(trimmed.isNotEmpty ? trimmed : fallback);
+    _controller.updateStory((draft) => draft.copyWith(name: _nameCtrl.text));
   }
 
-  void _handleDirty() {
-    if (_dirty) return;
-    setState(() {
-      _dirty = true;
-    });
-    widget.onDirtyChanged(true);
+  /// Child sections signal an edit through `onDirty`. Dirty state itself is now
+  /// derived by the shell from the controller; this just rebuilds the tab so any
+  /// non-draft-backed local UI stays in sync.
+  void _notifyDirty() {
+    if (mounted) setState(() {});
   }
 
   void _onAncestryChanged(String? value) {
-    setState(() {
-      _selectedAncestryId = value;
-      _selectedTraitIds.clear();
-      _ancestryTraitChoices.clear();
-    });
+    _controller.updateStory(
+      (draft) => draft.copyWith(
+        ancestryId: value,
+        ancestryTraitIds: const {},
+        ancestryTraitChoices: const {},
+      ),
+    );
+    _notifyDirty();
   }
 
   void _onTraitSelectionChanged(String traitId, bool isSelected) {
-    setState(() {
+    _controller.updateStory((draft) {
+      final traitIds = Set<String>.from(draft.ancestryTraitIds);
+      final traitChoices = Map<String, String>.from(draft.ancestryTraitChoices);
       if (isSelected) {
-        _selectedTraitIds.add(traitId);
+        traitIds.add(traitId);
       } else {
-        _selectedTraitIds.remove(traitId);
-        // Remove any choice associated with this trait
-        _ancestryTraitChoices.remove(traitId);
+        traitIds.remove(traitId);
+        traitChoices.remove(traitId);
       }
+      return draft.copyWith(
+        ancestryTraitIds: traitIds,
+        ancestryTraitChoices: traitChoices,
+      );
     });
+    _notifyDirty();
   }
 
   void _onTraitChoiceChanged(String traitOrSignatureId, String choiceValue) {
-    setState(() {
-      _ancestryTraitChoices[traitOrSignatureId] = choiceValue;
+    _controller.updateStory((draft) {
+      final traitChoices = Map<String, String>.from(draft.ancestryTraitChoices)
+        ..[traitOrSignatureId] = choiceValue;
+      return draft.copyWith(ancestryTraitChoices: traitChoices);
     });
+    _notifyDirty();
   }
 
   void _onLanguageChanged(String? value) {
-    setState(() {
-      _selectedLanguageId = value;
-      for (var i = 0; i < _careerLanguageIds.length; i++) {
-        if (_careerLanguageIds[i] == value) {
-          _careerLanguageIds[i] = null;
-        }
-      }
+    _controller.updateStory((draft) {
+      final careerLanguageIds = [
+        for (final id in draft.careerLanguageIds) id == value ? null : id,
+      ];
+      return draft.copyWith(
+        cultureLanguageId: value,
+        careerLanguageIds: careerLanguageIds,
+      );
     });
+    _notifyDirty();
   }
 
   void _onEnvironmentChanged(String? value) {
-    setState(() {
-      _environmentId = value;
-    });
+    _controller.updateStory((draft) => draft.copyWith(environmentId: value));
+    _notifyDirty();
   }
 
   void _onOrganisationChanged(String? value) {
-    setState(() {
-      _organisationId = value;
-    });
+    _controller.updateStory((draft) => draft.copyWith(organisationId: value));
+    _notifyDirty();
   }
 
   void _onUpbringingChanged(String? value) {
-    setState(() {
-      _upbringingId = value;
-    });
+    _controller.updateStory((draft) => draft.copyWith(upbringingId: value));
+    _notifyDirty();
   }
 
   void _onEnvironmentSkillChanged(String? value) {
-    setState(() {
-      _environmentSkillId = value;
-    });
+    _controller
+        .updateStory((draft) => draft.copyWith(environmentSkillId: value));
+    _notifyDirty();
   }
 
   void _onOrganisationSkillChanged(String? value) {
-    setState(() {
-      _organisationSkillId = value;
-    });
+    _controller
+        .updateStory((draft) => draft.copyWith(organisationSkillId: value));
+    _notifyDirty();
   }
 
   void _onUpbringingSkillChanged(String? value) {
-    setState(() {
-      _upbringingSkillId = value;
-    });
+    _controller
+        .updateStory((draft) => draft.copyWith(upbringingSkillId: value));
+    _notifyDirty();
   }
 
   void _onCareerChanged(String? value) {
-    setState(() {
-      _careerId = value;
-      _careerSkillIds.clear();
-      _careerPerkIds.clear();
-      _careerIncidentName = null;
-      _careerLanguageIds = <String?>[];
-      _careerLanguageSlots = 0;
-    });
+    _controller.updateStory(
+      (draft) => draft.copyWith(
+        careerId: value,
+        careerSkillIds: const {},
+        careerPerkIds: const {},
+        careerIncidentName: null,
+        careerLanguageIds: const <String?>[],
+      ),
+    );
+    _notifyDirty();
   }
 
   void _onCareerLanguageSlotsChanged(int slots) {
     final normalized = slots.clamp(0, 10);
-    if (normalized == _careerLanguageSlots) return;
-    setState(() {
-      _careerLanguageSlots = normalized;
-      if (_careerLanguageIds.length > normalized) {
-        _careerLanguageIds = _careerLanguageIds.take(normalized).toList();
-      } else {
-        _careerLanguageIds = List<String?>.of(_careerLanguageIds)
-          ..addAll(List<String?>.filled(
-            normalized - _careerLanguageIds.length,
-            null,
-            growable: false,
-          ));
+    StoryDraft resize(StoryDraft draft) {
+      if (normalized == draft.careerLanguageIds.length) return draft;
+      final ids = List<String?>.of(draft.careerLanguageIds);
+      if (ids.length > normalized) {
+        return draft.copyWith(
+          careerLanguageIds: ids.take(normalized).toList(),
+        );
       }
-    });
+      ids.addAll(
+        List<String?>.filled(normalized - ids.length, null, growable: false),
+      );
+      return draft.copyWith(careerLanguageIds: ids);
+    }
+
+    // The career's granted language-slot count is derived from career data and
+    // recomputed on every load. Padding the persisted slots out to that count
+    // (e.g. a hero who chose 1 of 2 granted slots loads with a length-1 list)
+    // must not open the tab dirty. When the Story section is otherwise clean,
+    // fold the resize into the baseline; if the user already has a pending edit,
+    // treat it as a normal draft change so the dirty state is preserved.
+    final storyDirty =
+        ref.read(heroBuilderControllerProvider(widget.heroId)).storyDirty;
+    if (storyDirty) {
+      _controller.updateStory(resize);
+    } else {
+      _controller.adoptStory(resize);
+    }
+    _notifyDirty();
   }
 
   void _onCareerLanguageChanged(int index, String? value) {
     if (index < 0) return;
-    if (index >= _careerLanguageIds.length) {
-      setState(() {
-        while (_careerLanguageIds.length <= index) {
-          _careerLanguageIds.add(null);
-        }
-        _careerLanguageIds[index] = value;
-      });
-      return;
-    }
-    if (_careerLanguageIds[index] == value) return;
-    setState(() {
-      _careerLanguageIds[index] = value;
+    _controller.updateStory((draft) {
+      final ids = List<String?>.of(draft.careerLanguageIds);
+      while (ids.length <= index) {
+        ids.add(null);
+      }
+      if (ids[index] == value) return draft;
+      ids[index] = value;
+      return draft.copyWith(careerLanguageIds: ids);
     });
+    _notifyDirty();
   }
 
   void _onCareerSkillsChanged(Set<String> ids) {
-    setState(() {
-      _careerSkillIds
-        ..clear()
-        ..addAll(ids);
-    });
+    _controller.updateStory((draft) => draft.copyWith(careerSkillIds: ids));
+    _notifyDirty();
   }
 
   void _onCareerPerksChanged(Set<String> ids) {
-    setState(() {
-      _careerPerkIds
-        ..clear()
-        ..addAll(ids);
-    });
+    _controller.updateStory((draft) => draft.copyWith(careerPerkIds: ids));
+    _notifyDirty();
   }
 
   void _onIncidentChanged(String? value) {
-    setState(() {
-      _careerIncidentName = value;
-    });
+    _controller
+        .updateStory((draft) => draft.copyWith(careerIncidentName: value));
+    _notifyDirty();
   }
 
   void _onComplicationChanged(String? value) {
-    setState(() {
-      _complicationId = value;
-      // Clear choices when complication changes
-      _complicationChoices.clear();
-    });
+    _controller.updateStory(
+      (draft) => draft.copyWith(
+        complicationId: value,
+        complicationChoices: const {},
+      ),
+    );
+    _notifyDirty();
   }
 
   void _onComplicationChoicesChanged(Map<String, String> choices) {
-    setState(() {
-      _complicationChoices
-        ..clear()
-        ..addAll(choices);
-    });
+    _controller
+        .updateStory((draft) => draft.copyWith(complicationChoices: choices));
+    _notifyDirty();
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (_loading) {
+
+    final builderState =
+        ref.watch(heroBuilderControllerProvider(widget.heroId));
+
+    ref.listen<HeroBuilderState>(
+      heroBuilderControllerProvider(widget.heroId),
+      (previous, next) {
+        if (previous?.baseline.revision != next.baseline.revision) {
+          _hasLoadedOnce = true;
+        }
+        // Resync the name field whenever the draft name is changed by the
+        // controller rather than by typing — i.e. on load/reload (baseline
+        // revision bump) and on a shell-driven Discard (draft reverts to
+        // baseline without a revision change). During editing the listener
+        // keeps `_nameCtrl.text` and `draft.name` equal, so this never fights
+        // the user's keystrokes.
+        if (_nameCtrl.text != next.story.name) {
+          _nameCtrl.text = next.story.name;
+        }
+      },
+    );
+
+    if (builderState.isLoading && !_hasLoadedOnce) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (_error != null) {
-      return _ErrorView(message: _error!, onRetry: _load);
-    }
-
-    if (_hero == null) {
+    if (builderState.lastError != null && !_hasLoadedOnce) {
       return _ErrorView(
-        message: StoryCreatorPageText.heroNotFoundMessage,
-        onRetry: _load,
+        message: builderState.lastError!,
+        onRetry: () => _controller.reload(),
       );
     }
+
+    if (!_hasLoadedOnce) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    final story = builderState.story;
+
+    final languageConflictIndex = _storyLanguageConflictIndex;
+    final skillConflictIndex = _storySkillConflictIndex;
+    final perkConflictIndex = _storyPerkConflictIndex;
+    final ancestryAbilityConflictIndex = _storyAncestryAbilityConflictIndex;
+    final ancestryTraitConflictIndex = _storyAncestryTraitConflictIndex;
+    final ancestrySelectionConflictIndex = _storyAncestrySelectionConflictIndex;
+    final complicationConflictIndex = _complicationConflictIndex;
 
     return CustomScrollView(
       slivers: [
         SliverToBoxAdapter(
           child: StoryNameSection(
             nameController: _nameCtrl,
-            selectedAncestryId: _selectedAncestryId,
-            onDirty: _handleDirty,
+            selectedAncestryId: story.ancestryId,
+            onDirty: _notifyDirty,
           ),
         ),
         SliverToBoxAdapter(
           child: StoryAncestrySection(
-            selectedAncestryId: _selectedAncestryId,
-            selectedTraitIds: _selectedTraitIds,
-            traitChoices: _ancestryTraitChoices,
+            selectedAncestryId: story.ancestryId,
+            selectedTraitIds: story.ancestryTraitIds,
+            traitChoices: story.ancestryTraitChoices,
+            skillConflictIndex: skillConflictIndex,
+            abilityConflictIndex: ancestryAbilityConflictIndex,
+            traitConflictIndex: ancestryTraitConflictIndex,
+            ancestryConflictIndex: ancestrySelectionConflictIndex,
             onAncestryChanged: _onAncestryChanged,
             onTraitSelectionChanged: _onTraitSelectionChanged,
             onTraitChoiceChanged: _onTraitChoiceChanged,
-            onDirty: _handleDirty,
+            onDirty: _notifyDirty,
           ),
         ),
         SliverToBoxAdapter(
           child: StoryCultureSection(
-            selectedAncestryId: _selectedAncestryId,
-            environmentId: _environmentId,
-            organisationId: _organisationId,
-            upbringingId: _upbringingId,
-            selectedLanguageId: _selectedLanguageId,
-            reservedLanguageIds: _reservedLanguageIds,
-            environmentSkillId: _environmentSkillId,
-            organisationSkillId: _organisationSkillId,
-            upbringingSkillId: _upbringingSkillId,
-            reservedSkillIds: _reservedSkillIds,
+            selectedAncestryId: story.ancestryId,
+            environmentId: story.environmentId,
+            organisationId: story.organisationId,
+            upbringingId: story.upbringingId,
+            selectedLanguageId: story.cultureLanguageId,
+            languageConflictIndex: languageConflictIndex,
+            environmentSkillId: story.environmentSkillId,
+            organisationSkillId: story.organisationSkillId,
+            upbringingSkillId: story.upbringingSkillId,
+            skillConflictIndex: skillConflictIndex,
             onLanguageChanged: _onLanguageChanged,
             onEnvironmentChanged: _onEnvironmentChanged,
             onOrganisationChanged: _onOrganisationChanged,
@@ -508,40 +729,38 @@ class StoryCreatorTabState extends ConsumerState<StoryCreatorTab>
             onEnvironmentSkillChanged: _onEnvironmentSkillChanged,
             onOrganisationSkillChanged: _onOrganisationSkillChanged,
             onUpbringingSkillChanged: _onUpbringingSkillChanged,
-            onDirty: _handleDirty,
+            onDirty: _notifyDirty,
           ),
         ),
         SliverToBoxAdapter(
           child: StoryCareerSection(
             heroId: widget.heroId,
-            careerId: _careerId,
-            chosenSkillIds: _careerSkillIds,
-            chosenPerkIds: _careerPerkIds,
-            incidentName: _careerIncidentName,
-            careerLanguageIds: _careerLanguageIds,
-            primaryLanguageId: _selectedLanguageId,
-            selectedLanguageIds: _selectedLanguageIdsForPerks,
-            selectedSkillIds: _selectedSkillIdsForPerks,
-            reservedLanguageIds: _reservedLanguageIds,
-            reservedSkillIds: _reservedSkillIds,
-            reservedPerkIds: _reservedPerkIds,
+            careerId: story.careerId,
+            chosenSkillIds: story.careerSkillIds,
+            chosenPerkIds: story.careerPerkIds,
+            incidentName: story.careerIncidentName,
+            careerLanguageIds: story.careerLanguageIds,
+            languageConflictIndex: languageConflictIndex,
+            skillConflictIndex: skillConflictIndex,
+            perkConflictIndex: perkConflictIndex,
             onCareerChanged: _onCareerChanged,
             onCareerLanguageSlotsChanged: _onCareerLanguageSlotsChanged,
             onCareerLanguageChanged: _onCareerLanguageChanged,
             onSkillSelectionChanged: _onCareerSkillsChanged,
             onPerkSelectionChanged: _onCareerPerksChanged,
             onIncidentChanged: _onIncidentChanged,
-            onDirty: _handleDirty,
+            onDirty: _notifyDirty,
           ),
         ),
         SliverToBoxAdapter(
           child: StoryComplicationSection(
-            selectedComplicationId: _complicationId,
-            complicationChoices: _complicationChoices,
+            selectedComplicationId: story.complicationId,
+            complicationChoices: story.complicationChoices,
+            conflictIndex: complicationConflictIndex,
             onComplicationChanged: _onComplicationChanged,
             onChoicesChanged: _onComplicationChoicesChanged,
-            onDirty: _handleDirty,
-            heroAncestryTraitIds: _selectedTraitIds,
+            onDirty: _notifyDirty,
+            heroAncestryTraitIds: story.ancestryTraitIds,
           ),
         ),
         const SliverToBoxAdapter(
@@ -559,7 +778,7 @@ class _ErrorView extends StatelessWidget {
   const _ErrorView({required this.message, required this.onRetry});
 
   final String message;
-  final Future<void> Function() onRetry;
+  final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context) {

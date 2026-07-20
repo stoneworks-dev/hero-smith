@@ -36,14 +36,28 @@
         "name": "Hands of the Maker",
         "skill_group": "Crafting",
         "description": "You have the following ability.",
-        "ability": "Hands of the Maker"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "hands-of-the-maker",
+            "payload": { "name": "Hands of the Maker" }
+          }
+        ]
       },
       {
         "domain": "Death",
         "name": "Grave Speech",
         "skill_group": "Lore",
         "description": "You have the following ability.",
-        "ability": "Grave Speech"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "grave-speech",
+            "payload": { "name": "Grave Speech" }
+          }
+        ]
       },
       {
         "domain": "Fate",
@@ -74,7 +88,14 @@
         "name": "Faithful Friend",
         "skill_group": "Exploration",
         "description": "You have the following ability.",
-        "ability": "Faithful Friend"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "faithful-friend",
+            "payload": { "name": "Faithful Friend" }
+          }
+        ]
       },
       {
         "domain": "Protection",
@@ -115,7 +136,14 @@
     "class": "conduit",
     "level": 1,
     "description": "You have the following ability, which you can use once on your turn.",
-    "ability": "Healing Grace"
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "healing-grace",
+        "payload": { "name": "Healing Grace" }
+      }
+    ]
   },
   {
     "id": "feature_conduit_ray_of_wrath",
@@ -124,7 +152,14 @@
     "class": "conduit",
     "level": 1,
     "description": "You have the following ability, which can be used as a ranged free strike.",
-    "ability": "Ray of Wrath"
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "ray-of-wrath",
+        "payload": { "name": "Ray of Wrath" }
+      }
+    ]
   },
   {
     "id": "feature_conduit_triggered_action",
@@ -135,10 +170,24 @@
     "description": "Choose one of the following triggered actions. (*Quick Build:* Word of Guidance.)",
     "options": [
       {
-        "ability": "Word of Guidance"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "word-of-guidance",
+            "payload": { "name": "Word of Guidance" }
+          }
+        ]
       },
       {
-        "ability": "Word of Judgment"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "word-of-judgment",
+            "payload": { "name": "Word of Judgment" }
+          }
+        ]
       }
     ]
   },
@@ -233,14 +282,28 @@
         "name": "Hands of the Maker",
         "skill_group": "Crafting",
         "description": "You have the following ability.",
-        "ability": "Hands of the Maker"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "hands-of-the-maker",
+            "payload": { "name": "Hands of the Maker" }
+          }
+        ]
       },
       {
         "domain": "Death",
         "name": "Grave Speech",
         "skill_group": "Lore",
         "description": "You have the following ability.",
-        "ability": "Grave Speech"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "grave-speech",
+            "payload": { "name": "Grave Speech" }
+          }
+        ]
       },
       {
         "domain": "Fate",
@@ -271,7 +334,14 @@
         "name": "Faithful Friend",
         "skill_group": "Exploration",
         "description": "You have the following ability.",
-        "ability": "Faithful Friend"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "faithful-friend",
+            "payload": { "name": "Faithful Friend" }
+          }
+        ]
       },
       {
         "domain": "Protection",
@@ -383,7 +453,14 @@
         "domain": "Trickery",
         "name": "Blessing of Secrets",
         "description": "You have the following ability.",
-        "ability": "Blessing of Secrets"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "blessing-of-secrets",
+            "payload": { "name": "Blessing of Secrets" }
+          }
+        ]
       },
       {
         "domain": "War",
@@ -454,7 +531,14 @@
         "domain": "Trickery",
         "name": "Blessing of Secrets",
         "description": "You have the following ability.",
-        "ability": "Blessing of Secrets"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "blessing-of-secrets",
+            "payload": { "name": "Blessing of Secrets" }
+          }
+        ]
       },
       {
         "domain": "War",
@@ -516,7 +600,14 @@
         "domain": "Love",
         "name": "Covenant of the Heart",
         "description": "You can maintain bonds with up to three willing creatures using your Invocation of the Heart feature. Additionally, you have the following ability.",
-        "ability": "Guided to Your Side"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "guided-to-your-side",
+            "payload": { "name": "Guided to Your Side" }
+          }
+        ]
       },
       {
         "domain": "Nature",
@@ -542,7 +633,14 @@
         "domain": "Trickery",
         "name": "Trinity of Trickery",
         "description": "You have the following ability.",
-        "ability": "Trinity of Trickery"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "trinity-of-trickery-9-piety",
+            "payload": { "name": "Trinity of Trickery" }
+          }
+        ]
       },
       {
         "domain": "War",
@@ -613,7 +711,14 @@
         "domain": "Trickery",
         "name": "Trinity of Trickery",
         "description": "You have the following ability.",
-        "ability": "Trinity of Trickery"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "trinity-of-trickery-9-piety",
+            "payload": { "name": "Trinity of Trickery" }
+          }
+        ]
       },
       {
         "domain": "War",

@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'canonical_grant_model.dart';
+import 'stat_modification_model.dart';
+
 /// Represents the different types of grants that complications can provide.
 enum ComplicationGrantType {
   skill,
@@ -44,12 +47,14 @@ sealed class ComplicationGrant {
 
     return switch (type) {
       ComplicationGrantType.skill => SkillGrant.fromJson(json),
-      ComplicationGrantType.skillFromGroup => SkillFromGroupGrant.fromJson(json),
+      ComplicationGrantType.skillFromGroup =>
+        SkillFromGroupGrant.fromJson(json),
       ComplicationGrantType.skillFromOptions =>
         SkillFromOptionsGrant.fromJson(json),
       ComplicationGrantType.ability => AbilityGrant.fromJson(json),
       ComplicationGrantType.treasure => TreasureGrant.fromJson(json),
-      ComplicationGrantType.treasureLeveled => LeveledTreasureGrant.fromJson(json),
+      ComplicationGrantType.treasureLeveled =>
+        LeveledTreasureGrant.fromJson(json),
       ComplicationGrantType.token => TokenGrant.fromJson(json),
       ComplicationGrantType.language => LanguageGrant.fromJson(json),
       ComplicationGrantType.languageDead => DeadLanguageGrant.fromJson(json),
@@ -59,26 +64,40 @@ sealed class ComplicationGrant {
       ComplicationGrantType.decreaseTotal => DecreaseTotalGrant.fromJson(json),
       ComplicationGrantType.setBaseStatIfNotAlreadyLower =>
         SetBaseStatIfNotLowerGrant.fromJson(json),
-      ComplicationGrantType.ancestryTraits => AncestryTraitsGrant.fromJson(json),
+      ComplicationGrantType.ancestryTraits =>
+        AncestryTraitsGrant.fromJson(json),
       ComplicationGrantType.pickOne => PickOneGrant.fromJson(json),
-      ComplicationGrantType.increaseRecovery => IncreaseRecoveryGrant.fromJson(json),
+      ComplicationGrantType.increaseRecovery =>
+        IncreaseRecoveryGrant.fromJson(json),
       ComplicationGrantType.feature => FeatureGrant.fromJson(json),
     };
   }
 
   /// Parse all grants from a complication's grant data.
   static List<ComplicationGrant> parseFromGrantsData(
-    Map<String, dynamic> grantsData,
+    Object? grantsData,
     String complicationId,
     String complicationName, [
     Map<String, String> choices = const {},
   ]) {
+    if (grantsData == null) return const [];
+    if (_isCanonicalGrantValue(grantsData)) {
+      return _parseCanonicalGrants(
+        grantsData,
+        complicationId,
+        complicationName,
+        choices,
+      );
+    }
+    if (grantsData is! Map) return const [];
+
+    final legacyGrantsData = grantsData.cast<String, dynamic>();
     final grants = <ComplicationGrant>[];
 
     // Skills - can be various formats
-    if (grantsData['skills'] != null) {
+    if (legacyGrantsData['skills'] != null) {
       grants.addAll(_parseSkillGrants(
-        grantsData['skills'],
+        legacyGrantsData['skills'],
         complicationId,
         complicationName,
         choices,
@@ -86,18 +105,18 @@ sealed class ComplicationGrant {
     }
 
     // Abilities
-    if (grantsData['abilities'] != null) {
+    if (legacyGrantsData['abilities'] != null) {
       grants.addAll(_parseAbilityGrants(
-        grantsData['abilities'],
+        legacyGrantsData['abilities'],
         complicationId,
         complicationName,
       ));
     }
 
     // Treasures
-    if (grantsData['treasures'] != null) {
+    if (legacyGrantsData['treasures'] != null) {
       grants.addAll(_parseTreasureGrants(
-        grantsData['treasures'],
+        legacyGrantsData['treasures'],
         complicationId,
         complicationName,
         choices,
@@ -105,18 +124,18 @@ sealed class ComplicationGrant {
     }
 
     // Tokens
-    if (grantsData['tokens'] != null) {
+    if (legacyGrantsData['tokens'] != null) {
       grants.addAll(_parseTokenGrants(
-        grantsData['tokens'],
+        legacyGrantsData['tokens'],
         complicationId,
         complicationName,
       ));
     }
 
     // Languages - can be int, object, or list
-    if (grantsData['languages'] != null) {
+    if (legacyGrantsData['languages'] != null) {
       grants.addAll(_parseLanguageGrants(
-        grantsData['languages'],
+        legacyGrantsData['languages'],
         complicationId,
         complicationName,
         choices,
@@ -124,26 +143,35 @@ sealed class ComplicationGrant {
     }
 
     // increase_total - single or list
-    if (grantsData['increase_total'] != null) {
+    if (legacyGrantsData['increase_total'] != null) {
       grants.addAll(_parseIncreaseTotalGrants(
-        grantsData['increase_total'],
+        legacyGrantsData['increase_total'],
+        complicationId,
+        complicationName,
+      ));
+    }
+
+    // increase_total_per_echelon - legacy alias
+    if (legacyGrantsData['increase_total_per_echelon'] != null) {
+      grants.addAll(_parseIncreaseTotalPerEchelonGrants(
+        legacyGrantsData['increase_total_per_echelon'],
         complicationId,
         complicationName,
       ));
     }
 
     // decrease_total - single or list
-    if (grantsData['decrease_total'] != null) {
+    if (legacyGrantsData['decrease_total'] != null) {
       grants.addAll(_parseDecreaseTotalGrants(
-        grantsData['decrease_total'],
+        legacyGrantsData['decrease_total'],
         complicationId,
         complicationName,
       ));
     }
 
     // set_base_stat_if_not_already_lower
-    if (grantsData['set_base_stat_if_not_already_lower'] != null) {
-      final data = grantsData['set_base_stat_if_not_already_lower'];
+    if (legacyGrantsData['set_base_stat_if_not_already_lower'] != null) {
+      final data = legacyGrantsData['set_base_stat_if_not_already_lower'];
       if (data is Map) {
         grants.add(SetBaseStatIfNotLowerGrant(
           sourceComplicationId: complicationId,
@@ -155,8 +183,8 @@ sealed class ComplicationGrant {
     }
 
     // ancestry_traits
-    if (grantsData['ancestry_traits'] != null) {
-      final data = grantsData['ancestry_traits'];
+    if (legacyGrantsData['ancestry_traits'] != null) {
+      final data = legacyGrantsData['ancestry_traits'];
       if (data is Map) {
         grants.add(AncestryTraitsGrant(
           sourceComplicationId: complicationId,
@@ -168,8 +196,8 @@ sealed class ComplicationGrant {
     }
 
     // pick_one - requires user choice
-    if (grantsData['pick_one'] != null) {
-      final data = grantsData['pick_one'];
+    if (legacyGrantsData['pick_one'] != null) {
+      final data = legacyGrantsData['pick_one'];
       if (data is List) {
         final options = <Map<String, dynamic>>[];
         for (final item in data) {
@@ -177,7 +205,8 @@ sealed class ComplicationGrant {
             options.add(item.cast<String, dynamic>());
           }
         }
-        final selectedIndex = _parseSelectedPickOneIndex(choices, complicationId);
+        final selectedIndex =
+            _parseSelectedPickOneIndex(choices, complicationId);
         grants.add(PickOneGrant(
           sourceComplicationId: complicationId,
           sourceComplicationName: complicationName,
@@ -186,7 +215,9 @@ sealed class ComplicationGrant {
         ));
 
         // If an option is selected, parse its grants and add them
-        if (selectedIndex != null && selectedIndex >= 0 && selectedIndex < options.length) {
+        if (selectedIndex != null &&
+            selectedIndex >= 0 &&
+            selectedIndex < options.length) {
           final selectedOption = options[selectedIndex];
           // Parse grants from the selected option
           grants.addAll(_parseSelectedPickOneGrants(
@@ -200,8 +231,8 @@ sealed class ComplicationGrant {
     }
 
     // increase_recovery
-    if (grantsData['increase_recovery'] != null) {
-      final data = grantsData['increase_recovery'];
+    if (legacyGrantsData['increase_recovery'] != null) {
+      final data = legacyGrantsData['increase_recovery'];
       if (data is Map) {
         grants.add(IncreaseRecoveryGrant(
           sourceComplicationId: complicationId,
@@ -212,15 +243,511 @@ sealed class ComplicationGrant {
     }
 
     // features - mounts, retainers, etc.
-    if (grantsData['features'] != null) {
+    if (legacyGrantsData['features'] != null) {
       grants.addAll(_parseFeatureGrants(
-        grantsData['features'],
+        legacyGrantsData['features'],
         complicationId,
         complicationName,
       ));
     }
 
     return grants;
+  }
+
+  static bool _isCanonicalGrantValue(Object? value) {
+    if (value is List) {
+      return value.any((item) => item is Map && item.containsKey('kind'));
+    }
+    if (value is Map) {
+      return value['schema'] == canonicalGrantSchemaId ||
+          value.containsKey('kind');
+    }
+    return false;
+  }
+
+  static List<ComplicationGrant> _parseCanonicalGrants(
+    Object grantsData,
+    String complicationId,
+    String complicationName,
+    Map<String, String> choices,
+  ) {
+    final parsed = CanonicalGrant.parseList(
+      grantsData,
+      defaultSource: complicationName,
+    );
+    final grants = <ComplicationGrant>[];
+
+    for (final grant in parsed) {
+      switch (grant) {
+        case CanonicalEntryGrant():
+          grants.addAll(_parseCanonicalEntryGrant(
+            grant,
+            complicationId,
+            complicationName,
+          ));
+        case CanonicalTokenGrant():
+          if (grant.maxValue > 0) {
+            grants.add(TokenGrant(
+              sourceComplicationId: complicationId,
+              sourceComplicationName: complicationName,
+              tokenType: grant.token,
+              count: grant.maxValue,
+            ));
+          }
+        case CanonicalStatModGrant():
+          grants.addAll(_parseCanonicalStatModGrant(
+            grant,
+            complicationId,
+            complicationName,
+          ));
+        case CanonicalResistanceGrant():
+          grants.addAll(_parseCanonicalResistanceGrant(
+            grant,
+            complicationId,
+            complicationName,
+          ));
+        case CanonicalChoiceGrant():
+          grants.addAll(_parseCanonicalChoiceGrant(
+            grant,
+            complicationId,
+            complicationName,
+            choices,
+          ));
+        default:
+          break;
+      }
+    }
+
+    return grants;
+  }
+
+  static List<ComplicationGrant> _parseCanonicalEntryGrant(
+    CanonicalEntryGrant grant,
+    String complicationId,
+    String complicationName,
+  ) {
+    switch (grant.entryType) {
+      case 'ability':
+        return [
+          AbilityGrant(
+            sourceComplicationId: complicationId,
+            sourceComplicationName: complicationName,
+            abilityName: _firstText([
+              grant.payload?['name'],
+              grant.label,
+              grant.entryId,
+            ]),
+            source: grant.payload?['source']?.toString(),
+          ),
+        ];
+      case 'skill':
+        return [
+          SkillGrant(
+            sourceComplicationId: complicationId,
+            sourceComplicationName: complicationName,
+            skillName: _firstText([
+              grant.payload?['name'],
+              grant.label,
+              grant.entryId,
+            ]),
+          ),
+        ];
+      case 'feature':
+        return [
+          FeatureGrant(
+            sourceComplicationId: complicationId,
+            sourceComplicationName: complicationName,
+            featureName: _firstText([
+              grant.payload?['name'],
+              grant.label,
+              grant.entryId,
+            ]),
+            featureType: grant.payload?['type']?.toString() ?? 'feature',
+          ),
+        ];
+      default:
+        return const [];
+    }
+  }
+
+  static List<ComplicationGrant> _parseCanonicalChoiceGrant(
+    CanonicalChoiceGrant grant,
+    String complicationId,
+    String complicationName,
+    Map<String, String> choices,
+  ) {
+    switch (grant.choiceType) {
+      case 'skill':
+        if (grant.options.isNotEmpty) {
+          return [
+            SkillFromOptionsGrant(
+              sourceComplicationId: complicationId,
+              sourceComplicationName: complicationName,
+              options: grant.options,
+              selectedSkillId: choices['${complicationId}_skill_option'],
+            ),
+          ];
+        }
+        return [
+          SkillFromGroupGrant(
+            sourceComplicationId: complicationId,
+            sourceComplicationName: complicationName,
+            groups: grant.groups.isEmpty ? const ['any'] : grant.groups,
+            count: grant.count,
+            selectedSkillIds: _parseSelectedSkillIds(
+              choices,
+              complicationId,
+              grant.count,
+            ),
+          ),
+        ];
+      case 'language':
+        return [
+          LanguageGrant(
+            sourceComplicationId: complicationId,
+            sourceComplicationName: complicationName,
+            count: grant.count,
+            selectedLanguageIds: _parseSelectedLanguageIds(
+              choices,
+              complicationId,
+              grant.count,
+            ),
+          ),
+        ];
+      case 'dead_language':
+        return [
+          DeadLanguageGrant(
+            sourceComplicationId: complicationId,
+            sourceComplicationName: complicationName,
+            count: grant.count,
+            selectedLanguageIds: _parseSelectedDeadLanguageIds(
+              choices,
+              complicationId,
+              grant.count,
+            ),
+          ),
+        ];
+      case 'treasure':
+        return _parseCanonicalTreasureChoiceGrant(
+          grant,
+          complicationId,
+          complicationName,
+          choices,
+        );
+      case 'ancestry_trait':
+        return _parseCanonicalAncestryTraitChoiceGrant(
+          grant,
+          complicationId,
+          complicationName,
+        );
+      case 'option':
+        return _parseCanonicalOptionChoiceGrant(
+          grant,
+          complicationId,
+          complicationName,
+          choices,
+        );
+      default:
+        return const [];
+    }
+  }
+
+  static List<ComplicationGrant> _parseCanonicalTreasureChoiceGrant(
+    CanonicalChoiceGrant grant,
+    String complicationId,
+    String complicationName,
+    Map<String, String> choices,
+  ) {
+    final payload = grant.payload ?? const <String, dynamic>{};
+    final type = _firstText([
+      payload['treasure_type'],
+      payload['type'],
+      payload['name'],
+      grant.options.isNotEmpty ? grant.options.first : null,
+      'treasure',
+    ]);
+    final selectedId = choices[
+        '${complicationId}_treasure_${_parseCanonicalChoiceIndex(grant)}'];
+    final isLeveled = payload['leveled'] == true ||
+        type == 'leveled' ||
+        type.startsWith('leveled_');
+
+    if (isLeveled) {
+      String? category = payload['category']?.toString();
+      if ((category == null || category.isEmpty) &&
+          type.startsWith('leveled_')) {
+        category = type.substring('leveled_'.length);
+      }
+      return [
+        LeveledTreasureGrant(
+          sourceComplicationId: complicationId,
+          sourceComplicationName: complicationName,
+          category: category,
+          selectedTreasureId: selectedId,
+        ),
+      ];
+    }
+
+    return [
+      TreasureGrant(
+        sourceComplicationId: complicationId,
+        sourceComplicationName: complicationName,
+        treasureType: type,
+        echelon: _parseNullableInt(payload['echelon']),
+        requiresChoice: true,
+        selectedTreasureId: selectedId,
+      ),
+    ];
+  }
+
+  static List<ComplicationGrant> _parseCanonicalAncestryTraitChoiceGrant(
+    CanonicalChoiceGrant grant,
+    String complicationId,
+    String complicationName,
+  ) {
+    final payload = grant.payload ?? const <String, dynamic>{};
+    var ancestry = _firstText([
+      payload['ancestry'],
+      payload['ancestry_id'],
+      grant.groups.isNotEmpty ? grant.groups.first : null,
+      grant.options.isNotEmpty ? grant.options.first : null,
+    ]);
+    if (ancestry.startsWith('ancestry_')) {
+      ancestry = ancestry.substring('ancestry_'.length);
+    }
+
+    return [
+      AncestryTraitsGrant(
+        sourceComplicationId: complicationId,
+        sourceComplicationName: complicationName,
+        ancestry: ancestry,
+        ancestryPoints: _parseNullableInt(
+              payload['ancestry_points'] ?? payload['points'],
+            ) ??
+            grant.count,
+      ),
+    ];
+  }
+
+  static List<ComplicationGrant> _parseCanonicalOptionChoiceGrant(
+    CanonicalChoiceGrant grant,
+    String complicationId,
+    String complicationName,
+    Map<String, String> choices,
+  ) {
+    final options = _parseCanonicalOptionPayloadOptions(grant);
+    final selectedIndex = _parseSelectedPickOneIndex(choices, complicationId);
+    final grants = <ComplicationGrant>[
+      PickOneGrant(
+        sourceComplicationId: complicationId,
+        sourceComplicationName: complicationName,
+        options: options,
+        selectedIndex: selectedIndex,
+      ),
+    ];
+
+    if (selectedIndex != null &&
+        selectedIndex >= 0 &&
+        selectedIndex < options.length) {
+      grants.addAll(_parseSelectedPickOneGrants(
+        options[selectedIndex],
+        complicationId,
+        complicationName,
+        choices,
+      ));
+    }
+
+    return grants;
+  }
+
+  static List<Map<String, dynamic>> _parseCanonicalOptionPayloadOptions(
+    CanonicalChoiceGrant grant,
+  ) {
+    final payload = grant.payload ?? const <String, dynamic>{};
+    final rawOptions = payload['options'];
+    if (rawOptions is List) {
+      return rawOptions.map((option) {
+        if (option is Map) return option.cast<String, dynamic>();
+        return {'label': option.toString()};
+      }).toList(growable: false);
+    }
+
+    return grant.options
+        .map((option) => {'label': option})
+        .toList(growable: false);
+  }
+
+  static List<ComplicationGrant> _parseCanonicalStatModGrant(
+    CanonicalStatModGrant grant,
+    String complicationId,
+    String complicationName,
+  ) {
+    final operation = grant.payload?['operation']
+        ?.toString()
+        .trim()
+        .toLowerCase()
+        .replaceAll('-', '_');
+    switch (operation) {
+      case 'set_base_if_not_already_lower':
+      case 'set_base_stat_if_not_already_lower':
+        return [
+          SetBaseStatIfNotLowerGrant(
+            sourceComplicationId: complicationId,
+            sourceComplicationName: complicationName,
+            stat: _firstText([grant.payload?['stat'], grant.stat]),
+            value: _parseNullableInt(grant.payload?['value']) ??
+                _firstStaticModificationValue(grant) ??
+                0,
+          ),
+        ];
+      case 'increase_recovery':
+        final value = _firstText([
+          grant.payload?['value'],
+          grant.payload?['formula'],
+          grant.payload?['dynamic_value'],
+          grant.label,
+        ]);
+        return [
+          IncreaseRecoveryGrant(
+            sourceComplicationId: complicationId,
+            sourceComplicationName: complicationName,
+            value: value,
+          ),
+        ];
+    }
+
+    final grants = <ComplicationGrant>[];
+    for (final modification in grant.modifications) {
+      switch (modification) {
+        case StaticStatModification():
+          if (modification.value > 0) {
+            grants.add(IncreaseTotalGrant(
+              sourceComplicationId: complicationId,
+              sourceComplicationName: complicationName,
+              stat: grant.stat,
+              value: modification.value,
+            ));
+          } else if (modification.value < 0) {
+            grants.add(DecreaseTotalGrant(
+              sourceComplicationId: complicationId,
+              sourceComplicationName: complicationName,
+              stat: grant.stat,
+              value: -modification.value,
+            ));
+          }
+        case LevelScaledStatModification():
+          grants.add(IncreaseTotalGrant(
+            sourceComplicationId: complicationId,
+            sourceComplicationName: complicationName,
+            stat: grant.stat,
+            dynamicValue: 'level',
+          ));
+        case EchelonScaledStatModification():
+          if (modification.valuePerEchelon != 0) {
+            grants.add(IncreaseTotalPerEchelonGrant(
+              sourceComplicationId: complicationId,
+              sourceComplicationName: complicationName,
+              stat: grant.stat,
+              valuePerEchelon: modification.valuePerEchelon,
+            ));
+          }
+      }
+    }
+    return grants;
+  }
+
+  static int? _firstStaticModificationValue(CanonicalStatModGrant grant) {
+    for (final modification in grant.modifications) {
+      if (modification is StaticStatModification) return modification.value;
+    }
+    return null;
+  }
+
+  static List<ComplicationGrant> _parseCanonicalResistanceGrant(
+    CanonicalResistanceGrant grant,
+    String complicationId,
+    String complicationName,
+  ) {
+    final grants = <ComplicationGrant>[];
+
+    void addTotal({
+      required String stat,
+      int value = 0,
+      String? dynamicValue,
+    }) {
+      grants.add(IncreaseTotalGrant(
+        sourceComplicationId: complicationId,
+        sourceComplicationName: complicationName,
+        stat: stat,
+        value: value,
+        dynamicValue: dynamicValue,
+        damageType: grant.damageType,
+      ));
+    }
+
+    void addPerEchelon({
+      required String stat,
+      required int valuePerEchelon,
+    }) {
+      if (valuePerEchelon == 0) return;
+      grants.add(IncreaseTotalPerEchelonGrant(
+        sourceComplicationId: complicationId,
+        sourceComplicationName: complicationName,
+        stat: stat,
+        valuePerEchelon: valuePerEchelon,
+        damageType: grant.damageType,
+      ));
+    }
+
+    if (grant.immunity != 0) {
+      addTotal(stat: 'immunity', value: grant.immunity);
+    }
+    if (grant.dynamicImmunity != null) {
+      addTotal(stat: 'immunity', dynamicValue: grant.dynamicImmunity);
+    }
+    addPerEchelon(
+      stat: 'immunity',
+      valuePerEchelon: grant.immunityPerEchelon,
+    );
+
+    if (grant.weakness != 0) {
+      addTotal(stat: 'weakness', value: grant.weakness);
+    }
+    if (grant.dynamicWeakness != null) {
+      addTotal(stat: 'weakness', dynamicValue: grant.dynamicWeakness);
+    }
+    addPerEchelon(
+      stat: 'weakness',
+      valuePerEchelon: grant.weaknessPerEchelon,
+    );
+
+    return grants;
+  }
+
+  static String _firstText(Iterable<Object?> values) {
+    for (final value in values) {
+      final text = value?.toString().trim();
+      if (text != null && text.isNotEmpty) return text;
+    }
+    return '';
+  }
+
+  static int _parseCanonicalChoiceIndex(CanonicalChoiceGrant grant) {
+    final payload = grant.payload ?? const <String, dynamic>{};
+    final explicitIndex = _parseNullableInt(
+      payload['index'] ?? payload['choice_index'],
+    );
+    if (explicitIndex != null) return explicitIndex;
+
+    final match =
+        RegExp(r'(?:treasure_|treasure\.)(\d+)$').firstMatch(grant.choiceKey);
+    return int.tryParse(match?.group(1) ?? '') ?? 0;
+  }
+
+  static int? _parseNullableInt(Object? value) {
+    if (value is int) return value;
+    if (value is num) return value.toInt();
+    return int.tryParse(value?.toString() ?? '');
   }
 
   static int? _parseSelectedPickOneIndex(
@@ -240,6 +767,17 @@ sealed class ComplicationGrant {
     Map<String, String> choices,
   ) {
     final grants = <ComplicationGrant>[];
+
+    final nestedGrants = option['grants'];
+    if (_isCanonicalGrantValue(nestedGrants)) {
+      grants.addAll(_parseCanonicalGrants(
+        nestedGrants,
+        complicationId,
+        complicationName,
+        choices,
+      ));
+      return grants;
+    }
 
     // Handle increase_total
     if (option['increase_total'] != null) {
@@ -342,14 +880,14 @@ sealed class ComplicationGrant {
               sourceComplicationName: complicationName,
               groups: groupList,
               count: count,
-              selectedSkillIds: _parseSelectedSkillIds(choices, complicationId, count),
+              selectedSkillIds:
+                  _parseSelectedSkillIds(choices, complicationId, count),
             ));
           }
           // Skill from options
           else if (skill['options'] != null) {
-            final options = (skill['options'] as List)
-                .map((e) => e.toString())
-                .toList();
+            final options =
+                (skill['options'] as List).map((e) => e.toString()).toList();
             grants.add(SkillFromOptionsGrant(
               sourceComplicationId: complicationId,
               sourceComplicationName: complicationName,
@@ -373,7 +911,8 @@ sealed class ComplicationGrant {
           sourceComplicationName: complicationName,
           groups: groupList,
           count: count,
-          selectedSkillIds: _parseSelectedSkillIds(choices, complicationId, count),
+          selectedSkillIds:
+              _parseSelectedSkillIds(choices, complicationId, count),
         ));
       } else if (skillsData['name'] != null) {
         grants.add(SkillGrant(
@@ -413,7 +952,7 @@ sealed class ComplicationGrant {
           grants.add(AbilityGrant(
             sourceComplicationId: complicationId,
             sourceComplicationName: complicationName,
-            abilityName: (ability['name'] as String?) ?? '',
+            abilityName: (ability['name'] ?? ability['id'])?.toString() ?? '',
             source: ability['source']?.toString(),
           ));
         } else if (ability is String) {
@@ -430,7 +969,8 @@ sealed class ComplicationGrant {
       grants.add(AbilityGrant(
         sourceComplicationId: complicationId,
         sourceComplicationName: complicationName,
-        abilityName: (abilitiesData['name'] as String?) ?? '',
+        abilityName:
+            (abilitiesData['name'] ?? abilitiesData['id'])?.toString() ?? '',
         source: abilitiesData['source']?.toString(),
       ));
     } else if (abilitiesData is String) {
@@ -458,13 +998,16 @@ sealed class ComplicationGrant {
       for (var i = 0; i < treasuresData.length; i++) {
         final treasure = treasuresData[i];
         if (treasure is Map) {
-          final type = (treasure['type'] as String?) ?? 'treasure';
+          final type =
+              (treasure['type'] ?? treasure['name'])?.toString() ?? 'treasure';
           final echelon = (treasure['echelon'] as num?)?.toInt();
           // Default to requiring choice - user must pick a specific treasure
           final requiresChoice = treasure['choice'] != false;
           final selectedId = choices['${complicationId}_treasure_$i'];
 
-          if (type == 'leveled' || type.startsWith('leveled_')) {
+          if (treasure['leveled'] == true ||
+              type == 'leveled' ||
+              type.startsWith('leveled_')) {
             // Leveled treasure (weapon, armor, etc.)
             // Extract category from type (e.g., "leveled_weapon" -> "weapon")
             // or from explicit category field
@@ -492,10 +1035,14 @@ sealed class ComplicationGrant {
       }
     } else if (treasuresData is Map) {
       // Single treasure object
-      final type = (treasuresData['type'] as String?) ?? 'treasure';
+      final type =
+          (treasuresData['type'] ?? treasuresData['name'])?.toString() ??
+              'treasure';
       final selectedId = choices['${complicationId}_treasure_0'];
 
-      if (type == 'leveled' || type.startsWith('leveled_')) {
+      if (treasuresData['leveled'] == true ||
+          type == 'leveled' ||
+          type.startsWith('leveled_')) {
         // Extract category from type or explicit field
         String? category = treasuresData['category']?.toString();
         if (category == null && type.startsWith('leveled_')) {
@@ -545,7 +1092,9 @@ sealed class ComplicationGrant {
         // Fallback: old format { "tokenType": count }
         tokensData.forEach((key, value) {
           if (key == 'name' || key == 'count') return;
-          final c = (value is num) ? value.toInt() : (int.tryParse(value.toString()) ?? 0);
+          final c = (value is num)
+              ? value.toInt()
+              : (int.tryParse(value.toString()) ?? 0);
           grants.add(TokenGrant(
             sourceComplicationId: complicationId,
             sourceComplicationName: complicationName,
@@ -589,14 +1138,15 @@ sealed class ComplicationGrant {
         sourceComplicationId: complicationId,
         sourceComplicationName: complicationName,
         count: languagesData,
-        selectedLanguageIds: _parseSelectedLanguageIds(choices, complicationId, languagesData),
+        selectedLanguageIds:
+            _parseSelectedLanguageIds(choices, complicationId, languagesData),
       ));
     } else if (languagesData is Map) {
       // Object format: { "count": 1 } or { "type": "dead", "count": 1 }
       final count = (languagesData['count'] as num?)?.toInt() ?? 1;
       final type = languagesData['type']?.toString();
 
-      if (type == 'dead') {
+      if (type == 'dead' || languagesData['can_be_dead'] == true) {
         grants.add(DeadLanguageGrant(
           sourceComplicationId: complicationId,
           sourceComplicationName: complicationName,
@@ -609,7 +1159,8 @@ sealed class ComplicationGrant {
           sourceComplicationId: complicationId,
           sourceComplicationName: complicationName,
           count: count,
-          selectedLanguageIds: _parseSelectedLanguageIds(choices, complicationId, count),
+          selectedLanguageIds:
+              _parseSelectedLanguageIds(choices, complicationId, count),
         ));
       }
     } else if (languagesData is List) {
@@ -619,7 +1170,7 @@ sealed class ComplicationGrant {
           final count = (lang['count'] as num?)?.toInt() ?? 1;
           final type = lang['type']?.toString();
 
-          if (type == 'dead') {
+          if (type == 'dead' || lang['can_be_dead'] == true) {
             grants.add(DeadLanguageGrant(
               sourceComplicationId: complicationId,
               sourceComplicationName: complicationName,
@@ -691,6 +1242,41 @@ sealed class ComplicationGrant {
             complicationName,
           ));
         }
+      }
+    }
+
+    return grants;
+  }
+
+  static List<ComplicationGrant> _parseIncreaseTotalPerEchelonGrants(
+    dynamic data,
+    String complicationId,
+    String complicationName,
+  ) {
+    final grants = <ComplicationGrant>[];
+
+    void addGrant(Map<String, dynamic> item) {
+      final value = (item['value_per_echelon'] ??
+              item['valuePerEchelon'] ??
+              item['per_echelon'] ??
+              item['perEchelon'] ??
+              item['base_value'] ??
+              item['value'] as Object?)
+          ?.toString();
+      grants.add(IncreaseTotalPerEchelonGrant(
+        sourceComplicationId: complicationId,
+        sourceComplicationName: complicationName,
+        stat: item['stat']?.toString() ?? '',
+        valuePerEchelon: int.tryParse(value ?? '') ?? 0,
+        damageType: item['type']?.toString(),
+      ));
+    }
+
+    if (data is Map) {
+      addGrant(data.cast<String, dynamic>());
+    } else if (data is List) {
+      for (final item in data) {
+        if (item is Map) addGrant(item.cast<String, dynamic>());
       }
     }
 
@@ -1341,6 +1927,9 @@ class PickOneGrant extends ComplicationGrant {
     if (index < 0 || index >= options.length) return 'Unknown';
     final option = options[index];
 
+    final label = option['label']?.toString().trim();
+    if (label != null && label.isNotEmpty) return label;
+
     // Most pick_one options contain increase_total
     final increaseTotal = option['increase_total'];
     if (increaseTotal is Map) {
@@ -1406,8 +1995,7 @@ class FeatureGrant extends ComplicationGrant {
         'featureType': featureType,
       };
 
-  factory FeatureGrant.fromJson(Map<String, dynamic> json) =>
-      FeatureGrant(
+  factory FeatureGrant.fromJson(Map<String, dynamic> json) => FeatureGrant(
         sourceComplicationId: json['sourceComplicationId'] as String,
         sourceComplicationName: json['sourceComplicationName'] as String,
         featureName: json['featureName'] as String,

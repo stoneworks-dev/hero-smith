@@ -449,6 +449,34 @@ class _AutoAppliedContent extends StatelessWidget {
   List<Map<String, dynamic>> _resolveAbilities() {
     final abilities = <Map<String, dynamic>>[];
 
+    // Canonical entry grants use entry_type/entry_id instead of ability_id.
+    // They can be the option itself or nested inside its grants collection.
+    void addCanonicalAbility(dynamic value) {
+      if (value is! Map) return;
+      final grant = value.cast<String, dynamic>();
+      if (grant['entry_type']?.toString() != HeroEntryTypes.ability) return;
+      final entryId = grant['entry_id']?.toString().trim();
+      final payload = grant['payload'];
+      final payloadName = payload is Map ? payload['name']?.toString() : null;
+      final resolved = entryId != null && entryId.isNotEmpty
+          ? _resolveAbilityById(entryId)
+          : (payloadName == null ? null : _resolveAbilityByName(payloadName));
+      if (resolved != null && !abilities.contains(resolved)) {
+        abilities.add(resolved);
+      }
+    }
+
+    addCanonicalAbility(option);
+    final canonicalGrants = option['grants'];
+    if (canonicalGrants is List) {
+      for (final grant in canonicalGrants) {
+        addCanonicalAbility(grant);
+      }
+    } else {
+      addCanonicalAbility(canonicalGrants);
+    }
+    if (abilities.isNotEmpty) return abilities;
+
     // Check for ability_id first (single ID)
     String? id = option['ability_id']?.toString().trim();
     if (id != null && id.isNotEmpty) {
@@ -497,6 +525,14 @@ class _AutoAppliedContent extends StatelessWidget {
 
   Map<String, dynamic>? _resolveAbilityByName(String abilityName) {
     final slug = ClassFeatureDataService.slugify(abilityName);
+    final resolvedId = widget.abilityIdByName[slug] ?? slug;
+    return widget.abilityDetailsById[resolvedId];
+  }
+
+  Map<String, dynamic>? _resolveAbilityById(String abilityId) {
+    final direct = widget.abilityDetailsById[abilityId];
+    if (direct != null) return direct;
+    final slug = ClassFeatureDataService.slugify(abilityId);
     final resolvedId = widget.abilityIdByName[slug] ?? slug;
     return widget.abilityDetailsById[resolvedId];
   }
@@ -567,11 +603,14 @@ class _SkillGroupPickerState extends State<_SkillGroupPicker> {
 
   String get _grantKey => ClassFeatureDataService.optionGrantKey(widget.option);
 
+  String get _slotKey =>
+      HeroDraftClaims.skillGroupSlot(widget.featureId, _grantKey);
+
   String? _getCurrentSkillId() {
     final allSelections = widget.featuresWidget.skillGroupSelections;
     final featureId = widget.featureId;
     final grantKey = _grantKey;
-    
+
     final featureSelections = allSelections[featureId];
     if (featureSelections == null) {
       return null;
@@ -588,28 +627,18 @@ class _SkillGroupPickerState extends State<_SkillGroupPicker> {
     final normalizedGroup = skillGroup.toLowerCase();
     final currentSkillId = _getCurrentSkillId();
 
-    final excludedIds = <String>{
-      ...widget.featuresWidget.reservedSkillIds,
-    };
-
-    for (final entry in widget.featuresWidget.skillGroupSelections.entries) {
-      for (final skillEntry in entry.value.entries) {
-        if (entry.key == widget.featureId && skillEntry.key == _grantKey) {
-          continue;
-        }
-        if (skillEntry.value.isNotEmpty) {
-          excludedIds.add(skillEntry.value);
-        }
-      }
-    }
-
     return _allSkills!.where((skill) {
       if (skill.group.toLowerCase() != normalizedGroup) return false;
-      if (ComponentSelectionGuard.isBlocked(
-        skill.id,
-        excludedIds,
-        currentId: currentSkillId,
-      )) {
+      // Keep a conflicting saved value visible so the user can inspect and
+      // replace it. Every other candidate must be free outside this slot.
+      if (skill.id != currentSkillId &&
+          widget.featuresWidget.skillConflictIndex.isClaimed(
+            HeroEntryKey(
+              entryType: HeroEntryTypes.skill,
+              canonicalEntryId: skill.id,
+            ),
+            ignoredDraftSlotKey: _slotKey,
+          )) {
         return false;
       }
       return true;
@@ -669,22 +698,20 @@ class _SkillGroupPickerState extends State<_SkillGroupPicker> {
     // Only show "needs selection" warning if we have no skill ID saved
     // (If skill ID is saved but skills haven't loaded yet, it's not a missing selection)
     final needsSelection = !hasSkillId;
-    final conflicts = <String>[];
-    if (hasSkillId) {
-      final selectedElsewhere = widget.featuresWidget.skillGroupSelections
-          .entries
-          .any((entry) {
-        if (entry.key == widget.featureId) {
-          return entry.value.entries.any(
-            (kv) => kv.key != _grantKey && kv.value == currentSkillId,
-          );
-        }
-        return entry.value.values.any((value) => value == currentSkillId);
-      });
-      if (selectedElsewhere) {
-        conflicts.add('also chosen by another feature');
-      }
-    }
+    final conflict = hasSkillId
+        ? widget.featuresWidget.skillConflictIndex.conflictFor(
+            HeroEntryKey(
+              entryType: HeroEntryTypes.skill,
+              canonicalEntryId: currentSkillId,
+            ),
+            ignoredDraftSlotKey: _slotKey,
+          )
+        : null;
+    final conflictOwners = conflict?.owners
+            .map((owner) => owner.displayLabel ?? owner.source.toString())
+            .toSet()
+            .join(', ') ??
+        '';
 
     String? currentSkillName;
     if (hasSkillId && _allSkills != null) {
@@ -800,7 +827,7 @@ class _SkillGroupPickerState extends State<_SkillGroupPicker> {
                 fontStyle: currentSkillName == null ? FontStyle.italic : null,
               ),
             ),
-          if (conflicts.isNotEmpty) ...[
+          if (conflict != null) ...[
             const SizedBox(height: 8),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -810,7 +837,7 @@ class _SkillGroupPickerState extends State<_SkillGroupPicker> {
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
-                    'Potential duplicate: ${conflicts.join(' and ')}.',
+                    'Already granted by $conflictOwners.',
                     style: TextStyle(
                       color: Colors.orange.shade300,
                       fontSize: 12,
@@ -946,7 +973,8 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
   Color? accentColor,
   AppIconData? icon,
 }) {
-  final color = accentColor ?? CreatorTheme.strengthAccent; // Use strength accent by default
+  final color = accentColor ??
+      CreatorTheme.strengthAccent; // Use strength accent by default
   final dialogIcon = icon ?? const MaterialIcon(Icons.search);
 
   return showDialog<_PickerSelection<T>>(
@@ -1034,7 +1062,8 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                         ),
                         IconButton(
                           onPressed: () => Navigator.of(context).pop(),
-                          icon: Icon(Icons.close, color: FormTheme.textSecondary),
+                          icon:
+                              Icon(Icons.close, color: FormTheme.textSecondary),
                           splashRadius: 20,
                         ),
                       ],
@@ -1487,6 +1516,34 @@ class _OptionTileState extends State<_OptionTile>
   List<Map<String, dynamic>> _resolveAbilities() {
     final abilities = <Map<String, dynamic>>[];
 
+    // Canonical entry grants use entry_type/entry_id instead of ability_id.
+    // They can be the option itself or nested inside its grants collection.
+    void addCanonicalAbility(dynamic value) {
+      if (value is! Map) return;
+      final grant = value.cast<String, dynamic>();
+      if (grant['entry_type']?.toString() != HeroEntryTypes.ability) return;
+      final entryId = grant['entry_id']?.toString().trim();
+      final payload = grant['payload'];
+      final payloadName = payload is Map ? payload['name']?.toString() : null;
+      final resolved = entryId != null && entryId.isNotEmpty
+          ? _resolveAbilityById(entryId)
+          : (payloadName == null ? null : _resolveAbilityByName(payloadName));
+      if (resolved != null && !abilities.contains(resolved)) {
+        abilities.add(resolved);
+      }
+    }
+
+    addCanonicalAbility(widget.option);
+    final canonicalGrants = widget.option['grants'];
+    if (canonicalGrants is List) {
+      for (final grant in canonicalGrants) {
+        addCanonicalAbility(grant);
+      }
+    } else {
+      addCanonicalAbility(canonicalGrants);
+    }
+    if (abilities.isNotEmpty) return abilities;
+
     // Check for ability_id first (single ID)
     String? id = widget.option['ability_id']?.toString().trim();
     if (id != null && id.isNotEmpty) {
@@ -1539,6 +1596,14 @@ class _OptionTileState extends State<_OptionTile>
     return widget.widget.abilityDetailsById[resolvedId];
   }
 
+  Map<String, dynamic>? _resolveAbilityById(String abilityId) {
+    final direct = widget.widget.abilityDetailsById[abilityId];
+    if (direct != null) return direct;
+    final slug = ClassFeatureDataService.slugify(abilityId);
+    final resolvedId = widget.widget.abilityIdByName[slug] ?? slug;
+    return widget.widget.abilityDetailsById[resolvedId];
+  }
+
   Component _abilityMapToComponent(Map<String, dynamic> abilityData) {
     return Component(
       id: abilityData['id']?.toString() ??
@@ -1551,4 +1616,3 @@ class _OptionTileState extends State<_OptionTile>
     );
   }
 }
-

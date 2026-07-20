@@ -10,7 +10,9 @@ import '../../../../core/theme/creator_theme.dart';
 import '../../../../core/theme/navigation_theme.dart';
 import '../../../../core/theme/form_theme.dart';
 import '../../../../core/text/creators/widgets/story_creator/story_culture_section_text.dart';
-import '../../../../core/utils/selection_guard.dart';
+import '../../../hero_builder/domain/hero_claim.dart';
+import '../../../hero_builder/domain/hero_conflict_index.dart';
+import '../../../hero_builder/domain/hero_draft_claims.dart';
 
 class _SearchOption<T> {
   const _SearchOption({
@@ -40,7 +42,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
 }) {
   final accentColor = accent ?? CreatorTheme.cultureAccent;
   final effectiveIcon = icon ?? const MaterialIcon(Icons.search);
-  
+
   return showDialog<_PickerSelection<T>>(
     context: context,
     builder: (dialogContext) {
@@ -57,8 +59,8 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                     (option) =>
                         option.label.toLowerCase().contains(normalizedQuery) ||
                         (option.subtitle?.toLowerCase().contains(
-                              normalizedQuery,
-                            ) ??
+                                  normalizedQuery,
+                                ) ??
                             false),
                   )
                   .toList();
@@ -111,7 +113,8 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                               color: accentColor.withValues(alpha: 0.4),
                             ),
                           ),
-                          child: AppIcon(effectiveIcon, color: accentColor, size: 20),
+                          child: AppIcon(effectiveIcon,
+                              color: accentColor, size: 20),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -126,7 +129,8 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                         ),
                         IconButton(
                           onPressed: () => Navigator.of(context).pop(),
-                          icon: Icon(Icons.close, color: FormTheme.textSecondary),
+                          icon:
+                              Icon(Icons.close, color: FormTheme.textSecondary),
                           splashRadius: 20,
                         ),
                       ],
@@ -142,7 +146,8 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                       decoration: InputDecoration(
                         hintText: StoryCultureSectionText.searchHint,
                         hintStyle: TextStyle(color: FormTheme.textMuted),
-                        prefixIcon: Icon(Icons.search, color: FormTheme.textMuted),
+                        prefixIcon:
+                            Icon(Icons.search, color: FormTheme.textMuted),
                         filled: true,
                         fillColor: FormTheme.surface,
                         border: OutlineInputBorder(
@@ -216,7 +221,8 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                                           : Colors.transparent,
                                   border: isSelected
                                       ? Border.all(
-                                          color: accentColor.withValues(alpha: 0.4),
+                                          color: accentColor.withValues(
+                                              alpha: 0.4),
                                         )
                                       : isNoneOption
                                           ? Border.all(
@@ -255,7 +261,8 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                                         )
                                       : null,
                                   trailing: isSelected
-                                      ? Icon(Icons.check_circle, color: accentColor, size: 22)
+                                      ? Icon(Icons.check_circle,
+                                          color: accentColor, size: 22)
                                       : null,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
@@ -302,11 +309,11 @@ class StoryCultureSection extends ConsumerWidget {
     required this.organisationId,
     required this.upbringingId,
     required this.selectedLanguageId,
-    required this.reservedLanguageIds,
+    required this.languageConflictIndex,
     required this.environmentSkillId,
     required this.organisationSkillId,
     required this.upbringingSkillId,
-    required this.reservedSkillIds,
+    required this.skillConflictIndex,
     required this.onLanguageChanged,
     required this.onEnvironmentChanged,
     required this.onOrganisationChanged,
@@ -322,11 +329,11 @@ class StoryCultureSection extends ConsumerWidget {
   final String? organisationId;
   final String? upbringingId;
   final String? selectedLanguageId;
-  final Set<String> reservedLanguageIds;
+  final HeroConflictIndex languageConflictIndex;
   final String? environmentSkillId;
   final String? organisationSkillId;
   final String? upbringingSkillId;
-  final Set<String> reservedSkillIds;
+  final HeroConflictIndex skillConflictIndex;
 
   final ValueChanged<String?> onLanguageChanged;
   final ValueChanged<String?> onEnvironmentChanged;
@@ -345,9 +352,9 @@ class StoryCultureSection extends ConsumerWidget {
     final upAsync = ref.watch(componentsByTypeProvider('culture_upbringing'));
     final langsAsync = ref.watch(componentsByTypeProvider('language'));
     final skillsAsync = ref.watch(componentsByTypeProvider('skill'));
-    
+
     const accent = CreatorTheme.cultureAccent;
-    
+
     return Container(
       margin: CreatorTheme.sectionMargin,
       decoration: CreatorTheme.sectionDecoration(accent),
@@ -364,7 +371,6 @@ class StoryCultureSection extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-
                 langsAsync.when(
                   loading: () => CreatorTheme.loadingIndicator(accent),
                   error: (e, _) => CreatorTheme.errorMessage(
@@ -374,7 +380,7 @@ class StoryCultureSection extends ConsumerWidget {
                   data: (langs) => _LanguageDropdown(
                     languages: langs,
                     selectedLanguageId: selectedLanguageId,
-                    reservedLanguageIds: reservedLanguageIds,
+                    conflictIndex: languageConflictIndex,
                     onChanged: (val) {
                       onLanguageChanged(val);
                       onDirty();
@@ -411,22 +417,23 @@ class StoryCultureSection extends ConsumerWidget {
                       skillsAsync.when(
                         loading: () => const SizedBox.shrink(),
                         error: (_, __) => const SizedBox.shrink(),
-                          data: (skills) => envAsync.when(
-                            loading: () => const SizedBox.shrink(),
-                            error: (_, __) => const SizedBox.shrink(),
-                            data: (envs) => _CultureSkillChooser(
-                              label:
-                                  StoryCultureSectionText.environmentSkillLabel,
-                              selectedCultureId: environmentId,
-                              cultureItems: envs,
-                              selectedSkillId: environmentSkillId,
-                              reservedSkillIds: reservedSkillIds,
-                              allSkills: skills,
-                              accent: const Color(0xFF66BB6A),
-                              onChanged: (value) {
-                                onEnvironmentSkillChanged(value);
-                                onDirty();
-                              },
+                        data: (skills) => envAsync.when(
+                          loading: () => const SizedBox.shrink(),
+                          error: (_, __) => const SizedBox.shrink(),
+                          data: (envs) => _CultureSkillChooser(
+                            label:
+                                StoryCultureSectionText.environmentSkillLabel,
+                            selectedCultureId: environmentId,
+                            cultureItems: envs,
+                            selectedSkillId: environmentSkillId,
+                            conflictIndex: skillConflictIndex,
+                            slotKey: HeroDraftClaims.cultureEnvironmentSkillSlot,
+                            allSkills: skills,
+                            accent: const Color(0xFF66BB6A),
+                            onChanged: (value) {
+                              onEnvironmentSkillChanged(value);
+                              onDirty();
+                            },
                           ),
                         ),
                       ),
@@ -464,22 +471,23 @@ class StoryCultureSection extends ConsumerWidget {
                       skillsAsync.when(
                         loading: () => const SizedBox.shrink(),
                         error: (_, __) => const SizedBox.shrink(),
-                          data: (skills) => orgAsync.when(
-                            loading: () => const SizedBox.shrink(),
-                            error: (_, __) => const SizedBox.shrink(),
-                            data: (orgs) => _CultureSkillChooser(
-                              label:
-                                  StoryCultureSectionText.organizationSkillLabel,
-                              selectedCultureId: organisationId,
-                              cultureItems: orgs,
-                              selectedSkillId: organisationSkillId,
-                              reservedSkillIds: reservedSkillIds,
-                              allSkills: skills,
-                              accent: const Color(0xFFFFB74D),
-                              onChanged: (value) {
-                                onOrganisationSkillChanged(value);
-                                onDirty();
-                              },
+                        data: (skills) => orgAsync.when(
+                          loading: () => const SizedBox.shrink(),
+                          error: (_, __) => const SizedBox.shrink(),
+                          data: (orgs) => _CultureSkillChooser(
+                            label:
+                                StoryCultureSectionText.organizationSkillLabel,
+                            selectedCultureId: organisationId,
+                            cultureItems: orgs,
+                            selectedSkillId: organisationSkillId,
+                            conflictIndex: skillConflictIndex,
+                            slotKey: HeroDraftClaims.cultureOrganisationSkillSlot,
+                            allSkills: skills,
+                            accent: const Color(0xFFFFB74D),
+                            onChanged: (value) {
+                              onOrganisationSkillChanged(value);
+                              onDirty();
+                            },
                           ),
                         ),
                       ),
@@ -517,22 +525,22 @@ class StoryCultureSection extends ConsumerWidget {
                       skillsAsync.when(
                         loading: () => const SizedBox.shrink(),
                         error: (_, __) => const SizedBox.shrink(),
-                          data: (skills) => upAsync.when(
-                            loading: () => const SizedBox.shrink(),
-                            error: (_, __) => const SizedBox.shrink(),
-                            data: (ups) => _CultureSkillChooser(
-                              label:
-                                  StoryCultureSectionText.upbringingSkillLabel,
-                              selectedCultureId: upbringingId,
-                              cultureItems: ups,
-                              selectedSkillId: upbringingSkillId,
-                              reservedSkillIds: reservedSkillIds,
-                              allSkills: skills,
-                              accent: const Color(0xFFAB47BC),
-                              onChanged: (value) {
-                                onUpbringingSkillChanged(value);
-                                onDirty();
-                              },
+                        data: (skills) => upAsync.when(
+                          loading: () => const SizedBox.shrink(),
+                          error: (_, __) => const SizedBox.shrink(),
+                          data: (ups) => _CultureSkillChooser(
+                            label: StoryCultureSectionText.upbringingSkillLabel,
+                            selectedCultureId: upbringingId,
+                            cultureItems: ups,
+                            selectedSkillId: upbringingSkillId,
+                            conflictIndex: skillConflictIndex,
+                            slotKey: HeroDraftClaims.cultureUpbringingSkillSlot,
+                            allSkills: skills,
+                            accent: const Color(0xFFAB47BC),
+                            onChanged: (value) {
+                              onUpbringingSkillChanged(value);
+                              onDirty();
+                            },
                           ),
                         ),
                       ),
@@ -552,25 +560,39 @@ class _LanguageDropdown extends StatelessWidget {
   const _LanguageDropdown({
     required this.languages,
     required this.selectedLanguageId,
-    required this.reservedLanguageIds,
+    required this.conflictIndex,
     required this.onChanged,
   });
 
   final List<model.Component> languages;
   final String? selectedLanguageId;
-  final Set<String> reservedLanguageIds;
+  final HeroConflictIndex conflictIndex;
   final ValueChanged<String?> onChanged;
 
   static const _accent = Color(0xFF9C27B0);
 
   @override
   Widget build(BuildContext context) {
-    final filteredLanguages = ComponentSelectionGuard.filterAllowed(
-      options: languages,
-      reservedIds: reservedLanguageIds,
-      idSelector: (lang) => lang.id,
-      currentId: selectedLanguageId,
-    );
+    const slotKey = HeroDraftClaims.cultureLanguageSlot;
+    final conflict = selectedLanguageId == null
+        ? null
+        : conflictIndex.conflictFor(
+            HeroEntryKey(
+              entryType: 'language',
+              canonicalEntryId: selectedLanguageId!,
+            ),
+            ignoredDraftSlotKey: slotKey,
+          );
+    final filteredLanguages = languages.where((language) {
+      if (language.id == selectedLanguageId) return true;
+      return !conflictIndex.isClaimed(
+        HeroEntryKey(
+          entryType: 'language',
+          canonicalEntryId: language.id,
+        ),
+        ignoredDraftSlotKey: slotKey,
+      );
+    }).toList(growable: false);
 
     if (filteredLanguages.isEmpty) {
       return const SizedBox.shrink();
@@ -649,7 +671,8 @@ class _LanguageDropdown extends StatelessWidget {
                   color: _accent.withValues(alpha: 0.2),
                   border: Border.all(color: _accent.withValues(alpha: 0.4)),
                 ),
-                child: const AppIcon(StoryIcons.languages, color: _accent, size: 18),
+                child: const AppIcon(StoryIcons.languages,
+                    color: _accent, size: 18),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -680,7 +703,9 @@ class _LanguageDropdown extends StatelessWidget {
                   Expanded(
                     child: Text(
                       selected != null
-                          ? filteredLanguages.firstWhere((l) => l.id == selected).name
+                          ? filteredLanguages
+                              .firstWhere((l) => l.id == selected)
+                              .name
                           : StoryCultureSectionText.chooseLanguagePlaceholder,
                       style: TextStyle(
                         fontSize: 15,
@@ -695,9 +720,28 @@ class _LanguageDropdown extends StatelessWidget {
               ),
             ),
           ),
+          if (conflict != null) ...[
+            const SizedBox(height: 6),
+            Text(
+              '${StoryCultureSectionText.languageConflictPrefix}${_conflictLabels(conflict)}',
+              style: TextStyle(
+                color: Colors.orange.shade200,
+                fontSize: 12,
+              ),
+            ),
+          ],
         ],
       ),
     );
+  }
+
+  String _conflictLabels(HeroConflict conflict) {
+    final labels = conflict.owners
+        .map((owner) => owner.displayLabel ?? owner.source.toString())
+        .toSet()
+        .toList()
+      ..sort();
+    return labels.join(', ');
   }
 
   String _languageGroupTitle(String key) {
@@ -714,28 +758,29 @@ class _LanguageDropdown extends StatelessWidget {
   String _buildLanguageSubtitle(model.Component lang, String groupKey) {
     final data = lang.data;
     final parts = <String>[];
-    
+
     // Add language type/group
     parts.add(_languageGroupTitle(groupKey));
-    
+
     // Add region if available
     final region = data['region'] as String?;
     if (region != null && region.isNotEmpty) {
       parts.add(StoryCultureSectionText.regionSubtitle(region));
     }
-    
+
     // Add ancestry if available
     final ancestry = data['ancestry'] as String?;
     if (ancestry != null && ancestry.isNotEmpty) {
       parts.add(StoryCultureSectionText.ancestrySubtitle(ancestry));
     }
-    
+
     // Add common topics if available
     final topics = (data['common_topics'] as List?)?.cast<String>();
     if (topics != null && topics.isNotEmpty) {
-      parts.add(StoryCultureSectionText.topicsSubtitle('${topics.take(3).join(', ')}${topics.length > 3 ? '...' : ''}'));
+      parts.add(StoryCultureSectionText.topicsSubtitle(
+          '${topics.take(3).join(', ')}${topics.length > 3 ? '...' : ''}'));
     }
-    
+
     return parts.join(' • ');
   }
 }
@@ -793,8 +838,7 @@ class _CultureDropdown extends StatelessWidget {
 
           final result = await _showSearchablePicker<String?>(
             context: context,
-            title:
-                '${StoryCultureSectionText.selectLabelPrefix}$label',
+            title: '${StoryCultureSectionText.selectLabelPrefix}$label',
             options: options,
             selected: validSelected,
             accent: accent,
@@ -828,13 +872,14 @@ class _CultureDropdown extends StatelessWidget {
                 onTap: openSearch,
                 borderRadius: BorderRadius.circular(10),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: FormTheme.surface,
                     border: Border.all(
-                      color: validSelected != null 
-                          ? accent.withValues(alpha: 0.5) 
+                      color: validSelected != null
+                          ? accent.withValues(alpha: 0.5)
                           : FormTheme.border,
                     ),
                   ),
@@ -891,7 +936,8 @@ class _CultureSkillChooser extends StatelessWidget {
     required this.cultureItems,
     required this.allSkills,
     required this.selectedSkillId,
-    required this.reservedSkillIds,
+    required this.conflictIndex,
+    required this.slotKey,
     required this.onChanged,
     required this.accent,
   });
@@ -901,7 +947,8 @@ class _CultureSkillChooser extends StatelessWidget {
   final List<model.Component> cultureItems;
   final List<model.Component> allSkills;
   final String? selectedSkillId;
-  final Set<String> reservedSkillIds;
+  final HeroConflictIndex conflictIndex;
+  final String slotKey;
   final ValueChanged<String?> onChanged;
   final Color accent;
 
@@ -937,12 +984,16 @@ class _CultureSkillChooser extends StatelessWidget {
       }
     }
 
-    final allowedSkills = ComponentSelectionGuard.filterAllowed(
-      options: eligible,
-      reservedIds: reservedSkillIds,
-      idSelector: (skill) => skill.id,
-      currentId: selectedSkillId,
-    );
+    final allowedSkills = eligible.where((skill) {
+      if (skill.id == selectedSkillId) return true;
+      return !conflictIndex.isClaimed(
+        HeroEntryKey(
+          entryType: 'skill',
+          canonicalEntryId: skill.id,
+        ),
+        ignoredDraftSlotKey: slotKey,
+      );
+    }).toList();
 
     if (allowedSkills.isEmpty) return const SizedBox.shrink();
 
@@ -969,6 +1020,21 @@ class _CultureSkillChooser extends StatelessWidget {
             allowedSkills.any((s) => s.id == selectedSkillId)
         ? selectedSkillId
         : null;
+    final selectedConflict = validSelected == null
+        ? null
+        : conflictIndex.conflictFor(
+            HeroEntryKey(
+              entryType: 'skill',
+              canonicalEntryId: validSelected,
+            ),
+            ignoredDraftSlotKey: slotKey,
+          );
+    final selectedConflictOwners = selectedConflict?.owners
+            .map(
+              (owner) => owner.displayLabel ?? owner.source.toString(),
+            )
+            .join(', ') ??
+        '';
 
     Future<void> openSearch() async {
       final options = <_SearchOption<String?>>[
@@ -984,7 +1050,9 @@ class _CultureSkillChooser extends StatelessWidget {
             _SearchOption<String?>(
               label: skill.name,
               value: skill.id,
-              subtitle: groupKey,
+              subtitle: skill.id == validSelected && selectedConflict != null
+                  ? '${StoryCultureSectionText.skillConflictPrefix}$selectedConflictOwners'
+                  : groupKey,
             ),
           );
         }
@@ -995,7 +1063,9 @@ class _CultureSkillChooser extends StatelessWidget {
           _SearchOption<String?>(
             label: skill.name,
             value: skill.id,
-            subtitle: StoryCultureSectionText.otherGroupLabel,
+            subtitle: skill.id == validSelected && selectedConflict != null
+                ? '${StoryCultureSectionText.skillConflictPrefix}$selectedConflictOwners'
+                : StoryCultureSectionText.otherGroupLabel,
           ),
         );
       }
@@ -1033,14 +1103,15 @@ class _CultureSkillChooser extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
               color: FormTheme.surface,
               border: Border.all(
-                color: validSelected != null 
-                    ? accent.withValues(alpha: 0.5) 
+                color: validSelected != null
+                    ? accent.withValues(alpha: 0.5)
                     : FormTheme.border,
               ),
             ),
             child: Row(
               children: [
-                AppIcon(SkillGroupIcons.lore, color: FormTheme.textMuted, size: 18),
+                AppIcon(SkillGroupIcons.lore,
+                    color: FormTheme.textMuted, size: 18),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
@@ -1060,6 +1131,17 @@ class _CultureSkillChooser extends StatelessWidget {
             ),
           ),
         ),
+        if (selectedConflict != null) ...[
+          const SizedBox(height: 6),
+          Text(
+            '${StoryCultureSectionText.skillConflictPrefix}$selectedConflictOwners',
+            style: const TextStyle(
+              color: Colors.orange,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
         if (helper.isNotEmpty) ...[
           const SizedBox(height: 6),
           Text(
@@ -1077,4 +1159,3 @@ class _CultureSkillChooser extends StatelessWidget {
     );
   }
 }
-

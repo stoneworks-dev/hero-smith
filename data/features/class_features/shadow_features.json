@@ -38,13 +38,19 @@
         "subclass_name": "Black Ash",
         "name": "Black Ash Teleport",
         "description": "You have the following ability.",
-        "ability": "Black Ash Teleport"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "black-ash-teleport",
+        "payload": { "name": "Black Ash Teleport" }
       },
       {
         "subclass_name": "Caustic Alchemy",
         "name": "Coat the Blade",
         "description": "You have the following ability.",
-        "ability": "Coat the Blade"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "coat-the-blade",
+        "payload": { "name": "Coat the Blade" }
       },
       {
         "subclass_name": "Caustic Alchemy",
@@ -55,7 +61,10 @@
         "subclass_name": "Harlequin Mask",
         "name": "I’m No Threat",
         "description": "You have the following ability.",
-        "ability": "I’m No Threat"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "im-no-threat",
+        "payload": { "name": "I’m No Threat" }
       }
     ]
   },
@@ -82,7 +91,14 @@
     "class": "shadow",
     "level": 1,
     "description": "You have the following ability.",
-    "ability": "Hesitation Is Weakness"
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "hesitation-is-weakness-1-insight",
+        "payload": { "name": "Hesitation Is Weakness" }
+      }
+    ]
   },
   {
     "id": "feature_shadow_college_triggered_action",
@@ -97,19 +113,28 @@
         "subclass_name": "Black Ash",
         "name": "In All This Confusion",
         "description": "You have the following ability.",
-        "ability": "In All This Confusion"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "in-all-this-confusion",
+        "payload": { "name": "In All This Confusion" }
       },
       {
         "subclass_name": "Caustic Alchemy",
         "name": "Defensive Roll",
         "description": "You have the following ability.",
-        "ability": "Defensive Roll"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "defensive-roll",
+        "payload": { "name": "Defensive Roll" }
       },
       {
         "subclass_name": "Harlequin Mask",
         "name": "Clever Trick",
         "description": "You have the following ability.",
-        "ability": "Clever Trick"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "clever-trick-1-insight",
+        "payload": { "name": "Clever Trick" }
       }
     ]
   },
@@ -146,7 +171,14 @@
     "class": "shadow",
     "level": 3,
     "description": "You have the following ability.",
-    "ability": "Careful Observation"
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "careful-observation",
+        "payload": { "name": "Careful Observation" }
+      }
+    ]
   },
   {
     "id": "feature_shadow_keep_it_down",
@@ -248,7 +280,10 @@
         "subclass_name": "Caustic Alchemy",
         "name": "Time Bomb",
         "description": "You have damage immunity against area abilities and effects equal to your Agility score. You also have the following ability, which you can use once per round on your turn.",
-        "ability": "Time Bomb"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "time-bomb",
+        "payload": { "name": "Time Bomb" }
       },
       {
         "subclass_name": "Harlequin Mask",

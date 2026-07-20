@@ -58,7 +58,8 @@ class _TitleAncestryTraitsDialogState
   Future<void> _loadTraits() async {
     try {
       // Load ancestry_traits.json
-      final raw = await rootBundle.loadString('data/story/ancestries/ancestry_traits.json');
+      final raw = await rootBundle
+          .loadString('data/story/ancestries/ancestry_traits.json');
       final decoded = json.decode(raw);
       final allTraitSets = decoded is List ? decoded : [decoded];
 
@@ -164,7 +165,8 @@ class _TitleAncestryTraitsDialogState
                 ),
                 Text(
                   SheetStoryTitlesTabText.pointsBudget(widget.pointsBudget),
-                  style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
+                  style:
+                      TextStyle(color: FormTheme.textSecondary, fontSize: 13),
                 ),
               ],
             ),
@@ -197,7 +199,9 @@ class _TitleAncestryTraitsDialogState
             const SizedBox(width: 12),
             _pointsBadge(
               'Remaining: $remaining',
-              remaining >= 0 ? const Color(0xFF66BB6A) : const Color(0xFFEF5350),
+              remaining >= 0
+                  ? const Color(0xFF66BB6A)
+                  : const Color(0xFFEF5350),
             ),
           ],
         ),
@@ -214,7 +218,8 @@ class _TitleAncestryTraitsDialogState
         ),
         child: Text(
           text,
-          style: TextStyle(color: color, fontWeight: FontWeight.w600, fontSize: 13),
+          style: TextStyle(
+              color: color, fontWeight: FontWeight.w600, fontSize: 13),
         ),
       );
 
@@ -264,10 +269,12 @@ class _TitleAncestryTraitsDialogState
             if (isUnavailable)
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: FormTheme.surfaceMuted,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(9)),
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(9)),
                 ),
                 child: Row(
                   children: [
@@ -325,7 +332,8 @@ class _TitleAncestryTraitsDialogState
               ),
               isThreeLine: true,
               secondary: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: isUnavailable
                       ? Colors.red.withAlpha(38)
@@ -355,7 +363,10 @@ class _TitleAncestryTraitsDialogState
             if (selected && hasImmunityChoice)
               Padding(
                 padding: const EdgeInsets.fromLTRB(48, 0, 16, 12),
-                child: _buildImmunityDropdown(id),
+                child: _buildImmunityDropdown(
+                  id,
+                  availableTypes: _immunityChoiceOptions(trait),
+                ),
               ),
             // Ability pick dropdown
             if (selected && abilityOptions.isNotEmpty)
@@ -374,7 +385,60 @@ class _TitleAncestryTraitsDialogState
     if (increase is Map) {
       return increase['type'] == 'pick_one';
     }
+    return _hasCanonicalImmunityChoice(trait['grants']);
+  }
+
+  bool _hasCanonicalImmunityChoice(Object? grants) {
+    if (grants is List) {
+      return grants.any(_isCanonicalImmunityChoiceGrant);
+    }
+    if (grants is Map) {
+      if (grants['grants'] is List) {
+        return _hasCanonicalImmunityChoice(grants['grants']);
+      }
+      return _isCanonicalImmunityChoiceGrant(grants);
+    }
     return false;
+  }
+
+  bool _isCanonicalImmunityChoiceGrant(Object? grant) {
+    if (grant is! Map) return false;
+    final payload = grant['payload'];
+    final stat = payload is Map ? payload['stat']?.toString() : null;
+    return grant['kind'] == 'choice' &&
+        grant['choice_type'] == 'damage_type' &&
+        (stat == null || stat == 'immunity');
+  }
+
+  List<String> _immunityChoiceOptions(Map<String, dynamic> node) {
+    final canonicalOptions = _canonicalImmunityChoiceOptions(node['grants']);
+    return canonicalOptions.isEmpty ? _defaultImmunityTypes : canonicalOptions;
+  }
+
+  List<String> _canonicalImmunityChoiceOptions(Object? grants) {
+    if (grants is List) {
+      for (final grant in grants) {
+        final options = _canonicalImmunityChoiceOptions(grant);
+        if (options.isNotEmpty) return options;
+      }
+      return const [];
+    }
+    if (grants is Map) {
+      if (grants['grants'] is List) {
+        return _canonicalImmunityChoiceOptions(grants['grants']);
+      }
+      if (!_isCanonicalImmunityChoiceGrant(grants)) return const [];
+      return _stringList(grants['options']);
+    }
+    return const [];
+  }
+
+  List<String> _stringList(Object? value) {
+    if (value is! List) return const [];
+    return value
+        .map((item) => item?.toString().trim() ?? '')
+        .where((item) => item.isNotEmpty)
+        .toList(growable: false);
   }
 
   List<String> _getAbilityOptions(Map<String, dynamic> trait) {
@@ -383,11 +447,32 @@ class _TitleAncestryTraitsDialogState
     return [];
   }
 
-  Widget _buildImmunityDropdown(String traitId) {
-    const immunityTypes = [
-      'acid', 'cold', 'corruption', 'fire', 'holy', 'lightning', 'poison', 'psychic',
-    ];
+  static const List<String> _defaultImmunityTypes = [
+    'acid',
+    'cold',
+    'corruption',
+    'fire',
+    'holy',
+    'lightning',
+    'poison',
+    'psychic',
+  ];
+
+  Widget _buildImmunityDropdown(
+    String traitId, {
+    List<String>? availableTypes,
+  }) {
+    final choiceTypes = availableTypes == null || availableTypes.isEmpty
+        ? _defaultImmunityTypes
+        : availableTypes;
     final current = _subChoices[traitId];
+    final visibleTypes = [
+      ...choiceTypes,
+      if (current != null &&
+          current.isNotEmpty &&
+          !choiceTypes.contains(current))
+        current,
+    ];
 
     return DropdownButtonFormField<String>(
       value: current,
@@ -405,7 +490,7 @@ class _TitleAncestryTraitsDialogState
       ),
       dropdownColor: NavigationTheme.cardBackgroundDark,
       style: TextStyle(color: FormTheme.textBright, fontSize: 13),
-      items: immunityTypes
+      items: visibleTypes
           .map((t) => DropdownMenuItem(
                 value: t,
                 child: Text(t[0].toUpperCase() + t.substring(1)),
@@ -458,7 +543,8 @@ class _TitleAncestryTraitsDialogState
         children: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text('Cancel', style: TextStyle(color: FormTheme.textSecondary)),
+            child: Text('Cancel',
+                style: TextStyle(color: FormTheme.textSecondary)),
           ),
           const SizedBox(width: 8),
           ElevatedButton(

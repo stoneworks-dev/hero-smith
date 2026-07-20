@@ -7,6 +7,7 @@ import '../../../core/data/downtime_data_source.dart';
 import '../../../core/db/providers.dart';
 import '../../../core/models/component.dart' as model;
 import '../../../core/models/downtime.dart';
+import '../../../core/storage/hero_storage_contract.dart';
 import '../../../core/theme/app_icon.dart';
 import '../../../core/theme/app_icons.dart';
 import '../../../core/theme/form_theme.dart';
@@ -16,6 +17,13 @@ import '../../../widgets/treasures/treasures.dart';
 import '../../../widgets/treasures/imbuement_card.dart';
 import 'gear_dialogs.dart';
 import 'gear_utils.dart';
+
+const _treasureEntryType = HeroEntryTypes.treasure;
+const _treasureSourceType = HeroEntrySourceTypes.manualChoice;
+const _treasureSourceId = '';
+const _imbuementEntryType = HeroEntryTypes.imbuement;
+const _imbuementSourceType = HeroEntrySourceTypes.manualChoice;
+const _imbuementSourceId = HeroEntryTypes.imbuement;
 
 /// Treasures tab for the gear sheet.
 class TreasuresTab extends ConsumerStatefulWidget {
@@ -150,7 +158,6 @@ class _TreasuresTabState extends ConsumerState<TreasuresTab> {
 
   /// Toggle equip state for a treasure.
   Future<void> _toggleEquip(String treasureId, String treasureType) async {
-    final db = ref.read(appDatabaseProvider);
     final isCurrentlyEquipped = _isTreasureEquipped(treasureId);
     final willBeEquipped = !isCurrentlyEquipped;
 
@@ -169,13 +176,8 @@ class _TreasuresTabState extends ConsumerState<TreasuresTab> {
       );
       existingPayload['equipped'] = willBeEquipped;
 
-      await db.updateHeroEntryPayload(
-        heroId: widget.heroId,
-        entryType: 'treasure',
-        entryId: treasureId,
-        payload: existingPayload,
-      );
-      
+      await _saveTreasurePayload(treasureId, existingPayload);
+
       // Recalculate and save equipped treasure bonuses
       await _recalculateEquippedBonuses();
     } catch (e) {
@@ -189,14 +191,14 @@ class _TreasuresTabState extends ConsumerState<TreasuresTab> {
       }
     }
   }
-  
+
   /// Recalculate equipped treasure bonuses and save to hero values.
   Future<void> _recalculateEquippedBonuses() async {
     try {
       final heroRepo = ref.read(heroRepositoryProvider);
       final treasureBonusService = ref.read(treasureBonusServiceProvider);
       final heroLevel = await heroRepo.getHeroLevel(widget.heroId);
-      
+
       await treasureBonusService.recalculateAndSaveEquippedBonuses(
         widget.heroId,
         heroLevel,
@@ -251,8 +253,6 @@ class _TreasuresTabState extends ConsumerState<TreasuresTab> {
   }
 
   Future<void> _addTreasure(String treasureId) async {
-    final db = ref.read(appDatabaseProvider);
-
     // Check if treasure already exists - if so, increment quantity
     if (_heroTreasureEntries.containsKey(treasureId)) {
       final currentQty = _getTreasureQuantity(treasureId);
@@ -262,12 +262,7 @@ class _TreasuresTabState extends ConsumerState<TreasuresTab> {
 
     try {
       // Add new treasure with quantity 1
-      await db.addHeroEntryWithPayload(
-        heroId: widget.heroId,
-        entryType: 'treasure',
-        entryId: treasureId,
-        payload: {'quantity': 1},
-      );
+      await _saveTreasurePayload(treasureId, {'quantity': 1});
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -282,8 +277,6 @@ class _TreasuresTabState extends ConsumerState<TreasuresTab> {
 
   Future<void> _updateTreasureQuantity(
       String treasureId, int newQuantity) async {
-    final db = ref.read(appDatabaseProvider);
-
     try {
       if (newQuantity <= 0) {
         // Remove the treasure entirely
@@ -297,12 +290,7 @@ class _TreasuresTabState extends ConsumerState<TreasuresTab> {
       );
       existingPayload['quantity'] = newQuantity;
 
-      await db.updateHeroEntryPayload(
-        heroId: widget.heroId,
-        entryType: 'treasure',
-        entryId: treasureId,
-        payload: existingPayload,
-      );
+      await _saveTreasurePayload(treasureId, existingPayload);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -330,23 +318,15 @@ class _TreasuresTabState extends ConsumerState<TreasuresTab> {
   }
 
   Future<void> _removeTreasure(String treasureId) async {
-    final db = ref.read(appDatabaseProvider);
-
     try {
-      // Delete the entry entirely
-      await db.clearHeroEntryType(widget.heroId, 'treasure');
-      // Re-add remaining treasures
-      final remaining =
-          Map<String, Map<String, dynamic>>.from(_heroTreasureEntries);
-      remaining.remove(treasureId);
-      for (final entry in remaining.entries) {
-        await db.addHeroEntryWithPayload(
-          heroId: widget.heroId,
-          entryType: 'treasure',
-          entryId: entry.key,
-          payload: entry.value,
-        );
-      }
+      final entries = ref.read(heroEntryRepositoryProvider);
+      await entries.removeEntryFromSource(
+        heroId: widget.heroId,
+        entryType: _treasureEntryType,
+        entryId: treasureId,
+        sourceType: _treasureSourceType,
+        sourceId: _treasureSourceId,
+      );
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -385,15 +365,10 @@ class _TreasuresTabState extends ConsumerState<TreasuresTab> {
   Future<void> _addImbuement(String imbuementId) async {
     if (_heroImbuementIds.contains(imbuementId)) return;
 
-    final db = ref.read(appDatabaseProvider);
     final updated = [..._heroImbuementIds, imbuementId];
 
     try {
-      await db.setHeroComponentIds(
-        heroId: widget.heroId,
-        category: 'imbuement',
-        componentIds: updated,
-      );
+      await _saveManualImbuements(updated);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -421,9 +396,7 @@ class _TreasuresTabState extends ConsumerState<TreasuresTab> {
         ),
         content: SingleChildScrollView(
           child: Text(
-            description.isNotEmpty
-                ? description
-                : 'No description available.',
+            description.isNotEmpty ? description : 'No description available.',
             style: const TextStyle(fontSize: 14),
           ),
         ),
@@ -552,7 +525,8 @@ class _TreasuresTabState extends ConsumerState<TreasuresTab> {
                                     size: 18,
                                     color: NavigationTheme.imbuementsTabColor,
                                   ),
-                                  tooltip: TreasuresTabText.imbuementsInfoTooltip,
+                                  tooltip:
+                                      TreasuresTabText.imbuementsInfoTooltip,
                                   onPressed: _showImbuementsInfoDialog,
                                   padding: EdgeInsets.zero,
                                   constraints: const BoxConstraints(),
@@ -566,8 +540,7 @@ class _TreasuresTabState extends ConsumerState<TreasuresTab> {
                               padding: const EdgeInsets.only(bottom: 12),
                               child: ImbuementCard(
                                 imbuement: imbuement,
-                                onRemove: () =>
-                                    _removeImbuement(imbuement.id),
+                                onRemove: () => _removeImbuement(imbuement.id),
                               ),
                             );
                           }),
@@ -637,15 +610,10 @@ class _TreasuresTabState extends ConsumerState<TreasuresTab> {
   }
 
   Future<void> _removeImbuement(String imbuementId) async {
-    final db = ref.read(appDatabaseProvider);
     final updated = _heroImbuementIds.where((id) => id != imbuementId).toList();
 
     try {
-      await db.setHeroComponentIds(
-        heroId: widget.heroId,
-        category: 'imbuement',
-        componentIds: updated,
-      );
+      await _saveManualImbuements(updated);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -658,10 +626,38 @@ class _TreasuresTabState extends ConsumerState<TreasuresTab> {
     }
   }
 
+  Future<void> _saveTreasurePayload(
+    String treasureId,
+    Map<String, dynamic> payload,
+  ) async {
+    final entries = ref.read(heroEntryRepositoryProvider);
+    await entries.addEntry(
+      heroId: widget.heroId,
+      entryType: _treasureEntryType,
+      entryId: treasureId,
+      sourceType: _treasureSourceType,
+      sourceId: _treasureSourceId,
+      gainedBy: HeroEntryGainedBy.choice,
+      payload: payload,
+    );
+  }
+
+  Future<void> _saveManualImbuements(List<String> imbuementIds) async {
+    final entries = ref.read(heroEntryRepositoryProvider);
+    await entries.addEntriesFromSource(
+      heroId: widget.heroId,
+      sourceType: _imbuementSourceType,
+      sourceId: _imbuementSourceId,
+      entryType: _imbuementEntryType,
+      entryIds: imbuementIds,
+      gainedBy: HeroEntryGainedBy.choice,
+    );
+  }
+
   Widget _buildTreasureCard(model.Component treasure, int quantity) {
     final isEquipped = _isTreasureEquipped(treasure.id);
     final isEquipable = treasure.type.toLowerCase() != 'consumable';
-    
+
     // Use the unified TreasureCard with quantity controls
     return TreasureCard(
       component: treasure,

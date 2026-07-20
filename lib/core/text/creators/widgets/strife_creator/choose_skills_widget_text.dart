@@ -28,4 +28,5 @@
   static const String searchTitleSeparator = ' - Choice ';
   static const String selectedOptionGroupPrefix = ' (';
   static const String selectedOptionGroupSuffix = ')';
+  static const String duplicateChoiceSuffix = ' (duplicate)';
 }

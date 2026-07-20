@@ -98,9 +98,10 @@ class _SkillsTabState extends ConsumerState<_SkillsTab>
       updatedOptions.add(_SkillOption(
         id: comp.id,
         name: comp.name,
-        group: (data['group'] as String?)?.toLowerCase().trim().isNotEmpty == true
-            ? (data['group'] as String).toLowerCase().trim()
-            : 'other',
+        group:
+            (data['group'] as String?)?.toLowerCase().trim().isNotEmpty == true
+                ? (data['group'] as String).toLowerCase().trim()
+                : 'other',
         description: data['description'] as String? ?? '',
       ));
 
@@ -121,23 +122,33 @@ class _SkillsTabState extends ConsumerState<_SkillsTab>
   }
 
   Future<void> _addSkill(String skillId) async {
-    if (_selectedSkillIds.contains(skillId)) {
+    final entryRepository = ref.read(heroEntryRepositoryProvider);
+    final existingEntries = await entryRepository.listEntriesByType(
+      widget.heroId,
+      HeroEntryTypes.skill,
+    );
+    final isClaimed = ref.read(heroDuplicateGuardServiceProvider).isReserved(
+          candidateId: skillId,
+          entries: existingEntries,
+          entryType: HeroEntryTypes.skill,
+        );
+    if (isClaimed) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text(SheetStorySkillsTabText.skillAlreadyAdded)),
+          const SnackBar(
+              content: Text(SheetStorySkillsTabText.skillAlreadyAdded)),
         );
       }
       return;
     }
     try {
-      final db = ref.read(appDatabaseProvider);
-      await db.upsertHeroEntry(
+      await entryRepository.addEntry(
         heroId: widget.heroId,
-        entryType: 'skill',
+        entryType: HeroEntryTypes.skill,
         entryId: skillId,
-        sourceType: 'hero_sheet',
-        sourceId: 'skill',
-        gainedBy: 'choice',
+        sourceType: HeroEntrySourceTypes.heroSheet,
+        sourceId: HeroEntryTypes.skill,
+        gainedBy: HeroEntryGainedBy.choice,
       );
 
       setState(() {
@@ -154,20 +165,31 @@ class _SkillsTabState extends ConsumerState<_SkillsTab>
 
   Future<void> _removeSkill(String skillId) async {
     try {
-      final db = ref.read(appDatabaseProvider);
-      await db.removeSingleHeroEntry(
-        heroId: widget.heroId,
-        entryType: 'skill',
-        entryId: skillId,
-      );
+      final removed =
+          await ref.read(heroEntryRepositoryProvider).removeEntryFromSource(
+                heroId: widget.heroId,
+                entryType: HeroEntryTypes.skill,
+                entryId: skillId,
+                sourceType: HeroEntrySourceTypes.heroSheet,
+                sourceId: HeroEntryTypes.skill,
+              );
 
-      setState(() {
-        _selectedSkillIds = _selectedSkillIds.where((id) => id != skillId).toList();
-      });
+      if (removed == 0) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(SheetStorySkillsTabText.skillOwnedElsewhere),
+            ),
+          );
+        }
+        return;
+      }
+      await _loadData();
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(SheetStorySkillsTabText.failedToRemoveSkill(e))),
+          SnackBar(
+              content: Text(SheetStorySkillsTabText.failedToRemoveSkill(e))),
         );
       }
     }
@@ -176,8 +198,13 @@ class _SkillsTabState extends ConsumerState<_SkillsTab>
   Future<void> _showAddSkillDialog() async {
     await _reloadAvailableSkills();
     if (!mounted) return;
+    final claimedSkillIds = ref.read(
+      heroClaimedEntryIdsProvider(
+        (heroId: widget.heroId, entryType: HeroEntryTypes.skill),
+      ),
+    );
     final unselectedSkills = _availableSkills
-        .where((skill) => !_selectedSkillIds.contains(skill.id))
+        .where((skill) => !claimedSkillIds.contains(skill.id))
         .toList();
 
     showDialog(
@@ -284,19 +311,28 @@ class _SkillsTabState extends ConsumerState<_SkillsTab>
     // Group skills by category
     final groupedSkills = <String, List<model.Component>>{};
     for (final comp in selectedComponents) {
-      final group = ((comp.data['group'] as String?) ?? 'other').toLowerCase().trim();
+      final group =
+          ((comp.data['group'] as String?) ?? 'other').toLowerCase().trim();
       groupedSkills.putIfAbsent(group, () => []).add(comp);
     }
 
     // Desired group order + remaining custom groups alphabetically
-    const order = ['crafting', 'exploration', 'interpersonal', 'intrigue', 'lore', 'other'];
+    const order = [
+      'crafting',
+      'exploration',
+      'interpersonal',
+      'intrigue',
+      'lore',
+      'other'
+    ];
     final sortedEntries = <MapEntry<String, List<model.Component>>>[];
     for (final g in order) {
       if (groupedSkills.containsKey(g)) {
         sortedEntries.add(MapEntry(g, groupedSkills[g]!));
       }
     }
-    final remaining = groupedSkills.keys.where((k) => !order.contains(k)).toList()..sort();
+    final remaining =
+        groupedSkills.keys.where((k) => !order.contains(k)).toList()..sort();
     for (final g in remaining) {
       sortedEntries.add(MapEntry(g, groupedSkills[g]!));
     }
@@ -332,7 +368,8 @@ class _SkillsTabState extends ConsumerState<_SkillsTab>
                         color: _skillsColor.withAlpha(51),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: AppIcon(SkillGroupIcons.fromGroup('crafting'), color: _skillsColor, size: 24),
+                      child: AppIcon(SkillGroupIcons.fromGroup('crafting'),
+                          color: _skillsColor, size: 24),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -348,8 +385,10 @@ class _SkillsTabState extends ConsumerState<_SkillsTab>
                             ),
                           ),
                           Text(
-                            SheetStorySkillsTabText.skillsLearned(selectedComponents.length),
-                            style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
+                            SheetStorySkillsTabText.skillsLearned(
+                                selectedComponents.length),
+                            style: TextStyle(
+                                color: FormTheme.textSecondary, fontSize: 13),
                           ),
                         ],
                       ),
@@ -364,7 +403,8 @@ class _SkillsTabState extends ConsumerState<_SkillsTab>
                     padding: const EdgeInsets.all(32),
                     child: Column(
                       children: [
-                        Icon(Icons.school_outlined, size: 48, color: FormTheme.borderLight),
+                        Icon(Icons.school_outlined,
+                            size: 48, color: FormTheme.borderLight),
                         const SizedBox(height: 16),
                         Text(
                           SheetStorySkillsTabText.emptyState,
@@ -397,7 +437,8 @@ class _SkillsTabState extends ConsumerState<_SkillsTab>
                                 ),
                               ),
                               const SizedBox(width: 8),
-                              AppIcon(SkillGroupIcons.fromGroup(groupName), color: _skillsColor, size: 18),
+                              AppIcon(SkillGroupIcons.fromGroup(groupName),
+                                  color: _skillsColor, size: 18),
                               const SizedBox(width: 6),
                               Text(
                                 displayGroupName(groupName),
@@ -412,12 +453,12 @@ class _SkillsTabState extends ConsumerState<_SkillsTab>
                         ),
                       ],
                       ...skills.map((comp) => Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: SkillCard(
-                          skill: comp,
-                          onRemove: () => _removeSkill(comp.id),
-                        ),
-                      )),
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: SkillCard(
+                              skill: comp,
+                              onRemove: () => _removeSkill(comp.id),
+                            ),
+                          )),
                     ],
                   );
                 }),
@@ -444,7 +485,6 @@ class _SkillsTabState extends ConsumerState<_SkillsTab>
       ],
     );
   }
-
 }
 
 class _AddSkillDialog extends StatefulWidget {
@@ -497,14 +537,22 @@ class _AddSkillDialogState extends State<_AddSkillDialog> {
     }
 
     // Desired order + remaining custom groups
-    const order = ['crafting', 'exploration', 'interpersonal', 'intrigue', 'lore', 'other'];
+    const order = [
+      'crafting',
+      'exploration',
+      'interpersonal',
+      'intrigue',
+      'lore',
+      'other'
+    ];
     final sortedGroups = <MapEntry<String, List<_SkillOption>>>[];
     for (final g in order) {
       if (groupedSkills.containsKey(g)) {
         sortedGroups.add(MapEntry(g, groupedSkills[g]!));
       }
     }
-    final remaining = groupedSkills.keys.where((k) => !order.contains(k)).toList()..sort();
+    final remaining =
+        groupedSkills.keys.where((k) => !order.contains(k)).toList()..sort();
     for (final g in remaining) {
       sortedGroups.add(MapEntry(g, groupedSkills[g]!));
     }
@@ -532,7 +580,8 @@ class _AddSkillDialogState extends State<_AddSkillDialog> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(16)),
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
@@ -550,7 +599,8 @@ class _AddSkillDialogState extends State<_AddSkillDialog> {
                       color: _skillsColor.withAlpha(51),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Icon(Icons.school, color: _skillsColor, size: 24),
+                    child:
+                        const Icon(Icons.school, color: _skillsColor, size: 24),
                   ),
                   const SizedBox(width: 12),
                   const Expanded(
@@ -578,7 +628,8 @@ class _AddSkillDialogState extends State<_AddSkillDialog> {
                 decoration: InputDecoration(
                   labelText: SheetStorySkillsTabText.searchSkillsLabel,
                   labelStyle: TextStyle(color: FormTheme.textSecondary),
-                  prefixIcon: Icon(Icons.search, color: FormTheme.textSecondary),
+                  prefixIcon:
+                      Icon(Icons.search, color: FormTheme.textSecondary),
                   filled: true,
                   fillColor: StoryTheme.cardBackground,
                   border: OutlineInputBorder(
@@ -620,7 +671,8 @@ class _AddSkillDialogState extends State<_AddSkillDialog> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.search_off, size: 48, color: FormTheme.borderLight),
+                            Icon(Icons.search_off,
+                                size: 48, color: FormTheme.borderLight),
                             const SizedBox(height: 16),
                             Text(
                               SheetStorySkillsTabText.noSkillsFound,
@@ -668,27 +720,34 @@ class _AddSkillDialogState extends State<_AddSkillDialog> {
                                 decoration: BoxDecoration(
                                   color: StoryTheme.cardBackground,
                                   borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(color: FormTheme.borderDim),
+                                  border:
+                                      Border.all(color: FormTheme.borderDim),
                                 ),
                                 child: ListTile(
                                   dense: true,
-                                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 2),
                                   leading: Container(
                                     padding: const EdgeInsets.all(4),
                                     decoration: BoxDecoration(
                                       color: _skillsColor.withAlpha(26),
                                       borderRadius: BorderRadius.circular(6),
                                     ),
-                                    child: const Icon(Icons.add_circle_outline, color: _skillsColor, size: 18),
+                                    child: const Icon(Icons.add_circle_outline,
+                                        color: _skillsColor, size: 18),
                                   ),
                                   title: Text(
                                     skill.name,
-                                    style: const TextStyle(color: FormTheme.textBright, fontSize: 14),
+                                    style: const TextStyle(
+                                        color: FormTheme.textBright,
+                                        fontSize: 14),
                                   ),
                                   subtitle: skill.description.isNotEmpty
                                       ? Text(
                                           skill.description,
-                                          style: TextStyle(color: FormTheme.textMuted, fontSize: 11),
+                                          style: TextStyle(
+                                              color: FormTheme.textMuted,
+                                              fontSize: 11),
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
                                         )
@@ -894,7 +953,8 @@ class _CreateCustomSkillDialogState extends State<_CreateCustomSkillDialog> {
                           decoration: InputDecoration(
                             labelText: SheetStorySkillsTabText.skillGroupLabel,
                             hintText: SheetStorySkillsTabText.skillGroupHint,
-                            labelStyle: TextStyle(color: FormTheme.textSecondary),
+                            labelStyle:
+                                TextStyle(color: FormTheme.textSecondary),
                             hintStyle: TextStyle(color: FormTheme.borderLight),
                             filled: true,
                             fillColor: StoryTheme.cardBackground,
@@ -911,8 +971,8 @@ class _CreateCustomSkillDialogState extends State<_CreateCustomSkillDialog> {
                           items: _knownGroups
                               .map((g) => DropdownMenuItem(
                                     value: g,
-                                    child: Text(g[0].toUpperCase() +
-                                        g.substring(1)),
+                                    child: Text(
+                                        g[0].toUpperCase() + g.substring(1)),
                                   ))
                               .toList(),
                           onChanged: (val) =>
@@ -925,7 +985,8 @@ class _CreateCustomSkillDialogState extends State<_CreateCustomSkillDialog> {
                           decoration: InputDecoration(
                             labelText: SheetStorySkillsTabText.skillGroupLabel,
                             hintText: SheetStorySkillsTabText.skillGroupHint,
-                            labelStyle: TextStyle(color: FormTheme.textSecondary),
+                            labelStyle:
+                                TextStyle(color: FormTheme.textSecondary),
                             hintStyle: TextStyle(color: FormTheme.borderLight),
                             filled: true,
                             fillColor: StoryTheme.cardBackground,
@@ -943,8 +1004,8 @@ class _CreateCustomSkillDialogState extends State<_CreateCustomSkillDialog> {
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton.icon(
-                          onPressed: () =>
-                              setState(() => _useCustomGroup = !_useCustomGroup),
+                          onPressed: () => setState(
+                              () => _useCustomGroup = !_useCustomGroup),
                           icon: Icon(
                             _useCustomGroup ? Icons.list : Icons.edit,
                             size: 16,

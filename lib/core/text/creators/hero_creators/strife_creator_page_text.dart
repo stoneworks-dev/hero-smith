@@ -2,6 +2,10 @@ class StrifeCreatorPageText {
   static const String failedToLoadClassDataPrefix =
       'Failed to load class data: ';
   static const String pleaseSelectClassSnackBar = 'Please select a class';
+  static const String conflictingAbilitiesSnackBar =
+      'Resolve the conflicting ability choices before saving.';
+  static const String conflictingEquipmentSnackBar =
+      'Resolve the conflicting equipment choices before saving.';
   static const String duplicateSelectionsDialogTitle = 'Duplicate selections';
   static const String duplicateSelectionsDialogContentPrefix = 'Some ';
   static const String duplicateSelectionsDialogContentSuffix =

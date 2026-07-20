@@ -73,10 +73,6 @@ extension _StoryTabBuilders on _SheetStoryState {
       chosenPerkIds: List<String>.from(career.chosenPerkIds),
     );
 
-    final complicationId = _storyData.complicationId as String?;
-    final complicationChoices = 
-        (_storyData.complicationChoices as Map<String, String>?) ?? {};
-
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -91,12 +87,6 @@ extension _StoryTabBuilders on _SheetStoryState {
         const SizedBox(height: 16),
         CareerSection(
           career: careerData,
-          heroId: widget.heroId,
-        ),
-        const SizedBox(height: 16),
-        ComplicationSection(
-          complicationId: complicationId,
-          complicationChoices: complicationChoices,
           heroId: widget.heroId,
         ),
       ],

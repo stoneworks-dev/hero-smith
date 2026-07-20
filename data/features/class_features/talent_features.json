@@ -51,7 +51,14 @@
     "class": "talent",
     "level": 1,
     "description": "You have the following ability, which can be used as a ranged free strike.",
-    "ability": "Mind Spike"
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "mind-spike",
+        "payload": { "name": "Mind Spike" }
+      }
+    ]
   },
   {
     "id": "feature_talent_telepathic_speech",
@@ -75,37 +82,55 @@
         "name": "Accelerate",
         "subclass_name": "Chronopathy",
         "description": "You have the following ability.",
-        "ability": "Accelerate"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "accelerate",
+        "payload": { "name": "Accelerate" }
       },
       {
         "name": "Again",
         "subclass_name": "Chronopathy",
         "description": "You have the following ability.",
-        "ability": "Again"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "again",
+        "payload": { "name": "Again" }
       },
       {
         "name": "Minor Telekinesis",
         "subclass_name": "Telekinesis",
         "description": "You have the following ability.",
-        "ability": "Minor Telekinesis"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "minor-telekinesis",
+        "payload": { "name": "Minor Telekinesis" }
       },
       {
         "name": "Repel",
         "subclass_name": "Telekinesis",
         "description": "You have the following ability.",
-        "ability": "Repel"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "repel",
+        "payload": { "name": "Repel" }
       },
       {
         "name": "Feedback Loop",
         "subclass_name": "Telepathy",
         "description": "You have the following ability.",
-        "ability": "Feedback Loop"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "feedback-loop",
+        "payload": { "name": "Feedback Loop" }
       },
       {
         "name": "Remote Assistance",
         "subclass_name": "Telepathy",
         "description": "You have the following ability.",
-        "ability": "Remote Assistance"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "remote-assistance",
+        "payload": { "name": "Remote Assistance" }
       }
     ]
   },
@@ -262,13 +287,19 @@
         "name": "Stasis Shield",
         "subclass_name": "Chronopathy",
         "description": "You have the following ability.",
-        "ability": "Stasis Shield"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "stasis-shield-3-clarity",
+        "payload": { "name": "Stasis Shield" }
       },
       {
         "name": "Levitation Field",
         "subclass_name": "Telekinesis",
         "description": "You have the following ability.",
-        "ability": "Levitation Field"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "levitation-field",
+        "payload": { "name": "Levitation Field" }
       },
       {
         "name": "Low Gravity",

@@ -1,6 +1,7 @@
 class StoryCareerSectionText {
   static const String sectionTitle = 'Career';
-  static const String sectionSubtitle = 'Your hero\'s profession and background';
+  static const String sectionSubtitle =
+      'Your hero\'s profession and background';
   static const String failedToLoadCareersPrefix = 'Failed to load careers: ';
   static const String chooseCareerOption = 'Choose career';
   static const String selectCareerTitle = 'Select Career';
@@ -12,7 +13,8 @@ class StoryCareerSectionText {
   static const String wealthChipSuffix = ' Wealth';
   static const String projectPointsChipPrefix = '+';
   static const String projectPointsChipSuffix = ' Project Points';
-  static const String failedToLoadLanguagesPrefix = 'Failed to load languages: ';
+  static const String failedToLoadLanguagesPrefix =
+      'Failed to load languages: ';
   static const String bonusLanguageLabelPrefix = 'Bonus Language ';
   static const String grantedSkillsPrefix = 'Granted Skills: ';
   static const String failedToLoadSkillsPrefix = 'Failed to load skills: ';
@@ -27,6 +29,7 @@ class StoryCareerSectionText {
   static const String remainingPicksPluralSuffix = ' picks';
   static const String remainingPicksSuffix = ' remaining.';
   static const String chooseSkillOption = 'Choose skill';
+  static const String skillConflictPrefix = 'Already owned by: ';
   static const String otherGroupLabel = 'Other';
   static const String careerPerksTitle = 'Career Perks';
   static const String allowedTypePrefix = 'Allowed type: ';
@@ -37,6 +40,7 @@ class StoryCareerSectionText {
   static const String chooseIncidentPlaceholder = 'Choose incident';
   static const String chooseLanguageOption = 'Choose language';
   static const String chooseLanguagePlaceholder = 'Choose language';
+  static const String languageConflictPrefix = 'Already owned by: ';
   static const String ancestralLanguagesGroup = 'Ancestral Languages';
   static const String deadLanguagesGroup = 'Dead Languages';
   static const String humanLanguagesGroup = 'Human Languages';

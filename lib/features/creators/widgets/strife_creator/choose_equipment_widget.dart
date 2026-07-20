@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/db/providers.dart';
 import '../../../../core/models/component.dart';
+import '../../../../core/storage/hero_storage_contract.dart';
 import '../../../../core/theme/app_icon.dart';
 import '../../../../core/theme/app_icon_data.dart';
 import '../../../../core/theme/app_icons.dart';
@@ -12,6 +13,8 @@ import '../../../../core/theme/navigation_theme.dart';
 import '../../../../core/theme/form_theme.dart';
 import '../../../../core/text/creators/widgets/strife_creator/choose_equipment_widget_text.dart';
 import '../../../../widgets/kits/equipment_card.dart';
+import '../../../hero_builder/domain/hero_claim.dart';
+import '../../../hero_builder/domain/hero_conflict_index.dart';
 
 /// Configuration for a single equipment slot rendered inside the unified section.
 class EquipmentSlot {
@@ -23,6 +26,8 @@ class EquipmentSlot {
     this.helperText,
     this.classId,
     this.excludeItemIds = const [],
+    this.conflictIndex,
+    this.slotKey,
   });
 
   final String label;
@@ -36,6 +41,12 @@ class EquipmentSlot {
 
   /// Item IDs to exclude from selection (e.g., already selected in other slots)
   final List<String> excludeItemIds;
+
+  /// Source-aware ownership for equipment candidates.
+  final HeroConflictIndex? conflictIndex;
+
+  /// Stable draft key for this equipment slot.
+  final String? slotKey;
 }
 
 /// Compact section that renders all equipment and modification requirements together.
@@ -46,7 +57,7 @@ class EquipmentAndModificationsWidget extends ConsumerWidget {
   });
 
   static const _accent = CreatorTheme.equipmentAccent;
-  
+
   final List<EquipmentSlot> slots;
 
   static const List<String> _allEquipmentTypes = <String>[
@@ -78,7 +89,8 @@ class EquipmentAndModificationsWidget extends ConsumerWidget {
         ChooseEquipmentWidgetText.equipmentTypeChipTitleStormwight,
   };
 
-  static const Map<String, AppIconData> _equipmentTypeIcons = <String, AppIconData>{
+  static const Map<String, AppIconData> _equipmentTypeIcons =
+      <String, AppIconData>{
     'kit': KitIcons.kit,
     'psionic_augmentation': KitIcons.psionicAugmentation,
     'enchantment': KitIcons.enchantment,
@@ -117,7 +129,8 @@ class EquipmentAndModificationsWidget extends ConsumerWidget {
                     key: ValueKey('slot_$i'),
                     slot: slots[i],
                   ),
-                  if (i != slots.length - 1) Divider(height: 32, color: FormTheme.border),
+                  if (i != slots.length - 1)
+                    Divider(height: 32, color: FormTheme.border),
                 ],
               ],
             ),
@@ -196,7 +209,7 @@ class _EquipmentSlotTile extends ConsumerStatefulWidget {
 
 class _EquipmentSlotTileState extends ConsumerState<_EquipmentSlotTile> {
   static const _accent = EquipmentAndModificationsWidget._accent;
-  
+
   Future<Component?>? _cachedFuture;
   String? _cachedItemId;
 
@@ -246,6 +259,8 @@ class _EquipmentSlotTileState extends ConsumerState<_EquipmentSlotTile> {
                       canRemove: slot.selectedItemId != null,
                       classId: slot.classId,
                       excludeItemIds: slot.excludeItemIds,
+                      conflictIndex: slot.conflictIndex,
+                      slotKey: slot.slotKey,
                     ),
                   );
                   if (result == null) {
@@ -330,6 +345,17 @@ class _EquipmentSlotTileState extends ConsumerState<_EquipmentSlotTile> {
                   ),
                 ),
               ),
+              if (_conflictForSelection(slot) case final conflict?) ...[
+                const SizedBox(height: 6),
+                Text(
+                  '${ChooseEquipmentWidgetText.conflictOwnerPrefix}${_ownerLabels(conflict)}',
+                  style: const TextStyle(
+                    color: Colors.orange,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
             ] else if (snapshot.hasError) ...[
               const SizedBox(height: 8),
               Text(
@@ -344,6 +370,27 @@ class _EquipmentSlotTileState extends ConsumerState<_EquipmentSlotTile> {
         );
       },
     );
+  }
+
+  HeroConflict? _conflictForSelection(EquipmentSlot slot) {
+    final itemId = slot.selectedItemId;
+    final slotKey = slot.slotKey;
+    final index = slot.conflictIndex;
+    if (itemId == null || slotKey == null || index == null) return null;
+    return index.conflictFor(
+      HeroEntryKey(
+        entryType: HeroEntryTypes.equipment,
+        canonicalEntryId: itemId,
+      ),
+      ignoredDraftSlotKey: slotKey,
+    );
+  }
+
+  String _ownerLabels(HeroConflict conflict) {
+    return conflict.owners
+        .map((owner) => owner.displayLabel ?? owner.source.toString())
+        .toSet()
+        .join(', ');
   }
 }
 
@@ -376,7 +423,8 @@ class _KitPreviewDialog extends StatelessWidget {
                 color: Colors.black54,
                 shape: const CircleBorder(),
                 child: IconButton(
-                  icon: Icon(Icons.close, color: FormTheme.textBright, size: 20),
+                  icon:
+                      Icon(Icons.close, color: FormTheme.textBright, size: 20),
                   onPressed: () => Navigator.of(context).pop(),
                   tooltip: ChooseEquipmentWidgetText.close,
                 ),
@@ -396,7 +444,7 @@ class _KitPreviewDialog extends StatelessWidget {
         item.type == 'prayer') {
       badgeLabel = EquipmentAndModificationsWidget._titleize(item.type);
     }
-    
+
     return EquipmentCard(
       component: item,
       badgeLabel: badgeLabel,
@@ -439,6 +487,8 @@ class _EquipmentSelectionDialog extends ConsumerStatefulWidget {
     required this.canRemove,
     this.classId,
     this.excludeItemIds = const [],
+    this.conflictIndex,
+    this.slotKey,
   });
 
   final String slotLabel;
@@ -451,6 +501,8 @@ class _EquipmentSelectionDialog extends ConsumerStatefulWidget {
 
   /// Item IDs to exclude from selection (e.g., already selected in other slots)
   final List<String> excludeItemIds;
+  final HeroConflictIndex? conflictIndex;
+  final String? slotKey;
 
   @override
   ConsumerState<_EquipmentSelectionDialog> createState() =>
@@ -460,7 +512,7 @@ class _EquipmentSelectionDialog extends ConsumerStatefulWidget {
 class _EquipmentSelectionDialogState
     extends ConsumerState<_EquipmentSelectionDialog> {
   static const _accent = EquipmentAndModificationsWidget._accent;
-  
+
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
 
@@ -507,7 +559,8 @@ class _EquipmentSelectionDialogState
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
@@ -567,7 +620,8 @@ class _EquipmentSelectionDialogState
           child: Column(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
@@ -599,7 +653,8 @@ class _EquipmentSelectionDialogState
                       TextButton.icon(
                         onPressed: () => navigator
                             .pop(EquipmentAndModificationsWidget._removeSignal),
-                        icon: Icon(Icons.clear, color: Colors.redAccent.shade200),
+                        icon:
+                            Icon(Icons.clear, color: Colors.redAccent.shade200),
                         label: Text(
                           ChooseEquipmentWidgetText.removeLabel,
                           style: TextStyle(color: Colors.redAccent.shade200),
@@ -621,11 +676,13 @@ class _EquipmentSelectionDialogState
                   decoration: InputDecoration(
                     hintText: ChooseEquipmentWidgetText.searchHint,
                     hintStyle: TextStyle(color: FormTheme.textMuted),
-                    prefixIcon: Icon(Icons.search, color: FormTheme.textSecondary),
+                    prefixIcon:
+                        Icon(Icons.search, color: FormTheme.textSecondary),
                     suffixIcon: _searchQuery.isEmpty
                         ? null
                         : IconButton(
-                            icon: Icon(Icons.clear, color: FormTheme.textSecondary),
+                            icon: Icon(Icons.clear,
+                                color: FormTheme.textSecondary),
                             onPressed: () {
                               setState(() {
                                 _searchQuery = '';
@@ -636,15 +693,18 @@ class _EquipmentSelectionDialogState
                     filled: true,
                     fillColor: FormTheme.surface,
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),
+                      borderRadius:
+                          BorderRadius.circular(CreatorTheme.inputBorderRadius),
                       borderSide: BorderSide(color: FormTheme.border),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),
+                      borderRadius:
+                          BorderRadius.circular(CreatorTheme.inputBorderRadius),
                       borderSide: BorderSide(color: FormTheme.border),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),
+                      borderRadius:
+                          BorderRadius.circular(CreatorTheme.inputBorderRadius),
                       borderSide: const BorderSide(color: _accent),
                     ),
                     isDense: true,
@@ -723,7 +783,18 @@ class _EquipmentSelectionDialogState
         // Filter out items already selected in other slots
         // (but keep the current slot's selection visible)
         var excludeFiltered = classFiltered;
-        if (widget.excludeItemIds.isNotEmpty) {
+        if (widget.conflictIndex != null && widget.slotKey != null) {
+          excludeFiltered = classFiltered.where((item) {
+            if (item.id == widget.currentItemId) return true;
+            return !widget.conflictIndex!.isClaimed(
+              HeroEntryKey(
+                entryType: HeroEntryTypes.equipment,
+                canonicalEntryId: item.id,
+              ),
+              ignoredDraftSlotKey: widget.slotKey,
+            );
+          }).toList();
+        } else if (widget.excludeItemIds.isNotEmpty) {
           excludeFiltered = classFiltered.where((item) {
             return !widget.excludeItemIds.contains(item.id);
           }).toList();
@@ -773,9 +844,7 @@ class _EquipmentSelectionDialogState
                         ? _accent.withValues(alpha: 0.15)
                         : FormTheme.surface,
                     border: Border.all(
-                      color: isSelected
-                          ? _accent
-                          : FormTheme.border,
+                      color: isSelected ? _accent : FormTheme.border,
                       width: isSelected ? 2 : 1,
                     ),
                     borderRadius: BorderRadius.circular(8),
@@ -800,12 +869,14 @@ class _EquipmentSelectionDialogState
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
-                                color: isSelected ? _accent : FormTheme.textBright,
+                                color:
+                                    isSelected ? _accent : FormTheme.textBright,
                               ),
                             ),
                           ),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
                               color: FormTheme.surfaceMuted,
                               borderRadius: BorderRadius.circular(12),
@@ -823,7 +894,8 @@ class _EquipmentSelectionDialogState
                                 const SizedBox(width: 4),
                                 Text(
                                   EquipmentAndModificationsWidget
-                                          ._equipmentTypeChipTitles[item.type] ??
+                                              ._equipmentTypeChipTitles[
+                                          item.type] ??
                                       EquipmentAndModificationsWidget._titleize(
                                           item.type),
                                   style: TextStyle(
@@ -866,4 +938,3 @@ class _EquipmentSelectionDialogState
     );
   }
 }
-

@@ -8,18 +8,20 @@ import '../../../../core/models/abilities_models.dart';
 import '../../../../core/models/characteristics_models.dart';
 import '../../../../core/services/ability_data_service.dart';
 import '../../../../core/services/abilities_service.dart';
+import '../../../../core/storage/hero_storage_contract.dart';
 import '../../../../core/theme/app_icon.dart';
 import '../../../../core/theme/app_icons.dart';
 import '../../../../core/theme/creator_theme.dart';
 import '../../../../core/theme/navigation_theme.dart';
 import '../../../../core/theme/form_theme.dart';
 import '../../../../core/text/creators/widgets/strife_creator/choose_abilities_widget_text.dart';
-import '../../../../core/utils/selection_guard.dart';
 import '../../../../widgets/abilities/ability_expandable_item.dart';
 import '../../../../widgets/abilities/abilities_shared.dart';
+import '../../../hero_builder/domain/hero_claim.dart';
+import '../../../hero_builder/domain/hero_conflict_index.dart';
+import '../../../hero_builder/domain/hero_draft_claims.dart';
 
 // Helper classes for picker
-
 
 class _PickerSelection {
   final String? value;
@@ -33,6 +35,7 @@ class _PickerSelection {
 
 typedef AbilitySelectionChanged = void Function(
     StartingAbilitySelectionResult result);
+typedef ClassAbilityLoader = Future<List<Component>> Function(String classSlug);
 
 class StartingAbilitiesWidget extends StatefulWidget {
   const StartingAbilitiesWidget({
@@ -42,7 +45,8 @@ class StartingAbilitiesWidget extends StatefulWidget {
     this.selectedSubclassName,
     this.selectedDomainNames = const <String>[],
     this.selectedAbilities = const <String, String?>{},
-    this.reservedAbilityIds = const <String>{},
+    this.conflictIndex = HeroConflictIndex.empty,
+    this.loadClassAbilities,
     this.onSelectionChanged,
   });
 
@@ -51,7 +55,8 @@ class StartingAbilitiesWidget extends StatefulWidget {
   final String? selectedSubclassName;
   final List<String> selectedDomainNames;
   final Map<String, String?> selectedAbilities;
-  final Set<String> reservedAbilityIds;
+  final HeroConflictIndex conflictIndex;
+  final ClassAbilityLoader? loadClassAbilities;
   final AbilitySelectionChanged? onSelectionChanged;
 
   @override
@@ -62,7 +67,11 @@ class StartingAbilitiesWidget extends StatefulWidget {
 class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
     with AutomaticKeepAliveClientMixin {
   static const _accent = CreatorTheme.abilitiesAccent;
-  
+  static const _strifeAbilityClaimSource = HeroClaimSource(
+    sourceType: HeroEntrySourceTypes.manualChoice,
+    sourceId: HeroEntrySourceIds.strifeAbilityChoice,
+  );
+
   final StartingAbilitiesService _service = const StartingAbilitiesService();
   final AbilityDataService _abilityDataService = AbilityDataService();
   final MapEquality<String, String?> _mapEquality =
@@ -95,6 +104,8 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
     super.didUpdateWidget(oldWidget);
     final classChanged =
         oldWidget.classData.classId != widget.classData.classId;
+    final loaderChanged =
+        oldWidget.loadClassAbilities != widget.loadClassAbilities;
     final levelChanged = oldWidget.selectedLevel != widget.selectedLevel;
     final subclassChanged =
         oldWidget.selectedSubclassName != widget.selectedSubclassName;
@@ -102,11 +113,7 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
       _normalizedDomainNames(oldWidget.selectedDomainNames),
       _normalizedDomainNames(widget.selectedDomainNames),
     );
-    final reservedChanged = !_setEquality.equals(
-      oldWidget.reservedAbilityIds,
-      widget.reservedAbilityIds,
-    );
-    if (classChanged) {
+    if (classChanged || loaderChanged) {
       _loadAbilities();
       return;
     }
@@ -121,12 +128,6 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
         oldWidget.selectedAbilities, widget.selectedAbilities)) {
       _applyExternalSelections(widget.selectedAbilities);
     }
-    if (reservedChanged && !_isLoading && _error == null) {
-      final changed = _applyReservedPruning();
-      if (changed) {
-        _notifySelectionChanged();
-      }
-    }
   }
 
   Future<void> _loadAbilities() async {
@@ -137,8 +138,8 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
 
     try {
       final classSlug = _classSlug(widget.classData.classId);
-      final components =
-          await _abilityDataService.loadClassAbilities(classSlug);
+      final components = await (widget.loadClassAbilities ??
+          _abilityDataService.loadClassAbilities)(classSlug);
       if (!mounted) return;
       final options = components.map(_mapComponentToOption).toList();
       final byId = {
@@ -166,7 +167,8 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
 
       final bool isSignature = abilityData.isSignature;
       final int? costAmount = abilityData.costAmount;
-      final String? resource = abilityData.resourceLabel ?? abilityData.resourceType;
+      final String? resource =
+          abilityData.resourceLabel ?? abilityData.resourceType;
 
       final level = _resolveAbilityLevel(component);
       final subclassRaw = data['subclass']?.toString().trim();
@@ -240,7 +242,6 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
       _selectionCallbackVersion += 1;
     });
 
-    _applyReservedPruning();
     _notifySelectionChanged();
   }
 
@@ -262,26 +263,8 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
     });
     if (changed) {
       setState(() {});
-      _applyReservedPruning();
       _notifySelectionChanged();
     }
-  }
-
-  bool _applyReservedPruning() {
-    if (widget.reservedAbilityIds.isEmpty) return false;
-    final allowIds = _selections.values
-        .expand((slots) => slots)
-        .whereType<String>()
-        .toSet();
-    final changed = ComponentSelectionGuard.pruneBlockedSelections(
-      _selections,
-      widget.reservedAbilityIds,
-      allowIds: allowIds,
-    );
-    if (changed) {
-      setState(() {});
-    }
-    return changed;
   }
 
   String? _resolveAbilityId(String? value) {
@@ -311,35 +294,9 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
 
     setState(() {
       slots[slotIndex] = resolved;
-      if (resolved != null) {
-        _removeDuplicateSelections(
-          abilityId: resolved,
-          exceptAllowanceId: allowance.id,
-          exceptSlotIndex: slotIndex,
-        );
-      }
     });
 
     _notifySelectionChanged();
-  }
-
-  void _removeDuplicateSelections({
-    required String abilityId,
-    required String exceptAllowanceId,
-    required int exceptSlotIndex,
-  }) {
-    for (final entry in _selections.entries) {
-      final allowanceId = entry.key;
-      final slots = entry.value;
-      for (var i = 0; i < slots.length; i++) {
-        if (allowanceId == exceptAllowanceId && i == exceptSlotIndex) {
-          continue;
-        }
-        if (slots[i] == abilityId) {
-          slots[i] = null;
-        }
-      }
-    }
   }
 
   void _notifySelectionChanged() {
@@ -388,25 +345,40 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
     });
   }
 
-  Set<String> _selectedAbilityIds({
-    String? exceptAllowanceId,
-    int? exceptSlotIndex,
-  }) {
-    final ids = <String>{};
+  HeroConflictIndex _projectedConflictIndex() {
+    return widget.conflictIndex.withClaims(_draftAbilityClaims());
+  }
+
+  Iterable<HeroEntryClaim> _draftAbilityClaims() sync* {
     for (final entry in _selections.entries) {
       final allowanceId = entry.key;
       final slots = entry.value;
       for (var i = 0; i < slots.length; i++) {
-        if (allowanceId == exceptAllowanceId && i == exceptSlotIndex) {
-          continue;
-        }
         final value = slots[i];
         if (value != null && value.isNotEmpty) {
-          ids.add(value);
+          yield HeroEntryClaim(
+            key: HeroEntryKey(
+              entryType: HeroEntryTypes.ability,
+              canonicalEntryId: value,
+            ),
+            owner: HeroClaimOwner.draft(
+              source: _strifeAbilityClaimSource,
+              slotKey: _claimSlotKey(allowanceId, i),
+              displayLabel: '${entry.key} choice ${i + 1}',
+            ),
+          );
         }
       }
     }
-    return ids;
+  }
+
+  String _conflictDescription(HeroConflict conflict) {
+    final labels = conflict.owners
+        .map((owner) => owner.displayLabel ?? owner.source.toString())
+        .toSet()
+        .toList()
+      ..sort();
+    return '${ChooseAbilitiesWidgetText.conflictOwnerPrefix}${labels.join(', ')}';
   }
 
   List<AbilityOption> _optionsForAllowance(AbilityAllowance allowance) {
@@ -439,7 +411,8 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
             return false;
           }
           // Case-insensitive comparison for subclass matching
-          if (option.subclass!.toLowerCase() != selectedSubclass.toLowerCase()) {
+          if (option.subclass!.toLowerCase() !=
+              selectedSubclass.toLowerCase()) {
             return false;
           }
         }
@@ -505,6 +478,7 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
     );
     final selectedCount =
         _selections.values.expand((slots) => slots).whereType<String>().length;
+    final conflictIndex = _projectedConflictIndex();
 
     return Container(
       margin: CreatorTheme.sectionMargin,
@@ -514,7 +488,8 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
         children: [
           CreatorTheme.sectionHeader(
             title: ChooseAbilitiesWidgetText.expansionTitle,
-            subtitle: '${ChooseAbilitiesWidgetText.selectionSubtitlePrefix}$selectedCount${ChooseAbilitiesWidgetText.selectionSubtitleMiddle}$totalSlots${ChooseAbilitiesWidgetText.selectionSubtitleSuffix}',
+            subtitle:
+                '${ChooseAbilitiesWidgetText.selectionSubtitlePrefix}$selectedCount${ChooseAbilitiesWidgetText.selectionSubtitleMiddle}$totalSlots${ChooseAbilitiesWidgetText.selectionSubtitleSuffix}',
             appIcon: AbilityIcons.ability,
             accent: _accent,
           ),
@@ -522,7 +497,14 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
             padding: const EdgeInsets.fromLTRB(12, 8, 12, 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: plan.allowances.map(_buildAllowanceSection).toList(),
+              children: plan.allowances
+                  .map(
+                    (allowance) => _buildAllowanceSection(
+                      allowance,
+                      conflictIndex,
+                    ),
+                  )
+                  .toList(),
             ),
           ),
         ],
@@ -549,7 +531,10 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
     );
   }
 
-  Widget _buildAllowanceSection(AbilityAllowance allowance) {
+  Widget _buildAllowanceSection(
+    AbilityAllowance allowance,
+    HeroConflictIndex conflictIndex,
+  ) {
     final options = _optionsForAllowance(allowance);
     final slots = _selections[allowance.id] ?? const [];
     final helper = _buildAllowanceHelperText(allowance);
@@ -581,19 +566,27 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
           else
             ...List.generate(slots.length, (index) {
               final current = slots[index];
-              final reservedIds = <String>{
-                ...widget.reservedAbilityIds,
-                ..._selectedAbilityIds(
-                  exceptAllowanceId: allowance.id,
-                  exceptSlotIndex: index,
-                ),
-              };
-              final availableOptions = ComponentSelectionGuard.filterAllowed(
-                options: options,
-                reservedIds: reservedIds,
-                idSelector: (option) => option.id,
-                currentId: current,
-              );
+              final slotKey = _claimSlotKey(allowance.id, index);
+              final conflict = current == null
+                  ? null
+                  : conflictIndex.conflictFor(
+                      HeroEntryKey(
+                        entryType: HeroEntryTypes.ability,
+                        canonicalEntryId: current,
+                      ),
+                      ignoredDraftSlotKey: slotKey,
+                    );
+              final isDuplicate = conflict != null;
+              final availableOptions = options.where((option) {
+                if (option.id == current) return true;
+                return !conflictIndex.isClaimed(
+                  HeroEntryKey(
+                    entryType: HeroEntryTypes.ability,
+                    canonicalEntryId: option.id,
+                  ),
+                  ignoredDraftSlotKey: slotKey,
+                );
+              }).toList(growable: false);
               final selectedOption =
                   current != null ? _abilityById[current] : null;
               return Padding(
@@ -610,24 +603,38 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
                         currentValue: current,
                         availableOptions: availableOptions,
                       ),
-                      borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),
+                      borderRadius:
+                          BorderRadius.circular(CreatorTheme.inputBorderRadius),
                       child: InputDecorator(
                         decoration: InputDecoration(
                           labelText:
                               '${ChooseAbilitiesWidgetText.choiceLabelPrefix}${index + 1}',
                           labelStyle: TextStyle(color: FormTheme.textSecondary),
                           filled: true,
-                          fillColor: FormTheme.surface,
+                          fillColor: isDuplicate
+                              ? Colors.orange.withValues(alpha: 0.08)
+                              : FormTheme.surface,
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),
-                            borderSide: BorderSide(color: FormTheme.border),
+                            borderRadius: BorderRadius.circular(
+                                CreatorTheme.inputBorderRadius),
+                            borderSide: BorderSide(
+                              color: isDuplicate
+                                  ? Colors.orange
+                                  : FormTheme.border,
+                            ),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),
-                            borderSide: BorderSide(color: FormTheme.border),
+                            borderRadius: BorderRadius.circular(
+                                CreatorTheme.inputBorderRadius),
+                            borderSide: BorderSide(
+                              color: isDuplicate
+                                  ? Colors.orange
+                                  : FormTheme.border,
+                            ),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),
+                            borderRadius: BorderRadius.circular(
+                                CreatorTheme.inputBorderRadius),
                             borderSide: const BorderSide(color: _accent),
                           ),
                           contentPadding: const EdgeInsets.symmetric(
@@ -641,12 +648,16 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
                             Expanded(
                               child: Text(
                                 selectedOption != null
-                                    ? _abilityOptionLabel(selectedOption)
+                                    ? isDuplicate
+                                        ? '${_abilityOptionLabel(selectedOption)} (${ChooseAbilitiesWidgetText.duplicateLabel})'
+                                        : _abilityOptionLabel(selectedOption)
                                     : ChooseAbilitiesWidgetText.unassignedLabel,
                                 style: TextStyle(
-                                  color: selectedOption != null
-                                      ? FormTheme.textBright
-                                      : FormTheme.textSecondary,
+                                  color: isDuplicate
+                                      ? Colors.orange.shade200
+                                      : selectedOption != null
+                                          ? FormTheme.textBright
+                                          : FormTheme.textSecondary,
                                   fontSize: 14,
                                 ),
                                 overflow: TextOverflow.ellipsis,
@@ -660,6 +671,16 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
                         ),
                       ),
                     ),
+                    if (conflict != null) ...[
+                      const SizedBox(height: 6),
+                      Text(
+                        _conflictDescription(conflict),
+                        style: TextStyle(
+                          color: Colors.orange.shade200,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
                     if (selectedOption != null) ...[
                       const SizedBox(height: 8),
                       AbilityExpandableItem(
@@ -851,7 +872,8 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
                                     children: [
                                       Expanded(
                                         child: Text(
-                                          ChooseAbilitiesWidgetText.unassignedLabel,
+                                          ChooseAbilitiesWidgetText
+                                              .unassignedLabel,
                                           style: TextStyle(
                                             color: currentValue == null
                                                 ? _accent
@@ -940,12 +962,14 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
                                                   ),
                                                 ),
                                                 if (option.subclass != null &&
-                                                    option.subclass!.isNotEmpty) ...[
+                                                    option.subclass!
+                                                        .isNotEmpty) ...[
                                                   const SizedBox(height: 4),
                                                   Text(
                                                     option.subclass!,
                                                     style: TextStyle(
-                                                      color: FormTheme.textSecondary,
+                                                      color: FormTheme
+                                                          .textSecondary,
                                                       fontSize: 12,
                                                     ),
                                                   ),
@@ -1069,7 +1093,11 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
     return buffer.toString();
   }
 
-  String _slotKey(String allowanceId, int index) => '$allowanceId#$index';
+  String _slotKey(String allowanceId, int index) =>
+      HeroDraftClaims.strifeSelectionKey(allowanceId, index);
+
+  String _claimSlotKey(String allowanceId, int index) =>
+      HeroDraftClaims.strifeAbilitySlot(_slotKey(allowanceId, index));
 
   String _classSlug(String classId) {
     final normalized = classId.trim().toLowerCase();
@@ -1158,4 +1186,3 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
     return null;
   }
 }
-

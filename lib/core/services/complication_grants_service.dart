@@ -10,26 +10,32 @@ import '../models/ancestry_bonus_models.dart';
 import '../models/complication_grant_models.dart';
 import '../models/damage_resistance_model.dart';
 import '../models/dynamic_modifier_model.dart';
+import '../models/hero_mutation_model.dart';
 import '../models/stat_modification_model.dart';
 import 'ability_resolver_service.dart';
 import 'damage_resistance_service.dart';
 import 'dynamic_modifiers_service.dart';
+import 'hero_mutation_service.dart';
 import '../repositories/hero_entry_repository.dart';
+import '../storage/hero_storage_contract.dart';
+import '../storage/stat_mod_entry_parser.dart';
 
 /// Service for managing complication grants.
 /// Handles parsing complications, applying grants to heroes, and removing them when complications change.
 class ComplicationGrantsService {
-  ComplicationGrantsService(this._db)
+  ComplicationGrantsService(this._db, {HeroMutationService? mutations})
       : _dynamicModifiers = DynamicModifiersService(_db),
         _entries = HeroEntryRepository(_db),
         _abilityResolver = AbilityResolverService(_db),
-        _resistanceService = DamageResistanceService(_db);
+        _resistanceService = DamageResistanceService(_db),
+        _mutations = mutations ?? HeroMutationService(_db);
 
   final db.AppDatabase _db;
   final DynamicModifiersService _dynamicModifiers;
   final HeroEntryRepository _entries;
   final AbilityResolverService _abilityResolver;
   final DamageResistanceService _resistanceService;
+  final HeroMutationService _mutations;
 
   /// Parse all grants from a complication's data.
   Future<AppliedComplicationGrants> parseComplicationGrants({
@@ -52,25 +58,26 @@ class ComplicationGrantsService {
       return AppliedComplicationGrants.empty;
     }
 
-    final compData = jsonDecode(complicationComp.dataJson) as Map<String, dynamic>;
+    final compData =
+        jsonDecode(complicationComp.dataJson) as Map<String, dynamic>;
     final compName = (compData['name'] as String?) ?? complicationComp.name;
-    
-    // Get the grants section
-    final grantsData = compData['grants'] as Map<String, dynamic>?;
-    if (grantsData == null || grantsData.isEmpty) {
-      return AppliedComplicationGrants(
-        complicationId: complicationId,
-        complicationName: compName,
-        grants: [],
-      );
-    }
 
+    // Get the grants section
+    final grantsData = compData['grants'];
     final grants = ComplicationGrant.parseFromGrantsData(
       grantsData,
       complicationId,
       compName,
       choices,
     );
+
+    if (grants.isEmpty) {
+      return AppliedComplicationGrants(
+        complicationId: complicationId,
+        complicationName: compName,
+        grants: [],
+      );
+    }
 
     return AppliedComplicationGrants(
       complicationId: complicationId,
@@ -86,6 +93,54 @@ class ComplicationGrantsService {
     required AppliedComplicationGrants grants,
     required int heroLevel,
   }) async {
+    await removeGrants(heroId);
+
+    await applyStackedGrants(
+      heroId: heroId,
+      grants: grants,
+      heroLevel: heroLevel,
+    );
+  }
+
+  /// Clear all complication grants for the hero, then re-apply stacked grants
+  /// for every complication in [complicationIds].
+  ///
+  /// Use this when multiple complications coexist (e.g. one chosen in the
+  /// hero creator plus extras added from the Complications tab) so that one
+  /// path's save does not erase the others' grants.
+  Future<void> reapplyAllComplications({
+    required String heroId,
+    required List<String> complicationIds,
+    required Map<String, String> choices,
+    required int heroLevel,
+  }) async {
+    await removeGrants(heroId);
+    for (final id in complicationIds) {
+      final trimmed = id.trim();
+      if (trimmed.isEmpty) continue;
+      final grants = await parseComplicationGrants(
+        complicationId: trimmed,
+        choices: choices,
+      );
+      await applyStackedGrants(
+        heroId: heroId,
+        grants: grants,
+        heroLevel: heroLevel,
+      );
+    }
+  }
+
+  /// Apply one complication's grants without clearing other complication grants.
+  ///
+  /// Callers that manage multiple complications should call [removeGrants] once,
+  /// then call this once for each selected complication.
+  Future<void> applyStackedGrants({
+    required String heroId,
+    required AppliedComplicationGrants grants,
+    required int heroLevel,
+  }) async {
+    if (grants.complicationId.isEmpty) return;
+
     // Store the raw grants for later removal
     await _saveGrants(heroId, grants);
 
@@ -121,13 +176,11 @@ class ComplicationGrantsService {
   }
 
   /// Remove all complication grants from a hero.
-  /// 
-  /// This clears all entries with sourceType='complication' from hero_entries,
-  /// regardless of whether the grants config exists. This ensures orphaned
-  /// entries are always cleaned up.
+  ///
+  /// This clears all complication-granted entries regardless of whether the
+  /// grants config exists. Current token counters and base stat state are
+  /// handled separately from granted content.
   Future<void> removeGrants(String heroId) async {
-    final currentGrants = await loadGrants(heroId);
-
     // Restore original base stats that were modified by complication
     await _restoreOriginalBaseStats(heroId);
 
@@ -149,13 +202,8 @@ class ComplicationGrantsService {
     // Clear recovery grants (legacy static storage)
     await _clearRecoveryGrants(heroId);
 
-    // Clear dynamic modifiers from this complication (only if we know the ID)
-    if (currentGrants != null) {
-      await _dynamicModifiers.removeModifiersFromSource(
-        heroId,
-        'complication_${currentGrants.complicationId}',
-      );
-    }
+    // Clear dynamic modifiers from every complication source.
+    await _clearComplicationDynamicModifiers(heroId);
 
     // Clear treasure grants - always clear even if config is null
     await _clearTreasureGrants(heroId);
@@ -170,7 +218,10 @@ class ComplicationGrantsService {
     await _clearAncestryTraitGrants(heroId);
 
     // Clear stored grants config
-    await _db.deleteHeroConfig(heroId, _kComplicationGrants);
+    await _mutations.removeConfigChoice(
+      heroId: heroId,
+      key: _kComplicationGrants,
+    );
   }
 
   /// Load currently applied grants for a hero.
@@ -189,9 +240,9 @@ class ComplicationGrantsService {
     required String heroId,
     required Map<String, String> choices,
   }) async {
-    await _db.setHeroConfig(
+    await _mutations.saveConfigChoice(
       heroId: heroId,
-      configKey: _kComplicationChoices,
+      key: _kComplicationChoices,
       value: choices,
     );
   }
@@ -205,6 +256,11 @@ class ComplicationGrantsService {
 
   /// Load tokens granted by complication.
   Future<Map<String, int>> loadTokenGrants(String heroId) async {
+    final config = await _db.getHeroConfigValue(heroId, _kComplicationTokens);
+    if (config != null) {
+      return config.map((k, v) => MapEntry(k.toString(), _toInt(v)));
+    }
+
     final values = await _db.getHeroValues(heroId);
     final value = values.firstWhereOrNull((v) => v.key == _kComplicationTokens);
     if (value?.textValue == null && value?.jsonValue == null) {
@@ -213,7 +269,7 @@ class ComplicationGrantsService {
     try {
       final json = jsonDecode(value!.jsonValue ?? value.textValue!);
       if (json is Map) {
-        return json.map((k, v) => MapEntry(k.toString(), (v as num).toInt()));
+        return json.map((k, v) => MapEntry(k.toString(), _toInt(v)));
       }
     } catch (_) {}
     return {};
@@ -221,10 +277,11 @@ class ComplicationGrantsService {
 
   /// Load abilities granted by complication.
   Future<Map<String, String>> loadAbilityGrants(String heroId) async {
-    final entries =
-        await _entries.listEntriesByType(heroId, 'ability');
+    final entries = await _entries.listEntriesByType(heroId, 'ability');
     final map = <String, String>{};
-    for (final e in entries.where((e) => e.sourceType == 'complication')) {
+    for (final e in entries.where((e) =>
+        e.sourceType == HeroEntrySourceTypes.complication ||
+        e.sourceType == HeroEntrySourceTypes.complicationAncestryTrait)) {
       map[e.entryId] = e.sourceId;
     }
     return map;
@@ -232,8 +289,7 @@ class ComplicationGrantsService {
 
   /// Load skills granted by complication.
   Future<List<String>> loadSkillGrants(String heroId) async {
-    final entries =
-        await _entries.listEntriesByType(heroId, 'skill');
+    final entries = await _entries.listEntriesByType(heroId, 'skill');
     return entries
         .where((e) => e.sourceType == 'complication')
         .map((e) => e.entryId)
@@ -245,25 +301,40 @@ class ComplicationGrantsService {
     final storedValues = await loadSkillGrants(heroId);
     if (storedValues.isEmpty) return;
 
-    await _entries.addEntriesFromSource(
+    await _mutations.replaceContentEntries(
       heroId: heroId,
-      sourceType: 'complication',
-      sourceId: 'complication_sync',
-      entryType: 'skill',
+      source: _complicationSource('complication_sync'),
+      entryType: HeroEntryTypes.skill,
       entryIds: storedValues,
-      gainedBy: 'grant',
     );
   }
 
   /// Load complication stat modifications.
   Future<HeroStatModifications> loadComplicationStatMods(String heroId) async {
+    final entries = await _entries.listEntriesByType(
+      heroId,
+      HeroEntryTypes.statMod,
+    );
+    final complicationEntries = entries
+        .where((entry) => entry.sourceType == HeroEntrySourceTypes.complication)
+        .toList();
+    final entryMods = statModificationsFromEntries(complicationEntries);
+    if (entryMods.modifications.isNotEmpty) return entryMods;
+
+    return _loadLegacyComplicationStatMods(heroId);
+  }
+
+  Future<HeroStatModifications> _loadLegacyComplicationStatMods(
+    String heroId,
+  ) async {
     final values = await _db.getHeroValues(heroId);
-    final modsValue = values.firstWhereOrNull((v) => v.key == _kComplicationStatMods);
-    
+    final modsValue =
+        values.firstWhereOrNull((v) => v.key == _kComplicationStatMods);
+
     if (modsValue?.jsonValue == null && modsValue?.textValue == null) {
       return const HeroStatModifications.empty();
     }
-    
+
     try {
       final jsonStr = modsValue!.jsonValue ?? modsValue.textValue!;
       return HeroStatModifications.fromJsonString(jsonStr);
@@ -274,24 +345,25 @@ class ComplicationGrantsService {
 
   /// Watch complication stat modifications - automatically updates when values change.
   Stream<HeroStatModifications> watchComplicationStatMods(String heroId) {
-    return _db.watchHeroValues(heroId).map((values) {
-      final modsValue = values.firstWhereOrNull((v) => v.key == _kComplicationStatMods);
-      if (modsValue?.jsonValue == null && modsValue?.textValue == null) {
-        return const HeroStatModifications.empty();
-      }
-      try {
-        final jsonStr = modsValue!.jsonValue ?? modsValue.textValue!;
-        return HeroStatModifications.fromJsonString(jsonStr);
-      } catch (_) {
-        return const HeroStatModifications.empty();
-      }
+    return _entries
+        .watchEntriesByType(heroId, HeroEntryTypes.statMod)
+        .asyncMap((entries) async {
+      final complicationEntries = entries
+          .where(
+              (entry) => entry.sourceType == HeroEntrySourceTypes.complication)
+          .toList();
+      final entryMods = statModificationsFromEntries(complicationEntries);
+      if (entryMods.modifications.isNotEmpty) return entryMods;
+
+      return _loadLegacyComplicationStatMods(heroId);
     });
   }
 
   /// Load recovery bonus from complication.
   Future<int> loadRecoveryBonus(String heroId) async {
     final values = await _db.getHeroValues(heroId);
-    final value = values.firstWhereOrNull((v) => v.key == _kComplicationRecoveryBonus);
+    final value =
+        values.firstWhereOrNull((v) => v.key == _kComplicationRecoveryBonus);
     return value?.value ?? 0;
   }
 
@@ -312,10 +384,11 @@ class ComplicationGrantsService {
 
   // Private implementation methods
 
-  Future<void> _saveGrants(String heroId, AppliedComplicationGrants grants) async {
-    await _db.setHeroConfig(
+  Future<void> _saveGrants(
+      String heroId, AppliedComplicationGrants grants) async {
+    await _mutations.saveConfigChoice(
       heroId: heroId,
-      configKey: _kComplicationGrants,
+      key: _kComplicationGrants,
       value: grants.toJson(),
     );
   }
@@ -335,7 +408,7 @@ class ComplicationGrantsService {
     }
 
     final values = await _db.getHeroValues(heroId);
-    
+
     // Track original base stats before any changes
     final originalBaseStats = <String, int>{};
 
@@ -358,7 +431,8 @@ class ComplicationGrantsService {
           // Create appropriate StatModification subtype based on grant properties
           final StatModification mod;
           if (grant.dynamicValue == 'level') {
-            mod = LevelScaledStatModification(source: grant.sourceComplicationName);
+            mod = LevelScaledStatModification(
+                source: grant.sourceComplicationName);
           } else {
             mod = StaticStatModification(
               value: grant.value,
@@ -372,16 +446,20 @@ class ComplicationGrantsService {
           final stat = grant.stat.toLowerCase();
           if (stat == 'immunity' || stat == 'weakness') continue;
           // Store with per-echelon metadata for dynamic calculation
-          addMod(grant.stat, EchelonScaledStatModification(
-            valuePerEchelon: grant.valuePerEchelon,
-            source: grant.sourceComplicationName,
-          ));
+          addMod(
+              grant.stat,
+              EchelonScaledStatModification(
+                valuePerEchelon: grant.valuePerEchelon,
+                source: grant.sourceComplicationName,
+              ));
 
         case DecreaseTotalGrant():
-          addMod(grant.stat, StaticStatModification(
-            value: -grant.value,
-            source: grant.sourceComplicationName,
-          ));
+          addMod(
+              grant.stat,
+              StaticStatModification(
+                value: -grant.value,
+                source: grant.sourceComplicationName,
+              ));
 
         default:
           // Other grant types handled elsewhere
@@ -395,14 +473,14 @@ class ComplicationGrantsService {
     }
 
     // Apply stat modifications with sources
-    await _setComplicationStatMods(heroId, statMods);
+    await _setComplicationStatMods(heroId, grants.complicationId, statMods);
   }
 
   Future<void> _applyTokenGrants(
     String heroId,
     AppliedComplicationGrants grants,
   ) async {
-    final tokens = <String, int>{};
+    final tokens = await loadTokenGrants(heroId);
 
     for (final grant in grants.grants) {
       if (grant is TokenGrant) {
@@ -412,11 +490,12 @@ class ComplicationGrantsService {
 
     if (tokens.isEmpty) return;
 
-    await _db.upsertHeroValue(
+    await _mutations.saveConfigChoice(
       heroId: heroId,
       key: _kComplicationTokens,
-      textValue: jsonEncode(tokens),
+      value: tokens,
     );
+    await _db.deleteHeroValue(heroId: heroId, key: _kComplicationTokens);
   }
 
   Future<void> _applyAbilityGrants(
@@ -438,13 +517,11 @@ class ComplicationGrantsService {
       sourceType: 'complication',
     );
 
-    await _entries.addEntriesFromSource(
+    await _mutations.replaceContentEntries(
       heroId: heroId,
-      sourceType: 'complication',
-      sourceId: grants.complicationId,
-      entryType: 'ability',
+      source: _complicationSource(grants.complicationId),
+      entryType: HeroEntryTypes.ability,
       entryIds: abilityIds,
-      gainedBy: 'grant',
     );
   }
 
@@ -476,13 +553,11 @@ class ComplicationGrantsService {
     final skillIds = _dedupeSkillIds(collectedSkillIds);
     if (skillIds.isEmpty) return;
 
-    await _entries.addEntriesFromSource(
+    await _mutations.replaceContentEntries(
       heroId: heroId,
-      sourceType: 'complication',
-      sourceId: grants.complicationId,
-      entryType: 'skill',
+      source: _complicationSource(grants.complicationId),
+      entryType: HeroEntryTypes.skill,
       entryIds: skillIds,
-      gainedBy: 'grant',
     );
   }
 
@@ -537,25 +612,42 @@ class ComplicationGrantsService {
   }
 
   /// Save the original base stat values before complication modifies them.
-  Future<void> _saveOriginalBaseStats(String heroId, Map<String, int> stats) async {
+  Future<void> _saveOriginalBaseStats(
+      String heroId, Map<String, int> stats) async {
     if (stats.isEmpty) return;
-    await _db.upsertHeroValue(
+    final existingStats = await _loadOriginalBaseStats(heroId);
+    final mergedStats = <String, int>{...stats, ...existingStats};
+    await _mutations.saveConfigChoice(
       heroId: heroId,
       key: _kComplicationOriginalBaseStats,
-      textValue: jsonEncode(stats),
+      value: mergedStats,
+    );
+    await _db.deleteHeroValue(
+      heroId: heroId,
+      key: _kComplicationOriginalBaseStats,
     );
   }
 
   /// Load the original base stat values that were saved before complication modified them.
   Future<Map<String, int>> _loadOriginalBaseStats(String heroId) async {
+    final config = await _db.getHeroConfigValue(
+      heroId,
+      _kComplicationOriginalBaseStats,
+    );
+    if (config != null) {
+      return config.map((k, v) => MapEntry(k.toString(), _toInt(v)));
+    }
+
     final values = await _db.getHeroValues(heroId);
-    final entry = values.firstWhereOrNull((v) => v.key == _kComplicationOriginalBaseStats);
+    final entry = values
+        .firstWhereOrNull((v) => v.key == _kComplicationOriginalBaseStats);
     if (entry?.jsonValue == null && entry?.textValue == null) return {};
     try {
       final raw = entry!.jsonValue ?? entry.textValue!;
       final decoded = jsonDecode(raw);
       if (decoded is Map) {
-        return decoded.map((k, v) => MapEntry(k.toString(), (v as num).toInt()));
+        return decoded
+            .map((k, v) => MapEntry(k.toString(), (v as num).toInt()));
       }
     } catch (_) {}
     return {};
@@ -567,62 +659,60 @@ class ComplicationGrantsService {
     for (final entry in originalStats.entries) {
       await _setBaseStat(heroId, entry.key, entry.value);
     }
-    // Clear the stored original stats
-    await _db.upsertHeroValue(
+    // Clear the stored original stats.
+    await _mutations.removeConfigChoice(
       heroId: heroId,
       key: _kComplicationOriginalBaseStats,
-      textValue: null,
+    );
+    await _db.deleteHeroValue(
+      heroId: heroId,
+      key: _kComplicationOriginalBaseStats,
     );
   }
 
   Future<void> _clearComplicationStatMods(String heroId) async {
     // Clear from hero_entries (new storage)
-    await (_db.delete(_db.heroEntries)
-          ..where((t) =>
-              t.heroId.equals(heroId) &
-              t.entryType.equals('stat_mod') &
-              t.sourceType.equals('complication')))
-        .go();
-    
-    // Also clear legacy hero_values for backwards compatibility
-    await _db.upsertHeroValue(
+    await _mutations.removeSourceType(
       heroId: heroId,
-      key: _kComplicationStatMods,
-      textValue: null,
+      sourceType: HeroEntrySourceTypes.complication,
+      entryType: HeroEntryTypes.statMod,
+      recomputeAggregates: false,
     );
+
+    // Also clear legacy hero_values for backwards compatibility.
+    await _db.deleteHeroValue(heroId: heroId, key: _kComplicationStatMods);
   }
 
   Future<void> _clearTokenGrants(String heroId) async {
-    await _db.upsertHeroValue(
+    await _mutations.removeConfigChoice(
       heroId: heroId,
       key: _kComplicationTokens,
-      textValue: null,
     );
+    await _db.deleteHeroValue(heroId: heroId, key: _kComplicationTokens);
   }
 
   Future<void> _clearAbilityGrants(String heroId) async {
-    await (_db.delete(_db.heroEntries)
-          ..where((t) =>
-              t.heroId.equals(heroId) &
-              t.entryType.equals('ability') &
-              t.sourceType.equals('complication')))
-        .go();
+    await _mutations.removeSourceType(
+      heroId: heroId,
+      sourceType: HeroEntrySourceTypes.complication,
+      entryType: HeroEntryTypes.ability,
+      recomputeAggregates: false,
+    );
   }
 
   Future<void> _clearSkillGrants(String heroId) async {
-    await (_db.delete(_db.heroEntries)
-          ..where((t) =>
-              t.heroId.equals(heroId) &
-              t.entryType.equals('skill') &
-              t.sourceType.equals('complication')))
-        .go();
+    await _mutations.removeSourceType(
+      heroId: heroId,
+      sourceType: HeroEntrySourceTypes.complication,
+      entryType: HeroEntryTypes.skill,
+      recomputeAggregates: false,
+    );
   }
 
   Future<void> _clearRecoveryGrants(String heroId) async {
-    await _db.upsertHeroValue(
+    await _db.deleteHeroValue(
       heroId: heroId,
       key: _kComplicationRecoveryBonus,
-      value: null,
     );
   }
 
@@ -631,11 +721,9 @@ class ComplicationGrantsService {
     AppliedComplicationGrants grants,
     int heroLevel,
   ) async {
-    // Clear old complication resistance entries first
-    await _clearDamageResistanceGrants(heroId);
-
     // Collect resistance data for batch processing
-    final resistanceData = <String, ({
+    final resistanceData = <String,
+        ({
       int immunity,
       int weakness,
       String? dynamicImmunity,
@@ -645,9 +733,9 @@ class ComplicationGrantsService {
     })>{};
 
     void addResistance({
-      required String stat, 
-      required String damageType, 
-      required int value, 
+      required String stat,
+      required String damageType,
+      required int value,
       required String sourceName,
       String? dynamicValue,
       bool perEchelon = false,
@@ -658,24 +746,26 @@ class ComplicationGrantsService {
       if (normalizedType == 'all damage') {
         normalizedType = 'damage';
       }
-      
+
       // Get or create entry
-      final existing = resistanceData[normalizedType] ?? (
-        immunity: 0,
-        weakness: 0,
-        dynamicImmunity: null,
-        dynamicWeakness: null,
-        immunityPerEchelon: 0,
-        weaknessPerEchelon: 0,
-      );
-      
+      final existing = resistanceData[normalizedType] ??
+          (
+            immunity: 0,
+            weakness: 0,
+            dynamicImmunity: null,
+            dynamicWeakness: null,
+            immunityPerEchelon: 0,
+            weaknessPerEchelon: 0,
+          );
+
       if (stat == 'immunity') {
         resistanceData[normalizedType] = (
           immunity: existing.immunity + value,
           weakness: existing.weakness,
           dynamicImmunity: dynamicValue ?? existing.dynamicImmunity,
           dynamicWeakness: existing.dynamicWeakness,
-          immunityPerEchelon: existing.immunityPerEchelon + (perEchelon ? valuePerEchelon : 0),
+          immunityPerEchelon:
+              existing.immunityPerEchelon + (perEchelon ? valuePerEchelon : 0),
           weaknessPerEchelon: existing.weaknessPerEchelon,
         );
       } else {
@@ -685,7 +775,8 @@ class ComplicationGrantsService {
           dynamicImmunity: existing.dynamicImmunity,
           dynamicWeakness: dynamicValue ?? existing.dynamicWeakness,
           immunityPerEchelon: existing.immunityPerEchelon,
-          weaknessPerEchelon: existing.weaknessPerEchelon + (perEchelon ? valuePerEchelon : 0),
+          weaknessPerEchelon:
+              existing.weaknessPerEchelon + (perEchelon ? valuePerEchelon : 0),
         );
       }
     }
@@ -696,9 +787,9 @@ class ComplicationGrantsService {
         if (stat == 'immunity' || stat == 'weakness') {
           final damageType = grant.damageType ?? 'untyped';
           addResistance(
-            stat: stat, 
-            damageType: damageType, 
-            value: grant.value, 
+            stat: stat,
+            damageType: damageType,
+            value: grant.value,
             sourceName: grant.sourceComplicationName,
             dynamicValue: grant.dynamicValue,
           );
@@ -708,9 +799,9 @@ class ComplicationGrantsService {
         if (stat == 'immunity' || stat == 'weakness') {
           final damageType = grant.damageType ?? 'untyped';
           addResistance(
-            stat: stat, 
-            damageType: damageType, 
-            value: 0, 
+            stat: stat,
+            damageType: damageType,
+            value: 0,
             sourceName: grant.sourceComplicationName,
             perEchelon: true,
             valuePerEchelon: grant.valuePerEchelon,
@@ -723,31 +814,43 @@ class ComplicationGrantsService {
     for (final entry in resistanceData.entries) {
       final type = entry.key;
       final data = entry.value;
-      await _resistanceService.addResistanceEntry(
+      await _mutations.addResistance(
         heroId: heroId,
+        source: _complicationSource(grants.complicationId),
         damageType: type,
-        sourceType: 'complication',
-        sourceId: grants.complicationId,
         immunity: data.immunity,
         weakness: data.weakness,
         dynamicImmunity: data.dynamicImmunity,
         dynamicWeakness: data.dynamicWeakness,
         immunityPerEchelon: data.immunityPerEchelon,
         weaknessPerEchelon: data.weaknessPerEchelon,
+        recompute: false,
       );
     }
 
     // Recompute aggregate resistances
-    await _resistanceService.recomputeAggregateResistances(heroId);
+    await _mutations.recomputeAggregates(heroId);
   }
 
   Future<void> _clearDamageResistanceGrants(String heroId) async {
-    await _resistanceService.removeResistanceEntriesBySourceType(
+    await _mutations.removeSourceType(
       heroId: heroId,
-      sourceType: 'complication',
+      sourceType: HeroEntrySourceTypes.complication,
+      entryType: HeroEntryTypes.resistance,
+      recomputeAggregates: false,
     );
     // Recompute aggregate resistances after clearing
-    await _resistanceService.recomputeAggregateResistances(heroId);
+    await _mutations.recomputeAggregates(heroId);
+  }
+
+  Future<void> _clearComplicationDynamicModifiers(String heroId) async {
+    final current = await _dynamicModifiers.loadModifiers(heroId);
+    final updated = DynamicModifierList(
+      current.modifiers
+          .where((modifier) => !modifier.source.startsWith('complication_'))
+          .toList(),
+    );
+    await _dynamicModifiers.saveModifiers(heroId, updated);
   }
 
   Future<void> _applyLanguageGrants(
@@ -766,44 +869,23 @@ class ComplicationGrantsService {
 
     if (languageIds.isEmpty) return;
 
-    await _entries.addEntriesFromSource(
+    await _mutations.replaceContentEntries(
       heroId: heroId,
-      sourceType: 'complication',
-      sourceId: grants.complicationId,
-      entryType: 'language',
+      source: _complicationSource(grants.complicationId),
+      entryType: HeroEntryTypes.language,
       entryIds: languageIds,
-      gainedBy: 'grant',
     );
   }
 
   /// Rebuild damage resistances - now a no-op since bonuses are calculated at runtime.
-  /// 
+  ///
   /// Previously this method would:
   Future<void> _clearLanguageGrants(String heroId) async {
-    await (_db.delete(_db.heroEntries)
-          ..where((t) =>
-              t.heroId.equals(heroId) &
-              t.entryType.equals('language') &
-              t.sourceType.equals('complication')))
-        .go();
-  }
-
-  // ignore: unused_element
-  Future<void> _ensureHeroHasSkillComponents(
-    String heroId,
-    List<String> skillIds,
-  ) async {
-    if (skillIds.isEmpty) return;
-
-    final currentSkills = await _db.getHeroComponentIds(heroId, 'skill');
-    final missing = skillIds.where((id) => !currentSkills.contains(id)).toList();
-    if (missing.isEmpty) return;
-
-    final updatedSkills = {...currentSkills, ...skillIds}.toList();
-    await _db.setHeroComponentIds(
+    await _mutations.removeSourceType(
       heroId: heroId,
-      category: 'skill',
-      componentIds: updatedSkills,
+      sourceType: HeroEntrySourceTypes.complication,
+      entryType: HeroEntryTypes.language,
+      recomputeAggregates: false,
     );
   }
 
@@ -870,10 +952,10 @@ class ComplicationGrantsService {
     }
     return result;
   }
+
   /// Load languages granted by complication.
   Future<List<String>> loadLanguageGrants(String heroId) async {
-    final entries =
-        await _entries.listEntriesByType(heroId, 'language');
+    final entries = await _entries.listEntriesByType(heroId, 'language');
     return entries
         .where((e) => e.sourceType == 'complication')
         .map((e) => e.entryId)
@@ -903,31 +985,30 @@ class ComplicationGrantsService {
       for (final c in comps) c.name.toLowerCase(): c.id,
     };
     final ids = features
-        .map((f) => nameToId[f['name']!.toString().toLowerCase()] ??
+        .map((f) =>
+            nameToId[f['name']!.toString().toLowerCase()] ??
             f['name']!.toString())
         .toList();
 
-    await _entries.addEntriesFromSource(
+    await _mutations.replaceContentEntries(
       heroId: heroId,
-      sourceType: 'complication',
-      sourceId: grants.complicationId,
-      entryType: 'feature',
+      source: _complicationSource(grants.complicationId),
+      entryType: HeroEntryTypes.feature,
       entryIds: ids,
-      gainedBy: 'grant',
     );
   }
 
   Future<void> _clearFeatureGrants(String heroId) async {
-    await (_db.delete(_db.heroEntries)
-          ..where((t) =>
-              t.heroId.equals(heroId) &
-              t.entryType.equals('feature') &
-              t.sourceType.equals('complication')))
-        .go();
+    await _mutations.removeSourceType(
+      heroId: heroId,
+      sourceType: HeroEntrySourceTypes.complication,
+      entryType: HeroEntryTypes.feature,
+      recomputeAggregates: false,
+    );
   }
 
   /// Apply ancestry trait grants from complications (e.g., Dragon Dreams).
-  /// This parses the selected traits and applies their bonuses (abilities, 
+  /// This parses the selected traits and applies their bonuses (abilities,
   /// condition immunities, stat mods, etc.) to the hero.
   Future<void> _applyAncestryTraitGrants(
     String heroId,
@@ -935,7 +1016,8 @@ class ComplicationGrantsService {
     int heroLevel,
   ) async {
     // Find AncestryTraitsGrant in the grants
-    final ancestryTraitGrant = grants.grants.whereType<AncestryTraitsGrant>().firstOrNull;
+    final ancestryTraitGrant =
+        grants.grants.whereType<AncestryTraitsGrant>().firstOrNull;
     if (ancestryTraitGrant == null) return;
 
     // Load the complication choices to get selected trait IDs
@@ -962,13 +1044,14 @@ class ComplicationGrantsService {
 
     final traitsData = jsonDecode(traitsComp.dataJson) as Map<String, dynamic>;
     final traitsList = (traitsData['traits'] as List?) ?? [];
-    
+
     // Get trait-specific choices (like immunity picks)
     final traitChoices = <String, String>{};
     for (final entry in choices.entries) {
       if (entry.key.startsWith('${grants.complicationId}_trait_')) {
         // Extract the trait ID from the key
-        final traitId = entry.key.replaceFirst('${grants.complicationId}_trait_', '');
+        final traitId =
+            entry.key.replaceFirst('${grants.complicationId}_trait_', '');
         traitChoices[traitId] = entry.value;
       }
     }
@@ -979,11 +1062,12 @@ class ComplicationGrantsService {
       if (trait is! Map) continue;
       final traitMap = trait.cast<String, dynamic>();
       final traitId = (traitMap['id'] ?? traitMap['name']).toString();
-      
+
       if (!selectedTraitIds.contains(traitId)) continue;
 
       final traitName = traitMap['name']?.toString() ?? traitId;
-      final traitBonuses = AncestryBonus.parseFromTraitData(traitMap, traitId, traitName, traitChoices);
+      final traitBonuses = AncestryBonus.parseFromTraitData(
+          traitMap, traitId, traitName, traitChoices);
       bonuses.addAll(traitBonuses);
     }
 
@@ -992,22 +1076,23 @@ class ComplicationGrantsService {
     await _applyAncestryTraitAbilities(heroId, grants.complicationId, bonuses);
 
     // 2. Apply condition immunities
-    await _applyAncestryTraitConditionImmunities(heroId, grants.complicationId, bonuses);
+    await _applyAncestryTraitConditionImmunities(
+        heroId, grants.complicationId, bonuses);
 
     // 3. Apply stat modifications
-    await _applyAncestryTraitStatMods(heroId, grants.complicationId, bonuses, heroLevel);
+    await _applyAncestryTraitStatMods(
+        heroId, grants.complicationId, bonuses, heroLevel);
 
     // 4. Apply damage resistances
-    await _applyAncestryTraitDamageResistances(heroId, grants.complicationId, bonuses, heroLevel);
+    await _applyAncestryTraitDamageResistances(
+        heroId, grants.complicationId, bonuses, heroLevel);
 
     // Store the selected trait IDs in hero_entries for display purposes
-    await _entries.addEntriesFromSource(
+    await _mutations.replaceContentEntries(
       heroId: heroId,
-      sourceType: 'complication',
-      sourceId: grants.complicationId,
-      entryType: 'ancestry_trait',
+      source: _complicationAncestryTraitSource(grants.complicationId),
+      entryType: HeroEntryTypes.ancestryTrait,
       entryIds: selectedTraitIds.toList(),
-      gainedBy: 'grant',
     );
   }
 
@@ -1039,13 +1124,11 @@ class ComplicationGrantsService {
       abilityIds.add(id);
     });
 
-    await _entries.addEntriesFromSource(
+    await _mutations.replaceContentEntries(
       heroId: heroId,
-      sourceType: 'complication',
-      sourceId: complicationId,
-      entryType: 'ability',
+      source: _complicationAncestryTraitSource(complicationId),
+      entryType: HeroEntryTypes.ability,
       entryIds: abilityIds,
-      gainedBy: 'ancestry_trait_grant',
     );
   }
 
@@ -1064,13 +1147,11 @@ class ComplicationGrantsService {
 
     if (immunities.isEmpty) return;
 
-    await _entries.addEntriesFromSource(
+    await _mutations.replaceContentEntries(
       heroId: heroId,
-      sourceType: 'complication',
-      sourceId: complicationId,
-      entryType: 'condition_immunity',
+      source: _complicationAncestryTraitSource(complicationId),
+      entryType: HeroEntryTypes.conditionImmunity,
       entryIds: immunities,
-      gainedBy: 'ancestry_trait_grant',
     );
   }
 
@@ -1088,7 +1169,7 @@ class ComplicationGrantsService {
         final stat = bonus.stat.toLowerCase();
         // Skip immunity/weakness - handled in damage resistances
         if (stat == 'immunity' || stat == 'weakness') continue;
-        
+
         final value = bonus.calculateValue(heroLevel);
         statMods.putIfAbsent(stat, () => []);
         statMods[stat]!.add({
@@ -1127,14 +1208,14 @@ class ComplicationGrantsService {
 
     // Store each stat mod in hero_entries
     for (final entry in statMods.entries) {
-      await _entries.addEntry(
+      await _mutations.addContentEntry(
         heroId: heroId,
-        entryType: 'stat_mod',
-        entryId: entry.key,
-        sourceType: 'complication_ancestry_trait',
-        sourceId: complicationId,
-        gainedBy: 'ancestry_trait_grant',
-        payload: {'mods': entry.value},
+        source: _complicationAncestryTraitSource(complicationId),
+        grant: ResolvedGrant(
+          entryType: HeroEntryTypes.statMod,
+          entryId: entry.key,
+          payload: {'mods': entry.value},
+        ),
       );
     }
   }
@@ -1145,20 +1226,22 @@ class ComplicationGrantsService {
     List<AncestryBonus> bonuses,
     int heroLevel,
   ) async {
-    final resistanceBonuses = <String, ({int immunity, int weakness, List<String> sources})>{};
+    final resistanceBonuses =
+        <String, ({int immunity, int weakness, List<String> sources})>{};
 
     for (final bonus in bonuses) {
       if (bonus is IncreaseTotalBonus) {
         final stat = bonus.stat.toLowerCase();
         if (stat != 'immunity' && stat != 'weakness') continue;
-        
+
         final types = bonus.damageTypes ?? [];
         final value = bonus.calculateValue(heroLevel);
-        
+
         for (final type in types) {
           final key = type.toLowerCase();
-          final existing = resistanceBonuses[key] ?? (immunity: 0, weakness: 0, sources: <String>[]);
-          
+          final existing = resistanceBonuses[key] ??
+              (immunity: 0, weakness: 0, sources: <String>[]);
+
           if (stat == 'immunity') {
             resistanceBonuses[key] = (
               immunity: existing.immunity + value,
@@ -1181,68 +1264,55 @@ class ComplicationGrantsService {
     // Store each resistance using DamageResistanceService
     for (final entry in resistanceBonuses.entries) {
       final data = entry.value;
-      await _resistanceService.addResistanceEntry(
+      await _mutations.addResistance(
         heroId: heroId,
+        source: _complicationAncestryTraitSource(complicationId),
         damageType: entry.key,
-        sourceType: 'complication',
-        sourceId: complicationId,
         immunity: data.immunity,
         weakness: data.weakness,
+        recompute: false,
       );
     }
 
     // Recompute aggregate resistances
-    await _resistanceService.recomputeAggregateResistances(heroId);
+    await _mutations.recomputeAggregates(heroId);
   }
 
   Future<void> _clearAncestryTraitGrants(String heroId) async {
-    // Clear ancestry_trait entries from complication source
+    await _mutations.removeSourceType(
+      heroId: heroId,
+      sourceType: HeroEntrySourceTypes.complicationAncestryTrait,
+      recomputeAggregates: false,
+    );
+
+    // Clear legacy rows written before ancestry-trait grants used a valid
+    // sourceType/gainedBy pair.
     await (_db.delete(_db.heroEntries)
           ..where((t) =>
               t.heroId.equals(heroId) &
-              t.entryType.equals('ancestry_trait') &
-              t.sourceType.equals('complication')))
-        .go();
-    
-    // Clear abilities granted via ancestry traits from complication
-    // (these have gainedBy='ancestry_trait_grant')
-    await (_db.delete(_db.heroEntries)
-          ..where((t) =>
-              t.heroId.equals(heroId) &
-              t.entryType.equals('ability') &
               t.gainedBy.equals('ancestry_trait_grant')))
         .go();
-    
-    // Clear condition immunities granted via ancestry traits from complication
-    await (_db.delete(_db.heroEntries)
-          ..where((t) =>
-              t.heroId.equals(heroId) &
-              t.entryType.equals('condition_immunity') &
-              t.gainedBy.equals('ancestry_trait_grant')))
-        .go();
-    
-    // Clear stat mods from complication_ancestry_trait source
-    await (_db.delete(_db.heroEntries)
-          ..where((t) =>
-              t.heroId.equals(heroId) &
-              t.entryType.equals('stat_mod') &
-              t.sourceType.equals('complication_ancestry_trait')))
-        .go();
-    
-    // Clear resistances granted via ancestry traits from complication
-    // (these have gainedBy='ancestry_trait_grant')
-    await (_db.delete(_db.heroEntries)
-          ..where((t) =>
-              t.heroId.equals(heroId) &
-              t.entryType.equals('resistance') &
-              t.gainedBy.equals('ancestry_trait_grant')))
-        .go();
+    await _mutations.recomputeAggregates(heroId);
   }
 
   /// Load features granted by complication.
   Future<List<Map<String, dynamic>>> loadFeatureGrants(String heroId) async {
+    final entries = await _entries.listEntriesByType(heroId, 'feature');
+    final complicationEntries = entries
+        .where((entry) => entry.sourceType == HeroEntrySourceTypes.complication)
+        .toList();
+    if (complicationEntries.isNotEmpty) {
+      return complicationEntries
+          .map((entry) => {
+                'id': entry.entryId,
+                'source': entry.sourceId,
+              })
+          .toList();
+    }
+
     final values = await _db.getHeroValues(heroId);
-    final value = values.firstWhereOrNull((v) => v.key == _kComplicationFeatures);
+    final value =
+        values.firstWhereOrNull((v) => v.key == _kComplicationFeatures);
     if (value?.textValue == null && value?.jsonValue == null) {
       return [];
     }
@@ -1264,7 +1334,8 @@ class ComplicationGrantsService {
     for (final grant in grants.grants) {
       if (grant is TreasureGrant && grant.selectedTreasureId != null) {
         treasureIds.add(grant.selectedTreasureId!);
-      } else if (grant is LeveledTreasureGrant && grant.selectedTreasureId != null) {
+      } else if (grant is LeveledTreasureGrant &&
+          grant.selectedTreasureId != null) {
         treasureIds.add(grant.selectedTreasureId!);
       }
     }
@@ -1274,23 +1345,21 @@ class ComplicationGrantsService {
     // Store the complication-granted treasure IDs
     if (treasureIds.isEmpty) return;
 
-    await _entries.addEntriesFromSource(
+    await _mutations.replaceContentEntries(
       heroId: heroId,
-      sourceType: 'complication',
-      sourceId: grants.complicationId,
-      entryType: 'treasure',
+      source: _complicationSource(grants.complicationId),
+      entryType: HeroEntryTypes.treasure,
       entryIds: treasureIds,
-      gainedBy: 'grant',
     );
   }
 
   Future<void> _clearTreasureGrants(String heroId) async {
-    await (_db.delete(_db.heroEntries)
-          ..where((t) =>
-              t.heroId.equals(heroId) &
-              t.entryType.equals('treasure') &
-              t.sourceType.equals('complication')))
-        .go();
+    await _mutations.removeSourceType(
+      heroId: heroId,
+      sourceType: HeroEntrySourceTypes.complication,
+      entryType: HeroEntryTypes.treasure,
+      recomputeAggregates: false,
+    );
   }
 
   /// Load treasures granted by complication.
@@ -1304,6 +1373,7 @@ class ComplicationGrantsService {
 
   Future<void> _setComplicationStatMods(
     String heroId,
+    String complicationId,
     Map<String, List<StatModification>> statMods,
   ) async {
     if (statMods.isEmpty) return;
@@ -1313,22 +1383,27 @@ class ComplicationGrantsService {
     for (final entry in statMods.entries) {
       final stat = entry.key.toLowerCase();
       final mods = entry.value;
-      
+
       if (mods.isEmpty) continue;
-      
-      await _entries.addEntry(
+
+      await _mutations.addStatMod(
         heroId: heroId,
-        entryType: 'stat_mod',
-        entryId: stat,
-        sourceType: 'complication',
-        sourceId: 'complication_grant',
-        gainedBy: 'grant',
-        payload: {
-          'mods': mods.map((m) => m.toJson()).toList(),
-        },
+        source: _complicationSource(complicationId),
+        stat: stat,
+        modifications: mods,
       );
     }
   }
+
+  HeroSource _complicationSource(String sourceId) => HeroSource(
+        sourceType: HeroEntrySourceTypes.complication,
+        sourceId: sourceId,
+      );
+
+  HeroSource _complicationAncestryTraitSource(String sourceId) => HeroSource(
+        sourceType: HeroEntrySourceTypes.complicationAncestryTrait,
+        sourceId: sourceId,
+      );
 
   Future<void> _setBaseStat(String heroId, String stat, int value) async {
     final key = _statToKey(stat);
@@ -1371,6 +1446,14 @@ class ComplicationGrantsService {
     };
   }
 
+  int _toInt(dynamic value) {
+    if (value == null) return 0;
+    if (value is int) return value;
+    if (value is num) return value.toInt();
+    if (value is String) return int.tryParse(value) ?? 0;
+    return 0;
+  }
+
   // ============================================================
   // Token Tracking (current values during play)
   // ============================================================
@@ -1379,7 +1462,8 @@ class ComplicationGrantsService {
   /// These can be different from max values (grant values) during play.
   Future<Map<String, int>> loadCurrentTokenValues(String heroId) async {
     final values = await _db.getHeroValues(heroId);
-    final value = values.firstWhereOrNull((v) => v.key == _kComplicationTokensCurrent);
+    final value =
+        values.firstWhereOrNull((v) => v.key == _kComplicationTokensCurrent);
     if (value?.textValue == null && value?.jsonValue == null) {
       // If no current values saved, return the max values (grant values)
       return loadTokenGrants(heroId);
@@ -1394,7 +1478,8 @@ class ComplicationGrantsService {
   }
 
   /// Save current token values.
-  Future<void> saveCurrentTokenValues(String heroId, Map<String, int> tokens) async {
+  Future<void> saveCurrentTokenValues(
+      String heroId, Map<String, int> tokens) async {
     await _db.upsertHeroValue(
       heroId: heroId,
       key: _kComplicationTokensCurrent,
@@ -1403,7 +1488,8 @@ class ComplicationGrantsService {
   }
 
   /// Update a single token's current value.
-  Future<void> updateTokenValue(String heroId, String tokenType, int newValue) async {
+  Future<void> updateTokenValue(
+      String heroId, String tokenType, int newValue) async {
     final current = await loadCurrentTokenValues(heroId);
     current[tokenType] = newValue;
     await saveCurrentTokenValues(heroId, current);
@@ -1416,10 +1502,10 @@ class ComplicationGrantsService {
   }
 
   // Storage keys
-  static const _kComplicationGrants = 'complication.applied_grants';
-  static const _kComplicationChoices = 'complication.choices';
+  static const _kComplicationGrants = HeroConfigKeys.complicationAppliedGrants;
+  static const _kComplicationChoices = HeroConfigKeys.complicationChoices;
   static const _kComplicationStatMods = 'complication.stat_mods';
-  static const _kComplicationTokens = 'complication.tokens';
+  static const _kComplicationTokens = HeroConfigKeys.complicationTokens;
   static const _kComplicationTokensCurrent = 'complication.tokens_current';
   // ignore: unused_field
   static const _kComplicationAbilities = 'complication.abilities';
@@ -1429,11 +1515,13 @@ class ComplicationGrantsService {
   // ignore: unused_field
   static const _kComplicationTreasures = 'complication.treasures';
   // ignore: unused_field
-  static const _kComplicationDamageResistances = 'complication.damage_resistances';
+  static const _kComplicationDamageResistances =
+      'complication.damage_resistances';
   // ignore: unused_field
   static const _kComplicationLanguages = 'complication.languages';
   static const _kComplicationFeatures = 'complication.features';
-  static const _kComplicationOriginalBaseStats = 'complication.original_base_stats';
+  static const _kComplicationOriginalBaseStats =
+      HeroConfigKeys.complicationOriginalBaseStats;
 }
 
 class _SkillLookup {
@@ -1447,7 +1535,9 @@ class _SkillLookup {
 }
 
 /// Provider for the complication grants service.
-final complicationGrantsServiceProvider = Provider<ComplicationGrantsService>((ref) {
+final complicationGrantsServiceProvider =
+    Provider<ComplicationGrantsService>((ref) {
   final database = ref.read(appDatabaseProvider);
-  return ComplicationGrantsService(database);
+  final mutations = ref.read(heroMutationServiceProvider);
+  return ComplicationGrantsService(database, mutations: mutations);
 });

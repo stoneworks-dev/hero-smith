@@ -3,41 +3,47 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 
 import '../db/app_database.dart' as db;
+import '../models/canonical_grant_model.dart';
 import '../models/component.dart' as model;
+import '../models/hero_mutation_model.dart';
 import '../repositories/hero_entry_repository.dart';
+import '../storage/hero_storage_contract.dart';
 import 'ability_resolver_service.dart';
 import 'hero_config_service.dart';
+import 'hero_mutation_service.dart';
 import 'kit_bonus_service.dart';
 
 /// Service for applying kit grants to a hero.
-/// 
+///
 /// Kits may grant equipment, traits/features, stat bonuses, and abilities.
 /// All grants are written to hero_entries with source_type='kit' and
 /// source_id=<kitId>.
 class KitGrantsService {
-  KitGrantsService(this._db)
+  KitGrantsService(this._db, {HeroMutationService? mutations})
       : _entries = HeroEntryRepository(_db),
         _config = HeroConfigService(_db),
+        _mutations = mutations ?? HeroMutationService(_db),
         _bonusService = const KitBonusService(),
         _abilityResolver = AbilityResolverService(_db);
 
   final db.AppDatabase _db;
   final HeroEntryRepository _entries;
   final HeroConfigService _config;
+  final HeroMutationService _mutations;
   final KitBonusService _bonusService;
   final AbilityResolverService _abilityResolver;
 
   /// Config key for kit selections/options.
-  static const _kKitSelections = 'kit.selections';
+  static const _kKitSelections = HeroConfigKeys.kitSelections;
 
   /// Config key for equipment slot assignments.
-  static const _kEquipmentSlots = 'equipment.slots';
+  static const _kEquipmentSlots = HeroConfigKeys.equipmentSlots;
 
   /// Apply kit grants to a hero.
-  /// 
+  ///
   /// This processes a list of equipment IDs (kits), extracts their grants,
   /// and stores them in hero_entries.
-  /// 
+  ///
   /// Returns the calculated [EquipmentBonuses] so callers can use them
   /// without re-loading components.
   Future<EquipmentBonuses> applyKitGrants({
@@ -51,7 +57,7 @@ class KitGrantsService {
 
     // Store kit selections in config
     if (kitSelections != null && kitSelections.isNotEmpty) {
-      await _config.setConfigValue(
+      await _mutations.saveConfigChoice(
         heroId: heroId,
         key: _kKitSelections,
         value: kitSelections,
@@ -59,19 +65,29 @@ class KitGrantsService {
     }
 
     // Store equipment slot IDs in config
-    final nonNullIds = equipmentIds.where((id) => id != null && id.isNotEmpty).toList();
-    if (nonNullIds.isNotEmpty) {
-      await _config.setConfigValue(
-        heroId: heroId,
-        key: _kEquipmentSlots,
-        value: {'ids': nonNullIds},
-      );
-    }
+    final nonNullIds =
+        equipmentIds.whereType<String>().where((id) => id.isNotEmpty).toList();
+    await _mutations.saveConfigChoice(
+      heroId: heroId,
+      key: _kEquipmentSlots,
+      value: {'ids': nonNullIds},
+    );
+
+    await _mutations.replaceContentEntries(
+      heroId: heroId,
+      source: const HeroSource(
+        sourceType: HeroEntrySourceTypes.equipment,
+        sourceId: HeroEntrySourceIds.equipmentSlots,
+        gainedBy: HeroEntryGainedBy.choice,
+      ),
+      entryType: HeroEntryTypes.equipment,
+      entryIds: nonNullIds,
+    );
 
     // Load kit components and process grants
     final dbComponents = await _db.getAllComponents();
     final kitComponents = <model.Component>[];
-    
+
     for (final kitId in nonNullIds) {
       final dbComp = dbComponents.firstWhereOrNull((c) => c.id == kitId);
       if (dbComp != null) {
@@ -80,21 +96,10 @@ class KitGrantsService {
       }
     }
 
-    // Add kit entries
+    // Apply grants from each selected equipment component. The equipment
+    // selection itself is owned once by equipment:equipment_slots above;
+    // kit:<id> owns only what that component grants.
     for (final kit in kitComponents) {
-      await _entries.addEntry(
-        heroId: heroId,
-        entryType: 'equipment',
-        entryId: kit.id,
-        sourceType: 'kit',
-        sourceId: kit.id,
-        gainedBy: 'choice',
-        payload: {
-          'name': kit.name,
-          'type': kit.type,
-        },
-      );
-
       // Process kit-specific grants
       await _processKitGrants(
         heroId: heroId,
@@ -113,7 +118,7 @@ class KitGrantsService {
       await _storeEquipmentBonuses(heroId, bonuses);
       return bonuses;
     }
-    
+
     // No kit components - store empty bonuses to clear any previous values
     await _storeEquipmentBonuses(heroId, EquipmentBonuses.empty);
     return EquipmentBonuses.empty;
@@ -122,8 +127,25 @@ class KitGrantsService {
   /// Remove all kit grants for a hero.
   Future<void> removeKitGrants(String heroId) async {
     await _clearAllKitGrants(heroId);
-    await _config.removeConfigKey(heroId, _kKitSelections);
-    await _config.removeConfigKey(heroId, _kEquipmentSlots);
+    const equipmentSource = HeroSource(
+      sourceType: HeroEntrySourceTypes.equipment,
+      sourceId: HeroEntrySourceIds.equipmentSlots,
+      gainedBy: HeroEntryGainedBy.choice,
+    );
+    await _mutations.removeSource(
+      heroId: heroId,
+      source: equipmentSource,
+      entryType: HeroEntryTypes.equipment,
+      recomputeAggregates: false,
+    );
+    await _mutations.removeSource(
+      heroId: heroId,
+      source: equipmentSource,
+      entryType: HeroEntryTypes.kit,
+      recomputeAggregates: false,
+    );
+    await _mutations.removeConfigChoice(heroId: heroId, key: _kKitSelections);
+    await _mutations.removeConfigChoice(heroId: heroId, key: _kEquipmentSlots);
     await _clearEquipmentBonuses(heroId);
   }
 
@@ -140,31 +162,50 @@ class KitGrantsService {
     if (config == null) return const [];
     final ids = config['ids'];
     if (ids is List) {
-      return ids.map((e) => e?.toString() ?? '').where((e) => e.isNotEmpty).toList();
+      return ids
+          .map((e) => e?.toString() ?? '')
+          .where((e) => e.isNotEmpty)
+          .toList();
     }
     return const [];
   }
 
   /// Get all abilities granted by kits.
   Future<List<String>> getGrantedAbilities(String heroId) async {
-    final entries = await _entries.listEntriesByType(heroId, 'ability');
+    final entries = await _entries.listEntriesByType(
+      heroId,
+      HeroEntryTypes.ability,
+    );
     return entries
-        .where((e) => e.sourceType == 'kit')
+        .where((e) => e.sourceType == HeroEntrySourceTypes.kit)
         .map((e) => e.entryId)
         .toList();
   }
 
   /// Get all equipment entries for a hero.
   Future<List<db.HeroEntry>> getEquipmentEntries(String heroId) async {
-    final entries = await _entries.listEntriesByType(heroId, 'equipment');
-    return entries.where((e) => e.sourceType == 'kit').toList();
+    final entries = await _entries.listEntriesByType(
+      heroId,
+      HeroEntryTypes.equipment,
+    );
+    return entries.where((entry) {
+      final isCurrentSelection =
+          entry.sourceType == HeroEntrySourceTypes.equipment &&
+              entry.sourceId == HeroEntrySourceIds.equipmentSlots;
+      final isLegacyKitSelection = entry.sourceType == HeroEntrySourceTypes.kit;
+      return isCurrentSelection || isLegacyKitSelection;
+    }).toList();
   }
 
   /// Get stat bonuses from kits.
   Future<Map<String, int>> getStatBonuses(String heroId) async {
-    final entries = await _entries.listEntriesByType(heroId, 'kit_stat_bonus');
+    final entries = await _entries.listEntriesByType(
+      heroId,
+      HeroEntryTypes.kitStatBonus,
+    );
     final bonuses = <String, int>{};
-    for (final entry in entries.where((e) => e.sourceType == 'kit')) {
+    for (final entry
+        in entries.where((e) => e.sourceType == HeroEntrySourceTypes.kit)) {
       if (entry.payload == null) continue;
       try {
         final payload = jsonDecode(entry.payload!);
@@ -184,9 +225,55 @@ class KitGrantsService {
   // Private implementation
 
   Future<void> _clearAllKitGrants(String heroId) async {
-    await _entries.removeEntriesFromSource(
+    const grantEntryTypes = [
+      HeroEntryTypes.ability,
+      HeroEntryTypes.equipment,
+      HeroEntryTypes.equipmentBonuses,
+      HeroEntryTypes.kitFeature,
+      HeroEntryTypes.kitStatBonus,
+      HeroEntryTypes.statMod,
+    ];
+
+    for (final entryType in grantEntryTypes) {
+      await _mutations.removeSourceType(
+        heroId: heroId,
+        sourceType: HeroEntrySourceTypes.kit,
+        entryType: entryType,
+        recomputeAggregates: false,
+      );
+    }
+  }
+
+  HeroSource _kitSource(
+    String sourceId, {
+    String gainedBy = HeroEntryGainedBy.grant,
+  }) {
+    return HeroSource(
+      sourceType: HeroEntrySourceTypes.kit,
+      sourceId: sourceId,
+      gainedBy: gainedBy,
+    );
+  }
+
+  Future<void> _addKitEntry({
+    required String heroId,
+    required String sourceId,
+    required String entryType,
+    required String entryId,
+    String gainedBy = HeroEntryGainedBy.grant,
+    Map<String, dynamic>? payload,
+  }) async {
+    final normalizedEntryId = entryId.trim();
+    if (normalizedEntryId.isEmpty) return;
+
+    await _mutations.addContentEntry(
       heroId: heroId,
-      sourceType: 'kit',
+      source: _kitSource(sourceId, gainedBy: gainedBy),
+      grant: ResolvedGrant(
+        entryType: entryType,
+        entryId: normalizedEntryId,
+        payload: payload,
+      ),
     );
   }
 
@@ -226,13 +313,11 @@ class KitGrantsService {
         signatureAbility,
         sourceType: 'kit',
       );
-      await _entries.addEntry(
+      await _addKitEntry(
         heroId: heroId,
-        entryType: 'ability',
-        entryId: abilityId,
-        sourceType: 'kit',
         sourceId: kit.id,
-        gainedBy: 'grant',
+        entryType: HeroEntryTypes.ability,
+        entryId: abilityId,
         payload: {'name': signatureAbility, 'source': 'kit_signature'},
       );
     }
@@ -247,13 +332,11 @@ class KitGrantsService {
             abilityName,
             sourceType: 'kit',
           );
-          await _entries.addEntry(
+          await _addKitEntry(
             heroId: heroId,
-            entryType: 'ability',
-            entryId: abilityId,
-            sourceType: 'kit',
             sourceId: kit.id,
-            gainedBy: 'grant',
+            entryType: HeroEntryTypes.ability,
+            entryId: abilityId,
           );
         }
       }
@@ -264,24 +347,20 @@ class KitGrantsService {
     if (traits is List) {
       for (final trait in traits) {
         if (trait is String && trait.isNotEmpty) {
-          await _entries.addEntry(
+          await _addKitEntry(
             heroId: heroId,
-            entryType: 'kit_feature',
-            entryId: _slugify(trait),
-            sourceType: 'kit',
             sourceId: kit.id,
-            gainedBy: 'grant',
+            entryType: HeroEntryTypes.kitFeature,
+            entryId: _slugify(trait),
             payload: {'name': trait},
           );
         } else if (trait is Map) {
           final traitName = trait['name']?.toString() ?? 'unknown';
-          await _entries.addEntry(
+          await _addKitEntry(
             heroId: heroId,
-            entryType: 'kit_feature',
-            entryId: _slugify(traitName),
-            sourceType: 'kit',
             sourceId: kit.id,
-            gainedBy: 'grant',
+            entryType: HeroEntryTypes.kitFeature,
+            entryId: _slugify(traitName),
             payload: Map<String, dynamic>.from(trait),
           );
         }
@@ -295,7 +374,8 @@ class KitGrantsService {
       final option = options.firstWhereOrNull((o) {
         if (o is Map) {
           final name = o['name']?.toString();
-          return name != null && _slugify(name) == _slugify(selectedOption ?? '');
+          return name != null &&
+              _slugify(name) == _slugify(selectedOption ?? '');
         }
         return false;
       });
@@ -306,6 +386,9 @@ class KitGrantsService {
 
     // Store stat bonuses as hero_entries
     await _storeKitStatBonuses(heroId, kit, heroLevel);
+
+    // Process canonical grants during data conversion.
+    await _processCanonicalGrants(heroId, kit, heroLevel);
 
     // Process decrease_total (e.g., for wards that reduce saving throw value)
     await _processDecreaseTotalBonus(heroId, kit);
@@ -323,26 +406,24 @@ class KitGrantsService {
         ability,
         sourceType: 'kit',
       );
-      await _entries.addEntry(
+      await _addKitEntry(
         heroId: heroId,
-        entryType: 'ability',
-        entryId: abilityId,
-        sourceType: 'kit',
         sourceId: kitId,
-        gainedBy: 'choice',
+        entryType: HeroEntryTypes.ability,
+        entryId: abilityId,
+        gainedBy: HeroEntryGainedBy.choice,
       );
     }
 
     // Grant feature from option
     final feature = option['feature']?.toString();
     if (feature != null && feature.isNotEmpty) {
-      await _entries.addEntry(
+      await _addKitEntry(
         heroId: heroId,
-        entryType: 'kit_feature',
-        entryId: _slugify(feature),
-        sourceType: 'kit',
         sourceId: kitId,
-        gainedBy: 'choice',
+        entryType: HeroEntryTypes.kitFeature,
+        entryId: _slugify(feature),
+        gainedBy: HeroEntryGainedBy.choice,
         payload: {'name': feature},
       );
     }
@@ -353,8 +434,8 @@ class KitGrantsService {
     model.Component kit,
     int heroLevel,
   ) async {
-    final data = kit.data;
-    
+    final data = _bonusService.extractBonusData(kit.data);
+
     final tier = KitBonusService.tierForLevel(heroLevel);
     final echelon = KitBonusService.echelonForLevel(heroLevel);
 
@@ -375,19 +456,18 @@ class KitGrantsService {
       'melee_damage': _getTieredValue(data['melee_damage_bonus'], tier),
       'ranged_damage': _getTieredValue(data['ranged_damage_bonus'], tier),
       'melee_distance': _getEchelonValue(data['melee_distance_bonus'], echelon),
-      'ranged_distance': _getEchelonValue(data['ranged_distance_bonus'], echelon),
+      'ranged_distance':
+          _getEchelonValue(data['ranged_distance_bonus'], echelon),
     };
 
     // Only store if there are non-zero bonuses
     final hasBonus = bonuses.values.any((v) => v != 0);
     if (!hasBonus) return;
-    await _entries.addEntry(
+    await _addKitEntry(
       heroId: heroId,
-      entryType: 'kit_stat_bonus',
-      entryId: '${kit.id}_stat_bonus',
-      sourceType: 'kit',
       sourceId: kit.id,
-      gainedBy: 'grant',
+      entryType: HeroEntryTypes.kitStatBonus,
+      entryId: '${kit.id}_stat_bonus',
       payload: bonuses,
     );
   }
@@ -397,13 +477,12 @@ class KitGrantsService {
     EquipmentBonuses bonuses,
   ) async {
     // Save to hero_entries as the single source of truth
-    await _entries.addEntry(
+    await _addKitEntry(
       heroId: heroId,
-      entryType: 'equipment_bonuses',
-      entryId: 'combined_equipment_bonuses',
-      sourceType: 'kit',
       sourceId: 'combined',
-      gainedBy: 'calculated',
+      entryType: HeroEntryTypes.equipmentBonuses,
+      entryId: 'combined_equipment_bonuses',
+      gainedBy: HeroEntryGainedBy.calculated,
       payload: {
         'stamina': bonuses.staminaBonus,
         'speed': bonuses.speedBonus,
@@ -416,24 +495,26 @@ class KitGrantsService {
         'equipment_ids': bonuses.equipmentIds,
       },
     );
-    
   }
 
   Future<void> _clearEquipmentBonuses(String heroId) async {
-    await _entries.removeEntriesFromSource(
+    await _mutations.removeSourceType(
       heroId: heroId,
-      sourceType: 'kit',
-      entryType: 'equipment_bonuses',
+      sourceType: HeroEntrySourceTypes.kit,
+      entryType: HeroEntryTypes.equipmentBonuses,
+      recomputeAggregates: false,
     );
-    await _entries.removeEntriesFromSource(
+    await _mutations.removeSourceType(
       heroId: heroId,
-      sourceType: 'kit',
-      entryType: 'kit_stat_bonus',
+      sourceType: HeroEntrySourceTypes.kit,
+      entryType: HeroEntryTypes.kitStatBonus,
+      recomputeAggregates: false,
     );
-    await _entries.removeEntriesFromSource(
+    await _mutations.removeSourceType(
       heroId: heroId,
-      sourceType: 'kit',
-      entryType: 'stat_mod',
+      sourceType: HeroEntrySourceTypes.kit,
+      entryType: HeroEntryTypes.statMod,
+      recomputeAggregates: false,
     );
   }
 
@@ -444,26 +525,24 @@ class KitGrantsService {
   ) async {
     final data = kit.data;
     final decreaseTotal = data['decrease_total'];
-    
+
     if (decreaseTotal == null) return;
-    
+
     if (decreaseTotal is Map) {
       final stat = (decreaseTotal['stat'] as String?)?.toLowerCase() ?? '';
       final value = _parseIntOrNull(decreaseTotal['value']) ?? 0;
-      
+
       if (stat.isNotEmpty && value != 0) {
         // Normalize stat name for storage (e.g., "saving throw" -> "saving_throw")
         final normalizedStat = stat.replaceAll(' ', '_');
-        
+
         // Store as a stat mod entry with negative value (decrease)
         // Use the format expected by _mergeStatMods: { "stat_name": value }
-        await _entries.addEntry(
+        await _addKitEntry(
           heroId: heroId,
-          entryType: 'stat_mod',
-          entryId: '${kit.id}_decrease_$normalizedStat',
-          sourceType: 'kit',
           sourceId: kit.id,
-          gainedBy: 'grant',
+          entryType: HeroEntryTypes.statMod,
+          entryId: '${kit.id}_decrease_$normalizedStat',
           payload: {
             normalizedStat: -value, // Negative because it decreases the total
           },
@@ -471,6 +550,71 @@ class KitGrantsService {
       }
     }
   }
+
+  Future<void> _processCanonicalGrants(
+    String heroId,
+    model.Component kit,
+    int heroLevel,
+  ) async {
+    final grants = kit.data['grants'];
+    if (!_looksLikeCanonicalGrants(grants)) return;
+
+    final parsedGrants = CanonicalGrant.parseList(
+      grants,
+      defaultSource: 'kit:${kit.id}',
+    );
+
+    for (final grant in parsedGrants) {
+      switch (grant) {
+        case CanonicalStatModGrant():
+          await _processCanonicalStatModGrant(
+            heroId: heroId,
+            kitId: kit.id,
+            grant: grant,
+            heroLevel: heroLevel,
+          );
+        default:
+          break;
+      }
+    }
+  }
+
+  Future<void> _processCanonicalStatModGrant({
+    required String heroId,
+    required String kitId,
+    required CanonicalStatModGrant grant,
+    required int heroLevel,
+  }) async {
+    final normalizedStat = _normalizeStat(grant.stat);
+    final value = grant.modifications.fold<int>(
+      0,
+      (sum, modification) => sum + modification.getActualValue(heroLevel),
+    );
+    if (normalizedStat.isEmpty || value == 0) return;
+
+    await _addKitEntry(
+      heroId: heroId,
+      sourceId: kitId,
+      entryType: HeroEntryTypes.statMod,
+      entryId: grant.entryId ?? '${kitId}_stat_mod_$normalizedStat',
+      payload: {normalizedStat: value},
+    );
+  }
+
+  bool _looksLikeCanonicalGrants(Object? grants) {
+    if (grants is Map) {
+      if (grants['schema'] == canonicalGrantSchemaId) return true;
+      if (grants.containsKey('kind')) return true;
+      return _looksLikeCanonicalGrants(grants['grants']);
+    }
+    if (grants is List) {
+      return grants.any((grant) => grant is Map && grant.containsKey('kind'));
+    }
+    return false;
+  }
+
+  String _normalizeStat(String stat) =>
+      stat.trim().toLowerCase().replaceAll(' ', '_');
 
   int? _parseIntOrNull(dynamic value) {
     if (value == null) return null;
@@ -504,6 +648,5 @@ class KitGrantsService {
     return _parseIntOrNull(echelonData[key]) ?? 0;
   }
 
-  String _slugify(String value) =>
-      AbilityResolverService.slugify(value);
+  String _slugify(String value) => AbilityResolverService.slugify(value);
 }

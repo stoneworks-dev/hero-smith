@@ -1,12 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/db/providers.dart';
 import '../../../core/theme/semantic/hero_entry_tokens.dart';
 
 /// Provider that watches hero ability IDs for a specific hero.
-/// 
+///
 /// All abilities are now stored in hero_entries with entryType='ability'.
 /// Sources include:
 /// - manual_choice: abilities chosen directly (class ability picks)
@@ -44,31 +42,9 @@ final heroEquipmentIdsProvider =
     final entryIds = await db.getHeroEntryIds(heroId, HeroEntryTypes.equipment);
     if (entryIds.isNotEmpty) return entryIds.map<String?>((e) => e).toList();
 
-    // Fall back to legacy kit entry
+    // Fall back to selected kit identity when no slotted equipment is present.
     final kitEntry = await db.getSingleHeroEntryId(heroId, HeroEntryTypes.kit);
     if (kitEntry != null) return <String?>[kitEntry];
-
-    // Final fallback: legacy hero_values
-    final legacyValues = await db.getHeroValues(heroId);
-    for (final value in legacyValues) {
-      if (value.key == HeroConfigKeys.basicsEquipment) {
-        if (value.jsonValue != null) {
-          try {
-            final decoded = jsonDecode(value.jsonValue!);
-            if (decoded is Map && decoded['ids'] is List) {
-              return (decoded['ids'] as List)
-                  .map<String?>((e) => e == null ? null : e.toString())
-                  .toList();
-            }
-          } catch (_) {}
-        }
-      } else if (value.key == HeroConfigKeys.basicsKit) {
-        final kitId = value.textValue;
-        if (kitId != null && kitId.isNotEmpty) {
-          return <String?>[kitId];
-        }
-      }
-    }
     return <String?>[];
   });
 });

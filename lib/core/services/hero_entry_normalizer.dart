@@ -5,11 +5,12 @@ import 'package:drift/drift.dart';
 
 import '../db/app_database.dart' as db;
 import '../repositories/hero_entry_repository.dart';
+import '../storage/hero_storage_contract.dart';
 import 'damage_resistance_service.dart';
 import 'hero_config_service.dart';
 
 /// Normalizes hero_entries to ensure correct metadata and completeness.
-/// 
+///
 /// This class is responsible for:
 /// 1. Migrating legacy data from hero_values to hero_entries/hero_config
 /// 2. Cleaning up invalid or duplicate entries
@@ -26,135 +27,52 @@ class HeroEntryNormalizer {
   final HeroConfigService _config;
   final DamageResistanceService _resistanceService;
 
-  /// Keys in hero_values that should be removed entirely.
-  /// These prefixes represent legacy data that has been migrated to
-  /// hero_entries or hero_config.
-  /// 
-  /// After migration, hero_values should contain ONLY:
-  /// - numeric stats (stats.*, stamina.*, recoveries.*, etc.)
-  /// - conditions/state (conditions.*, surges.*, heroic.*)
-  /// - aggregate computed values (resistances.damage)
-  /// - user-managed modifiers (mods.map)
-  /// - score values (score.*)
-  /// - potency values (potency.*)
-  /// - project points (projects.*)
-  static const List<String> _bannedValueKeysPrefixes = [
-    // === BASICS (content identifiers → hero_entries) ===
-    'basics.className',
-    'basics.subclass',
-    'basics.ancestry',
-    'basics.career',
-    'basics.kit',
-    
-    // === ANCESTRY legacy content ===
-    'ancestry.granted_abilities',
-    'ancestry.applied_bonuses',
-    'ancestry.condition_immunities',
-    'ancestry.stat_mods',
-    'ancestry.selected_traits', // migrate to hero_entries as ancestry_trait
-    
-    // === PERK legacy content ===
-    'perk_abilities.',
-    'perk_grant.', // migrate to hero_config as perk.<perkId>.selections
-    
-    // === COMPLICATION legacy content ===
-    'complication.applied_grants',
-    'complication.abilities',
-    'complication.skills',
-    'complication.features',
-    'complication.treasures',
-    'complication.languages',
-    'complication.damage_resistances',
-    'complication.stat_mods',
-    
-    // === CLASS FEATURE legacy content ===
-    'class_feature.',
-    'class_feature_abilities',
-    'class_feature_skills',
-    'class_feature_stat_mods',
-    'class_feature_resistances',
-    
-    // === KIT legacy content ===
-    'kit_grants.',
-    'kit.abilities',
-    'kit.equipment',
-    'kit.stat_bonuses',
-    'kit.signature_ability',
-    
-    // === STRIFE legacy content ===
-    'strife.equipment_bonuses', // Migrated to hero_entries as equipment_bonuses entry
-    
-    // === CAREER legacy content (content only, not config) ===
-    'career.abilities',
-    'career.skills_granted',
-    'career.perks_granted',
-    
-    // === CULTURE legacy content (content only, not config) ===
-    'culture.skills_granted',
-    'culture.languages_granted',
-    
-    // === FAITH legacy content (move to hero_entries) ===
-    'faith.deity',
-    'faith.domain',
-  ];
-
-  /// Config keys that should be removed entirely from hero_config.
-  /// These represent legacy storage patterns that have been migrated.
-  static const List<String> _bannedConfigKeys = [
-    // === COMPLICATION legacy content blob (now in hero_entries) ===
-    'complication.applied_grants',
-    'complication.stat_mods',
-    
-    // === SUBCLASS keys that belong in hero_entries, not config ===
-    'class_feature.subclass_key',
-    'strife.class_feature.subclass_key',
-    
-    // === ANCESTRY legacy stat mods (now in hero_entries) ===  
-    'ancestry.stat_mods',
-  ];
-
-  /// Entry types that should not exist in hero_entries (computed, not stored).
-  /// Note: equipment_bonuses is now legitimately stored by KitGrantsService.
-  static const List<String> _bannedEntryTypes = [
-    // 'combined_equipment_bonuses', // Now stored by KitGrantsService
-    // 'equipment_bonuses',          // Now stored by KitGrantsService
-  ];
+  static const Set<String> _bannedConfigKeys = HeroConfigKeys.bannedKeys;
+  static const Set<String> _bannedEntryTypes = HeroEntryTypes.bannedTypes;
 
   /// Main normalization entry point.
   /// Runs all migration and cleanup steps in a single transaction.
   /// This method is IDEMPOTENT - safe to run multiple times.
   Future<void> normalize(String heroId) async {
     await _db.transaction(() async {
+      await _dedupeConfig(heroId);
+
       // === PHASE 1: Migrate legacy data to hero_entries/hero_config ===
       await _migrateBasicsToEntries(heroId);
       await _migrateFaithToEntries(heroId);
       await _migrateLegacyAncestryData(heroId);
+      await _migrateLegacyComplicationData(heroId);
+      await _normalizeLegacyComplicationAncestryTraitEntries(heroId);
       await _migrateLegacyClassFeatureGrants(heroId);
       await _migrateLegacyKitGrants(heroId);
+      await _migrateLegacyEquipmentSelections(heroId);
       await _migrateLegacyEquipmentBonuses(heroId);
+      await _migrateLegacyFeatureStatBonuses(heroId);
+      await _migrateLegacyPerkAbilityGrants(heroId);
       await _migrateLegacyPerkGrants(heroId);
       await _migrateClassFeatureSelections(heroId);
       await _migrateSubclassKeyToEntries(heroId);
-      
+
       // === PHASE 2: Remove banned legacy keys from hero_values ===
       await _removeBannedValues(heroId);
-      
+
       // === PHASE 3: Remove banned legacy keys from hero_config ===
       await _removeBannedConfigKeys(heroId);
-      
+      await _dedupeConfig(heroId);
+
       // === PHASE 4: Ensure hero_entries from hero_config selections ===
       await _ensureAncestrySelections(heroId);
       await _ensureCultureSelections(heroId);
       await _ensureCareerSelections(heroId);
       await _ensureStrifeSelections(heroId);
       await _ensureEquipment(heroId);
-      
+
       // === PHASE 5: Cleanup and validation ===
       await _removeInvalidEntries(heroId);
       await _removeBannedEntryTypes(heroId);
       await _dedupe(heroId);
       await _dedupeConfig(heroId);
-      
+
       // === PHASE 6: Recompute aggregate values ===
       await _recomputeResistances(heroId);
     });
@@ -286,8 +204,28 @@ class HeroEntryNormalizer {
   Future<void> _migrateLegacyAncestryData(String heroId) async {
     final rows = await _db.getHeroValues(heroId);
 
+    // Migrate ancestry.applied_bonuses snapshot to hero_config.
+    final appliedBonusesRow = rows.firstWhereOrNull(
+      (v) => v.key == HeroConfigKeys.ancestryAppliedBonuses,
+    );
+    if (appliedBonusesRow != null) {
+      final appliedBonuses = _parseJsonMap(appliedBonusesRow);
+      if (appliedBonuses.isNotEmpty) {
+        await _config.setConfigValue(
+          heroId: heroId,
+          key: HeroConfigKeys.ancestryAppliedBonuses,
+          value: appliedBonuses,
+        );
+      }
+      await _db.deleteHeroValue(
+        heroId: heroId,
+        key: HeroConfigKeys.ancestryAppliedBonuses,
+      );
+    }
+
     // Migrate ancestry.selected_traits to hero_entries
-    final traitValue = rows.firstWhereOrNull((v) => v.key == 'ancestry.selected_traits');
+    final traitValue =
+        rows.firstWhereOrNull((v) => v.key == 'ancestry.selected_traits');
     if (traitValue != null) {
       final traits = _parseJsonList(traitValue);
       for (final traitId in traits) {
@@ -300,11 +238,13 @@ class HeroEntryNormalizer {
           gainedBy: 'choice',
         );
       }
-      await _db.deleteHeroValue(heroId: heroId, key: 'ancestry.selected_traits');
+      await _db.deleteHeroValue(
+          heroId: heroId, key: 'ancestry.selected_traits');
     }
 
     // Migrate ancestry.granted_abilities
-    final abilitiesRow = rows.firstWhereOrNull((v) => v.key == 'ancestry.granted_abilities');
+    final abilitiesRow =
+        rows.firstWhereOrNull((v) => v.key == 'ancestry.granted_abilities');
     if (abilitiesRow != null) {
       final abilities = _parseJsonList(abilitiesRow);
       for (final ability in abilities) {
@@ -317,21 +257,23 @@ class HeroEntryNormalizer {
           gainedBy: 'grant',
         );
       }
-      await _db.deleteHeroValue(heroId: heroId, key: 'ancestry.granted_abilities');
+      await _db.deleteHeroValue(
+          heroId: heroId, key: 'ancestry.granted_abilities');
     }
 
     // Migrate ancestry.stat_mods
-    final statModsRow = rows.firstWhereOrNull((v) => v.key == 'ancestry.stat_mods');
+    final statModsRow =
+        rows.firstWhereOrNull((v) => v.key == 'ancestry.stat_mods');
     if (statModsRow != null) {
       final mods = _parseJsonMap(statModsRow);
       if (mods.isNotEmpty) {
         await _entries.addEntry(
           heroId: heroId,
-          entryType: 'stat_mod',
+          entryType: HeroEntryTypes.statMod,
           entryId: 'ancestry_stat_mods',
-          sourceType: 'ancestry',
+          sourceType: HeroEntrySourceTypes.ancestry,
           sourceId: 'ancestry_grant',
-          gainedBy: 'grant',
+          gainedBy: HeroEntryGainedBy.grant,
           payload: {'mods': mods},
         );
       }
@@ -339,7 +281,8 @@ class HeroEntryNormalizer {
     }
 
     // Migrate ancestry.condition_immunities as resistance entries
-    final immunitiesRow = rows.firstWhereOrNull((v) => v.key == 'ancestry.condition_immunities');
+    final immunitiesRow =
+        rows.firstWhereOrNull((v) => v.key == 'ancestry.condition_immunities');
     if (immunitiesRow != null) {
       final immunities = _parseJsonList(immunitiesRow);
       for (final conditionType in immunities) {
@@ -352,31 +295,123 @@ class HeroEntryNormalizer {
           gainedBy: 'grant',
         );
       }
-      await _db.deleteHeroValue(heroId: heroId, key: 'ancestry.condition_immunities');
+      await _db.deleteHeroValue(
+          heroId: heroId, key: 'ancestry.condition_immunities');
     }
+  }
+
+  /// Migrate legacy complication data blobs out of hero_values.
+  Future<void> _migrateLegacyComplicationData(String heroId) async {
+    final rows = await _db.getHeroValues(heroId);
+
+    Future<void> migrateConfigMap(String valueKey, String configKey) async {
+      final row = rows.firstWhereOrNull((v) => v.key == valueKey);
+      if (row == null) return;
+
+      final value = _parseJsonMap(row);
+      if (value.isNotEmpty) {
+        await _config.setConfigValue(
+          heroId: heroId,
+          key: configKey,
+          value: value,
+        );
+      }
+      await _db.deleteHeroValue(heroId: heroId, key: valueKey);
+    }
+
+    await migrateConfigMap(
+      HeroConfigKeys.complicationAppliedGrants,
+      HeroConfigKeys.complicationAppliedGrants,
+    );
+    await migrateConfigMap(
+      HeroConfigKeys.complicationTokens,
+      HeroConfigKeys.complicationTokens,
+    );
+    await migrateConfigMap(
+      HeroConfigKeys.complicationOriginalBaseStats,
+      HeroConfigKeys.complicationOriginalBaseStats,
+    );
+
+    final statModsRow =
+        rows.firstWhereOrNull((v) => v.key == 'complication.stat_mods');
+    if (statModsRow != null) {
+      final mods = _parseJsonMap(statModsRow);
+      if (mods.isNotEmpty) {
+        await _entries.addEntry(
+          heroId: heroId,
+          entryType: HeroEntryTypes.statMod,
+          entryId: 'complication_stat_mods',
+          sourceType: HeroEntrySourceTypes.complication,
+          sourceId: 'complication_grant',
+          gainedBy: HeroEntryGainedBy.grant,
+          payload: {'mods': mods},
+        );
+      }
+      await _db.deleteHeroValue(heroId: heroId, key: 'complication.stat_mods');
+    }
+
+    final contentKeys = <String, String>{
+      'complication.abilities': HeroEntryTypes.ability,
+      'complication.skills': HeroEntryTypes.skill,
+      'complication.features': HeroEntryTypes.feature,
+      'complication.treasures': HeroEntryTypes.treasure,
+      'complication.languages': HeroEntryTypes.language,
+    };
+    for (final entry in contentKeys.entries) {
+      final row = rows.firstWhereOrNull((v) => v.key == entry.key);
+      if (row == null) continue;
+
+      final ids = _parseLegacyList(row);
+      for (final id in ids) {
+        await _entries.addEntry(
+          heroId: heroId,
+          entryType: entry.value,
+          entryId: id,
+          sourceType: HeroEntrySourceTypes.complication,
+          sourceId: 'complication',
+          gainedBy: HeroEntryGainedBy.grant,
+        );
+      }
+      await _db.deleteHeroValue(heroId: heroId, key: entry.key);
+    }
+  }
+
+  Future<void> _normalizeLegacyComplicationAncestryTraitEntries(
+    String heroId,
+  ) async {
+    await (_db.update(_db.heroEntries)
+          ..where((entry) =>
+              entry.heroId.equals(heroId) &
+              entry.gainedBy.equals('ancestry_trait_grant')))
+        .write(
+      const db.HeroEntriesCompanion(
+        sourceType: Value(HeroEntrySourceTypes.complicationAncestryTrait),
+        gainedBy: Value(HeroEntryGainedBy.grant),
+      ),
+    );
   }
 
   /// Migrate legacy perk_grant.* keys to hero_config as perk.<perkId>.selections.
   Future<void> _migrateLegacyPerkGrants(String heroId) async {
     final rows = await _db.getHeroValues(heroId);
-    
+
     // Group all perk_grant.* keys by perkId
     final perkGrants = <String, Map<String, dynamic>>{};
     final keysToDelete = <String>[];
-    
+
     for (final row in rows) {
       if (!row.key.startsWith('perk_grant.')) continue;
       keysToDelete.add(row.key);
-      
+
       // Parse: perk_grant.<perkId>.<grantType>
       final parts = row.key.split('.');
       if (parts.length < 3) continue;
-      
+
       final perkId = parts[1];
       final grantType = parts.sublist(2).join('.');
-      
+
       perkGrants.putIfAbsent(perkId, () => {});
-      
+
       final value = row.jsonValue ?? row.textValue;
       if (value != null && value.isNotEmpty) {
         try {
@@ -391,16 +426,16 @@ class HeroEntryNormalizer {
         }
       }
     }
-    
+
     // Write each perk's selections to hero_config
     for (final entry in perkGrants.entries) {
       final perkId = entry.key;
       final selections = entry.value;
-      
+
       if (selections.isNotEmpty) {
         await _config.setConfigValue(
           heroId: heroId,
-          key: 'perk.$perkId.selections',
+          key: HeroConfigKeys.perkSelections(perkId),
           value: selections,
         );
       }
@@ -412,13 +447,60 @@ class HeroEntryNormalizer {
     }
   }
 
+  /// Migrate legacy perk_abilities.* keys to source-scoped ability entries.
+  Future<void> _migrateLegacyPerkAbilityGrants(String heroId) async {
+    final rows = await _db.getHeroValues(heroId);
+
+    for (final row in rows) {
+      if (!row.key.startsWith(HeroValueKeys.legacyPerkAbilitiesPrefix)) {
+        continue;
+      }
+
+      final perkId = row.key.substring(
+        HeroValueKeys.legacyPerkAbilitiesPrefix.length,
+      );
+      if (perkId.isEmpty) {
+        await _db.deleteHeroValue(heroId: heroId, key: row.key);
+        continue;
+      }
+
+      final legacyAbilityIds = _parseLegacyList(row);
+      if (legacyAbilityIds.isNotEmpty) {
+        final existingAbilityIds = (await _entries.listEntriesByType(
+          heroId,
+          'ability',
+        ))
+            .where((entry) =>
+                entry.sourceType == 'perk' && entry.sourceId == perkId)
+            .map((entry) => entry.entryId);
+        final abilityIds = <String>{
+          ...existingAbilityIds,
+          ...legacyAbilityIds,
+        };
+
+        await _entries.addEntriesFromSource(
+          heroId: heroId,
+          sourceType: 'perk',
+          sourceId: perkId,
+          entryType: 'ability',
+          entryIds: abilityIds,
+          gainedBy: 'grant',
+        );
+      }
+
+      await _db.deleteHeroValue(heroId: heroId, key: row.key);
+    }
+  }
+
   /// Migrate legacy class feature grants from hero_values to hero_entries.
   Future<void> _migrateLegacyClassFeatureGrants(String heroId) async {
     final rows = await _db.getHeroValues(heroId);
-    
+
     // Migrate class_feature_abilities
     final abilitiesRow = rows.firstWhereOrNull(
-      (v) => v.key == 'class_feature_abilities' || v.key.startsWith('class_feature.abilities'),
+      (v) =>
+          v.key == 'class_feature_abilities' ||
+          v.key.startsWith('class_feature.abilities'),
     );
     if (abilitiesRow != null) {
       final abilities = _parseJsonList(abilitiesRow);
@@ -433,10 +515,12 @@ class HeroEntryNormalizer {
         );
       }
     }
-    
+
     // Migrate class_feature_skills
     final skillsRow = rows.firstWhereOrNull(
-      (v) => v.key == 'class_feature_skills' || v.key.startsWith('class_feature.skills'),
+      (v) =>
+          v.key == 'class_feature_skills' ||
+          v.key.startsWith('class_feature.skills'),
     );
     if (skillsRow != null) {
       final skills = _parseJsonList(skillsRow);
@@ -451,10 +535,12 @@ class HeroEntryNormalizer {
         );
       }
     }
-    
+
     // Migrate class_feature_stat_mods
     final statModsRow = rows.firstWhereOrNull(
-      (v) => v.key == 'class_feature_stat_mods' || v.key.startsWith('class_feature.stat_mods'),
+      (v) =>
+          v.key == 'class_feature_stat_mods' ||
+          v.key.startsWith('class_feature.stat_mods'),
     );
     if (statModsRow != null) {
       final mods = _parseJsonMap(statModsRow);
@@ -470,10 +556,12 @@ class HeroEntryNormalizer {
         );
       }
     }
-    
+
     // Migrate class_feature_resistances
     final resistancesRow = rows.firstWhereOrNull(
-      (v) => v.key == 'class_feature_resistances' || v.key.startsWith('class_feature.resistances'),
+      (v) =>
+          v.key == 'class_feature_resistances' ||
+          v.key.startsWith('class_feature.resistances'),
     );
     if (resistancesRow != null) {
       final resistances = _parseJsonMap(resistancesRow);
@@ -507,10 +595,11 @@ class HeroEntryNormalizer {
   /// Migrate legacy kit grants from hero_values to hero_entries.
   Future<void> _migrateLegacyKitGrants(String heroId) async {
     final rows = await _db.getHeroValues(heroId);
-    
+
     // Migrate kit.abilities or kit_grants.abilities
     final kitAbilitiesRow = rows.firstWhereOrNull(
-      (v) => v.key == 'kit.abilities' || v.key.startsWith('kit_grants.abilities'),
+      (v) =>
+          v.key == 'kit.abilities' || v.key.startsWith('kit_grants.abilities'),
     );
     if (kitAbilitiesRow != null) {
       final abilities = _parseJsonList(kitAbilitiesRow);
@@ -525,10 +614,11 @@ class HeroEntryNormalizer {
         );
       }
     }
-    
+
     // Migrate kit.equipment
     final kitEquipmentRow = rows.firstWhereOrNull(
-      (v) => v.key == 'kit.equipment' || v.key.startsWith('kit_grants.equipment'),
+      (v) =>
+          v.key == 'kit.equipment' || v.key.startsWith('kit_grants.equipment'),
     );
     if (kitEquipmentRow != null) {
       final equipment = _parseJsonList(kitEquipmentRow);
@@ -543,10 +633,12 @@ class HeroEntryNormalizer {
         );
       }
     }
-    
+
     // Migrate kit.signature_ability
     final signatureRow = rows.firstWhereOrNull(
-      (v) => v.key == 'kit.signature_ability' || v.key.startsWith('kit_grants.signature'),
+      (v) =>
+          v.key == 'kit.signature_ability' ||
+          v.key.startsWith('kit_grants.signature'),
     );
     if (signatureRow != null) {
       final signatureAbility = signatureRow.textValue;
@@ -562,10 +654,12 @@ class HeroEntryNormalizer {
         );
       }
     }
-    
+
     // Migrate kit.stat_bonuses
     final kitStatBonusesRow = rows.firstWhereOrNull(
-      (v) => v.key == 'kit.stat_bonuses' || v.key.startsWith('kit_grants.stat_bonuses'),
+      (v) =>
+          v.key == 'kit.stat_bonuses' ||
+          v.key.startsWith('kit_grants.stat_bonuses'),
     );
     if (kitStatBonusesRow != null) {
       final bonuses = _parseJsonMap(kitStatBonusesRow);
@@ -583,20 +677,59 @@ class HeroEntryNormalizer {
     }
   }
 
+  /// Migrate legacy equipment selection value rows into equipment config/entries.
+  Future<void> _migrateLegacyEquipmentSelections(String heroId) async {
+    final rows = await _db.getHeroValues(heroId);
+    final legacyKeys = {
+      HeroValueKeys.basicsEquipment,
+      HeroValueKeys.legacyStrifeEquipmentIds,
+    };
+
+    for (final row in rows.where((value) => legacyKeys.contains(value.key))) {
+      final ids = _parseLegacyNullableList(row);
+      final compactIds = ids.whereType<String>().where((id) => id.isNotEmpty);
+
+      if (ids.isNotEmpty) {
+        await _config.setConfigValue(
+          heroId: heroId,
+          key: HeroConfigKeys.equipmentSlots,
+          value: {'ids': ids},
+        );
+      }
+
+      if (compactIds.isNotEmpty) {
+        await _entries.addEntriesFromSource(
+          heroId: heroId,
+          sourceType: HeroEntrySourceTypes.equipment,
+          sourceId: 'equipment_slots',
+          entryType: HeroEntryTypes.equipment,
+          entryIds: compactIds,
+          gainedBy: HeroEntryGainedBy.choice,
+        );
+      }
+
+      await _db.deleteHeroValue(heroId: heroId, key: row.key);
+    }
+  }
+
   /// Migrate legacy equipment bonuses from hero_values to hero_entries.
   /// This is a one-time migration for heroes created before the storage consolidation.
   Future<void> _migrateLegacyEquipmentBonuses(String heroId) async {
     final rows = await _db.getHeroValues(heroId);
     final legacyRow = rows.firstWhereOrNull(
-      (v) => v.key == 'strife.equipment_bonuses',
+      (v) => v.key == HeroValueKeys.legacyEquipmentBonuses,
     );
     if (legacyRow == null) return;
 
     // Check if we already have equipment_bonuses in hero_entries
-    final existingEntries = await _entries.listEntriesByType(heroId, 'equipment_bonuses');
+    final existingEntries =
+        await _entries.listEntriesByType(heroId, 'equipment_bonuses');
     if (existingEntries.isNotEmpty) {
       // Already migrated - just delete the legacy value
-      await _db.deleteHeroValue(heroId: heroId, key: 'strife.equipment_bonuses');
+      await _db.deleteHeroValue(
+        heroId: heroId,
+        key: HeroValueKeys.legacyEquipmentBonuses,
+      );
       return;
     }
 
@@ -608,11 +741,11 @@ class HeroEntryNormalizer {
         if (decoded is Map) {
           await _entries.addEntry(
             heroId: heroId,
-            entryType: 'equipment_bonuses',
+            entryType: HeroEntryTypes.equipmentBonuses,
             entryId: 'combined_equipment_bonuses',
-            sourceType: 'kit',
+            sourceType: HeroEntrySourceTypes.kit,
             sourceId: 'combined',
-            gainedBy: 'calculated',
+            gainedBy: HeroEntryGainedBy.calculated,
             payload: {
               'stamina': _toIntOrZero(decoded['stamina']),
               'speed': _toIntOrZero(decoded['speed']),
@@ -629,7 +762,61 @@ class HeroEntryNormalizer {
     }
 
     // Delete the legacy value after migration
-    await _db.deleteHeroValue(heroId: heroId, key: 'strife.equipment_bonuses');
+    await _db.deleteHeroValue(
+      heroId: heroId,
+      key: HeroValueKeys.legacyEquipmentBonuses,
+    );
+  }
+
+  /// Migrate legacy class feature stat bonuses from hero_values to hero_entries.
+  Future<void> _migrateLegacyFeatureStatBonuses(String heroId) async {
+    final rows = await _db.getHeroValues(heroId);
+    final legacyRow = rows.firstWhereOrNull(
+      (v) => v.key == HeroValueKeys.legacyFeatureStatBonuses,
+    );
+    if (legacyRow == null) return;
+
+    final existingEntries = await _entries.listEntriesByType(
+      heroId,
+      HeroEntryTypes.featureStatBonus,
+    );
+    final existingSourceIds = existingEntries
+        .where((entry) => entry.sourceType == HeroEntrySourceTypes.classFeature)
+        .map((entry) => entry.sourceId)
+        .toSet();
+
+    final raw = legacyRow.jsonValue ?? legacyRow.textValue;
+    if (raw != null && raw.isNotEmpty) {
+      try {
+        final decoded = jsonDecode(raw);
+        if (decoded is Map) {
+          for (final featureEntry in decoded.entries) {
+            final featureId = featureEntry.key.toString().trim();
+            final payload = featureEntry.value;
+            if (featureId.isEmpty || payload is! Map) continue;
+            if (existingSourceIds.contains(featureId)) continue;
+
+            await _entries.addEntry(
+              heroId: heroId,
+              entryType: HeroEntryTypes.featureStatBonus,
+              entryId: '${featureId}_stat_bonus',
+              sourceType: HeroEntrySourceTypes.classFeature,
+              sourceId: featureId,
+              gainedBy: HeroEntryGainedBy.grant,
+              payload: {
+                for (final entry in payload.entries)
+                  entry.key.toString(): entry.value,
+              },
+            );
+          }
+        }
+      } catch (_) {}
+    }
+
+    await _db.deleteHeroValue(
+      heroId: heroId,
+      key: HeroValueKeys.legacyFeatureStatBonuses,
+    );
   }
 
   int _toIntOrZero(dynamic value) {
@@ -643,7 +830,7 @@ class HeroEntryNormalizer {
   /// Migrate class feature selections from hero_values to hero_config.
   Future<void> _migrateClassFeatureSelections(String heroId) async {
     final rows = await _db.getHeroValues(heroId);
-    
+
     // Check for legacy class feature selections in hero_values
     final selectionsRow = rows.firstWhereOrNull(
       (v) => v.key == 'strife.class_feature_selections',
@@ -678,16 +865,17 @@ class HeroEntryNormalizer {
       'strife.class_feature.subclass_key',
       'strife.subclass_key',
     ];
-    
+
     for (final configKey in configKeys) {
       final config = await _config.getConfigValue(heroId, configKey);
       if (config == null) continue;
-      
+
       final subclassKey = config['key']?.toString();
       if (subclassKey == null || subclassKey.isEmpty) continue;
-      
+
       // Check if we already have a subclass entry
-      final existingSubclass = await _db.getSingleHeroEntryId(heroId, 'subclass');
+      final existingSubclass =
+          await _db.getSingleHeroEntryId(heroId, 'subclass');
       if (existingSubclass == null) {
         // Migrate to hero_entries
         await _db.upsertHeroEntry(
@@ -699,7 +887,7 @@ class HeroEntryNormalizer {
           gainedBy: 'choice',
         );
       }
-      
+
       // Note: We don't delete strife.subclass_key here as it's still valid for the strife creator
       // Only class_feature.* and strife.class_feature.* are banned
     }
@@ -724,8 +912,8 @@ class HeroEntryNormalizer {
   Future<void> _removeBannedEntryTypes(String heroId) async {
     for (final entryType in _bannedEntryTypes) {
       await (_db.delete(_db.heroEntries)
-            ..where((t) => 
-                t.heroId.equals(heroId) & t.entryType.equals(entryType)))
+            ..where(
+                (t) => t.heroId.equals(heroId) & t.entryType.equals(entryType)))
           .go();
     }
   }
@@ -736,7 +924,10 @@ class HeroEntryNormalizer {
     try {
       final decoded = jsonDecode(raw);
       if (decoded is List) {
-        return decoded.map((e) => e?.toString() ?? '').where((e) => e.isNotEmpty).toList();
+        return decoded
+            .map((e) => e?.toString() ?? '')
+            .where((e) => e.isNotEmpty)
+            .toList();
       }
       if (decoded is Map && decoded['list'] is List) {
         return (decoded['list'] as List)
@@ -745,6 +936,42 @@ class HeroEntryNormalizer {
             .toList();
       }
     } catch (_) {}
+    return const [];
+  }
+
+  List<String> _parseLegacyList(db.HeroValue row) {
+    final raw = row.jsonValue ?? row.textValue;
+    if (raw == null || raw.isEmpty) return const [];
+    try {
+      final decoded = jsonDecode(raw);
+      if (decoded is Map && decoded['list'] is List) {
+        return _normalizeToList(decoded['list']);
+      }
+      if (decoded is Map && decoded['ids'] is List) {
+        return _normalizeToList(decoded['ids']);
+      }
+      return _normalizeToList(decoded);
+    } catch (_) {
+      return [raw].where((value) => value.isNotEmpty).toList();
+    }
+  }
+
+  List<String?> _parseLegacyNullableList(db.HeroValue row) {
+    final raw = row.jsonValue ?? row.textValue;
+    if (raw == null || raw.isEmpty) return const [];
+    try {
+      final decoded = jsonDecode(raw);
+      if (decoded is Map && decoded['ids'] is List) {
+        return (decoded['ids'] as List)
+            .map((value) => value?.toString())
+            .toList();
+      }
+      if (decoded is List) {
+        return decoded.map((value) => value?.toString()).toList();
+      }
+    } catch (_) {
+      return [raw];
+    }
     return const [];
   }
 
@@ -764,23 +991,23 @@ class HeroEntryNormalizer {
     if (value == null) return const [];
     if (value is String) return [value];
     if (value is List) {
-      return value.map((e) => e?.toString() ?? '').where((e) => e.isNotEmpty).toList();
+      return value
+          .map((e) => e?.toString() ?? '')
+          .where((e) => e.isNotEmpty)
+          .toList();
     }
     return const [];
   }
 
   Future<void> _removeBannedValues(String heroId) async {
     final rows = await _db.getHeroValues(heroId);
-    
+
     final toDelete = rows
-        .where((v) =>
-            _bannedValueKeysPrefixes
-                .any((p) => v.key.startsWith(p)))
+        .where((v) => HeroValueKeys.isBanned(v.key))
         .map((v) => v.id)
         .toList();
     if (toDelete.isNotEmpty) {
-      await (_db.delete(_db.heroValues)
-            ..where((t) => t.id.isIn(toDelete)))
+      await (_db.delete(_db.heroValues)..where((t) => t.id.isIn(toDelete)))
           .go();
     }
   }
@@ -790,8 +1017,8 @@ class HeroEntryNormalizer {
   Future<void> _ensureAncestrySelections(String heroId) async {
     // Selected traits (legacy hero_values)
     final values = await _db.getHeroValues(heroId);
-    final traitValue = values
-        .firstWhereOrNull((v) => v.key == 'ancestry.selected_traits');
+    final traitValue =
+        values.firstWhereOrNull((v) => v.key == 'ancestry.selected_traits');
     final selectedTraits = <String>[];
     if (traitValue != null) {
       final raw = traitValue.jsonValue ?? traitValue.textValue;
@@ -821,53 +1048,83 @@ class HeroEntryNormalizer {
 
   Future<void> _ensureCultureSelections(String heroId) async {
     final config = await _config.getConfigMap(heroId);
-    final envSkill = config['culture.environment.skill']?['selection'];
-    final orgSkill = config['culture.organisation.skill']?['selection'];
-    final upSkill = config['culture.upbringing.skill']?['selection'];
-
-    Future<void> addSkill(String? id, String sourceId) async {
-      if (id == null || id.isEmpty) return;
-      await _entries.addEntry(
+    Future<void> reconcileSelection({
+      required String configKey,
+      required String entryType,
+      required String sourceId,
+    }) async {
+      // Absence preserves legacy rows. Once the current-format key exists,
+      // including with a null selection, it is the sole authority for this
+      // exact editor-owned source.
+      if (!config.containsKey(configKey)) return;
+      final value = config[configKey];
+      final selected = value?['selection']?.toString().trim();
+      await _entries.addEntriesFromSource(
         heroId: heroId,
-        entryType: 'skill',
-        entryId: id,
-        sourceType: 'culture',
+        entryType: entryType,
+        entryIds: selected == null || selected.isEmpty ? const [] : [selected],
+        sourceType: HeroEntrySourceTypes.culture,
         sourceId: sourceId,
-        gainedBy: 'choice',
+        gainedBy: HeroEntryGainedBy.choice,
       );
     }
 
-    await addSkill(envSkill?.toString(), 'culture_environment');
-    await addSkill(orgSkill?.toString(), 'culture_organisation');
-    await addSkill(upSkill?.toString(), 'culture_upbringing');
+    await reconcileSelection(
+      configKey: HeroConfigKeys.cultureLanguageSelection,
+      entryType: HeroEntryTypes.language,
+      sourceId: HeroEntrySourceIds.cultureLanguages,
+    );
+    await reconcileSelection(
+      configKey: HeroConfigKeys.cultureEnvironmentSkill,
+      entryType: HeroEntryTypes.skill,
+      sourceId: HeroEntrySourceIds.cultureEnvironment,
+    );
+    await reconcileSelection(
+      configKey: HeroConfigKeys.cultureOrganisationSkill,
+      entryType: HeroEntryTypes.skill,
+      sourceId: HeroEntrySourceIds.cultureOrganisation,
+    );
+    await reconcileSelection(
+      configKey: HeroConfigKeys.cultureUpbringingSkill,
+      entryType: HeroEntryTypes.skill,
+      sourceId: HeroEntrySourceIds.cultureUpbringing,
+    );
   }
 
   Future<void> _ensureCareerSelections(String heroId) async {
     final config = await _config.getConfigMap(heroId);
-    final chosenSkills =
-        (config['career.chosen_skills']?['list'] as List?) ?? const [];
-    final chosenPerks =
-        (config['career.chosen_perks']?['list'] as List?) ?? const [];
-    if (chosenSkills.isNotEmpty) {
+    Future<void> reconcileList(String configKey, String entryType) async {
+      if (!config.containsKey(configKey)) return;
+      final value = config[configKey];
+      final rawIds = value?['list'];
+      final ids = rawIds is List
+          ? rawIds
+              .map((value) => value?.toString().trim())
+              .whereType<String>()
+              .where((value) => value.isNotEmpty)
+          : const <String>[];
       await _entries.addEntriesFromSource(
         heroId: heroId,
-        sourceType: 'career',
-        sourceId: 'career_choice',
-        entryType: 'skill',
-        entryIds: chosenSkills.map((e) => e.toString()),
-        gainedBy: 'choice',
+        sourceType: HeroEntrySourceTypes.career,
+        sourceId: HeroEntrySourceIds.careerChoice,
+        entryType: entryType,
+        entryIds: ids,
+        gainedBy: HeroEntryGainedBy.choice,
       );
     }
-    if (chosenPerks.isNotEmpty) {
-      await _entries.addEntriesFromSource(
-        heroId: heroId,
-        sourceType: 'career',
-        sourceId: 'career_choice',
-        entryType: 'perk',
-        entryIds: chosenPerks.map((e) => e.toString()),
-        gainedBy: 'choice',
-      );
-    }
+
+    await reconcileList(
+      HeroConfigKeys.careerChosenSkills,
+      HeroEntryTypes.skill,
+    );
+    await reconcileList(
+      HeroConfigKeys.careerChosenPerks,
+      HeroEntryTypes.perk,
+    );
+    await reconcileList(
+      HeroConfigKeys.careerChosenLanguages,
+      HeroEntryTypes.language,
+    );
   }
 
   Future<void> _ensureStrifeSelections(String heroId) async {
@@ -877,13 +1134,18 @@ class HeroEntryNormalizer {
       String entryType,
     ) async {
       final map = config[key];
+      // Absent config: this editor never wrote its slots, so leave existing
+      // rows alone and let the legacy fallback handle them.
       if (map == null) return;
       final ids = map.values
           .map((v) => v?.toString())
-          .whereNotNull()
+          .nonNulls
           .where((e) => e.isNotEmpty)
           .toList();
-      if (ids.isEmpty) return;
+      // A present config is authoritative for this editor's slots, including an
+      // explicit clear. Do not skip when empty: reconcile the source to exactly
+      // `ids` so a cleared selection is not resurrected. `addEntriesFromSource`
+      // replaces the source, so empty ids clear it.
 
       // Remove legacy rows written with mismatched source metadata to avoid duplicates
       await _entries.removeEntriesFromSource(
@@ -911,17 +1173,22 @@ class HeroEntryNormalizer {
 
   Future<void> _ensureEquipment(String heroId) async {
     final config = await _config.getConfigMap(heroId);
-    final slots = config['equipment.slots']?['ids'];
-    if (slots is! List) return;
-    final ids = slots.map((e) => e?.toString()).whereNotNull().toList();
-    if (ids.isEmpty) return;
+    if (!config.containsKey(HeroConfigKeys.equipmentSlots)) return;
+    final value = config[HeroConfigKeys.equipmentSlots];
+    final slots = value?['ids'];
+    final ids = slots is List
+        ? slots
+            .map((value) => value?.toString().trim())
+            .whereType<String>()
+            .where((value) => value.isNotEmpty)
+        : const <String>[];
     await _entries.addEntriesFromSource(
       heroId: heroId,
-      sourceType: 'equipment',
-      sourceId: 'equipment_slots',
-      entryType: 'equipment',
+      sourceType: HeroEntrySourceTypes.equipment,
+      sourceId: HeroEntrySourceIds.equipmentSlots,
+      entryType: HeroEntryTypes.equipment,
       entryIds: ids,
-      gainedBy: 'choice',
+      gainedBy: HeroEntryGainedBy.choice,
     );
   }
 
@@ -950,30 +1217,33 @@ class HeroEntryNormalizer {
   Future<void> _removeInvalidEntries(String heroId) async {
     final rows = await _entries.listAllEntriesForHero(heroId);
     final invalidIds = <int>[];
-    
+
     for (final entry in rows) {
       // Check for missing entry_type
       if (entry.entryType.isEmpty) {
         invalidIds.add(entry.id);
         continue;
       }
-      
+
       // Check for missing entry_id
       if (entry.entryId.isEmpty) {
         invalidIds.add(entry.id);
         continue;
       }
-      
+
       // Check for obviously invalid IDs (just whitespace, special chars only)
       final trimmedId = entry.entryId.trim();
-      if (trimmedId.isEmpty || trimmedId == 'null' || trimmedId == 'undefined') {
+      if (trimmedId.isEmpty ||
+          trimmedId == 'null' ||
+          trimmedId == 'undefined') {
         invalidIds.add(entry.id);
         continue;
       }
     }
-    
+
     if (invalidIds.isNotEmpty) {
-      await (_db.delete(_db.heroEntries)..where((t) => t.id.isIn(invalidIds))).go();
+      await (_db.delete(_db.heroEntries)..where((t) => t.id.isIn(invalidIds)))
+          .go();
     }
   }
 
@@ -984,17 +1254,17 @@ class HeroEntryNormalizer {
           ..where((t) => t.heroId.equals(heroId))
           ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)]))
         .get();
-    
+
     final seen = <String>{};
     final dupIds = <int>[];
-    
+
     for (final row in rows) {
       if (!seen.add(row.configKey)) {
         // This is a duplicate - mark for deletion
         dupIds.add(row.id);
       }
     }
-    
+
     if (dupIds.isNotEmpty) {
       await (_db.delete(_db.heroConfig)..where((t) => t.id.isIn(dupIds))).go();
     }
@@ -1005,12 +1275,12 @@ class HeroEntryNormalizer {
   // ===========================================================================
 
   /// Recompute resistances.damage aggregate from hero_entries.
-  /// 
+  ///
   /// Collects all resistance entries (immunity/weakness) from hero_entries
   /// and writes the aggregate to hero_values as resistances.damage.
-  /// 
+  ///
   /// Delegates to DamageResistanceService for centralized logic.
-  /// 
+  ///
   /// This is the SOURCE OF TRUTH for damage resistances:
   /// - hero_entries stores individual grants with source metadata
   /// - hero_values stores the computed aggregate for runtime use

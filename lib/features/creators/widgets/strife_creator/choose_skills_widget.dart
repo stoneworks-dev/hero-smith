@@ -12,7 +12,10 @@ import '../../../../core/theme/creator_theme.dart';
 import '../../../../core/theme/navigation_theme.dart';
 import '../../../../core/theme/form_theme.dart';
 import '../../../../core/text/creators/widgets/strife_creator/choose_skills_widget_text.dart';
-import '../../../../core/utils/selection_guard.dart';
+import '../../../../core/storage/hero_storage_contract.dart';
+import '../../../hero_builder/domain/hero_claim.dart';
+import '../../../hero_builder/domain/hero_conflict_index.dart';
+import '../../../hero_builder/domain/hero_draft_claims.dart';
 
 class _SearchOption<T> {
   const _SearchOption({
@@ -55,8 +58,8 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                     (option) =>
                         option.label.toLowerCase().contains(normalizedQuery) ||
                         (option.subtitle?.toLowerCase().contains(
-                              normalizedQuery,
-                            ) ??
+                                  normalizedQuery,
+                                ) ??
                             false),
                   )
                   .toList();
@@ -109,7 +112,8 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                               color: accent.withValues(alpha: 0.4),
                             ),
                           ),
-                          child: AppIcon(StoryIcons.skills, color: accent, size: 20),
+                          child: AppIcon(StoryIcons.skills,
+                              color: accent, size: 20),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -124,7 +128,8 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                         ),
                         IconButton(
                           onPressed: () => Navigator.of(context).pop(),
-                          icon: Icon(Icons.close, color: FormTheme.textSecondary),
+                          icon:
+                              Icon(Icons.close, color: FormTheme.textSecondary),
                           splashRadius: 20,
                         ),
                       ],
@@ -140,7 +145,8 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                       decoration: InputDecoration(
                         hintText: ChooseSkillsWidgetText.searchHint,
                         hintStyle: TextStyle(color: FormTheme.textMuted),
-                        prefixIcon: Icon(Icons.search, color: FormTheme.textMuted),
+                        prefixIcon:
+                            Icon(Icons.search, color: FormTheme.textMuted),
                         filled: true,
                         fillColor: FormTheme.surface,
                         border: OutlineInputBorder(
@@ -216,21 +222,26 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                                   title: Text(
                                     option.label,
                                     style: TextStyle(
-                                      color: isSelected ? accent : Colors.grey.shade200,
-                                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                                      color: isSelected
+                                          ? accent
+                                          : Colors.grey.shade200,
+                                      fontWeight: isSelected
+                                          ? FontWeight.w600
+                                          : FontWeight.normal,
                                     ),
                                   ),
                                   subtitle: option.subtitle != null
                                       ? Text(
                                           option.subtitle!,
                                           style: TextStyle(
-                                          color: FormTheme.textMuted,
+                                            color: FormTheme.textMuted,
                                             fontSize: 12,
                                           ),
                                         )
                                       : null,
                                   trailing: isSelected
-                                      ? Icon(Icons.check_circle, color: accent, size: 22)
+                                      ? Icon(Icons.check_circle,
+                                          color: accent, size: 22)
                                       : null,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
@@ -279,7 +290,7 @@ class StartingSkillsWidget extends StatefulWidget {
     required this.selectedLevel,
     this.selectedSubclass,
     this.selectedSkills = const <String, String?>{},
-    this.reservedSkillIds = const <String>{},
+    this.conflictIndex = HeroConflictIndex.empty,
     this.onSelectionChanged,
   });
 
@@ -287,7 +298,7 @@ class StartingSkillsWidget extends StatefulWidget {
   final int selectedLevel;
   final SubclassSelectionResult? selectedSubclass;
   final Map<String, String?> selectedSkills;
-  final Set<String> reservedSkillIds;
+  final HeroConflictIndex conflictIndex;
   final SkillSelectionChanged? onSelectionChanged;
 
   @override
@@ -310,7 +321,6 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
   List<SkillOption> _skillOptions = const [];
   Map<String, SkillOption> _skillById = const {};
   Map<String, String> _skillIdByName = const {};
-  Set<String> _resolvedExternalReservedSkillIds = const {};
   Set<String> _resolvedGrantedSkillIds = const {};
 
   StartingSkillPlan? _plan;
@@ -337,30 +347,15 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
     final levelChanged = oldWidget.selectedLevel != widget.selectedLevel;
     final subclassChanged =
         oldWidget.selectedSubclass != widget.selectedSubclass;
-    final reservedChanged = !_setEquality.equals(
-      oldWidget.reservedSkillIds,
-      widget.reservedSkillIds,
-    );
     if ((classChanged || levelChanged || subclassChanged) &&
         !_isLoading &&
         _error == null) {
       _rebuildPlan(
         preserveSelections: !classChanged,
-        externalSelections:
-            classChanged ? const {} : widget.selectedSkills,
+        externalSelections: classChanged ? const {} : widget.selectedSkills,
       );
     } else if (oldWidget.selectedSkills != widget.selectedSkills) {
       _applyExternalSelections(widget.selectedSkills);
-    }
-    if (reservedChanged && !_isLoading && _error == null) {
-      setState(() {
-        _resolvedExternalReservedSkillIds =
-            _resolveReservedSkillIds(widget.reservedSkillIds);
-      });
-      final changed = _applyReservedPruning();
-      if (changed) {
-        _notifySelectionChanged();
-      }
     }
   }
 
@@ -380,8 +375,6 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
         for (final option in skills) option.name.toLowerCase(): option.id,
         for (final option in skills) option.id.toLowerCase(): option.id,
       };
-      _resolvedExternalReservedSkillIds =
-          _resolveReservedSkillIds(widget.reservedSkillIds);
       _rebuildPlan(
         preserveSelections: false,
         externalSelections: widget.selectedSkills,
@@ -411,14 +404,12 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
 
     final newSelections = <String, List<String?>>{};
     final external = externalSelections ?? widget.selectedSkills;
-    final resolvedReserved =
-        _resolveReservedSkillIds(widget.reservedSkillIds);
-    final resolvedGranted =
-        _resolveGrantedSkillIds(plan.grantedSkillNames);
+    final resolvedGranted = _resolveGrantedSkillIds(plan.grantedSkillNames);
 
     for (final allowance in plan.allowances) {
-      final existing =
-          preserveSelections ? (_selections[allowance.id] ?? const []) : const [];
+      final existing = preserveSelections
+          ? (_selections[allowance.id] ?? const [])
+          : const [];
       final updated = List<String?>.filled(allowance.pickCount, null);
 
       for (var i = 0; i < allowance.pickCount; i++) {
@@ -438,7 +429,6 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
 
     setState(() {
       _plan = plan;
-      _resolvedExternalReservedSkillIds = resolvedReserved;
       _resolvedGrantedSkillIds = resolvedGranted;
       _selections
         ..clear()
@@ -447,7 +437,6 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
       _error = null;
     });
 
-    _applyReservedPruning();
     _notifySelectionChanged();
   }
 
@@ -469,32 +458,8 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
     });
     if (changed) {
       setState(() {});
-      _applyReservedPruning();
       _notifySelectionChanged();
     }
-  }
-
-  Set<String> get _effectiveReservedSkillIds => {
-        ..._resolvedExternalReservedSkillIds,
-        ..._resolvedGrantedSkillIds,
-      };
-
-  bool _applyReservedPruning() {
-    final reserved = _effectiveReservedSkillIds;
-    if (reserved.isEmpty) return false;
-    final allowIds = _selections.values
-        .expand((slots) => slots)
-        .whereType<String>()
-        .toSet();
-    final changed = ComponentSelectionGuard.pruneBlockedSelections(
-      _selections,
-      reserved,
-      allowIds: allowIds,
-    );
-    if (changed) {
-      setState(() {});
-    }
-    return changed;
   }
 
   String? _resolveSkillId(String? value) {
@@ -506,17 +471,6 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
     }
     final lower = trimmed.toLowerCase();
     return _skillIdByName[lower];
-  }
-
-  Set<String> _resolveReservedSkillIds(Iterable<String> values) {
-    final resolved = <String>{};
-    for (final value in values) {
-      final normalized = _resolveSkillId(value) ?? value.trim();
-      if (normalized.isNotEmpty) {
-        resolved.add(normalized);
-      }
-    }
-    return resolved;
   }
 
   Set<String> _resolveGrantedSkillIds(Iterable<String> names) {
@@ -618,8 +572,7 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
       if (!mounted || version != _selectionCallbackVersion) return;
       widget.onSelectionChanged?.call(
         StartingSkillSelectionResult(
-          selectionsBySlot:
-              Map<String, String?>.from(selectionsSnapshot),
+          selectionsBySlot: Map<String, String?>.from(selectionsSnapshot),
           grantedSkillIds: Set<String>.from(grantedIdsSnapshot),
           grantedSkillNames: List<String>.from(grantedNamesSnapshot),
         ),
@@ -629,13 +582,13 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
 
   List<SkillOption> _optionsForAllowance(SkillAllowance allowance) {
     // If no restrictions, allow all skills
-    if (allowance.allowedGroups.isEmpty && 
+    if (allowance.allowedGroups.isEmpty &&
         allowance.individualSkillChoices.isEmpty) {
       return _skillOptions;
     }
 
     final options = <SkillOption>[];
-    
+
     // Add skills from allowed groups
     if (allowance.allowedGroups.isNotEmpty) {
       options.addAll(
@@ -644,7 +597,7 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
         ),
       );
     }
-    
+
     // Add individual skill choices by name
     if (allowance.individualSkillChoices.isNotEmpty) {
       for (final skillName in allowance.individualSkillChoices) {
@@ -657,12 +610,12 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
         }
       }
     }
-    
+
     // If only individual choices (no groups), return just those
     if (allowance.allowedGroups.isEmpty) {
       return options;
     }
-    
+
     return options;
   }
 
@@ -672,16 +625,19 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
         .whereType<String>()
         .toList();
     final internalDupes = _findDuplicateIds(grantList);
-    final selectedIds = _selections.values
-        .expand((slots) => slots)
-        .whereType<String>()
-        .toSet();
-    // Ignore reserves that come from the grants themselves; only flag when
-    // another picker or DB entry holds the same skill.
-    final externalReserved = _resolvedExternalReservedSkillIds
-        .difference(_resolvedGrantedSkillIds);
-    final conflicts = _resolvedGrantedSkillIds
-        .intersection({...externalReserved, ...selectedIds});
+    final selectedIds =
+        _selections.values.expand((slots) => slots).whereType<String>().toSet();
+    final conflicts = _resolvedGrantedSkillIds.where(
+      (skillId) =>
+          selectedIds.contains(skillId) ||
+          widget.conflictIndex.isClaimed(
+            HeroEntryKey(
+              entryType: HeroEntryTypes.skill,
+              canonicalEntryId: skillId,
+            ),
+            ignoredDraftSlotKey: 'strife.skills:grant:$skillId',
+          ),
+    );
     return {...internalDupes, ...conflicts};
   }
 
@@ -709,7 +665,8 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
     return dupes;
   }
 
-  String _slotKey(String allowanceId, int index) => '$allowanceId#$index';
+  String _slotKey(String allowanceId, int index) =>
+      HeroDraftClaims.strifeSelectionKey(allowanceId, index);
 
   @override
   Widget build(BuildContext context) {
@@ -760,7 +717,8 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
         children: [
           CreatorTheme.sectionHeader(
             title: ChooseSkillsWidgetText.expansionTitle,
-            subtitle: '${ChooseSkillsWidgetText.selectionSubtitlePrefix}$assigned${ChooseSkillsWidgetText.selectionSubtitleMiddle}$totalSlots${ChooseSkillsWidgetText.selectionSubtitleSuffix}',
+            subtitle:
+                '${ChooseSkillsWidgetText.selectionSubtitlePrefix}$assigned${ChooseSkillsWidgetText.selectionSubtitleMiddle}$totalSlots${ChooseSkillsWidgetText.selectionSubtitleSuffix}',
             appIcon: StoryIcons.skills,
             accent: _accent,
           ),
@@ -878,7 +836,8 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
             children: quickBuild
                 .map(
                   (skill) => Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
                       color: _accent.withValues(alpha: 0.15),
@@ -886,7 +845,8 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
                     ),
                     child: Text(
                       skill,
-                      style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
+                      style: TextStyle(
+                          color: FormTheme.textSecondary, fontSize: 13),
                     ),
                   ),
                 )
@@ -940,21 +900,37 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
                 .expand((entry) => entry.value)
                 .whereType<String>()
                 .toSet();
-            final reservedIds = <String>{
-              ..._effectiveReservedSkillIds,
+            final locallyReservedIds = <String>{
+              ..._resolvedGrantedSkillIds,
               ...otherSelectedSameAllowance,
               ...selectedInOtherAllowances,
             };
-            final availableOptions = ComponentSelectionGuard.filterAllowed(
-              options: options,
-              reservedIds: reservedIds,
-              idSelector: (option) => option.id,
-              currentId: current,
-            );
+            final claimSlotKey =
+                HeroDraftClaims.strifeSkillSlot(_slotKey(allowance.id, index));
+            bool isClaimedByAnotherOwner(String skillId) =>
+                widget.conflictIndex.isClaimed(
+                  HeroEntryKey(
+                    entryType: HeroEntryTypes.skill,
+                    canonicalEntryId: skillId,
+                  ),
+                  ignoredDraftSlotKey: claimSlotKey,
+                );
+            final availableOptions = options
+                .where(
+                  (option) =>
+                      option.id == current ||
+                      (!locallyReservedIds.contains(option.id) &&
+                          !isClaimedByAnotherOwner(option.id)),
+                )
+                .toList();
+            final isConflict = current != null &&
+                (locallyReservedIds.contains(current) ||
+                    isClaimedByAnotherOwner(current));
             final selectedOption = current != null
                 ? availableOptions.firstWhere(
                     (opt) => opt.id == current,
-                    orElse: () => availableOptions.firstOrNull ??
+                    orElse: () =>
+                        availableOptions.firstOrNull ??
                         SkillOption(
                           id: current,
                           name: ChooseSkillsWidgetText.unassignedFallbackName,
@@ -981,7 +957,8 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
 
               final result = await _showSearchablePicker<String?>(
                 context: context,
-                title: '${allowance.label}${ChooseSkillsWidgetText.searchTitleSeparator}${index + 1}',
+                title:
+                    '${allowance.label}${ChooseSkillsWidgetText.searchTitleSeparator}${index + 1}',
                 options: searchOptions,
                 selected: current,
               );
@@ -995,13 +972,18 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
                   EdgeInsets.only(bottom: index == slots.length - 1 ? 0 : 12),
               child: InkWell(
                 onTap: openSearch,
-                borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),
+                borderRadius:
+                    BorderRadius.circular(CreatorTheme.inputBorderRadius),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   decoration: BoxDecoration(
                     color: FormTheme.surface,
-                    borderRadius: BorderRadius.circular(CreatorTheme.inputBorderRadius),
-                    border: Border.all(color: FormTheme.border),
+                    borderRadius:
+                        BorderRadius.circular(CreatorTheme.inputBorderRadius),
+                    border: Border.all(
+                      color: isConflict ? Colors.orange : FormTheme.border,
+                    ),
                   ),
                   child: Row(
                     children: [
@@ -1019,13 +1001,16 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
                             const SizedBox(height: 4),
                             Text(
                               selectedOption != null
-                                  ? '${selectedOption.name}${ChooseSkillsWidgetText.selectedOptionGroupPrefix}${selectedOption.group}${ChooseSkillsWidgetText.selectedOptionGroupSuffix}'
-                                  : ChooseSkillsWidgetText.unassignedDisplayLabel,
+                                  ? '${selectedOption.name}${ChooseSkillsWidgetText.selectedOptionGroupPrefix}${selectedOption.group}${ChooseSkillsWidgetText.selectedOptionGroupSuffix}${isConflict ? ChooseSkillsWidgetText.duplicateChoiceSuffix : ''}'
+                                  : ChooseSkillsWidgetText
+                                      .unassignedDisplayLabel,
                               style: TextStyle(
                                 fontSize: 16,
-                                color: selectedOption != null
-                                    ? FormTheme.textBright
-                                    : FormTheme.textMuted,
+                                color: isConflict
+                                    ? Colors.orange.shade200
+                                    : selectedOption != null
+                                        ? FormTheme.textBright
+                                        : FormTheme.textMuted,
                               ),
                             ),
                           ],
@@ -1043,4 +1028,3 @@ class _StartingSkillsWidgetState extends State<StartingSkillsWidget>
     );
   }
 }
-

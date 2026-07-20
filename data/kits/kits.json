@@ -24,31 +24,30 @@
         "whip": false
       }
     },
-    "stamina_bonus": null,
-    "speed_bonus": 1,
-    "stability_bonus": null,
-    "melee_damage_bonus": {
-      "1st_tier": null,
-      "2nd_tier": null,
-      "3rd_tier": null
-    },
-    "ranged_damage_bonus": {
-      "1st_tier": 2,
-      "2nd_tier": 2,
-      "3rd_tier": 2
-    },
-    "melee_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "ranged_distance_bonus": {
-      "1st_echelon": 10,
-      "2nd_echelon": 10,
-      "3rd_echelon": 10
-    },
-    "disengage_bonus": 1,
-    "signature_ability": "Exploding Arrow"
+    "signature_ability": "Exploding Arrow",
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "bonuses": {
+          "speed": 1,
+          "disengage": 1
+        },
+        "tiered_bonuses": {
+          "ranged_damage": {
+            "1st_tier": 2,
+            "2nd_tier": 2,
+            "3rd_tier": 2
+          }
+        },
+        "echelon_bonuses": {
+          "ranged_distance": {
+            "1st_echelon": 10,
+            "2nd_echelon": 10,
+            "3rd_echelon": 10
+          }
+        }
+      }
+    ]
   },
   {
     "id": "kit_battlemind",
@@ -75,31 +74,24 @@
         "whip": false
       }
     },
-    "stamina_bonus": 3,
-    "speed_bonus": 2,
-    "stability_bonus": 1,
-    "melee_damage_bonus": {
-      "1st_tier": 2,
-      "2nd_tier": 2,
-      "3rd_tier": 2
-    },
-    "ranged_damage_bonus": {
-      "1st_tier": null,
-      "2nd_tier": null,
-      "3rd_tier": null
-    },
-    "melee_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "ranged_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "disengage_bonus": null,
-    "signature_ability": "Unmooring"
+    "signature_ability": "Unmooring",
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "bonuses": {
+          "stamina": 3,
+          "speed": 2,
+          "stability": 1
+        },
+        "tiered_bonuses": {
+          "melee_damage": {
+            "1st_tier": 2,
+            "2nd_tier": 2,
+            "3rd_tier": 2
+          }
+        }
+      }
+    ]
   },
   {
     "id": "kit_cloak_and_dagger",
@@ -126,31 +118,36 @@
         "whip": false
       }
     },
-    "stamina_bonus": 3,
-    "speed_bonus": 2,
-    "stability_bonus": null,
-    "melee_damage_bonus": {
-      "1st_tier": 1,
-      "2nd_tier": 1,
-      "3rd_tier": 1
-    },
-    "ranged_damage_bonus": {
-      "1st_tier": 1,
-      "2nd_tier": 1,
-      "3rd_tier": 1
-    },
-    "melee_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "ranged_distance_bonus": {
-      "1st_echelon": 5,
-      "2nd_echelon": 5,
-      "3rd_echelon": 5
-    },
-    "disengage_bonus": 1,
-    "signature_ability": "Fade"
+    "signature_ability": "Fade",
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "bonuses": {
+          "stamina": 3,
+          "speed": 2,
+          "disengage": 1
+        },
+        "tiered_bonuses": {
+          "melee_damage": {
+            "1st_tier": 1,
+            "2nd_tier": 1,
+            "3rd_tier": 1
+          },
+          "ranged_damage": {
+            "1st_tier": 1,
+            "2nd_tier": 1,
+            "3rd_tier": 1
+          }
+        },
+        "echelon_bonuses": {
+          "ranged_distance": {
+            "1st_echelon": 5,
+            "2nd_echelon": 5,
+            "3rd_echelon": 5
+          }
+        }
+      }
+    ]
   },
   {
     "id": "kit_dual_wielder",
@@ -177,31 +174,24 @@
         "whip": false
       }
     },
-    "stamina_bonus": 6,
-    "speed_bonus": 2,
-    "stability_bonus": null,
-    "melee_damage_bonus": {
-      "1st_tier": 2,
-      "2nd_tier": 2,
-      "3rd_tier": 2
-    },
-    "ranged_damage_bonus": {
-      "1st_tier": null,
-      "2nd_tier": null,
-      "3rd_tier": null
-    },
-    "melee_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "ranged_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "disengage_bonus": 1,
-    "signature_ability": "Double Strike"
+    "signature_ability": "Double Strike",
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "bonuses": {
+          "stamina": 6,
+          "speed": 2,
+          "disengage": 1
+        },
+        "tiered_bonuses": {
+          "melee_damage": {
+            "1st_tier": 2,
+            "2nd_tier": 2,
+            "3rd_tier": 2
+          }
+        }
+      }
+    ]
   },
   {
     "id": "kit_guisarmier",
@@ -228,31 +218,30 @@
         "whip": false
       }
     },
-    "stamina_bonus": 6,
-    "speed_bonus": null,
-    "stability_bonus": 1,
-    "melee_damage_bonus": {
-      "1st_tier": 2,
-      "2nd_tier": 2,
-      "3rd_tier": 2
-    },
-    "ranged_damage_bonus": {
-      "1st_tier": null,
-      "2nd_tier": null,
-      "3rd_tier": null
-    },
-    "melee_distance_bonus": {
-      "1st_echelon": 1,
-      "2nd_echelon": 1,
-      "3rd_echelon": 1
-    },
-    "ranged_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "disengage_bonus": null,
-    "signature_ability": "Forward Thrust, Backward Smash"
+    "signature_ability": "Forward Thrust, Backward Smash",
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "bonuses": {
+          "stamina": 6,
+          "stability": 1
+        },
+        "tiered_bonuses": {
+          "melee_damage": {
+            "1st_tier": 2,
+            "2nd_tier": 2,
+            "3rd_tier": 2
+          }
+        },
+        "echelon_bonuses": {
+          "melee_distance": {
+            "1st_echelon": 1,
+            "2nd_echelon": 1,
+            "3rd_echelon": 1
+          }
+        }
+      }
+    ]
   },
   {
     "id": "kit_martial_artist",
@@ -279,31 +268,24 @@
         "whip": false
       }
     },
-    "stamina_bonus": 3,
-    "speed_bonus": 3,
-    "stability_bonus": null,
-    "melee_damage_bonus": {
-      "1st_tier": 2,
-      "2nd_tier": 2,
-      "3rd_tier": 2
-    },
-    "ranged_damage_bonus": {
-      "1st_tier": null,
-      "2nd_tier": null,
-      "3rd_tier": null
-    },
-    "melee_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "ranged_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "disengage_bonus": 1,
-    "signature_ability": "Battle Grace"
+    "signature_ability": "Battle Grace",
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "bonuses": {
+          "stamina": 3,
+          "speed": 3,
+          "disengage": 1
+        },
+        "tiered_bonuses": {
+          "melee_damage": {
+            "1st_tier": 2,
+            "2nd_tier": 2,
+            "3rd_tier": 2
+          }
+        }
+      }
+    ]
   },
   {
     "id": "kit_mountain",
@@ -330,31 +312,23 @@
         "whip": false
       }
     },
-    "stamina_bonus": 9,
-    "speed_bonus": null,
-    "stability_bonus": 2,
-    "melee_damage_bonus": {
-      "1st_tier": 0,
-      "2nd_tier": 0,
-      "3rd_tier": 4
-    },
-    "ranged_damage_bonus": {
-      "1st_tier": null,
-      "2nd_tier": null,
-      "3rd_tier": null
-    },
-    "melee_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "ranged_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "disengage_bonus": null,
-    "signature_ability": "Pain for Pain"
+    "signature_ability": "Pain for Pain",
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "bonuses": {
+          "stamina": 9,
+          "stability": 2
+        },
+        "tiered_bonuses": {
+          "melee_damage": {
+            "1st_tier": 0,
+            "2nd_tier": 0,
+            "3rd_tier": 4
+          }
+        }
+      }
+    ]
   },
   {
     "id": "kit_panther",
@@ -381,31 +355,24 @@
         "whip": false
       }
     },
-    "stamina_bonus": 6,
-    "speed_bonus": 1,
-    "stability_bonus": 1,
-    "melee_damage_bonus": {
-      "1st_tier": 0,
-      "2nd_tier": 0,
-      "3rd_tier": 4
-    },
-    "ranged_damage_bonus": {
-      "1st_tier": null,
-      "2nd_tier": null,
-      "3rd_tier": null
-    },
-    "melee_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "ranged_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "disengage_bonus": null,
-    "signature_ability": "Devastating Rush"
+    "signature_ability": "Devastating Rush",
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "bonuses": {
+          "stamina": 6,
+          "speed": 1,
+          "stability": 1
+        },
+        "tiered_bonuses": {
+          "melee_damage": {
+            "1st_tier": 0,
+            "2nd_tier": 0,
+            "3rd_tier": 4
+          }
+        }
+      }
+    ]
   },
   {
     "id": "kit_pugilist",
@@ -432,31 +399,24 @@
         "whip": false
       }
     },
-    "stamina_bonus": 6,
-    "speed_bonus": 2,
-    "stability_bonus": 1,
-    "melee_damage_bonus": {
-      "1st_tier": 1,
-      "2nd_tier": 1,
-      "3rd_tier": 1
-    },
-    "ranged_damage_bonus": {
-      "1st_tier": null,
-      "2nd_tier": null,
-      "3rd_tier": null
-    },
-    "melee_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "ranged_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "disengage_bonus": null,
-    "signature_ability": "Let's Dance"
+    "signature_ability": "Let's Dance",
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "bonuses": {
+          "stamina": 6,
+          "speed": 2,
+          "stability": 1
+        },
+        "tiered_bonuses": {
+          "melee_damage": {
+            "1st_tier": 1,
+            "2nd_tier": 1,
+            "3rd_tier": 1
+          }
+        }
+      }
+    ]
   },
   {
     "id": "kit_raider",
@@ -483,31 +443,36 @@
         "whip": false
       }
     },
-    "stamina_bonus": 6,
-    "speed_bonus": 1,
-    "stability_bonus": null,
-    "melee_damage_bonus": {
-      "1st_tier": 1,
-      "2nd_tier": 1,
-      "3rd_tier": 1
-    },
-    "ranged_damage_bonus": {
-      "1st_tier": 1,
-      "2nd_tier": 1,
-      "3rd_tier": 1
-    },
-    "melee_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "ranged_distance_bonus": {
-      "1st_echelon": 5,
-      "2nd_echelon": 5,
-      "3rd_echelon": 5
-    },
-    "disengage_bonus": 1,
-    "signature_ability": "Shock and Awe"
+    "signature_ability": "Shock and Awe",
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "bonuses": {
+          "stamina": 6,
+          "speed": 1,
+          "disengage": 1
+        },
+        "tiered_bonuses": {
+          "melee_damage": {
+            "1st_tier": 1,
+            "2nd_tier": 1,
+            "3rd_tier": 1
+          },
+          "ranged_damage": {
+            "1st_tier": 1,
+            "2nd_tier": 1,
+            "3rd_tier": 1
+          }
+        },
+        "echelon_bonuses": {
+          "ranged_distance": {
+            "1st_echelon": 5,
+            "2nd_echelon": 5,
+            "3rd_echelon": 5
+          }
+        }
+      }
+    ]
   },
   {
     "id": "kit_ranger",
@@ -534,31 +499,36 @@
         "whip": false
       }
     },
-    "stamina_bonus": 6,
-    "speed_bonus": 1,
-    "stability_bonus": null,
-    "melee_damage_bonus": {
-      "1st_tier": 1,
-      "2nd_tier": 1,
-      "3rd_tier": 1
-    },
-    "ranged_damage_bonus": {
-      "1st_tier": 1,
-      "2nd_tier": 1,
-      "3rd_tier": 1
-    },
-    "melee_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "ranged_distance_bonus": {
-      "1st_echelon": 5,
-      "2nd_echelon": 5,
-      "3rd_echelon": 5
-    },
-    "disengage_bonus": 1,
-    "signature_ability": "Hamstring Shot"
+    "signature_ability": "Hamstring Shot",
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "bonuses": {
+          "stamina": 6,
+          "speed": 1,
+          "disengage": 1
+        },
+        "tiered_bonuses": {
+          "melee_damage": {
+            "1st_tier": 1,
+            "2nd_tier": 1,
+            "3rd_tier": 1
+          },
+          "ranged_damage": {
+            "1st_tier": 1,
+            "2nd_tier": 1,
+            "3rd_tier": 1
+          }
+        },
+        "echelon_bonuses": {
+          "ranged_distance": {
+            "1st_echelon": 5,
+            "2nd_echelon": 5,
+            "3rd_echelon": 5
+          }
+        }
+      }
+    ]
   },
   {
     "id": "kit_rapid_fire",
@@ -585,31 +555,31 @@
         "whip": false
       }
     },
-    "stamina_bonus": 3,
-    "speed_bonus": 1,
-    "stability_bonus": null,
-    "melee_damage_bonus": {
-      "1st_tier": null,
-      "2nd_tier": null,
-      "3rd_tier": null
-    },
-    "ranged_damage_bonus": {
-      "1st_tier": 2,
-      "2nd_tier": 2,
-      "3rd_tier": 2
-    },
-    "melee_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "ranged_distance_bonus": {
-      "1st_echelon": 7,
-      "2nd_echelon": 7,
-      "3rd_echelon": 7
-    },
-    "disengage_bonus": 1,
-    "signature_ability": "Two Shot"
+    "signature_ability": "Two Shot",
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "bonuses": {
+          "stamina": 3,
+          "speed": 1,
+          "disengage": 1
+        },
+        "tiered_bonuses": {
+          "ranged_damage": {
+            "1st_tier": 2,
+            "2nd_tier": 2,
+            "3rd_tier": 2
+          }
+        },
+        "echelon_bonuses": {
+          "ranged_distance": {
+            "1st_echelon": 7,
+            "2nd_echelon": 7,
+            "3rd_echelon": 7
+          }
+        }
+      }
+    ]
   },
   {
     "id": "kit_retiarius",
@@ -636,31 +606,31 @@
         "whip": false
       }
     },
-    "stamina_bonus": 3,
-    "speed_bonus": 1,
-    "stability_bonus": null,
-    "melee_damage_bonus": {
-      "1st_tier": 2,
-      "2nd_tier": 2,
-      "3rd_tier": 2
-    },
-    "ranged_damage_bonus": {
-      "1st_tier": null,
-      "2nd_tier": null,
-      "3rd_tier": null
-    },
-    "melee_distance_bonus": {
-      "1st_echelon": 1,
-      "2nd_echelon": 1,
-      "3rd_echelon": 1
-    },
-    "ranged_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "disengage_bonus": 1,
-    "signature_ability": "Net and Stab"
+    "signature_ability": "Net and Stab",
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "bonuses": {
+          "stamina": 3,
+          "speed": 1,
+          "disengage": 1
+        },
+        "tiered_bonuses": {
+          "melee_damage": {
+            "1st_tier": 2,
+            "2nd_tier": 2,
+            "3rd_tier": 2
+          }
+        },
+        "echelon_bonuses": {
+          "melee_distance": {
+            "1st_echelon": 1,
+            "2nd_echelon": 1,
+            "3rd_echelon": 1
+          }
+        }
+      }
+    ]
   },
   {
     "id": "kit_shining_armor",
@@ -687,31 +657,23 @@
         "whip": false
       }
     },
-    "stamina_bonus": 12,
-    "speed_bonus": null,
-    "stability_bonus": 1,
-    "melee_damage_bonus": {
-      "1st_tier": 2,
-      "2nd_tier": 2,
-      "3rd_tier": 2
-    },
-    "ranged_damage_bonus": {
-      "1st_tier": null,
-      "2nd_tier": null,
-      "3rd_tier": null
-    },
-    "melee_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "ranged_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "disengage_bonus": null,
-    "signature_ability": "Protective Attack"
+    "signature_ability": "Protective Attack",
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "bonuses": {
+          "stamina": 12,
+          "stability": 1
+        },
+        "tiered_bonuses": {
+          "melee_damage": {
+            "1st_tier": 2,
+            "2nd_tier": 2,
+            "3rd_tier": 2
+          }
+        }
+      }
+    ]
   },
   {
     "id": "kit_sniper",
@@ -738,31 +700,30 @@
         "whip": false
       }
     },
-    "stamina_bonus": null,
-    "speed_bonus": 1,
-    "stability_bonus": null,
-    "melee_damage_bonus": {
-      "1st_tier": null,
-      "2nd_tier": null,
-      "3rd_tier": null
-    },
-    "ranged_damage_bonus": {
-      "1st_tier": 0,
-      "2nd_tier": 0,
-      "3rd_tier": 4
-    },
-    "melee_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "ranged_distance_bonus": {
-      "1st_echelon": 10,
-      "2nd_echelon": 10,
-      "3rd_echelon": 10
-    },
-    "disengage_bonus": 1,
-    "signature_ability": "Patient Shot"
+    "signature_ability": "Patient Shot",
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "bonuses": {
+          "speed": 1,
+          "disengage": 1
+        },
+        "tiered_bonuses": {
+          "ranged_damage": {
+            "1st_tier": 0,
+            "2nd_tier": 0,
+            "3rd_tier": 4
+          }
+        },
+        "echelon_bonuses": {
+          "ranged_distance": {
+            "1st_echelon": 10,
+            "2nd_echelon": 10,
+            "3rd_echelon": 10
+          }
+        }
+      }
+    ]
   },
   {
     "id": "kit_spellsword",
@@ -789,31 +750,24 @@
         "whip": false
       }
     },
-    "stamina_bonus": 6,
-    "speed_bonus": 1,
-    "stability_bonus": 1,
-    "melee_damage_bonus": {
-      "1st_tier": 2,
-      "2nd_tier": 2,
-      "3rd_tier": 2
-    },
-    "ranged_damage_bonus": {
-      "1st_tier": null,
-      "2nd_tier": null,
-      "3rd_tier": null
-    },
-    "melee_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "ranged_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "disengage_bonus": null,
-    "signature_ability": "Leaping Lightning"
+    "signature_ability": "Leaping Lightning",
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "bonuses": {
+          "stamina": 6,
+          "speed": 1,
+          "stability": 1
+        },
+        "tiered_bonuses": {
+          "melee_damage": {
+            "1st_tier": 2,
+            "2nd_tier": 2,
+            "3rd_tier": 2
+          }
+        }
+      }
+    ]
   },
   {
     "id": "kit_stick_and_robe",
@@ -840,31 +794,31 @@
         "whip": false
       }
     },
-    "stamina_bonus": 3,
-    "speed_bonus": 2,
-    "stability_bonus": null,
-    "melee_damage_bonus": {
-      "1st_tier": 1,
-      "2nd_tier": 1,
-      "3rd_tier": 1
-    },
-    "ranged_damage_bonus": {
-      "1st_tier": null,
-      "2nd_tier": null,
-      "3rd_tier": null
-    },
-    "melee_distance_bonus": {
-      "1st_echelon": 1,
-      "2nd_echelon": 1,
-      "3rd_echelon": 1
-    },
-    "ranged_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "disengage_bonus": 1,
-    "signature_ability": "Where I Want You"
+    "signature_ability": "Where I Want You",
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "bonuses": {
+          "stamina": 3,
+          "speed": 2,
+          "disengage": 1
+        },
+        "tiered_bonuses": {
+          "melee_damage": {
+            "1st_tier": 1,
+            "2nd_tier": 1,
+            "3rd_tier": 1
+          }
+        },
+        "echelon_bonuses": {
+          "melee_distance": {
+            "1st_echelon": 1,
+            "2nd_echelon": 1,
+            "3rd_echelon": 1
+          }
+        }
+      }
+    ]
   },
   {
     "id": "kit_swashbuckler",
@@ -891,31 +845,24 @@
         "whip": false
       }
     },
-    "stamina_bonus": 3,
-    "speed_bonus": 3,
-    "stability_bonus": null,
-    "melee_damage_bonus": {
-      "1st_tier": 2,
-      "2nd_tier": 2,
-      "3rd_tier": 2
-    },
-    "ranged_damage_bonus": {
-      "1st_tier": null,
-      "2nd_tier": null,
-      "3rd_tier": null
-    },
-    "melee_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "ranged_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "disengage_bonus": 1,
-    "signature_ability": "Fancy Footwork"
+    "signature_ability": "Fancy Footwork",
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "bonuses": {
+          "stamina": 3,
+          "speed": 3,
+          "disengage": 1
+        },
+        "tiered_bonuses": {
+          "melee_damage": {
+            "1st_tier": 2,
+            "2nd_tier": 2,
+            "3rd_tier": 2
+          }
+        }
+      }
+    ]
   },
   {
     "id": "kit_sword_and_board",
@@ -942,31 +889,24 @@
         "whip": false
       }
     },
-    "stamina_bonus": 9,
-    "speed_bonus": null,
-    "stability_bonus": 1,
-    "melee_damage_bonus": {
-      "1st_tier": 2,
-      "2nd_tier": 2,
-      "3rd_tier": 2
-    },
-    "ranged_damage_bonus": {
-      "1st_tier": null,
-      "2nd_tier": null,
-      "3rd_tier": null
-    },
-    "melee_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "ranged_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "disengage_bonus": 1,
-    "signature_ability": "Shield Bash"
+    "signature_ability": "Shield Bash",
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "bonuses": {
+          "stamina": 9,
+          "stability": 1,
+          "disengage": 1
+        },
+        "tiered_bonuses": {
+          "melee_damage": {
+            "1st_tier": 2,
+            "2nd_tier": 2,
+            "3rd_tier": 2
+          }
+        }
+      }
+    ]
   },
   {
     "id": "kit_warrior_priest",
@@ -993,31 +933,24 @@
         "whip": false
       }
     },
-    "stamina_bonus": 9,
-    "speed_bonus": 1,
-    "stability_bonus": 1,
-    "melee_damage_bonus": {
-      "1st_tier": 1,
-      "2nd_tier": 1,
-      "3rd_tier": 1
-    },
-    "ranged_damage_bonus": {
-      "1st_tier": null,
-      "2nd_tier": null,
-      "3rd_tier": null
-    },
-    "melee_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "ranged_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "disengage_bonus": null,
-    "signature_ability": "Weakening Brand"
+    "signature_ability": "Weakening Brand",
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "bonuses": {
+          "stamina": 9,
+          "speed": 1,
+          "stability": 1
+        },
+        "tiered_bonuses": {
+          "melee_damage": {
+            "1st_tier": 1,
+            "2nd_tier": 1,
+            "3rd_tier": 1
+          }
+        }
+      }
+    ]
   },
   {
     "id": "kit_whirlwind",
@@ -1044,30 +977,29 @@
         "whip": true
       }
     },
-    "stamina_bonus": null,
-    "speed_bonus": 3,
-    "stability_bonus": null,
-    "melee_damage_bonus": {
-      "1st_tier": 1,
-      "2nd_tier": 1,
-      "3rd_tier": 1
-    },
-    "ranged_damage_bonus": {
-      "1st_tier": null,
-      "2nd_tier": null,
-      "3rd_tier": null
-    },
-    "melee_distance_bonus": {
-      "1st_echelon": 1,
-      "2nd_echelon": 1,
-      "3rd_echelon": 1
-    },
-    "ranged_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "disengage_bonus": 1,
-    "signature_ability": "Extension of My Arm"
+    "signature_ability": "Extension of My Arm",
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "bonuses": {
+          "speed": 3,
+          "disengage": 1
+        },
+        "tiered_bonuses": {
+          "melee_damage": {
+            "1st_tier": 1,
+            "2nd_tier": 1,
+            "3rd_tier": 1
+          }
+        },
+        "echelon_bonuses": {
+          "melee_distance": {
+            "1st_echelon": 1,
+            "2nd_echelon": 1,
+            "3rd_echelon": 1
+          }
+        }
+      }
+    ]
   }
 ]

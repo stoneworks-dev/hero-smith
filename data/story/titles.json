@@ -188,9 +188,12 @@
         "ability": null,
         "grants": [
           {
-            "type": "damage_immunity",
-            "damage_type": "choose",
-            "damage_type_options": [
+            "kind": "choice",
+            "id": "elemental_dabbler__elemental_immunity.damage_type",
+            "choice_key": "elemental_dabbler__elemental_immunity.damage_type",
+            "choice_type": "damage_type",
+            "config_key": "title.damage_type_choices",
+            "options": [
               "acid",
               "cold",
               "corruption",
@@ -201,7 +204,9 @@
               "psychic",
               "sonic"
             ],
-            "value_source": "highest_characteristic"
+            "payload": {
+              "value_source": "highest_characteristic"
+            }
           }
         ]
       },
@@ -281,8 +286,15 @@
         "ability": null,
         "grants": [
           {
-            "type": "renown",
-            "value": 1
+            "kind": "stat_mod",
+            "id": "local_hero__local_fame__renown",
+            "stat": "renown",
+            "entry_id": "renown",
+            "mods": [
+              {
+                "value": 1
+              }
+            ]
           }
         ]
       },
@@ -650,8 +662,15 @@
         "ability": null,
         "grants": [
           {
-            "type": "renown",
-            "value": 1
+            "kind": "stat_mod",
+            "id": "arena_fighter__instant_celebrity__renown",
+            "stat": "renown",
+            "entry_id": "renown",
+            "mods": [
+              {
+                "value": 1
+              }
+            ]
           }
         ]
       },
@@ -714,8 +733,15 @@
         "ability": null,
         "grants": [
           {
-            "type": "renown",
-            "value": 1
+            "kind": "stat_mod",
+            "id": "battlefield_commander__renowned_warrior__renown",
+            "stat": "renown",
+            "entry_id": "renown",
+            "mods": [
+              {
+                "value": 1
+              }
+            ]
           }
         ]
       },
@@ -755,9 +781,10 @@
         "ability": null,
         "grants": [
           {
-            "type": "damage_immunity",
+            "kind": "resistance",
+            "id": "blood_magic__i_reject_this_evil_power__damage_immunity",
             "damage_type": "corruption",
-            "value_source": "level"
+            "dynamic_immunity": "level"
           }
         ]
       }
@@ -791,8 +818,15 @@
         "ability": null,
         "grants": [
           {
-            "type": "renown",
-            "value": 1
+            "kind": "stat_mod",
+            "id": "corsair__fearsome_reputation__renown",
+            "stat": "renown",
+            "entry_id": "renown",
+            "mods": [
+              {
+                "value": 1
+              }
+            ]
           }
         ]
       },
@@ -845,9 +879,17 @@
         "ability": null,
         "grants": [
           {
-            "type": "skill_choice",
-            "group": "interpersonal",
-            "count": 1
+            "kind": "choice",
+            "id": "fey_friend__gift_of_charm.skill",
+            "choice_key": "fey_friend__gift_of_charm.skill",
+            "choice_type": "skill",
+            "config_key": "title.skill_choices",
+            "entry_type": "skill",
+            "count": 1,
+            "groups": [
+              "interpersonal"
+            ],
+            "payload": {}
           }
         ]
       },
@@ -867,9 +909,13 @@
     "special": "Know the Khelt language.",
     "grants": [
       {
-        "type": "languages",
-        "count": 1,
-        "specific": ["khelt"]
+        "kind": "entry",
+        "id": "fey_friend__language__khelt",
+        "entry_type": "language",
+        "entry_id": "khelt",
+        "payload": {
+          "count": 1
+        }
       }
     ]
   },
@@ -900,10 +946,14 @@
         "ability": null,
         "grants": [
           {
-            "type": "skill_choice",
-            "skill": "climb",
-            "count": 1,
-            "mode": "gain_or_edge"
+            "kind": "entry",
+            "id": "giant_slayer__up_the_beanstalk__skill__climb",
+            "entry_type": "skill",
+            "entry_id": "climb",
+            "payload": {
+              "count": 1,
+              "mode": "gain_or_edge"
+            }
           }
         ]
       }
@@ -960,10 +1010,14 @@
         "ability": null,
         "grants": [
           {
-            "type": "skill_choice",
-            "skill": "sneak",
-            "count": 1,
-            "mode": "gain_or_edge"
+            "kind": "entry",
+            "id": "heist_hero__sneakers__skill__sneak",
+            "entry_type": "skill",
+            "entry_id": "sneak",
+            "payload": {
+              "count": 1,
+              "mode": "gain_or_edge"
+            }
           }
         ]
       },
@@ -991,8 +1045,15 @@
         "ability": null,
         "grants": [
           {
-            "type": "renown",
-            "value": 1
+            "kind": "stat_mod",
+            "id": "knight__heraldic_fame__renown",
+            "stat": "renown",
+            "entry_id": "renown",
+            "mods": [
+              {
+                "value": 1
+              }
+            ]
           }
         ]
       },
@@ -1038,9 +1099,17 @@
         "ability": null,
         "grants": [
           {
-            "type": "skill_choice",
-            "group": "lore",
-            "count": 1
+            "kind": "choice",
+            "id": "master_librarian__picked_up_a_few_things.skill",
+            "choice_key": "master_librarian__picked_up_a_few_things.skill",
+            "choice_type": "skill",
+            "config_key": "title.skill_choices",
+            "entry_type": "skill",
+            "count": 1,
+            "groups": [
+              "lore"
+            ],
+            "payload": {}
           }
         ]
       },
@@ -1051,7 +1120,12 @@
         "ability": null,
         "grants": [
           {
-            "type": "languages",
+            "kind": "choice",
+            "id": "master_librarian__polyglot.languages",
+            "choice_key": "master_librarian__polyglot.languages",
+            "choice_type": "language",
+            "config_key": "title.language_choices",
+            "entry_type": "language",
             "count": 2
           }
         ]
@@ -1133,9 +1207,10 @@
         "auto": true,
         "grants": [
           {
-            "type": "damage_immunity",
+            "kind": "resistance",
+            "id": "undead_slain__return_to_life__damage_immunity",
             "damage_type": "corruption",
-            "value_source": "level"
+            "dynamic_immunity": "level"
           }
         ]
       },
@@ -1281,9 +1356,16 @@
         "ability": null,
         "grants": [
           {
-            "type": "ancestry_points",
-            "ancestry": "devil",
-            "value": 3
+            "kind": "choice",
+            "id": "diabolist__infernal_legacy.ancestry_traits",
+            "choice_key": "diabolist__infernal_legacy.ancestry_traits",
+            "choice_type": "ancestry_trait",
+            "config_key": "title.ancestry_traits",
+            "count": 3,
+            "payload": {
+              "ancestry": "devil",
+              "points": 3
+            }
           }
         ]
       },
@@ -1323,9 +1405,16 @@
         "ability": null,
         "grants": [
           {
-            "type": "ancestry_points",
-            "ancestry": "dragon_knight",
-            "value": 3
+            "kind": "choice",
+            "id": "dragon_blooded__dragon_touched.ancestry_traits",
+            "choice_key": "dragon_blooded__dragon_touched.ancestry_traits",
+            "choice_type": "ancestry_trait",
+            "config_key": "title.ancestry_traits",
+            "count": 3,
+            "payload": {
+              "ancestry": "dragon_knight",
+              "points": 3
+            }
           }
         ]
       }
@@ -1359,8 +1448,15 @@
         "ability": null,
         "grants": [
           {
-            "type": "wealth",
-            "value": 1
+            "kind": "stat_mod",
+            "id": "fleet_admiral__treasure_keeper__wealth",
+            "stat": "wealth",
+            "entry_id": "wealth",
+            "mods": [
+              {
+                "value": 1
+              }
+            ]
           }
         ]
       },
@@ -1429,10 +1525,19 @@
         "ability": null,
         "grants": [
           {
-            "type": "skill_choice",
-            "group": "crafting",
+            "kind": "choice",
+            "id": "master_crafter__skilled_hands.skill",
+            "choice_key": "master_crafter__skilled_hands.skill",
+            "choice_type": "skill",
+            "config_key": "title.skill_choices",
+            "entry_type": "skill",
             "count": 1,
-            "mode": "gain_or_edge"
+            "groups": [
+              "crafting"
+            ],
+            "payload": {
+              "mode": "gain_or_edge"
+            }
           }
         ]
       },
@@ -1466,12 +1571,26 @@
         "ability": null,
         "grants": [
           {
-            "type": "renown",
-            "value": 1
+            "kind": "stat_mod",
+            "id": "noble__noble_splendor__renown",
+            "stat": "renown",
+            "entry_id": "renown",
+            "mods": [
+              {
+                "value": 1
+              }
+            ]
           },
           {
-            "type": "wealth",
-            "value": 1
+            "kind": "stat_mod",
+            "id": "noble__noble_splendor__wealth",
+            "stat": "wealth",
+            "entry_id": "wealth",
+            "mods": [
+              {
+                "value": 1
+              }
+            ]
           }
         ]
       },
@@ -1482,8 +1601,15 @@
         "ability": null,
         "grants": [
           {
-            "type": "followers_cap",
-            "value": 2
+            "kind": "stat_mod",
+            "id": "noble__retinue__followers_cap",
+            "stat": "followers_cap",
+            "entry_id": "followers_cap",
+            "mods": [
+              {
+                "value": 2
+              }
+            ]
           }
         ]
       }
@@ -1505,9 +1631,10 @@
         "ability": null,
         "grants": [
           {
-            "type": "damage_immunity",
+            "kind": "resistance",
+            "id": "planar_voyager__prismacore_eyes__damage_immunity",
             "damage_type": "psychic",
-            "value": 10
+            "immunity": 10
           }
         ]
       },
@@ -1518,16 +1645,25 @@
         "ability": null,
         "grants": [
           {
-            "type": "skill_choice",
-            "skill": "mechanics",
-            "count": 1,
-            "mode": "gain_or_edge"
+            "kind": "entry",
+            "id": "planar_voyager__stellar_knowledge__skill__mechanics",
+            "entry_type": "skill",
+            "entry_id": "mechanics",
+            "payload": {
+              "count": 1,
+              "mode": "gain_or_edge"
+            }
           },
           {
-            "type": "item_prerequisite",
-            "category": "trinket",
-            "tag": "psionic",
-            "count": 1
+            "kind": "entry",
+            "id": "planar_voyager__stellar_knowledge__item_prerequisite",
+            "entry_type": "item_prerequisite",
+            "entry_id": "planar_voyager_trinket_psionic",
+            "payload": {
+              "category": "trinket",
+              "tag": "psionic",
+              "count": 1
+            }
           }
         ]
       },
@@ -1538,9 +1674,16 @@
         "ability": null,
         "grants": [
           {
-            "type": "ancestry_points",
-            "ancestry": "time_raider",
-            "value": 2
+            "kind": "choice",
+            "id": "planar_voyager__time_raider_training.ancestry_traits",
+            "choice_key": "planar_voyager__time_raider_training.ancestry_traits",
+            "choice_type": "ancestry_trait",
+            "config_key": "title.ancestry_traits",
+            "count": 2,
+            "payload": {
+              "ancestry": "time_raider",
+              "points": 2
+            }
           }
         ]
       }
@@ -1631,12 +1774,26 @@
         "ability": null,
         "grants": [
           {
-            "type": "renown",
-            "value": 2
+            "kind": "stat_mod",
+            "id": "champion_competitor__glory_and_riches__renown",
+            "stat": "renown",
+            "entry_id": "renown",
+            "mods": [
+              {
+                "value": 2
+              }
+            ]
           },
           {
-            "type": "wealth",
-            "value": 1
+            "kind": "stat_mod",
+            "id": "champion_competitor__glory_and_riches__wealth",
+            "stat": "wealth",
+            "entry_id": "wealth",
+            "mods": [
+              {
+                "value": 1
+              }
+            ]
           }
         ]
       },
@@ -1650,11 +1807,23 @@
     "special": "Increase a competition-used characteristic by 1 (max 6).",
     "grants": [
       {
-        "type": "characteristic_increase",
-        "choices": ["might", "agility", "reason", "intuition", "presence"],
-        "value": 1,
-        "max": 6,
-        "tag": "competition"
+        "kind": "choice",
+        "id": "champion_competitor.competition.characteristic",
+        "choice_key": "champion_competitor.competition.characteristic",
+        "choice_type": "characteristic",
+        "config_key": "title.characteristic_choices",
+        "options": [
+          "might",
+          "agility",
+          "reason",
+          "intuition",
+          "presence"
+        ],
+        "payload": {
+          "value": 1,
+          "max": 6,
+          "tag": "competition"
+        }
       }
     ]
   },
@@ -1674,10 +1843,22 @@
         "auto": true,
         "grants": [
           {
-            "type": "characteristic_increase",
-            "choices": ["might", "agility", "reason", "intuition", "presence"],
-            "value": 1,
-            "max": 6
+            "kind": "choice",
+            "id": "demigod__immortal_excellence.characteristic",
+            "choice_key": "demigod__immortal_excellence.characteristic",
+            "choice_type": "characteristic",
+            "config_key": "title.characteristic_choices",
+            "options": [
+              "might",
+              "agility",
+              "reason",
+              "intuition",
+              "presence"
+            ],
+            "payload": {
+              "value": 1,
+              "max": 6
+            }
           }
         ]
       },
@@ -1702,8 +1883,15 @@
         "ability": null,
         "grants": [
           {
-            "type": "followers_cap",
-            "value": 2
+            "kind": "stat_mod",
+            "id": "demigod__acolytes__followers_cap",
+            "stat": "followers_cap",
+            "entry_id": "followers_cap",
+            "mods": [
+              {
+                "value": 2
+              }
+            ]
           }
         ]
       },
@@ -1720,8 +1908,15 @@
         "ability": null,
         "grants": [
           {
-            "type": "renown",
-            "value": 2
+            "kind": "stat_mod",
+            "id": "demigod__missionaries__renown",
+            "stat": "renown",
+            "entry_id": "renown",
+            "mods": [
+              {
+                "value": 2
+              }
+            ]
           }
         ]
       }
@@ -1758,10 +1953,19 @@
     "special": "Increase Reason or Intuition by 1 (max 6).",
     "grants": [
       {
-        "type": "characteristic_increase",
-        "choices": ["reason", "intuition"],
-        "value": 1,
-        "max": 6
+        "kind": "choice",
+        "id": "enlightened.characteristic",
+        "choice_key": "enlightened.characteristic",
+        "choice_type": "characteristic",
+        "config_key": "title.characteristic_choices",
+        "options": [
+          "reason",
+          "intuition"
+        ],
+        "payload": {
+          "value": 1,
+          "max": 6
+        }
       }
     ]
   },
@@ -1786,9 +1990,12 @@
         "ability": null,
         "grants": [
           {
-            "type": "damage_immunity",
-            "damage_type": "choose",
-            "damage_type_options": [
+            "kind": "choice",
+            "id": "forsaken__perfect_protection.damage_type",
+            "choice_key": "forsaken__perfect_protection.damage_type",
+            "choice_type": "damage_type",
+            "config_key": "title.damage_type_choices",
+            "options": [
               "acid",
               "cold",
               "corruption",
@@ -1799,8 +2006,10 @@
               "psychic",
               "sonic"
             ],
-            "value": 9999,
-            "note": "Director chooses damage type related to artifact"
+            "payload": {
+              "value": 9999,
+              "note": "Director chooses damage type related to artifact"
+            }
           }
         ]
       },
@@ -1814,10 +2023,22 @@
     "special": "Increase a characteristic by 1 (max 6).",
     "grants": [
       {
-        "type": "characteristic_increase",
-        "choices": ["might", "agility", "reason", "intuition", "presence"],
-        "value": 1,
-        "max": 6
+        "kind": "choice",
+        "id": "forsaken.characteristic",
+        "choice_key": "forsaken.characteristic",
+        "choice_type": "characteristic",
+        "config_key": "title.characteristic_choices",
+        "options": [
+          "might",
+          "agility",
+          "reason",
+          "intuition",
+          "presence"
+        ],
+        "payload": {
+          "value": 1,
+          "max": 6
+        }
       }
     ]
   },
@@ -1844,10 +2065,19 @@
         "auto": true,
         "grants": [
           {
-            "type": "characteristic_increase",
-            "choices": ["might", "presence"],
-            "value": 1,
-            "max": 6
+            "kind": "choice",
+            "id": "monarch__royal_majesty.characteristic",
+            "choice_key": "monarch__royal_majesty.characteristic",
+            "choice_type": "characteristic",
+            "config_key": "title.characteristic_choices",
+            "options": [
+              "might",
+              "presence"
+            ],
+            "payload": {
+              "value": 1,
+              "max": 6
+            }
           }
         ]
       },
@@ -1864,8 +2094,15 @@
         "ability": null,
         "grants": [
           {
-            "type": "renown",
-            "value": 2
+            "kind": "stat_mod",
+            "id": "monarch__royal_fame__renown",
+            "stat": "renown",
+            "entry_id": "renown",
+            "mods": [
+              {
+                "value": 2
+              }
+            ]
           }
         ]
       },
@@ -1876,8 +2113,15 @@
         "ability": null,
         "grants": [
           {
-            "type": "followers_cap",
-            "value": 2
+            "kind": "stat_mod",
+            "id": "monarch__royal_retinue__followers_cap",
+            "stat": "followers_cap",
+            "entry_id": "followers_cap",
+            "mods": [
+              {
+                "value": 2
+              }
+            ]
           }
         ]
       },
@@ -1888,8 +2132,15 @@
         "ability": null,
         "grants": [
           {
-            "type": "wealth",
-            "value": 2
+            "kind": "stat_mod",
+            "id": "monarch__royal_wealth__wealth",
+            "stat": "wealth",
+            "entry_id": "wealth",
+            "mods": [
+              {
+                "value": 2
+              }
+            ]
           }
         ]
       }
@@ -1932,10 +2183,19 @@
     "special": "Increase Reason or Presence by 1 (max 6).",
     "grants": [
       {
-        "type": "characteristic_increase",
-        "choices": ["reason", "presence"],
-        "value": 1,
-        "max": 6
+        "kind": "choice",
+        "id": "peace_bringer.characteristic",
+        "choice_key": "peace_bringer.characteristic",
+        "choice_type": "characteristic",
+        "config_key": "title.characteristic_choices",
+        "options": [
+          "reason",
+          "presence"
+        ],
+        "payload": {
+          "value": 1,
+          "max": 6
+        }
       }
     ]
   },
@@ -1966,8 +2226,14 @@
         "ability": null,
         "grants": [
           {
-            "type": "skill_choice",
-            "count": 2
+            "kind": "choice",
+            "id": "reborn__memories_of_the_beyond.skill",
+            "choice_key": "reborn__memories_of_the_beyond.skill",
+            "choice_type": "skill",
+            "config_key": "title.skill_choices",
+            "entry_type": "skill",
+            "count": 2,
+            "payload": {}
           }
         ]
       }
@@ -1975,10 +2241,19 @@
     "special": "If a hakaan gains via Doomsight trait they lose that trait. Increase Intuition or Presence by 1 (max 6).",
     "grants": [
       {
-        "type": "characteristic_increase",
-        "choices": ["intuition", "presence"],
-        "value": 1,
-        "max": 6
+        "kind": "choice",
+        "id": "reborn.characteristic",
+        "choice_key": "reborn.characteristic",
+        "choice_type": "characteristic",
+        "config_key": "title.characteristic_choices",
+        "options": [
+          "intuition",
+          "presence"
+        ],
+        "payload": {
+          "value": 1,
+          "max": 6
+        }
       }
     ]
   },
@@ -1997,15 +2272,32 @@
         "ability": null,
         "grants": [
           {
-            "type": "characteristic_increase",
-            "choices": ["reason", "intuition"],
-            "value": 1,
-            "max": 6
+            "kind": "choice",
+            "id": "theoretical_warrior__heroic_study.characteristic",
+            "choice_key": "theoretical_warrior__heroic_study.characteristic",
+            "choice_type": "characteristic",
+            "config_key": "title.characteristic_choices",
+            "options": [
+              "reason",
+              "intuition"
+            ],
+            "payload": {
+              "value": 1,
+              "max": 6
+            }
           },
           {
-            "type": "heroic_ability_choice",
+            "kind": "choice",
+            "id": "theoretical_warrior__heroic_study.heroic_ability",
+            "choice_key": "theoretical_warrior__heroic_study.heroic_ability",
+            "choice_type": "ability",
+            "config_key": "title.heroic_ability_choices",
+            "entry_type": "ability",
             "count": 1,
-            "source": "any_class"
+            "payload": {
+              "source": "any_class",
+              "filter": "heroic"
+            }
           }
         ]
       }
@@ -2039,8 +2331,10 @@
         "ability": null,
         "grants": [
           {
-            "type": "condition_immunity",
-            "condition": "bleeding"
+            "kind": "entry",
+            "id": "tireless__undying__condition_immunity__bleeding",
+            "entry_type": "condition_immunity",
+            "entry_id": "bleeding"
           }
         ]
       }
@@ -2048,10 +2342,19 @@
     "special": "Increase Might or Agility by 1 (max 6).",
     "grants": [
       {
-        "type": "characteristic_increase",
-        "choices": ["might", "agility"],
-        "value": 1,
-        "max": 6
+        "kind": "choice",
+        "id": "tireless.characteristic",
+        "choice_key": "tireless.characteristic",
+        "choice_type": "characteristic",
+        "config_key": "title.characteristic_choices",
+        "options": [
+          "might",
+          "agility"
+        ],
+        "payload": {
+          "value": 1,
+          "max": 6
+        }
       }
     ]
   },
@@ -2085,10 +2388,19 @@
     "special": "Increase Might or Agility by 1 (max 6).",
     "grants": [
       {
-        "type": "characteristic_increase",
-        "choices": ["might", "agility"],
-        "value": 1,
-        "max": 6
+        "kind": "choice",
+        "id": "unchained.characteristic",
+        "choice_key": "unchained.characteristic",
+        "choice_type": "characteristic",
+        "config_key": "title.characteristic_choices",
+        "options": [
+          "might",
+          "agility"
+        ],
+        "payload": {
+          "value": 1,
+          "max": 6
+        }
       }
     ]
   }

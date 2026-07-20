@@ -3,14 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/db/providers.dart';
-import '../../../core/models/class_data.dart';
 import '../../../core/models/subclass_models.dart';
 import '../../../core/services/class_data_service.dart';
 import '../../../core/services/class_feature_data_service.dart';
-import '../../../core/services/class_feature_grants_service.dart';
 import '../../../core/text/creators/hero_creators/strength_creator_page_text.dart';
 import '../../../core/theme/creator_theme.dart';
 import '../../../core/theme/form_theme.dart';
+import '../../hero_builder/application/hero_builder_controller.dart';
+import '../../hero_builder/application/hero_builder_providers.dart';
+import '../../hero_builder/application/hero_draft_conversions.dart';
+import '../../hero_builder/domain/hero_conflict_index.dart';
+import '../../hero_builder/domain/hero_draft.dart';
 import '../widgets/strength_creator/class_features_section.dart';
 import '../../../widgets/creature stat block/hero_green_form_widget.dart';
 
@@ -35,14 +38,30 @@ class _StrenghtCreatorPageState extends ConsumerState<StrenghtCreatorPage>
   bool _isRefreshing = false;
   String? _error;
   bool _hasLoadedOnce = false;
-  ClassData? _classData;
-  SubclassSelectionResult? _subclassSelection;
-  int _selectedLevel = 1;
-  Map<String, Set<String>> _featureSelections = const {};
-  List<String?> _equipmentIds = const [];
-  Map<String, Map<String, String>> _skillGroupSelections = const {};
-  Set<String> _reservedSkillIds = const {};
+
   int _pendingChoicesCount = 0;
+
+  /// True once the user has changed a feature selection this baseline. While
+  /// false, the section's load-time emit (deterministic domain/subclass/deity
+  /// auto-derivations) is folded into the baseline instead of dirtying the tab.
+  /// Reset whenever a fresh baseline is loaded or committed.
+  bool _userEditedStrength = false;
+
+  HeroBuilderController get _controller =>
+      ref.read(heroBuilderControllerProvider(widget.heroId).notifier);
+
+  StrengthDraft get _strength =>
+      ref.watch(heroBuilderStrengthDraftProvider(widget.heroId));
+
+  /// Level, subclass, and equipment are Strife-owned; Strength only reads them.
+  StrifeDraft get _strife =>
+      ref.watch(heroBuilderStrifeDraftProvider(widget.heroId));
+
+  /// A picker signalled an edit. Dirty state is derived by the shell from the
+  /// controller; this just rebuilds the tab so any local UI stays in sync.
+  void _notifyDirty() {
+    if (mounted) setState(() {});
+  }
 
   @override
   void initState() {
@@ -113,14 +132,14 @@ class _StrenghtCreatorPageState extends ConsumerState<StrenghtCreatorPage>
       // Detect subclass changes and clear stale feature grants/selections so
       // features from a previous subclass are not kept.
       try {
-        final db = ref.read(appDatabaseProvider);
-        final grantService = ClassFeatureGrantsService(db);
+        final grantService = ref.read(classFeatureGrantsServiceProvider);
         final storedSubclassKey =
             (await grantService.loadSubclassKey(widget.heroId))?.trim();
         final currentSubclassKey = subclassSelection?.subclassKey?.trim();
         // Only treat as a change if we HAD a stored subclass and it's different.
         // If storedSubclassKey is null/empty, this is the first save - not a change.
-        final hadPreviousSubclass = storedSubclassKey != null && storedSubclassKey.isNotEmpty;
+        final hadPreviousSubclass =
+            storedSubclassKey != null && storedSubclassKey.isNotEmpty;
         final subclassChanged = hadPreviousSubclass &&
             storedSubclassKey != (currentSubclassKey ?? '');
 
@@ -134,32 +153,14 @@ class _StrenghtCreatorPageState extends ConsumerState<StrenghtCreatorPage>
         // If cleanup fails, continue with existing selections; a future save
         // will still re-apply correct grants.
       }
-      
-      // Load equipment IDs for kit detection
-      final equipmentIds = await repo.getEquipmentIds(widget.heroId);
-      
-      // Load skill_group selections
-      Map<String, Map<String, String>> skillGroupSelections = const {};
-      Set<String> reservedSkillIds = const {};
-      try {
-        final db = ref.read(appDatabaseProvider);
-        final grantService = ClassFeatureGrantsService(db);
-        skillGroupSelections = await grantService.loadSkillGroupSelections(widget.heroId);
-        
-        // Get reserved skill IDs (skills from all sources)
-        final allSkillEntries = await repo.getSkillEntries(widget.heroId);
-        reservedSkillIds = allSkillEntries.map((e) => e.entryId).toSet();
-      } catch (_) {
-        // Best-effort: continue without skill group data
-      }
 
       // Re-apply class feature grants on load so new grant handlers (like
       // grants[] speed/disengage bonuses) take effect even if the user doesn't
-      // change any selections in this session.
+      // change any selections in this session. This repairs persisted data, so
+      // it must finish before the draft baseline is read below.
       if (classData != null) {
         try {
-          final db = ref.read(appDatabaseProvider);
-          final grantService = ClassFeatureGrantsService(db);
+          final grantService = ref.read(classFeatureGrantsServiceProvider);
           await grantService.applyClassFeatureSelections(
             heroId: widget.heroId,
             classData: classData,
@@ -172,22 +173,18 @@ class _StrenghtCreatorPageState extends ConsumerState<StrenghtCreatorPage>
         }
       }
 
+      // Adopt the repaired state as the baseline. Selections, skill-group
+      // choices, level, subclass, and equipment all come from the draft now.
+      await _controller.reload();
+
       if (!mounted) return;
       setState(() {
-        _classData = classData;
-        _subclassSelection = subclassSelection;
-        _selectedLevel = hero.level;
-        _featureSelections = savedFeatureSelections.isNotEmpty
-            ? savedFeatureSelections
-            : const {};
-        _equipmentIds = equipmentIds;
-        _skillGroupSelections = skillGroupSelections;
-        _reservedSkillIds = reservedSkillIds;
         _hasLoadedOnce = true;
         _isLoading = false;
         _isRefreshing = false;
         _error = null;
       });
+      _notifyDirty();
     } catch (e) {
       if (!mounted) return;
       if (!_hasLoadedOnce || showFullScreenLoader) {
@@ -204,8 +201,8 @@ class _StrenghtCreatorPageState extends ConsumerState<StrenghtCreatorPage>
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content:
-                Text('${StrengthCreatorPageText.failedToRefreshFeaturesPrefix}$e'),
+            content: Text(
+                '${StrengthCreatorPageText.failedToRefreshFeaturesPrefix}$e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -213,39 +210,44 @@ class _StrenghtCreatorPageState extends ConsumerState<StrenghtCreatorPage>
     }
   }
 
-  Future<void> reload() => _load();
-
-  Future<void> _handleSelectionsChanged(
+  /// Records a *user* feature-selection change in the draft. Conflicts are
+  /// surfaced by the pickers from the projected index and blocked again at
+  /// commit, so a change no longer needs a database round trip to be accepted.
+  Future<bool> _handleSelectionsChanged(
     Map<String, Set<String>> selections,
   ) async {
-    setState(() {
-      _featureSelections = selections;
-    });
-    try {
-      final repo = ref.read(heroRepositoryProvider);
-      await repo.saveFeatureSelections(widget.heroId, selections);
-      if (_classData != null) {
-        final db = ref.read(appDatabaseProvider);
-        final grantService = ClassFeatureGrantsService(db);
-        await grantService.applyClassFeatureSelections(
-          heroId: widget.heroId,
-          classData: _classData!,
-          level: _selectedLevel,
-          selections: selections,
-          subclassSelection: _subclassSelection,
-        );
+    _userEditedStrength = true;
+    final current = ref
+        .read(heroBuilderControllerProvider(widget.heroId))
+        .strength
+        .featureSelections;
+    for (final featureId in {...current.keys, ...selections.keys}) {
+      final next = selections[featureId] ?? const <String>{};
+      if (const SetEquality<String>()
+          .equals(current[featureId] ?? const <String>{}, next)) {
+        continue;
       }
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            '${StrengthCreatorPageText.failedToSaveFeatureSelectionsPrefix}$e',
-          ),
-          backgroundColor: Colors.red,
-        ),
-      );
+      _controller.setFeatureSelection(featureId, next);
     }
+    _notifyDirty();
+    return true;
+  }
+
+  /// Handles the section's load-time emit (fired only from its `_load`, never
+  /// from a user click). The emitted map is the persisted selections plus the
+  /// deterministic domain/subclass/deity auto-derivations the section rebuilds
+  /// every load; grants re-derive those from the subclass/domain slugs, so
+  /// folding them into the baseline keeps the tab from opening dirty without
+  /// changing anything that gets committed. If the user already has a pending
+  /// edit this baseline, the emit is treated as a normal draft change so that
+  /// dirty state is preserved.
+  void _handleLoadedSelections(Map<String, Set<String>> selections) {
+    if (_userEditedStrength) {
+      _handleSelectionsChanged(selections);
+      return;
+    }
+    _controller.adoptStrengthFeatureSelections(selections);
+    _notifyDirty();
   }
 
   Future<void> _handleSkillGroupSelectionChanged(
@@ -253,70 +255,39 @@ class _StrenghtCreatorPageState extends ConsumerState<StrenghtCreatorPage>
     String grantKey,
     String? skillId,
   ) async {
-    // Update local state immediately for responsiveness
-    setState(() {
-      final updated = Map<String, Map<String, String>>.from(_skillGroupSelections);
-      if (skillId == null || skillId.isEmpty) {
-        // Remove the selection
-        if (updated.containsKey(featureId)) {
-          updated[featureId]!.remove(grantKey);
-          if (updated[featureId]!.isEmpty) {
-            updated.remove(featureId);
-          }
-        }
-      } else {
-        // Add/update the selection
-        updated.putIfAbsent(featureId, () => {});
-        updated[featureId]![grantKey] = skillId;
-      }
-      _skillGroupSelections = updated;
-      
-      // Update reserved skill IDs
-      final updatedReserved = Set<String>.from(_reservedSkillIds);
-      // Remove the old skill from reserved if it was replaced
-      // (we'll re-add the new one)
-      if (skillId != null && skillId.isNotEmpty) {
-        updatedReserved.add(skillId);
-      }
-      _reservedSkillIds = updatedReserved;
-    });
-    
-    // Save to database
-    try {
-      final db = ref.read(appDatabaseProvider);
-      final grantService = ClassFeatureGrantsService(db);
-      await grantService.setSkillGroupSelection(
-        heroId: widget.heroId,
-        featureId: featureId,
-        grantKey: grantKey,
-        skillId: skillId,
-      );
-      
-      // Reload reserved skills to ensure consistency
-      final repo = ref.read(heroRepositoryProvider);
-      final allSkillEntries = await repo.getSkillEntries(widget.heroId);
-      if (mounted) {
-        setState(() {
-          _reservedSkillIds = allSkillEntries.map((e) => e.entryId).toSet();
-        });
-      }
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            '${StrengthCreatorPageText.failedToSaveSkillSelectionPrefix}$e',
-          ),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
+    _controller.setFeatureSkillSlot(
+      featureId: featureId,
+      grantKey: grantKey,
+      skillId: skillId,
+    );
+    _notifyDirty();
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    
+
+    // A fresh baseline (initial load, reload, or post-commit adoption) clears
+    // the user-edit flag, so the section's next load-time emit can be folded
+    // into the baseline again instead of dirtying the tab.
+    ref.listen<int>(
+      heroBuilderControllerProvider(widget.heroId)
+          .select((state) => state.baseline.revision),
+      (previous, next) {
+        if (previous != next) _userEditedStrength = false;
+      },
+    );
+
+    final strength = _strength;
+    final strife = _strife;
+    final subclassSelection = subclassSelectionFromDraft(strife.subclass);
+    final draftClassId = strife.classId?.trim();
+    final classData = draftClassId == null || draftClassId.isEmpty
+        ? null
+        : _classDataService
+            .getAllClasses()
+            .firstWhereOrNull((candidate) => candidate.classId == draftClassId);
+
     if (_isLoading) {
       return const Center(
         child: CircularProgressIndicator(
@@ -343,25 +314,23 @@ class _StrenghtCreatorPageState extends ConsumerState<StrenghtCreatorPage>
     }
 
     final notices = <Widget>[];
-    if (_classData == null) {
+    if (classData == null) {
       notices.add(
         _NoticeCard(
           icon: Icons.info_outline,
           accentColor: CreatorTheme.warningColor,
           title: StrengthCreatorPageText.noticeTitleClassRequired,
-          message:
-              StrengthCreatorPageText.noticeMessageClassRequired,
+          message: StrengthCreatorPageText.noticeMessageClassRequired,
         ),
       );
     }
-    if (_classData != null && _subclassSelection == null) {
+    if (classData != null && subclassSelection == null) {
       notices.add(
         _NoticeCard(
           icon: Icons.warning_amber_rounded,
           accentColor: CreatorTheme.warningColor,
           title: StrengthCreatorPageText.noticeTitleSubclassMissing,
-          message:
-              StrengthCreatorPageText.noticeMessageSubclassMissing,
+          message: StrengthCreatorPageText.noticeMessageSubclassMissing,
         ),
       );
     }
@@ -374,7 +343,7 @@ class _StrenghtCreatorPageState extends ConsumerState<StrenghtCreatorPage>
         ...notices,
         const SizedBox(height: 12),
       ],
-      if (_classData != null)
+      if (classData != null)
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: AutoHeroGreenFormWidget(
@@ -383,17 +352,18 @@ class _StrenghtCreatorPageState extends ConsumerState<StrenghtCreatorPage>
             sectionSpacing: 12,
           ),
         ),
-      if (_classData != null)
+      if (classData != null)
         ClassFeaturesSection(
-          classData: _classData!,
-          selectedLevel: _selectedLevel,
-          selectedSubclass: _subclassSelection,
-          initialSelections: _featureSelections,
-          equipmentIds: _equipmentIds,
-          onSelectionsChanged: _handleSelectionsChanged,
-          skillGroupSelections: _skillGroupSelections,
+          classData: classData,
+          selectedLevel: strife.level,
+          selectedSubclass: subclassSelection,
+          initialSelections: strength.featureSelections,
+          equipmentIds: strife.equipmentIds,
+          onSelectionsChanged: _handleLoadedSelections,
+          onSelectionsChangeRequested: _handleSelectionsChanged,
+          skillGroupSelections: strength.skillGroupSelections,
           onSkillGroupSelectionChanged: _handleSkillGroupSelectionChanged,
-          reservedSkillIds: _reservedSkillIds,
+          skillConflictIndex: _skillConflictIndex,
           onPendingChoicesChanged: (count) {
             if (_pendingChoicesCount != count) {
               // Defer setState to avoid calling it during build phase
@@ -414,7 +384,7 @@ class _StrenghtCreatorPageState extends ConsumerState<StrenghtCreatorPage>
             StrengthCreatorPageText.chooseClassFirstMessage,
             textAlign: TextAlign.center,
           ),
-      ),
+        ),
       const SizedBox(height: 24),
     ];
 
@@ -441,7 +411,8 @@ class _StrenghtCreatorPageState extends ConsumerState<StrenghtCreatorPage>
               child: LinearProgressIndicator(
                 minHeight: 3,
                 color: CreatorTheme.strengthAccent,
-                backgroundColor: CreatorTheme.strengthAccent.withValues(alpha: 0.2),
+                backgroundColor:
+                    CreatorTheme.strengthAccent.withValues(alpha: 0.2),
               ),
             ),
           ),
@@ -451,6 +422,13 @@ class _StrenghtCreatorPageState extends ConsumerState<StrenghtCreatorPage>
 
   @override
   bool get wantKeepAlive => true;
+
+  /// The builder's projected index, memoized per draft revision. It already
+  /// projects every editor's own source away and re-adds its draft claims, so
+  /// a nested skill slot never conflicts with itself while every other owner —
+  /// Story, Strife, perks, the hero sheet — still blocks.
+  HeroConflictIndex get _skillConflictIndex =>
+      ref.watch(heroBuilderConflictIndexProvider(widget.heroId));
 }
 
 class _NoticeCard extends StatelessWidget {
@@ -471,7 +449,7 @@ class _NoticeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Container(

@@ -5,10 +5,16 @@
     "name": "Adaptive Second Skin of Toxins",
     "echelon": null,
     "description": "This suit is shaped of tough leather and set with thousands of tiny barbs on the inside, all thankfully pain-free to the touch.",
-    "keywords": ["Light Armor", "Magic"],
+    "keywords": [
+      "Light Armor",
+      "Magic"
+    ],
     "item_prerequisite": "Five rabid honey badger pelts, the quills of a hedgehog",
     "project_source": "Texts or lore in Yllryc",
-    "project_roll_characteristics": ["Agility", "Intuition"],
+    "project_roll_characteristics": [
+      "Agility",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -30,30 +36,35 @@
       "effect_description": "Stamina bonus increases to +21. Additionally, when an adjacent creature deals damage to you, they take 6 acid or poison damage. You can also use a maneuver to transmute a 2‑cube area of liquid adjacent to you into liquid acid or poison until the end of your next turn. Any creature who enters the area for the first time in a combat round or starts their turn there takes 6 acid or poison damage.",
       "feature": null
     },
-    "stat_bonuses": {
-      "stamina": {
-        "stacks_with_other_treasures": false,
-        "level_1": 6,
-        "level_5": 12,
-        "level_9": 21
-      },
-      "immunities": {
-        "acid": {
-          "type": "highest_characteristic",
-          "level_1": true,
-          "level_5": true,
-          "level_9": true
+    "enchanted": false,
+    "enchants": [],
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "leveled_bonuses": {
+          "stamina": {
+            "stacks_with_other_treasures": false,
+            "level_1": 6,
+            "level_5": 12,
+            "level_9": 21
+          }
         },
-        "poison": {
-          "type": "highest_characteristic",
-          "level_1": true,
-          "level_5": true,
-          "level_9": true
+        "leveled_immunities": {
+          "acid": {
+            "type": "highest_characteristic",
+            "level_1": true,
+            "level_5": true,
+            "level_9": true
+          },
+          "poison": {
+            "type": "highest_characteristic",
+            "level_1": true,
+            "level_5": true,
+            "level_9": true
+          }
         }
       }
-    },
-    "enchanted": false,
-    "enchants": []
+    ]
   },
   {
     "id": "chain_of_the_sea_and_sky",
@@ -61,10 +72,17 @@
     "name": "Chain of the Sea and Sky",
     "echelon": null,
     "description": "This set of heavy chain mail is created to allow free movement in extreme environments without sacrificing protection.",
-    "keywords": ["Heavy Armor", "Magic"],
+    "keywords": [
+      "Heavy Armor",
+      "Magic"
+    ],
     "item_prerequisite": "A set of wings from a flying carp, a set of chain mail rusted by seawater",
     "project_source": "Texts or lore in Zaliac",
-    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Might",
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -86,24 +104,29 @@
       "effect_description": "Stamina bonus increases to +21 and you have cold immunity 10. Additionally, whenever your feet are not touching the ground (including floating in water or being in midair), you gain an edge on ability rolls, and any ability targeting you takes a bane.",
       "feature": null
     },
-    "stat_bonuses": {
-      "stamina": {
-        "stacks_with_other_treasures": false,
-        "level_1": 6,
-        "level_5": 12,
-        "level_9": 21
-      },
-      "immunities": {
-        "cold": {
-          "type": "flat",
-          "level_1": 0,
-          "level_5": 5,
-          "level_9": 10
+    "enchanted": false,
+    "enchants": [],
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "leveled_bonuses": {
+          "stamina": {
+            "stacks_with_other_treasures": false,
+            "level_1": 6,
+            "level_5": 12,
+            "level_9": 21
+          }
+        },
+        "leveled_immunities": {
+          "cold": {
+            "type": "flat",
+            "level_1": 0,
+            "level_5": 5,
+            "level_9": 10
+          }
         }
       }
-    },
-    "enchanted": false,
-    "enchants": []
+    ]
   },
   {
     "id": "grand_scarab",
@@ -111,10 +134,17 @@
     "name": "Grand Scarab",
     "echelon": null,
     "description": "The blue‑purple carapace and wings of a gigantic scarab beetle have been formed into an ornate breastplate.",
-    "keywords": ["Magic", "Medium Armor"],
+    "keywords": [
+      "Magic",
+      "Medium Armor"
+    ],
     "item_prerequisite": "A giant scarab beetle carapace",
     "project_source": "Texts or lore in Phaedran",
-    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Might",
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -136,16 +166,21 @@
       "effect_description": "Stamina bonus increases to +21. Additionally, if you fly any distance before making a strike, that strike gains an edge.",
       "feature": null
     },
-    "stat_bonuses": {
-      "stamina": {
-        "stacks_with_other_treasures": false,
-        "level_1": 6,
-        "level_5": 12,
-        "level_9": 21
-      }
-    },
     "enchanted": false,
-    "enchants": []
+    "enchants": [],
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "leveled_bonuses": {
+          "stamina": {
+            "stacks_with_other_treasures": false,
+            "level_1": 6,
+            "level_5": 12,
+            "level_9": 21
+          }
+        }
+      }
+    ]
   },
   {
     "id": "kings_roar",
@@ -153,10 +188,17 @@
     "name": "King’s Roar",
     "echelon": null,
     "description": "A sunmetal kite shield bears the face of a lion on its front, its mouth opening wider over the course of battle.",
-    "keywords": ["Magic", "Shield"],
+    "keywords": [
+      "Magic",
+      "Shield"
+    ],
     "item_prerequisite": "A ballad of heroism, two ingots of sunmetal",
     "project_source": "Songs in High Rhyvian",
-    "project_roll_characteristics": ["Reason", "Intuition", "Presence"],
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition",
+      "Presence"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -178,16 +220,21 @@
       "effect_description": "Shield’s Stamina bonus increases to +9. When you cause the shield to roar, target one creature or object within 6 squares; push the target up to 5 squares and the target is slowed until the end of their next turn.",
       "feature": null
     },
-    "stat_bonuses": {
-      "stamina": {
-        "stacks_with_other_treasures": true,
-        "level_1": 3,
-        "level_5": 6,
-        "level_9": 9
-      }
-    },
     "enchanted": false,
-    "enchants": []
+    "enchants": [],
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "leveled_bonuses": {
+          "stamina": {
+            "stacks_with_other_treasures": true,
+            "level_1": 3,
+            "level_5": 6,
+            "level_9": 9
+          }
+        }
+      }
+    ]
   },
   {
     "id": "kuranzoi_prismscale",
@@ -195,10 +242,16 @@
     "name": "Kuran’zoi Prismscale",
     "echelon": null,
     "description": "Each scale of this iridescent armor shimmers with the faint image of a frozen moment of time.",
-    "keywords": ["Medium Armor", "Psionic"],
+    "keywords": [
+      "Medium Armor",
+      "Psionic"
+    ],
     "item_prerequisite": "The eyes of a time raider who died valiantly in battle",
     "project_source": "Texts or lore in Voll",
-    "project_roll_characteristics": ["Intuition", "Presence"],
+    "project_roll_characteristics": [
+      "Intuition",
+      "Presence"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -220,16 +273,21 @@
       "effect_description": "Stamina bonus increases to +21. Additionally, whenever you capture a moment of time in the armor, you can immediately release it to gain a +3 bonus to speed that lasts until the end of your next turn.",
       "feature": null
     },
-    "stat_bonuses": {
-      "stamina": {
-        "stacks_with_other_treasures": false,
-        "level_1": 6,
-        "level_5": 12,
-        "level_9": 21
-      }
-    },
     "enchanted": false,
-    "enchants": []
+    "enchants": [],
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "leveled_bonuses": {
+          "stamina": {
+            "stacks_with_other_treasures": false,
+            "level_1": 6,
+            "level_5": 12,
+            "level_9": 21
+          }
+        }
+      }
+    ]
   },
   {
     "id": "paper_trappings",
@@ -237,10 +295,17 @@
     "name": "Paper Trappings",
     "echelon": null,
     "description": "This delicate robe is made from thousands of pages torn from books, intricately folded together without a single thread to bind them.",
-    "keywords": ["Light Armor", "Magic"],
+    "keywords": [
+      "Light Armor",
+      "Magic"
+    ],
     "item_prerequisite": "Ten pages from each of a hundred different books",
     "project_source": "Texts or lore in Anjali",
-    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Might",
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -262,16 +327,21 @@
       "effect_description": "Stamina bonus increases to +21; you are no longer dazed when you return to true form. Additionally, while you have a target grabbed when you are paper thin, you can use a maneuver to constrict the target, dealing 10 damage. A creature damaged this way takes a bane when using the Escape Grab maneuver against you and when making strikes against you.",
       "feature": null
     },
-    "stat_bonuses": {
-      "stamina": {
-        "stacks_with_other_treasures": false,
-        "level_1": 6,
-        "level_5": 12,
-        "level_9": 21
-      }
-    },
     "enchanted": false,
-    "enchants": []
+    "enchants": [],
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "leveled_bonuses": {
+          "stamina": {
+            "stacks_with_other_treasures": false,
+            "level_1": 6,
+            "level_5": 12,
+            "level_9": 21
+          }
+        }
+      }
+    ]
   },
   {
     "id": "shrouded_memory",
@@ -279,10 +349,16 @@
     "name": "Shrouded Memory",
     "echelon": null,
     "description": "This midnight‑dark leather coat is embossed with fractal patterns that appear different each time they are observed.",
-    "keywords": ["Light Armor", "Psionic"],
+    "keywords": [
+      "Light Armor",
+      "Psionic"
+    ],
     "item_prerequisite": "The will of a deceased person with no heirs",
     "project_source": "Texts or lore in Khelt",
-    "project_roll_characteristics": ["Agility", "Presence"],
+    "project_roll_characteristics": [
+      "Agility",
+      "Presence"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -304,16 +380,21 @@
       "effect_description": "Stamina bonus increases to +21. Whenever you use the armor’s triggered action to teleport, you can teleport up to a number of squares equal to the damage taken (minimum 5). Additionally, if a creature dealt you the triggering damage, you become invisible to that creature until the end of your next turn.",
       "feature": null
     },
-    "stat_bonuses": {
-      "stamina": {
-        "stacks_with_other_treasures": false,
-        "level_1": 6,
-        "level_5": 12,
-        "level_9": 21
-      }
-    },
     "enchanted": false,
-    "enchants": []
+    "enchants": [],
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "leveled_bonuses": {
+          "stamina": {
+            "stacks_with_other_treasures": false,
+            "level_1": 6,
+            "level_5": 12,
+            "level_9": 21
+          }
+        }
+      }
+    ]
   },
   {
     "id": "spiny_turtle",
@@ -321,10 +402,17 @@
     "name": "Spiny Turtle",
     "echelon": null,
     "description": "This heavy mechanized plate armor of gnomish make is designed to create its own cover on the battlefield.",
-    "keywords": ["Heavy Armor", "Magic"],
+    "keywords": [
+      "Heavy Armor",
+      "Magic"
+    ],
     "item_prerequisite": "Ten steel gears from an ancient construct",
     "project_source": "Texts or lore in Variac",
-    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Might",
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -346,16 +434,21 @@
       "effect_description": "Stamina bonus increases to +21. Additionally, spikes cover the armor, and any adjacent creature who deals damage to you takes 6 damage.",
       "feature": null
     },
-    "stat_bonuses": {
-      "stamina": {
-        "stacks_with_other_treasures": false,
-        "level_1": 6,
-        "level_5": 12,
-        "level_9": 21
-      }
-    },
     "enchanted": false,
-    "enchants": []
+    "enchants": [],
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "leveled_bonuses": {
+          "stamina": {
+            "stacks_with_other_treasures": false,
+            "level_1": 6,
+            "level_5": 12,
+            "level_9": 21
+          }
+        }
+      }
+    ]
   },
   {
     "id": "star_hunter",
@@ -363,10 +456,17 @@
     "name": "Star‑Hunter",
     "echelon": null,
     "description": "Shimmering light flows like liquid along this suit of crystalline armor.",
-    "keywords": ["Heavy Armor", "Psionic"],
+    "keywords": [
+      "Heavy Armor",
+      "Psionic"
+    ],
     "item_prerequisite": "A large vessel of astral ice, a pint of supercooled mercury",
     "project_source": "Texts or lore in Voll",
-    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Might",
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -388,24 +488,29 @@
       "effect_description": "Stamina bonus increases to +21; you instinctively know the location of any creature with concealment within 10 squares; your invisibility no longer ends when you use an ability; and you have psychic immunity 10.",
       "feature": null
     },
-    "stat_bonuses": {
-      "stamina": {
-        "stacks_with_other_treasures": false,
-        "level_1": 6,
-        "level_5": 12,
-        "level_9": 21
-      },
-      "immunities": {
-        "psychic": {
-          "type": "flat",
-          "level_1": 0,
-          "level_5": 5,
-          "level_9": 10
+    "enchanted": false,
+    "enchants": [],
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "leveled_bonuses": {
+          "stamina": {
+            "stacks_with_other_treasures": false,
+            "level_1": 6,
+            "level_5": 12,
+            "level_9": 21
+          }
+        },
+        "leveled_immunities": {
+          "psychic": {
+            "type": "flat",
+            "level_1": 0,
+            "level_5": 5,
+            "level_9": 10
+          }
         }
       }
-    },
-    "enchanted": false,
-    "enchants": []
+    ]
   },
   {
     "id": "telekinetic_bulwark",
@@ -413,10 +518,17 @@
     "name": "Telekinetic Bulwark",
     "echelon": null,
     "description": "An unseen force seems to draw this steel shield toward nearby creatures.",
-    "keywords": ["Psionic", "Shield"],
+    "keywords": [
+      "Psionic",
+      "Shield"
+    ],
     "item_prerequisite": "Three ingots of steel, six crystals that resonate with psionic power",
     "project_source": "Texts or lore in Variac",
-    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Might",
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -440,14 +552,19 @@
     },
     "enchanted": false,
     "enchants": [],
-    "stat_bonuses": {
-      "stamina": {
-        "stacks_with_other_treasures": true,
-        "level_1": 2,
-        "level_5": 5,
-        "level_9": 9
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "leveled_bonuses": {
+          "stamina": {
+            "stacks_with_other_treasures": true,
+            "level_1": 2,
+            "level_5": 5,
+            "level_9": 9
+          }
+        }
       }
-    }
+    ]
   },
   {
     "id": "abjurers_bastion",
@@ -455,10 +572,17 @@
     "name": "Abjurer’s Bastion",
     "echelon": null,
     "description": "An ornate ring is set with a large diamond that swirls with blue light, and whose inner surface is etched with protective runes.",
-    "keywords": ["Implement", "Magic"],
+    "keywords": [
+      "Implement",
+      "Magic"
+    ],
     "item_prerequisite": "A diamond ring",
     "project_source": "Texts or lore in Caelian",
-    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Might",
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -489,10 +613,18 @@
     "name": "Brittlebreaker",
     "echelon": null,
     "description": "This crystal wand thrums with power, yet is so thin and brittle that it feels as if even a slight squeeze will shatter it.",
-    "keywords": ["Implement", "Psionic", "Wand"],
+    "keywords": [
+      "Implement",
+      "Psionic",
+      "Wand"
+    ],
     "item_prerequisite": "A handful of shattered quartz",
     "project_source": "Texts or lore in Caelian",
-    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Might",
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -523,10 +655,16 @@
     "name": "Ether‑Fueled Vessel",
     "echelon": null,
     "description": "This bronze bottle has been shaped into the form of a ghostly figure.",
-    "keywords": ["Implement", "Psionic"],
+    "keywords": [
+      "Implement",
+      "Psionic"
+    ],
     "item_prerequisite": "Incense distilled from the essence of ether",
     "project_source": "Texts or lore in Caelian",
-    "project_roll_characteristics": ["Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -557,10 +695,17 @@
     "name": "Chaldorb",
     "echelon": null,
     "description": "A perfectly clear sphere is embossed with fine ivory and crystal that is frigid to the touch.",
-    "keywords": ["Implement", "Magic"],
+    "keywords": [
+      "Implement",
+      "Magic"
+    ],
     "item_prerequisite": "An ounce of primordial ice, an ounce of mammoth‑ivory shards",
     "project_source": "Texts or lore in Zaliac",
-    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Might",
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -591,10 +736,16 @@
     "name": "Foesense Lenses",
     "echelon": null,
     "description": "These spectacles feature pink‑tinted glass lenses held in a silver frame.",
-    "keywords": ["Implement", "Psionic"],
+    "keywords": [
+      "Implement",
+      "Psionic"
+    ],
     "item_prerequisite": "Two clear lenses carved from volcanic glass",
     "project_source": "Texts or lore in Caelian",
-    "project_roll_characteristics": ["Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -625,10 +776,15 @@
     "name": "Words Become Wonders at Next Breath",
     "echelon": null,
     "description": "This ornate high elf tome seems to sigh each time it is opened.",
-    "keywords": ["Implement", "Magic"],
+    "keywords": [
+      "Implement",
+      "Magic"
+    ],
     "item_prerequisite": "Written permission from a high elf magistrate",
     "project_source": "Texts or lore in Hyrallic",
-    "project_roll_characteristics": ["Reason"],
+    "project_roll_characteristics": [
+      "Reason"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -659,10 +815,17 @@
     "name": "Authority’s End",
     "echelon": null,
     "description": "This long, sinuous chain is composed entirely of broken links held together by unseen power.",
-    "keywords": ["Psionic", "Whip"],
+    "keywords": [
+      "Psionic",
+      "Whip"
+    ],
     "item_prerequisite": "A lash used to punish a mutineer",
     "project_source": "Texts or lore in Khelt",
-    "project_roll_characteristics": ["Reason", "Intuition", "Presence"],
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition",
+      "Presence"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -693,10 +856,17 @@
     "name": "Blade of Quintessence",
     "echelon": null,
     "description": "This crystal blade houses a stormy vortex of fire, ice, and lightning.",
-    "keywords": ["Magic", "Medium Weapon"],
+    "keywords": [
+      "Magic",
+      "Medium Weapon"
+    ],
     "item_prerequisite": "A ruby hardened in the fires of the City of Brass, a sapphire that has been struck by lightning",
     "project_source": "Texts or lore in Zaliac",
-    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Might",
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -720,34 +890,37 @@
     },
     "enchanted": false,
     "enchants": [],
-    "stat_bonuses": {
-      "immunities": {
-        "cold": {
-          "type": "flat",
-          "level_1": 0,
-          "level_5": 0,
-          "level_9": 10
-        },
-        "fire": {
-          "type": "flat",
-          "level_1": 0,
-          "level_5": 0,
-          "level_9": 10
-        },
-        "lightning": {
-          "type": "flat",
-          "level_1": 0,
-          "level_5": 0,
-          "level_9": 10
-        },
-        "sonic": {
-          "type": "flat",
-          "level_1": 0,
-          "level_5": 0,
-          "level_9": 10
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "leveled_immunities": {
+          "cold": {
+            "type": "flat",
+            "level_1": 0,
+            "level_5": 0,
+            "level_9": 10
+          },
+          "fire": {
+            "type": "flat",
+            "level_1": 0,
+            "level_5": 0,
+            "level_9": 10
+          },
+          "lightning": {
+            "type": "flat",
+            "level_1": 0,
+            "level_5": 0,
+            "level_9": 10
+          },
+          "sonic": {
+            "type": "flat",
+            "level_1": 0,
+            "level_5": 0,
+            "level_9": 10
+          }
         }
       }
-    }
+    ]
   },
   {
     "id": "blade_of_the_luxurious_fop",
@@ -755,10 +928,17 @@
     "name": "Blade of the Luxurious Fop",
     "echelon": null,
     "description": "Despite sporting an outrageously ornate hilt adorned with far too many jewels, this blade remains perfectly balanced.",
-    "keywords": ["Light Weapon", "Magic"],
+    "keywords": [
+      "Light Weapon",
+      "Magic"
+    ],
     "item_prerequisite": "A personal blessing from the greatest duelist in the land, six fake and extremely shiny gemstones",
     "project_source": "Texts or lore in Caelian",
-    "project_roll_characteristics": ["Agility", "Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Agility",
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -789,10 +969,16 @@
     "name": "Displacer",
     "echelon": null,
     "description": "This crystal battleaxe seems to pull at the hands that wield it, as if anxious to leap across the battlefield.",
-    "keywords": ["Medium Weapon", "Psionic"],
+    "keywords": [
+      "Medium Weapon",
+      "Psionic"
+    ],
     "item_prerequisite": "An ancient bronze gear covered in indecipherable runes",
     "project_source": "Texts in Zaliac",
-    "project_roll_characteristics": ["Might", "Intuition"],
+    "project_roll_characteristics": [
+      "Might",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -823,10 +1009,17 @@
     "name": "Executioner’s Blade",
     "echelon": null,
     "description": "This blade exudes a faint hum that grows louder as its quarry weakens.",
-    "keywords": ["Heavy Weapon", "Psionic"],
+    "keywords": [
+      "Heavy Weapon",
+      "Psionic"
+    ],
     "item_prerequisite": "The skull of a convicted criminal",
     "project_source": "Texts or lore in Caelian",
-    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Might",
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -857,10 +1050,17 @@
     "name": "Icemaker Maul",
     "echelon": null,
     "description": "The head of this iron hammer is cold to the touch and encases whatever it strikes in a thin layer of ice.",
-    "keywords": ["Heavy Weapon", "Magic"],
+    "keywords": [
+      "Heavy Weapon",
+      "Magic"
+    ],
     "item_prerequisite": "Eight iron bars cooled in a glacier, the branch of an ancient evergreen",
     "project_source": "Texts in Zaliac",
-    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Might",
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -891,10 +1091,16 @@
     "name": "Knife of Nine",
     "echelon": null,
     "description": "This ivory dagger features nine faintly glowing indentations along the blade.",
-    "keywords": ["Light Weapon", "Psionic"],
+    "keywords": [
+      "Light Weapon",
+      "Psionic"
+    ],
     "item_prerequisite": "Eighteen daggers—nine taken from personal enemies and nine gifted by friends",
     "project_source": "Texts or lore in Variac",
-    "project_roll_characteristics": ["Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -925,10 +1131,16 @@
     "name": "Lance of the Sundered Star",
     "echelon": null,
     "description": "This needlelike lance is cast of shimmering metal and induces a yearning for the skies in those who handle it.",
-    "keywords": ["Magic", "Polearm"],
+    "keywords": [
+      "Magic",
+      "Polearm"
+    ],
     "item_prerequisite": "Night‑blooming flower petals, a starmetal meteorite",
     "project_source": "Texts or lore in Hyrallic",
-    "project_roll_characteristics": ["Agility", "Presence"],
+    "project_roll_characteristics": [
+      "Agility",
+      "Presence"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -959,10 +1171,17 @@
     "name": "Molten Constrictor",
     "echelon": null,
     "description": "This flexible black‑iron net burns with the heat of a volcano.",
-    "keywords": ["Magic", "Net"],
+    "keywords": [
+      "Magic",
+      "Net"
+    ],
     "item_prerequisite": "Four iron bars coated in magma slag",
     "project_source": "Texts or lore in Caelian",
-    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Might",
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -993,10 +1212,17 @@
     "name": "Onerous Bow",
     "echelon": null,
     "description": "This mechanized bow is set with magical reservoirs that carry the faint tang of toxins.",
-    "keywords": ["Bow", "Magic"],
+    "keywords": [
+      "Bow",
+      "Magic"
+    ],
     "item_prerequisite": "A venom sac from a giant spider, one valok gyroscope",
     "project_source": "Texts or lore in Caelian and Variac",
-    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Might",
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -1027,10 +1253,17 @@
     "name": "Steeltongue",
     "echelon": null,
     "description": "This sinuous whip reflects all light off its plated steel surfaces.",
-    "keywords": ["Magic", "Whip"],
+    "keywords": [
+      "Magic",
+      "Whip"
+    ],
     "item_prerequisite": "One hundred steel arrowheads stained with blood",
     "project_source": "Texts or lore in Caelian and Kaliak",
-    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Might",
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -1061,10 +1294,16 @@
     "name": "Third Eye Seeker",
     "echelon": null,
     "description": "The shifting patterns on this bow’s crystalline grip resemble dozens of blinking eyes.",
-    "keywords": ["Bow", "Psionic"],
+    "keywords": [
+      "Bow",
+      "Psionic"
+    ],
     "item_prerequisite": "Heart strings of a tapir, a pound of tiger’s eye gemstones",
     "project_source": "Texts or lore in Variac",
-    "project_roll_characteristics": ["Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -1095,10 +1334,17 @@
     "name": "Thunderhead Bident",
     "echelon": null,
     "description": "This bident is made from two pieces of moon metal twisted together, and hums like a tuning fork.",
-    "keywords": ["Magic", "Medium Weapon"],
+    "keywords": [
+      "Magic",
+      "Medium Weapon"
+    ],
     "item_prerequisite": "A jar of captured thunder, two ingots of moon metal",
     "project_source": "Texts or lore in Zaliac",
-    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Might",
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -1129,10 +1375,17 @@
     "name": "Wetwork",
     "echelon": null,
     "description": "When first held, this naginata whispers the names of its past victims.",
-    "keywords": ["Polearm", "Psionic"],
+    "keywords": [
+      "Polearm",
+      "Psionic"
+    ],
     "item_prerequisite": "A folded metal blade infused with blood",
     "project_source": "Texts or lore in Higaran",
-    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Might",
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -1163,10 +1416,17 @@
     "name": "Thief of Joy",
     "echelon": null,
     "description": "This burnished copper torque thrums with a sense of judgment.",
-    "keywords": ["Neck", "Psionic"],
+    "keywords": [
+      "Neck",
+      "Psionic"
+    ],
     "item_prerequisite": "A pound of feathers, a pound of bricks from the Seven Cities of Hell",
     "project_source": "Texts or lore in Anjali",
-    "project_roll_characteristics": ["Might", "Reason", "Presence"],
+    "project_roll_characteristics": [
+      "Might",
+      "Reason",
+      "Presence"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -1190,15 +1450,20 @@
     },
     "enchanted": false,
     "enchants": [],
-    "stat_bonuses": {
-      "stamina": {
-        "stacks_with_other_treasures": false,
-        "type": "highest_characteristic_multiplier",
-        "level_1": 2,
-        "level_5": 3,
-        "level_9": 5
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "leveled_bonuses": {
+          "stamina": {
+            "stacks_with_other_treasures": false,
+            "type": "highest_characteristic_multiplier",
+            "level_1": 2,
+            "level_5": 3,
+            "level_9": 5
+          }
+        }
       }
-    }
+    ]
   },
   {
     "id": "bloodbound_band",
@@ -1206,10 +1471,17 @@
     "name": "Bloodbound Band",
     "echelon": null,
     "description": "This ring appears to be traced by dried blood, which returns each time it is rubbed away.",
-    "keywords": ["Magic", "Ring"],
+    "keywords": [
+      "Magic",
+      "Ring"
+    ],
     "item_prerequisite": "A pair of obituaries that each mention the subject of the other",
     "project_source": "Texts or lore in Caelian",
-    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Might",
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -1233,22 +1505,27 @@
     },
     "enchanted": false,
     "enchants": [],
-    "stat_bonuses": {
-      "stamina": {
-        "stacks_with_other_treasures": false,
-        "level_1": 6,
-        "level_5": 12,
-        "level_9": 21
-      },
-      "immunities": {
-        "damage": {
-          "type": "flat",
-          "level_1": 0,
-          "level_5": 2,
-          "level_9": 2
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "leveled_bonuses": {
+          "stamina": {
+            "stacks_with_other_treasures": false,
+            "level_1": 6,
+            "level_5": 12,
+            "level_9": 21
+          }
+        },
+        "leveled_immunities": {
+          "damage": {
+            "type": "flat",
+            "level_1": 0,
+            "level_5": 2,
+            "level_9": 2
+          }
         }
       }
-    }
+    ]
   },
   {
     "id": "bloody_hand_wraps",
@@ -1256,10 +1533,17 @@
     "name": "Bloody Hand Wraps",
     "echelon": null,
     "description": "These rough hand wraps are stained with blood that never comes clean.",
-    "keywords": ["Hands", "Psionic"],
+    "keywords": [
+      "Hands",
+      "Psionic"
+    ],
     "item_prerequisite": "One cotton bolt soaked in the blood of six adventurers",
     "project_source": "Texts or lore in Caelian",
-    "project_roll_characteristics": ["Might", "Agility", "Intuition"],
+    "project_roll_characteristics": [
+      "Might",
+      "Agility",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -1290,10 +1574,17 @@
     "name": "Lightning Treads",
     "echelon": null,
     "description": "Sparks strike from these boots whenever they touch the ground, increasing in number as the wearer gathers speed.",
-    "keywords": ["Feet", "Magic"],
+    "keywords": [
+      "Feet",
+      "Magic"
+    ],
     "item_prerequisite": "One jar of lightning",
     "project_source": "Texts or lore in Yllryc",
-    "project_roll_characteristics": ["Agility", "Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Agility",
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,
@@ -1317,14 +1608,19 @@
     },
     "enchanted": false,
     "enchants": [],
-    "stat_bonuses": {
-      "speed": {
-        "stacks_with_other_treasures": true,
-        "level_1": 2,
-        "level_5": 2,
-        "level_9": 2
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "leveled_bonuses": {
+          "speed": {
+            "stacks_with_other_treasures": true,
+            "level_1": 2,
+            "level_5": 2,
+            "level_9": 2
+          }
+        }
       }
-    }
+    ]
   },
   {
     "id": "revengers_wrap",
@@ -1332,10 +1628,17 @@
     "name": "Revenger’s Wrap",
     "echelon": null,
     "description": "When first handled, this tattered cloak fills the mind with thoughts of revenge.",
-    "keywords": ["Neck", "Magic"],
+    "keywords": [
+      "Neck",
+      "Magic"
+    ],
     "item_prerequisite": "A cloak worn by a murdered monarch",
     "project_source": "Texts or lore in Caelian",
-    "project_roll_characteristics": ["Might", "Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Might",
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": true,

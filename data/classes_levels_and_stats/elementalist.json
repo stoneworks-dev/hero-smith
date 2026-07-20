@@ -22,10 +22,11 @@
     },
 
     "starting_skills": {
-      "skill_groups": ["Crafting", "Lore"],
-      "skill_count": 3,
-      "granted": ["Magic"],
-      "quick_build": ["Alchemy", "Blacksmithing", "History", "Magic"]
+      "granted_skills": ["Magic"],
+      "quick_build": ["Alchemy", "Blacksmithing", "History", "Magic"],
+      "allowances": [
+        { "count": 3, "groups": ["crafting", "lore"] }
+      ]
     },
     "fixed_starting_characteristics": {
       "reason": 2
@@ -86,10 +87,12 @@
           "type": "subclass"
         }
       ],
-      "perks": {
-        "count": 1,
-        "perk_groups": ["crafting", "lore", "supernatural"]
-      },
+      "perks": [
+        {
+          "count": 1,
+          "perk_groups": ["crafting", "lore", "supernatural"]
+        }
+      ],
       "new_abilities": {
         "grants_previous_levels": true,
         "5_cost": 1
@@ -117,9 +120,9 @@
           "type": "subclass"
         }
       ],
-      "perks": {
-        "count": 1
-      },
+      "perks": [
+        { "count": 1 }
+      ],
       "skills": [{ "count": 1 }],
       "characteristics": [
         { "Reason": { "setTo": 3 } },
@@ -195,7 +198,7 @@
       "perks": [
         {
           "count": 1,
-          "restrictions": ["crafting", "lore", "supernatural"]
+          "perk_groups": ["crafting", "lore", "supernatural"]
         }
       ],
       "skills": [{ "count": 1 }],

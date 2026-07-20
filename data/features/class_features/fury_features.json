@@ -122,17 +122,32 @@
       {
         "subclass_name": "Berserker",
         "name": "Lines of Force",
-        "ability": "Lines of Force"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "lines-of-force",
+        "payload": {
+          "name": "Lines of Force"
+        }
       },
       {
         "subclass_name": "Reaver",
         "name": "Unearthly Reflexes",
-        "ability": "Unearthly Reflexes"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "unearthly-reflexes",
+        "payload": {
+          "name": "Unearthly Reflexes"
+        }
       },
       {
         "subclass_name": "Stormwight",
         "name": "Furious Change",
-        "ability": "Furious Change"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "furious-change",
+        "payload": {
+          "name": "Furious Change"
+        }
       }
     ]
   },

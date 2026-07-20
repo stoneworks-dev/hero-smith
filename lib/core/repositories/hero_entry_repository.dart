@@ -86,10 +86,31 @@ class HeroEntryRepository {
         .go();
   }
 
+  /// Remove one entry from a specific source without touching other grants.
+  Future<int> removeEntryFromSource({
+    required String heroId,
+    required String entryType,
+    required String entryId,
+    required String sourceType,
+    String? sourceId,
+  }) {
+    final query = _db.delete(_db.heroEntries)
+      ..where((t) =>
+          t.heroId.equals(heroId) &
+          t.entryType.equals(entryType) &
+          t.entryId.equals(entryId) &
+          t.sourceType.equals(sourceType));
+    if (sourceId != null) {
+      query.where((t) => t.sourceId.equals(sourceId));
+    }
+    return query.go();
+  }
+
   Future<List<HeroEntry>> listEntriesByType(
       String heroId, String entryType) async {
     return (_db.select(_db.heroEntries)
-          ..where((t) => t.heroId.equals(heroId) & t.entryType.equals(entryType)))
+          ..where(
+              (t) => t.heroId.equals(heroId) & t.entryType.equals(entryType)))
         .get();
   }
 
@@ -119,10 +140,10 @@ class HeroEntryRepository {
         .watch();
   }
 
-  Stream<List<HeroEntry>> watchEntriesByType(
-      String heroId, String entryType) {
+  Stream<List<HeroEntry>> watchEntriesByType(String heroId, String entryType) {
     return (_db.select(_db.heroEntries)
-          ..where((t) => t.heroId.equals(heroId) & t.entryType.equals(entryType)))
+          ..where(
+              (t) => t.heroId.equals(heroId) & t.entryType.equals(entryType)))
         .watch();
   }
 

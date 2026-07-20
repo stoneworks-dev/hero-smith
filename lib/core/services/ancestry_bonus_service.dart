@@ -8,18 +8,25 @@ import '../db/app_database.dart' as db;
 import '../db/providers.dart';
 import '../models/ancestry_bonus_models.dart';
 import '../models/damage_resistance_model.dart';
+import '../models/hero_mutation_model.dart';
 import '../models/stat_modification_model.dart';
 import '../repositories/hero_entry_repository.dart';
+import '../storage/hero_storage_contract.dart';
+import '../storage/stat_mod_entry_parser.dart';
 import 'damage_resistance_service.dart';
+import 'hero_mutation_service.dart';
 
 /// Service for managing ancestry trait bonuses.
 /// Handles parsing traits, applying bonuses to heroes, and removing them when traits change.
 class AncestryBonusService {
-  AncestryBonusService(this._db) : _resistanceService = DamageResistanceService(_db);
+  AncestryBonusService(this._db, {HeroMutationService? mutations})
+      : _resistanceService = DamageResistanceService(_db),
+        _mutations = mutations ?? HeroMutationService(_db);
 
   final db.AppDatabase _db;
   late final HeroEntryRepository _entries = HeroEntryRepository(_db);
   final DamageResistanceService _resistanceService;
+  final HeroMutationService _mutations;
 
   /// Parse all bonuses from an ancestry's signature and selected traits.
   Future<AppliedAncestryBonuses> parseAncestryBonuses({
@@ -32,7 +39,7 @@ class AncestryBonusService {
     }
 
     final allComponents = await _db.getAllComponents();
-    
+
     // Find the ancestry_trait component for this ancestry
     final traitsComp = allComponents.firstWhereOrNull((c) {
       if (c.type != 'ancestry_trait') return false;
@@ -83,14 +90,15 @@ class AncestryBonusService {
         if (trait is! Map) continue;
         final traitMap = trait.cast<String, dynamic>();
         final traitId = (traitMap['id'] ?? traitMap['name']).toString();
-        
+
         // Only include if this trait is selected
         if (!selectedTraitIds.contains(traitId)) continue;
 
         final traitName = traitMap['name']?.toString() ?? traitId;
-        final traitBonuses = _parseBonusesFromMap(traitMap, traitId, traitName, traitChoices);
+        final traitBonuses =
+            _parseBonusesFromMap(traitMap, traitId, traitName, traitChoices);
         bonuses.addAll(traitBonuses);
-        
+
         // Handle "Previous Life" traits (Revenant-specific)
         // These allow the hero to pick a trait from their former ancestry
         if (_isPreviousLifeTrait(traitName)) {
@@ -151,7 +159,8 @@ class AncestryBonusService {
 
     if (formerTraitsComp == null) return [];
 
-    final formerTraitsData = jsonDecode(formerTraitsComp.dataJson) as Map<String, dynamic>;
+    final formerTraitsData =
+        jsonDecode(formerTraitsComp.dataJson) as Map<String, dynamic>;
     final traits = formerTraitsData['traits'] as List?;
     if (traits == null) return [];
 
@@ -160,20 +169,20 @@ class AncestryBonusService {
       if (trait is! Map) continue;
       final traitMap = trait.cast<String, dynamic>();
       final traitId = (traitMap['id'] ?? traitMap['name']).toString();
-      
+
       if (traitId != chosenTraitId) continue;
 
       final traitName = traitMap['name']?.toString() ?? traitId;
-      
+
       // Build modified trait choices for nested selections
       // For example, if the user chose "revenant_previous_life_1" -> "dk_prismatic_scales"
       // and also chose "revenant_previous_life_1_immunity" -> "fire",
       // we need to map the composite ID to "fire" for the immunity choice
       final modifiedChoices = Map<String, String>.from(traitChoices);
-      
+
       // The composite ID we'll use for parsing
       final compositeId = '$previousLifeTraitId:$chosenTraitId';
-      
+
       // Map the immunity choice from previous_life_X_immunity to the composite ID
       final immunityChoice = traitChoices['${previousLifeTraitId}_immunity'];
       if (immunityChoice != null && immunityChoice.isNotEmpty) {
@@ -181,7 +190,7 @@ class AncestryBonusService {
         // Also keep it under the original trait ID for compatibility
         modifiedChoices[chosenTraitId] = immunityChoice;
       }
-      
+
       // Map the ability choice from previous_life_X_ability to the composite ID
       final abilityChoice = traitChoices['${previousLifeTraitId}_ability'];
       if (abilityChoice != null && abilityChoice.isNotEmpty) {
@@ -209,12 +218,14 @@ class AncestryBonusService {
     required AppliedAncestryBonuses bonuses,
     required int heroLevel,
   }) async {
+    await _clearAncestryGrantEntries(heroId);
+
     // Store the raw bonuses for later removal
     await _saveBonuses(heroId, bonuses);
 
     // Get current hero values
     final values = await _db.getHeroValues(heroId);
-    
+
     // Calculate and apply damage resistances
     await _applyDamageResistances(heroId, bonuses, heroLevel, values);
 
@@ -226,13 +237,16 @@ class AncestryBonusService {
 
     // Apply granted abilities
     await _applyGrantedAbilities(heroId, bonuses);
+
+    // Apply selected skills from ancestry choices
+    await _applySelectedSkills(heroId, bonuses);
   }
 
   /// Remove all ancestry bonuses from a hero.
-  /// 
-  /// This clears all entries with sourceType='ancestry' from hero_entries,
-  /// regardless of whether the bonuses config exists. This ensures orphaned
-  /// entries are always cleaned up.
+  ///
+  /// This clears all ancestry-granted entries regardless of whether the
+  /// bonuses config exists. This ensures orphaned grant entries are always
+  /// cleaned up without removing the hero's ancestry selection itself.
   Future<void> removeBonuses(String heroId) async {
     // Remove condition immunities - always clear even if config is null
     await _clearConditionImmunities(heroId);
@@ -240,44 +254,64 @@ class AncestryBonusService {
     // Remove granted abilities - always clear even if config is null
     await _clearGrantedAbilities(heroId);
 
+    // Remove selected skills - always clear even if config is null
+    await _clearGrantedSkills(heroId);
+
     // Clear stat modifications from ancestry
     await _clearAncestryStatMods(heroId);
 
     // Clear damage resistance bonuses (but keep base values)
     await _clearDamageResistanceBonuses(heroId);
 
-    // Clear stored bonuses config
-    await _db.upsertHeroValue(
+    // Clear stored bonuses config and any legacy hero_values snapshot.
+    await _mutations.removeConfigChoice(
       heroId: heroId,
       key: _kAncestryBonuses,
-      textValue: null,
     );
+    await _db.deleteHeroValue(heroId: heroId, key: _kAncestryBonuses);
   }
 
   /// Clear all condition immunities from ancestry source.
   Future<void> _clearConditionImmunities(String heroId) async {
-    await (_db.delete(_db.heroEntries)
-          ..where((t) =>
-              t.heroId.equals(heroId) &
-              t.entryType.equals('condition_immunity') &
-              t.sourceType.equals('ancestry')))
-        .go();
+    await _mutations.removeSourceType(
+      heroId: heroId,
+      sourceType: HeroEntrySourceTypes.ancestry,
+      entryType: HeroEntryTypes.conditionImmunity,
+      recomputeAggregates: false,
+    );
   }
 
   /// Clear all granted abilities from ancestry source.
   Future<void> _clearGrantedAbilities(String heroId) async {
-    await (_db.delete(_db.heroEntries)
-          ..where((t) =>
-              t.heroId.equals(heroId) &
-              t.entryType.equals('ability') &
-              t.sourceType.equals('ancestry')))
-        .go();
+    await _mutations.removeSourceType(
+      heroId: heroId,
+      sourceType: HeroEntrySourceTypes.ancestry,
+      entryType: HeroEntryTypes.ability,
+      recomputeAggregates: false,
+    );
+  }
+
+  Future<void> _clearGrantedSkills(String heroId) async {
+    await _mutations.removeSourceType(
+      heroId: heroId,
+      sourceType: HeroEntrySourceTypes.ancestry,
+      entryType: HeroEntryTypes.skill,
+      recomputeAggregates: false,
+    );
   }
 
   /// Load currently applied bonuses for a hero.
   Future<AppliedAncestryBonuses?> loadBonuses(String heroId) async {
+    final config = await _db.getHeroConfigValue(heroId, _kAncestryBonuses);
+    if (config != null) {
+      try {
+        return AppliedAncestryBonuses.fromJson(config);
+      } catch (_) {}
+    }
+
     final values = await _db.getHeroValues(heroId);
-    final bonusValue = values.firstWhereOrNull((v) => v.key == _kAncestryBonuses);
+    final bonusValue =
+        values.firstWhereOrNull((v) => v.key == _kAncestryBonuses);
     if (bonusValue?.jsonValue == null && bonusValue?.textValue == null) {
       return null;
     }
@@ -303,7 +337,8 @@ class AncestryBonusService {
 
   /// Watch resistance bonuses from hero_entries (ancestry + complication sources).
   /// Delegates to DamageResistanceService for centralized management.
-  Stream<Map<String, DamageResistanceBonus>> watchResistanceBonusEntries(String heroId) {
+  Stream<Map<String, DamageResistanceBonus>> watchResistanceBonusEntries(
+      String heroId) {
     return _resistanceService.watchResistanceBonusEntries(heroId);
   }
 
@@ -315,7 +350,8 @@ class AncestryBonusService {
     HeroDamageResistances resistances,
   ) async {
     // Only save base values - bonus values are calculated at runtime
-    await _resistanceService.saveDamageResistances(heroId, resistances.baseOnly);
+    await _resistanceService.saveDamageResistances(
+        heroId, resistances.baseOnly);
   }
 
   /// Update base resistance values (user-editable)
@@ -327,7 +363,7 @@ class AncestryBonusService {
   }) async {
     final current = await loadDamageResistances(heroId);
     final existing = current.forType(damageType);
-    
+
     final updated = current.upsertResistance(DamageResistance(
       damageType: damageType,
       baseImmunity: baseImmunity,
@@ -344,11 +380,11 @@ class AncestryBonusService {
   Future<void> addDamageType(String heroId, String damageType) async {
     final current = await loadDamageResistances(heroId);
     if (current.forType(damageType) != null) return;
-    
+
     final updated = current.upsertResistance(DamageResistance(
       damageType: damageType,
     ));
-    
+
     await saveDamageResistances(heroId, updated);
   }
 
@@ -361,12 +397,14 @@ class AncestryBonusService {
 
   // Private implementation methods
 
-  Future<void> _saveBonuses(String heroId, AppliedAncestryBonuses bonuses) async {
-    await _db.upsertHeroValue(
+  Future<void> _saveBonuses(
+      String heroId, AppliedAncestryBonuses bonuses) async {
+    await _mutations.saveConfigChoice(
       heroId: heroId,
       key: _kAncestryBonuses,
-      textValue: bonuses.toJsonString(),
+      value: bonuses.toJson(),
     );
+    await _db.deleteHeroValue(heroId: heroId, key: _kAncestryBonuses);
   }
 
   Future<void> _applyDamageResistances(
@@ -376,11 +414,13 @@ class AncestryBonusService {
     List<db.HeroValue> values,
   ) async {
     // Clear old ancestry resistance entries first
-    await _resistanceService.removeResistanceEntriesBySourceType(
+    await _mutations.removeSourceType(
       heroId: heroId,
-      sourceType: 'ancestry',
+      sourceType: HeroEntrySourceTypes.ancestry,
+      entryType: HeroEntryTypes.resistance,
+      recomputeAggregates: false,
     );
-    
+
     // Collect all resistance bonuses
     final resistanceBonuses = <String, DamageResistanceBonus>{};
 
@@ -390,7 +430,7 @@ class AncestryBonusService {
         if (stat == 'immunity' || stat == 'weakness') {
           final types = bonus.damageTypes ?? [];
           final value = bonus.calculateValue(heroLevel);
-          
+
           for (final type in types) {
             final key = type.toLowerCase();
             resistanceBonuses[key] ??= DamageResistanceBonus(damageType: type);
@@ -408,18 +448,18 @@ class AncestryBonusService {
     for (final entry in resistanceBonuses.entries) {
       final type = entry.key;
       final bonus = entry.value;
-      await _resistanceService.addResistanceEntry(
+      await _mutations.addResistance(
         heroId: heroId,
+        source: _ancestrySource(bonuses.ancestryId),
         damageType: type,
-        sourceType: 'ancestry',
-        sourceId: bonuses.ancestryId,
         immunity: bonus.immunity,
         weakness: bonus.weakness,
+        recompute: false,
       );
     }
 
     // Rebuild the combined resistances from all sources
-    await _resistanceService.recomputeAggregateResistances(heroId);
+    await _mutations.recomputeAggregates(heroId);
   }
 
   Future<void> _applyStatBonuses(
@@ -452,22 +492,22 @@ class AncestryBonusService {
               await _setBaseStat(heroId, bonus.stat, newValue);
             }
           }
-          
+
         case IncreaseTotalBonus():
           // Skip immunity/weakness - handled separately
           final stat = bonus.stat.toLowerCase();
           if (stat == 'immunity' || stat == 'weakness') continue;
-          
+
           final value = bonus.calculateValue(heroLevel);
           addMod(stat, value, bonus.sourceTraitName);
-          
+
         case IncreaseTotalPerEchelonBonus():
           final value = bonus.calculateBonus(heroLevel);
           addMod(bonus.stat.toLowerCase(), value, bonus.sourceTraitName);
-          
+
         case DecreaseTotalBonus():
           addMod(bonus.stat.toLowerCase(), -bonus.value, bonus.sourceTraitName);
-          
+
         default:
           // Other bonus types handled elsewhere
           break;
@@ -493,13 +533,11 @@ class AncestryBonusService {
     if (immunities.isEmpty) return;
 
     // Replace ancestry-sourced condition immunities in hero_entries
-    await _entries.addEntriesFromSource(
+    await _mutations.replaceContentEntries(
       heroId: heroId,
-      sourceType: 'ancestry',
-      sourceId: bonuses.ancestryId,
-      entryType: 'condition_immunity',
+      source: _ancestrySource(bonuses.ancestryId),
+      entryType: HeroEntryTypes.conditionImmunity,
       entryIds: immunities,
-      gainedBy: 'grant',
     );
   }
 
@@ -530,42 +568,86 @@ class AncestryBonusService {
       abilityIds.add(id);
     });
 
-    await _entries.addEntriesFromSource(
+    await _mutations.replaceContentEntries(
       heroId: heroId,
-      sourceType: 'ancestry',
-      sourceId: bonuses.ancestryId,
-      entryType: 'ability',
+      source: _ancestrySource(bonuses.ancestryId),
+      entryType: HeroEntryTypes.ability,
       entryIds: abilityIds,
-      gainedBy: 'grant',
+    );
+  }
+
+  Future<void> _applySelectedSkills(
+    String heroId,
+    AppliedAncestryBonuses bonuses,
+  ) async {
+    final skillIds = <String>[];
+    for (final bonus in bonuses.bonuses) {
+      if (bonus is PickSkillBonus) {
+        skillIds.addAll(bonus.selectedSkillIds);
+      }
+    }
+
+    if (skillIds.isEmpty) return;
+
+    await _mutations.replaceContentEntries(
+      heroId: heroId,
+      source: _ancestrySource(bonuses.ancestryId),
+      entryType: HeroEntryTypes.skill,
+      entryIds: skillIds,
+      gainedBy: HeroEntryGainedBy.choice,
     );
   }
 
   Future<void> _clearAncestryStatMods(String heroId) async {
     // Clear from hero_entries (new storage)
-    await (_db.delete(_db.heroEntries)
-          ..where((t) =>
-              t.heroId.equals(heroId) &
-              t.entryType.equals('stat_mod') &
-              t.sourceType.equals('ancestry')))
-        .go();
-    
-    // Also clear legacy hero_values for backwards compatibility
-    await _db.upsertHeroValue(
+    await _mutations.removeSourceType(
       heroId: heroId,
-      key: _kAncestryStatMods,
-      textValue: null,
+      sourceType: HeroEntrySourceTypes.ancestry,
+      entryType: HeroEntryTypes.statMod,
+      recomputeAggregates: false,
     );
+
+    // Also clear legacy hero_values for backwards compatibility.
+    await _db.deleteHeroValue(heroId: heroId, key: _kAncestryStatMods);
   }
 
   Future<void> _clearDamageResistanceBonuses(String heroId) async {
     // Clear ancestry resistance entries via centralized service
-    await _resistanceService.removeResistanceEntriesBySourceType(
+    await _mutations.removeSourceType(
       heroId: heroId,
-      sourceType: 'ancestry',
+      sourceType: HeroEntrySourceTypes.ancestry,
+      entryType: HeroEntryTypes.resistance,
+      recomputeAggregates: false,
     );
     // Rebuild from remaining entries (e.g., complication)
-    await _resistanceService.recomputeAggregateResistances(heroId);
+    await _mutations.recomputeAggregates(heroId);
   }
+
+  Future<void> _clearAncestryGrantEntries(String heroId) async {
+    for (final entryType in const [
+      HeroEntryTypes.ability,
+      HeroEntryTypes.skill,
+      HeroEntryTypes.conditionImmunity,
+      HeroEntryTypes.statMod,
+      HeroEntryTypes.resistance,
+    ]) {
+      await _mutations.removeSourceType(
+        heroId: heroId,
+        sourceType: HeroEntrySourceTypes.ancestry,
+        entryType: entryType,
+        recomputeAggregates: false,
+      );
+    }
+
+    await _db.deleteHeroValue(heroId: heroId, key: _kAncestryStatMods);
+    await _db.deleteHeroValue(heroId: heroId, key: _kConditionImmunities);
+    await _db.deleteHeroValue(heroId: heroId, key: _kGrantedAbilities);
+  }
+
+  HeroSource _ancestrySource(String sourceId) => HeroSource(
+        sourceType: HeroEntrySourceTypes.ancestry,
+        sourceId: sourceId,
+      );
 
   Future<void> _setAncestryStatMods(
     String heroId,
@@ -578,32 +660,44 @@ class AncestryBonusService {
     for (final entry in statMods.entries) {
       final stat = entry.key.toLowerCase();
       final mods = entry.value;
-      
+
       if (mods.isEmpty) continue;
-      
-      await _entries.addEntry(
+
+      await _mutations.addStatMod(
         heroId: heroId,
-        entryType: 'stat_mod',
-        entryId: stat,
-        sourceType: 'ancestry',
-        sourceId: 'ancestry_grant',
-        gainedBy: 'grant',
-        payload: {
-          'mods': mods.map((m) => m.toJson()).toList(),
-        },
+        source: _ancestrySource('ancestry_grant'),
+        stat: stat,
+        modifications: mods,
       );
     }
   }
 
   /// Load ancestry stat modifications with sources for a hero.
   Future<HeroStatModifications> loadAncestryStatMods(String heroId) async {
+    final entries = await _entries.listEntriesByType(
+      heroId,
+      HeroEntryTypes.statMod,
+    );
+    final ancestryEntries = entries
+        .where((entry) => entry.sourceType == HeroEntrySourceTypes.ancestry)
+        .toList();
+    final entryMods = statModificationsFromEntries(ancestryEntries);
+    if (entryMods.modifications.isNotEmpty) return entryMods;
+
+    return _loadLegacyAncestryStatMods(heroId);
+  }
+
+  Future<HeroStatModifications> _loadLegacyAncestryStatMods(
+    String heroId,
+  ) async {
     final values = await _db.getHeroValues(heroId);
-    final modsValue = values.firstWhereOrNull((v) => v.key == _kAncestryStatMods);
-    
+    final modsValue =
+        values.firstWhereOrNull((v) => v.key == _kAncestryStatMods);
+
     if (modsValue?.jsonValue == null && modsValue?.textValue == null) {
       return const HeroStatModifications.empty();
     }
-    
+
     try {
       final jsonStr = modsValue!.jsonValue ?? modsValue.textValue!;
       return HeroStatModifications.fromJsonString(jsonStr);
@@ -614,24 +708,23 @@ class AncestryBonusService {
 
   /// Watch ancestry stat modifications - automatically updates when values change.
   Stream<HeroStatModifications> watchAncestryStatMods(String heroId) {
-    return _db.watchHeroValues(heroId).map((values) {
-      final modsValue = values.firstWhereOrNull((v) => v.key == _kAncestryStatMods);
-      if (modsValue?.jsonValue == null && modsValue?.textValue == null) {
-        return const HeroStatModifications.empty();
-      }
-      try {
-        final jsonStr = modsValue!.jsonValue ?? modsValue.textValue!;
-        return HeroStatModifications.fromJsonString(jsonStr);
-      } catch (_) {
-        return const HeroStatModifications.empty();
-      }
+    return _entries
+        .watchEntriesByType(heroId, HeroEntryTypes.statMod)
+        .asyncMap((entries) async {
+      final ancestryEntries = entries
+          .where((entry) => entry.sourceType == HeroEntrySourceTypes.ancestry)
+          .toList();
+      final entryMods = statModificationsFromEntries(ancestryEntries);
+      if (entryMods.modifications.isNotEmpty) return entryMods;
+
+      return _loadLegacyAncestryStatMods(heroId);
     });
   }
 
   Future<void> _setBaseStat(String heroId, String stat, int value) async {
     final key = _statToKey(stat);
     if (key == null) return;
-    
+
     await _db.upsertHeroValue(
       heroId: heroId,
       key: key,
@@ -648,14 +741,14 @@ class AncestryBonusService {
   ) async {
     final sizeValue = values.firstWhereOrNull((v) => v.key == 'stats.size');
     final currentSize = sizeValue?.textValue ?? '1M';
-    
+
     // Parse both sizes to compare numeric portions
     final currentParsed = _parseSizeString(currentSize);
     final newParsed = _parseSizeString(newSize);
-    
+
     // Compare: larger number wins; if equal, category order is T < S < M < L
     final shouldUpdate = _compareSizes(newParsed, currentParsed) > 0;
-    
+
     if (shouldUpdate) {
       await _db.upsertHeroValue(
         heroId: heroId,
@@ -668,13 +761,13 @@ class AncestryBonusService {
   /// Parse a size string (e.g., "1M", "2") into number and category.
   ({int number, String category}) _parseSizeString(String size) {
     if (size.isEmpty) return (number: 1, category: 'M');
-    
+
     final lastChar = size[size.length - 1].toUpperCase();
     if ('TSML'.contains(lastChar)) {
       final numPart = size.substring(0, size.length - 1);
       return (number: int.tryParse(numPart) ?? 1, category: lastChar);
     }
-    
+
     return (number: int.tryParse(size) ?? 1, category: '');
   }
 
@@ -684,7 +777,7 @@ class AncestryBonusService {
     ({int number, String category}) b,
   ) {
     if (a.number != b.number) return a.number - b.number;
-    
+
     // Category order: T < S < M < L < '' (empty means size >= 2)
     const order = ['T', 'S', 'M', 'L', ''];
     final aIdx = order.indexOf(a.category);
@@ -695,7 +788,7 @@ class AncestryBonusService {
   int _getStatValue(List<db.HeroValue> values, String stat) {
     final key = _statToKey(stat);
     if (key == null) return 0;
-    
+
     final value = values.firstWhereOrNull((v) => v.key == key);
     return value?.value ?? 0;
   }
@@ -729,14 +822,25 @@ class AncestryBonusService {
   }
 
   // Storage keys
-  static const _kAncestryBonuses = 'ancestry.applied_bonuses';
+  static const _kAncestryBonuses = HeroConfigKeys.ancestryAppliedBonuses;
   static const _kAncestryStatMods = 'ancestry.stat_mods';
   static const _kConditionImmunities = 'ancestry.condition_immunities';
   static const _kGrantedAbilities = 'ancestry.granted_abilities';
 }
 
 /// Load condition immunities from ancestry
-Future<List<String>> loadConditionImmunities(db.AppDatabase db, String heroId) async {
+Future<List<String>> loadConditionImmunities(
+    db.AppDatabase db, String heroId) async {
+  final entries = await (db.select(db.heroEntries)
+        ..where((entry) =>
+            entry.heroId.equals(heroId) &
+            entry.entryType.equals(HeroEntryTypes.conditionImmunity) &
+            entry.sourceType.equals(HeroEntrySourceTypes.ancestry)))
+      .get();
+  if (entries.isNotEmpty) {
+    return entries.map((entry) => entry.entryId).toList();
+  }
+
   final values = await db.getHeroValues(heroId);
   final value = values.firstWhereOrNull(
     (v) => v.key == AncestryBonusService._kConditionImmunities,
@@ -754,7 +858,20 @@ Future<List<String>> loadConditionImmunities(db.AppDatabase db, String heroId) a
 }
 
 /// Load granted abilities from ancestry
-Future<Map<String, String>> loadGrantedAbilities(db.AppDatabase db, String heroId) async {
+Future<Map<String, String>> loadGrantedAbilities(
+    db.AppDatabase db, String heroId) async {
+  final entries = await (db.select(db.heroEntries)
+        ..where((entry) =>
+            entry.heroId.equals(heroId) &
+            entry.entryType.equals(HeroEntryTypes.ability) &
+            entry.sourceType.equals(HeroEntrySourceTypes.ancestry)))
+      .get();
+  if (entries.isNotEmpty) {
+    return {
+      for (final entry in entries) entry.entryId: entry.sourceId,
+    };
+  }
+
   final values = await db.getHeroValues(heroId);
   final value = values.firstWhereOrNull(
     (v) => v.key == AncestryBonusService._kGrantedAbilities,
@@ -772,7 +889,22 @@ Future<Map<String, String>> loadGrantedAbilities(db.AppDatabase db, String heroI
 }
 
 /// Load ancestry stat modifications
-Future<Map<String, int>> loadAncestryStatMods(db.AppDatabase db, String heroId) async {
+Future<Map<String, int>> loadAncestryStatMods(
+    db.AppDatabase db, String heroId) async {
+  final entries = await (db.select(db.heroEntries)
+        ..where((entry) =>
+            entry.heroId.equals(heroId) &
+            entry.entryType.equals(HeroEntryTypes.statMod) &
+            entry.sourceType.equals(HeroEntrySourceTypes.ancestry)))
+      .get();
+  final entryMods = statModificationsFromEntries(entries);
+  if (entryMods.modifications.isNotEmpty) {
+    return {
+      for (final entry in entryMods.modifications.entries)
+        entry.key: entry.value.fold<int>(0, (sum, mod) => sum + mod.baseValue),
+    };
+  }
+
   final values = await db.getHeroValues(heroId);
   final value = values.firstWhereOrNull(
     (v) => v.key == AncestryBonusService._kAncestryStatMods,
@@ -791,5 +923,6 @@ Future<Map<String, int>> loadAncestryStatMods(db.AppDatabase db, String heroId) 
 
 final ancestryBonusServiceProvider = Provider<AncestryBonusService>((ref) {
   final database = ref.read(appDatabaseProvider);
-  return AncestryBonusService(database);
+  final mutations = ref.read(heroMutationServiceProvider);
+  return AncestryBonusService(database, mutations: mutations);
 });

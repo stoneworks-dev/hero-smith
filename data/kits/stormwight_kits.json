@@ -18,8 +18,12 @@
       {
         "description": "Each stormwight kit is associated with a primordial storm, which channels a specific damage type used by some of your abilities."
       },
-      { "storm_type": "Blizzard" },
-      { "damage_type": "Cold" }
+      {
+        "storm_type": "Blizzard"
+      },
+      {
+        "damage_type": "Cold"
+      }
     ],
     "equipment_description": "You wear no armor and wield only your unarmed strikes—which become devastating natural weapons as your ferocity grows.",
     "equipment": {
@@ -41,32 +45,33 @@
         "whip": false
       }
     },
-    "stamina_bonus": 9,
-    "speed_bonus": null,
-    "stability_bonus": 2,
-    "melee_damage_bonus": {
-      "1st_tier": 0,
-      "2nd_tier": 0,
-      "3rd_tier": 4
-    },
-    "ranged_damage_bonus": {
-      "1st_tier": 2,
-      "2nd_tier": 2,
-      "3rd_tier": 2
-    },
-    "melee_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "ranged_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "disengage_bonus": 1,
-    "signature_ability": ["Bear Claws", "Aspect of the Wild"],
-    "feature": "Boren Growing Ferocity"
+    "signature_ability": [
+      "Bear Claws",
+      "Aspect of the Wild"
+    ],
+    "feature": "Boren Growing Ferocity",
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "bonuses": {
+          "stamina": 9,
+          "stability": 2,
+          "disengage": 1
+        },
+        "tiered_bonuses": {
+          "melee_damage": {
+            "1st_tier": 0,
+            "2nd_tier": 0,
+            "3rd_tier": 4
+          },
+          "ranged_damage": {
+            "1st_tier": 2,
+            "2nd_tier": 2,
+            "3rd_tier": 2
+          }
+        }
+      }
+    ]
   },
   {
     "id": "kit_corven",
@@ -87,8 +92,12 @@
       {
         "description": "Each stormwight kit is associated with a primordial storm, which channels a specific damage type used by some of your abilities."
       },
-      { "storm_type": "Anabatic Wind" },
-      { "damage_type": "Fire" }
+      {
+        "storm_type": "Anabatic Wind"
+      },
+      {
+        "damage_type": "Fire"
+      }
     ],
     "equipment_description": "You wear no armor and wield only your unarmed strikes—which become devastating natural weapons as your ferocity grows.",
     "equipment": {
@@ -110,32 +119,33 @@
         "whip": false
       }
     },
-    "stamina_bonus": 3,
-    "speed_bonus": 3,
-    "stability_bonus": null,
-    "melee_damage_bonus": {
-      "1st_tier": 2,
-      "2nd_tier": 2,
-      "3rd_tier": 2
-    },
-    "ranged_damage_bonus": {
-      "1st_tier": 2,
-      "2nd_tier": 2,
-      "3rd_tier": 2
-    },
-    "melee_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "ranged_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "disengage_bonus": 1,
-    "signature_ability": ["Wing Buffet", "Aspect of the Wild"],
-    "feature": "Corven Growing Ferocity"
+    "signature_ability": [
+      "Wing Buffet",
+      "Aspect of the Wild"
+    ],
+    "feature": "Corven Growing Ferocity",
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "bonuses": {
+          "stamina": 3,
+          "speed": 3,
+          "disengage": 1
+        },
+        "tiered_bonuses": {
+          "melee_damage": {
+            "1st_tier": 2,
+            "2nd_tier": 2,
+            "3rd_tier": 2
+          },
+          "ranged_damage": {
+            "1st_tier": 2,
+            "2nd_tier": 2,
+            "3rd_tier": 2
+          }
+        }
+      }
+    ]
   },
   {
     "id": "kit_raden",
@@ -156,8 +166,12 @@
       {
         "description": "Each stormwight kit is associated with a primordial storm, which channels a specific damage type used by some of your abilities."
       },
-      { "storm_type": "Rat Flood" },
-      { "damage_type": "Corruption" }
+      {
+        "storm_type": "Rat Flood"
+      },
+      {
+        "damage_type": "Corruption"
+      }
     ],
     "equipment_description": "You wear no armor and wield only your unarmed strikes—which become devastating natural weapons as your ferocity grows.",
     "equipment": {
@@ -179,32 +193,33 @@
         "whip": false
       }
     },
-    "stamina_bonus": 3,
-    "speed_bonus": 3,
-    "stability_bonus": null,
-    "melee_damage_bonus": {
-      "1st_tier": 2,
-      "2nd_tier": 2,
-      "3rd_tier": 2
-    },
-    "ranged_damage_bonus": {
-      "1st_tier": 2,
-      "2nd_tier": 2,
-      "3rd_tier": 2
-    },
-    "melee_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "ranged_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "disengage_bonus": 1,
-    "signature_ability": ["Driving Pounce", "Aspect of the Wild"],
-    "feature": "Raden Growing Ferocity"
+    "signature_ability": [
+      "Driving Pounce",
+      "Aspect of the Wild"
+    ],
+    "feature": "Raden Growing Ferocity",
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "bonuses": {
+          "stamina": 3,
+          "speed": 3,
+          "disengage": 1
+        },
+        "tiered_bonuses": {
+          "melee_damage": {
+            "1st_tier": 2,
+            "2nd_tier": 2,
+            "3rd_tier": 2
+          },
+          "ranged_damage": {
+            "1st_tier": 2,
+            "2nd_tier": 2,
+            "3rd_tier": 2
+          }
+        }
+      }
+    ]
   },
   {
     "id": "kit_vulken",
@@ -225,8 +240,12 @@
       {
         "description": "Each stormwight kit is associated with a primordial storm, which channels a specific damage type used by some of your abilities."
       },
-      { "storm_type": "Lightning Storm" },
-      { "damage_type": "Lightning" }
+      {
+        "storm_type": "Lightning Storm"
+      },
+      {
+        "damage_type": "Lightning"
+      }
     ],
     "equipment_description": "You wear no armor and wield only your unarmed strikes—which become devastating natural weapons as your ferocity grows.",
     "equipment": {
@@ -248,31 +267,32 @@
         "whip": false
       }
     },
-    "stamina_bonus": 9,
-    "speed_bonus": 2,
-    "stability_bonus": null,
-    "melee_damage_bonus": {
-      "1st_tier": 2,
-      "2nd_tier": 2,
-      "3rd_tier": 2
-    },
-    "ranged_damage_bonus": {
-      "1st_tier": 2,
-      "2nd_tier": 2,
-      "3rd_tier": 2
-    },
-    "melee_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "ranged_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "disengage_bonus": 1,
-    "signature_ability": ["Unbalancing Attack", "Aspect of the Wild"],
-    "feature": "Vulken Growing Ferocity"
+    "signature_ability": [
+      "Unbalancing Attack",
+      "Aspect of the Wild"
+    ],
+    "feature": "Vulken Growing Ferocity",
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "bonuses": {
+          "stamina": 9,
+          "speed": 2,
+          "disengage": 1
+        },
+        "tiered_bonuses": {
+          "melee_damage": {
+            "1st_tier": 2,
+            "2nd_tier": 2,
+            "3rd_tier": 2
+          },
+          "ranged_damage": {
+            "1st_tier": 2,
+            "2nd_tier": 2,
+            "3rd_tier": 2
+          }
+        }
+      }
+    ]
   }
 ]

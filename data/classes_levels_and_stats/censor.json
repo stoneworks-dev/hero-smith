@@ -22,9 +22,11 @@
     },
 
     "starting_skills": {
-      "skill_groups": ["Interpersonal", "Lore"],
-      "skill_count": 2,
-      "quick_build": ["Intimidate", "Religion"]
+      "granted_skills": [],
+      "quick_build": ["Intimidate", "Religion"],
+      "allowances": [
+        { "count": 2, "groups": ["interpersonal", "lore"] }
+      ]
     },
     "fixed_starting_characteristics": {
       "might": 2,
@@ -78,10 +80,12 @@
           "type": "subclass"
         }
       ],
-      "perks": {
-        "count": 1,
-        "perk_groups": ["interpersonal", "lore", "supernatural"]
-      },
+      "perks": [
+        {
+          "count": 1,
+          "perk_groups": ["interpersonal", "lore", "supernatural"]
+        }
+      ],
 
       "new_subclass_abilities": {
         "5_cost": 1

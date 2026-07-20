@@ -10,7 +10,6 @@
   { "id": "language_vaniric", "type": "language", "language_type": "human", "name": "Vaniric", "region": "Vanigar" },
   { "id": "language_vaslorian", "type": "language", "language_type": "human", "name": "Vaslorian", "region": "Vasloria" },
   { "id": "language_korthite", "type": "language", "language_type": "human", "name": "Korthite", "region": "The Korth borderlands" },
-  { "id": "language_court_speech", "type": "language", "language_type": "human", "name": "Court Speech", "region": "Talania" },
 
   { "id": "language_anjali", "type": "language", "language_type": "ancestral", "name": "Anjali", "ancestry": "Devils, hobgoblins", "common_topics": ["contract law"] },
   { "id": "language_axiomatic", "type": "language", "language_type": "ancestral", "name": "Axiomatic", "ancestry": "Memenok", "common_topics": ["trade"] },

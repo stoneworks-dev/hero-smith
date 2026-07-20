@@ -20,7 +20,7 @@ class ComplicationCard extends StatelessWidget {
     final name = complication.name;
     final description = data['description'] as String? ?? '';
     final effects = data['effects'] as Map<String, dynamic>?;
-    final grants = data['grants'] as Map<String, dynamic>?;
+    final grants = data['grants'];
 
     return ExpandableCard(
       title: name,
@@ -55,7 +55,7 @@ class ComplicationCard extends StatelessWidget {
             ),
             const SizedBox(height: 16),
           ],
-          if (showGrants && grants != null && grants.isNotEmpty) ...[
+          if (showGrants && _hasGrantContent(grants)) ...[
             _buildSection(
               context,
               '${theme.complicationSectionEmoji['grants']} Grants',
@@ -196,11 +196,41 @@ class ComplicationCard extends StatelessWidget {
     );
   }
 
-  Widget _buildGrantsContent(
-      BuildContext context, Map<String, dynamic> grants) {
+  bool _hasGrantContent(Object? grants) {
+    if (grants is List) return grants.isNotEmpty;
+    if (grants is Map) return grants.isNotEmpty;
+    return false;
+  }
+
+  Widget _buildGrantsContent(BuildContext context, Object? grants) {
     final List<Widget> grantWidgets = [];
 
-    grants.forEach((key, value) {
+    final canonicalGrants = _canonicalGrantList(grants);
+    if (canonicalGrants != null) {
+      for (final grant in canonicalGrants) {
+        if (grant is Map) {
+          final displayText = _formatCanonicalGrant(
+            grant.cast<String, dynamic>(),
+          );
+          if (displayText != null) {
+            grantWidgets.add(_buildGrantItem(displayText));
+          }
+        }
+      }
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: grantWidgets,
+      );
+    }
+
+    if (grants is! Map) {
+      return const SizedBox.shrink();
+    }
+
+    final legacyGrants = grants.cast<String, dynamic>();
+
+    legacyGrants.forEach((key, value) {
       switch (key) {
         case 'treasures':
           if (value is List) {
@@ -225,10 +255,17 @@ class ComplicationCard extends StatelessWidget {
         case 'tokens':
           if (value is Map) {
             final tokenMap = value as Map<String, dynamic>;
-            tokenMap.forEach((tokenType, amount) {
+            if (tokenMap.containsKey('name') && tokenMap.containsKey('count')) {
+              final tokenType = tokenMap['name'];
+              final amount = tokenMap['count'];
               grantWidgets.add(_buildGrantItem(
                   '$amount $tokenType token${amount == 1 ? '' : 's'}'));
-            });
+            } else {
+              tokenMap.forEach((tokenType, amount) {
+                grantWidgets.add(_buildGrantItem(
+                    '$amount $tokenType token${amount == 1 ? '' : 's'}'));
+              });
+            }
           }
           break;
         default:
@@ -241,6 +278,42 @@ class ComplicationCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: grantWidgets,
     );
+  }
+
+  List<Object?>? _canonicalGrantList(Object? grants) {
+    if (grants is List) {
+      final hasCanonicalKind = grants.any(
+        (item) => item is Map && item.containsKey('kind'),
+      );
+      return hasCanonicalKind ? grants.cast<Object?>() : null;
+    }
+    if (grants is Map) {
+      if (grants['schema'] == 'hero_smith.grants.v1' &&
+          grants['grants'] is List) {
+        return (grants['grants'] as List).cast<Object?>();
+      }
+      if (grants.containsKey('kind')) return [grants];
+    }
+    return null;
+  }
+
+  String? _formatCanonicalGrant(Map<String, dynamic> grant) {
+    switch (grant['kind']?.toString()) {
+      case 'entry':
+        final entryType = grant['entry_type']?.toString() ?? 'entry';
+        final payload = grant['payload'];
+        final name = payload is Map ? payload['name']?.toString() : null;
+        final label = grant['label']?.toString();
+        final entryId = grant['entry_id']?.toString();
+        final displayName = name ?? label ?? entryId ?? entryType;
+        return '${entryType.replaceAll('_', ' ')}: $displayName';
+      case 'token':
+        final token = grant['token']?.toString() ?? 'token';
+        final amount = grant['max_value'] ?? grant['count'] ?? grant['value'];
+        return '$amount $token token${amount == 1 ? '' : 's'}';
+      default:
+        return grant['label']?.toString();
+    }
   }
 
   Widget _buildGrantItem(String text) {

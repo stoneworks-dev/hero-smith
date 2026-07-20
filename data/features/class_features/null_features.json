@@ -83,7 +83,14 @@
     "class": "null",
     "level": 1,
     "description": "You project a psionic field of order around your body, dampening the effects of supernatural abilities harmful to you and your allies.",
-    "ability": "Null Field"
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "null-field",
+        "payload": { "name": "Null Field" }
+      }
+    ]
   },
   {
     "id": "feature_null_inertial_shield",
@@ -92,7 +99,14 @@
     "class": "null",
     "level": 1,
     "description": "Your instincts for danger let you predict attacks before they happen.",
-    "ability": "Inertial Shield"
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "inertial-shield",
+        "payload": { "name": "Inertial Shield" }
+      }
+    ]
   },
   {
     "id": "feature_null_null_speed",
@@ -101,7 +115,17 @@
     "class": "null",
     "level": 1,
     "description": "The flow of psionic power through you allows you to achieve high velocity. You gain a bonus to speed and to the number of squares you can shift when you take the Disengage move action equal to your Agility score.",
-    "grants": [{ "speed_bonus": "Agility" }, { "disengage_bonus": "Agility" }]
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "feature_stat_bonus",
+        "entry_id": "feature_null_null_speed_stat_bonus",
+        "payload": {
+          "speed_bonus": "Agility",
+          "disengage_bonus": "Agility"
+        }
+      }
+    ]
   },
   {
     "id": "feature_null_psionic_martial_arts",
@@ -280,7 +304,20 @@
     "class": "null",
     "level": 9,
     "description": "Your Stamina increases by 21 and you can't be made bleeding even while dying. You no longer age or have need of food. Additionally, you can use Intuition instead of another characteristic when resisting potencies.",
-    "grants": [{ "stamina_increase": 21 }, { "condition_immunity": "bleeding" }]
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "feature_stat_bonus",
+        "entry_id": "feature_null_i_am_the_weapon_stat_bonus",
+        "payload": { "stamina_increase": 21 }
+      },
+      {
+        "kind": "entry",
+        "entry_type": "condition_immunity",
+        "entry_id": "immunity_bleeding",
+        "payload": { "condition": "bleeding" }
+      }
+    ]
   },
   {
     "id": "feature_null_discipline_mastery_improvement",

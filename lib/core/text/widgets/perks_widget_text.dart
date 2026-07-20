@@ -9,6 +9,9 @@ class PerksWidgetText {
   static const String removePerk = 'Remove Perk';
   static const String cancel = CommonText.cancel;
   static const String remove = CommonText.remove;
+  static const String perkAlreadyAdded = 'Perk already added';
+  static const String perkOwnedElsewhere =
+      'This perk is granted by another source and cannot be removed here.';
   static const String selectPerk = 'Select Perk';
   static const String choosePerk = 'Choose perk';
   static const String selectLanguage = 'Select Language';

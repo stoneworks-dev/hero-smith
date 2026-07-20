@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/db/providers.dart';
+import '../../core/models/canonical_grant_model.dart';
 import '../../core/models/component.dart';
+import '../../core/storage/hero_storage_contract.dart';
 import '../../core/text/widgets/title_card_text.dart';
 import '../../core/theme/app_icon.dart';
 import '../../core/theme/app_icons.dart';
@@ -20,18 +22,20 @@ class TitleCard extends ConsumerWidget {
     final int echelon = (data['echelon'] as num?)?.toInt() ?? 0;
     final String? prerequisite = data['prerequisite'] as String?;
     final String? description = data['description_text'] as String?;
-  final List<dynamic>? benefits = data['benefits'] as List<dynamic>?;
+    final List<dynamic>? benefits = data['benefits'] as List<dynamic>?;
     final String? special = data['special'] as String?;
 
-  final ds = DsTheme.of(context);
-  final scheme = Theme.of(context).colorScheme;
-  final borderColor = ds.titleEchelonBorder[echelon] ?? ds.titleEchelonBorder[0]!;
-  final neutralText = scheme.onSurface.withOpacity(0.9);
+    final ds = DsTheme.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final borderColor =
+        ds.titleEchelonBorder[echelon] ?? ds.titleEchelonBorder[0]!;
+    final neutralText = scheme.onSurface.withOpacity(0.9);
 
     return ExpandableCard(
       title: titleComp.name,
       borderColor: borderColor,
-      leading: AppIcon(TitleIcons.fromEchelon(echelon), color: borderColor, size: 20),
+      leading: AppIcon(TitleIcons.fromEchelon(echelon),
+          color: borderColor, size: 20),
       badge: Container(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
         decoration: BoxDecoration(
@@ -42,7 +46,8 @@ class TitleCard extends ConsumerWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            AppIcon(TitleIcons.fromEchelon(echelon), color: borderColor.withOpacity(0.8), size: 14),
+            AppIcon(TitleIcons.fromEchelon(echelon),
+                color: borderColor.withOpacity(0.8), size: 14),
             const SizedBox(width: 4),
             Text(
               echelon > 0 ? 'E$echelon' : 'E?',
@@ -60,22 +65,26 @@ class TitleCard extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (prerequisite != null && prerequisite.isNotEmpty) ...[
-            SectionLabel('Prerequisite', icon: TitleIcons.prerequisite, color: borderColor),
+            SectionLabel('Prerequisite',
+                icon: TitleIcons.prerequisite, color: borderColor),
             const SizedBox(height: 2),
             _buildIndentedText(prerequisite, neutralText),
           ],
           if (description != null && description.isNotEmpty) ...[
-            SectionLabel('Description', icon: TitleIcons.description, color: borderColor),
+            SectionLabel('Description',
+                icon: TitleIcons.description, color: borderColor),
             const SizedBox(height: 2),
             _buildIndentedText(description, neutralText),
           ],
           if (benefits != null && benefits.isNotEmpty) ...[
-            SectionLabel('Benefits', icon: TitleIcons.benefits, color: borderColor),
+            SectionLabel('Benefits',
+                icon: TitleIcons.benefits, color: borderColor),
             const SizedBox(height: 2),
             _buildBenefits(benefits, neutralText, ref, borderColor),
           ],
           if (special != null && special.isNotEmpty) ...[
-            SectionLabel('Special', icon: TitleIcons.special, color: ds.specialSectionColor),
+            SectionLabel('Special',
+                icon: TitleIcons.special, color: ds.specialSectionColor),
             const SizedBox(height: 2),
             _buildIndentedText(special, neutralText),
           ],
@@ -108,9 +117,11 @@ class TitleCard extends ConsumerWidget {
   }
 
   // Minimal chips-style: render each benefit as an icon + text row
-  Widget _buildBenefits(List<dynamic> benefits, Color textColor, WidgetRef ref, Color accentColor) {
+  Widget _buildBenefits(List<dynamic> benefits, Color textColor, WidgetRef ref,
+      Color accentColor) {
     if (benefits.isEmpty) {
-      return _buildInfoRow(Icons.card_giftcard_outlined, 'No listed benefits', textColor);
+      return _buildInfoRow(
+          Icons.card_giftcard_outlined, 'No listed benefits', textColor);
     }
     return Padding(
       padding: const EdgeInsets.only(left: 16),
@@ -123,16 +134,20 @@ class TitleCard extends ConsumerWidget {
       ),
     );
   }
-  
-  Widget _buildBenefitWidget(dynamic b, Color textColor, WidgetRef ref, Color accentColor) {
+
+  Widget _buildBenefitWidget(
+      dynamic b, Color textColor, WidgetRef ref, Color accentColor) {
     if (b is String) {
       return _buildBulletRow(b, textColor);
     }
     if (b is Map) {
       final ability = b['ability'];
       final name = b['name'] as String? ?? '';
-      final description = b['description'] as String? ?? b['desc'] as String? ?? b['text'] as String? ?? '';
-      
+      final description = b['description'] as String? ??
+          b['desc'] as String? ??
+          b['text'] as String? ??
+          '';
+
       // If there's an ability, show expanded ability card
       if (ability is String && ability.trim().isNotEmpty) {
         return Column(
@@ -158,7 +173,7 @@ class TitleCard extends ConsumerWidget {
           ],
         );
       }
-      
+
       // No ability - just show text
       final formatted = _formatBenefit(b);
       if (formatted.isNotEmpty) {
@@ -167,10 +182,11 @@ class TitleCard extends ConsumerWidget {
     }
     return const SizedBox.shrink();
   }
-  
-  Widget _buildAbilityLookup(String abilityName, WidgetRef ref, Color textColor, Color accentColor) {
+
+  Widget _buildAbilityLookup(
+      String abilityName, WidgetRef ref, Color textColor, Color accentColor) {
     final abilityAsync = ref.watch(abilityByNameProvider(abilityName));
-    
+
     return abilityAsync.when(
       data: (ability) {
         if (ability == null) {
@@ -178,7 +194,8 @@ class TitleCard extends ConsumerWidget {
             padding: const EdgeInsets.only(left: 8),
             child: Text(
               '⚔️ Ability: $abilityName',
-              style: TextStyle(fontSize: 11, color: textColor, fontStyle: FontStyle.italic),
+              style: TextStyle(
+                  fontSize: 11, color: textColor, fontStyle: FontStyle.italic),
             ),
           );
         }
@@ -194,10 +211,12 @@ class TitleCard extends ConsumerWidget {
             SizedBox(
               width: 12,
               height: 12,
-              child: CircularProgressIndicator(strokeWidth: 1.5, color: accentColor),
+              child: CircularProgressIndicator(
+                  strokeWidth: 1.5, color: accentColor),
             ),
             const SizedBox(width: 8),
-            Text(TitleCardText.loadingAbility(abilityName), style: TextStyle(fontSize: 10, color: textColor)),
+            Text(TitleCardText.loadingAbility(abilityName),
+                style: TextStyle(fontSize: 10, color: textColor)),
           ],
         ),
       ),
@@ -205,7 +224,8 @@ class TitleCard extends ConsumerWidget {
         padding: const EdgeInsets.only(left: 8),
         child: Text(
           '⚔️ Ability: $abilityName',
-          style: TextStyle(fontSize: 11, color: textColor, fontStyle: FontStyle.italic),
+          style: TextStyle(
+              fontSize: 11, color: textColor, fontStyle: FontStyle.italic),
         ),
       ),
     );
@@ -227,11 +247,12 @@ class TitleCard extends ConsumerWidget {
       if (grants is List) {
         final grantParts = <String>[];
         for (final g in grants) {
-          if (g is Map) {
-            final type = g['type'];
-            final value = g['value'] ?? g['count'];
+          final grant = _legacyTitleGrantView(g);
+          if (grant != null) {
+            final type = grant['type'];
+            final value = grant['value'] ?? grant['count'];
             String spec = '';
-            final specific = g['specific'];
+            final specific = grant['specific'];
             if (specific is List && specific.isNotEmpty) {
               spec = ' (${specific.join(', ')})';
             }
@@ -260,6 +281,95 @@ class TitleCard extends ConsumerWidget {
     }
     // Unknown type fallback
     return b.toString();
+  }
+
+  Map<String, dynamic>? _legacyTitleGrantView(dynamic rawGrant) {
+    if (rawGrant is! Map) return null;
+    final grantMap = rawGrant.cast<String, dynamic>();
+    if (!grantMap.containsKey('kind')) return grantMap;
+
+    try {
+      final grant = CanonicalGrant.fromJson(grantMap);
+      switch (grant) {
+        case CanonicalChoiceGrant():
+          return switch (grant.choiceType) {
+            'characteristic' => {
+                'type': 'characteristic_increase',
+                'value': _payloadInt(grant, 'value') ?? 1,
+              },
+            'ancestry_trait' => {
+                'type': 'ancestry_points',
+                'value': _payloadInt(grant, 'points') ?? grant.count,
+              },
+            'skill' => {
+                'type': 'skill_choice',
+                'count': grant.count,
+              },
+            'language' => {
+                'type': 'languages',
+                'count': grant.count,
+              },
+            'ability' => {
+                'type': 'heroic_ability_choice',
+                'count': grant.count,
+              },
+            'damage_type' => {
+                'type': 'damage_immunity',
+                'count': grant.count,
+              },
+            _ => null,
+          };
+
+        case CanonicalEntryGrant():
+          return switch (grant.entryType) {
+            HeroEntryTypes.conditionImmunity => {
+                'type': 'condition_immunity',
+                'specific': [grant.entryId],
+              },
+            HeroEntryTypes.itemPrerequisite => {
+                'type': 'item_prerequisite',
+                'count': grant.payload?['count'] ?? 1,
+              },
+            HeroEntryTypes.skill => {
+                'type': 'skill_choice',
+                'specific': [grant.entryId],
+                'count': grant.payload?['count'] ?? 1,
+              },
+            HeroEntryTypes.language => {
+                'type': 'languages',
+                'specific': [grant.entryId],
+                'count': grant.payload?['count'] ?? 1,
+              },
+            _ => null,
+          };
+
+        case CanonicalStatModGrant():
+          return {
+            'type': grant.entryId ?? grant.stat,
+            if (grant.modifications.isNotEmpty)
+              'value': grant.modifications.first.baseValue,
+          };
+
+        case CanonicalResistanceGrant():
+          return {
+            'type': 'damage_immunity',
+            'value': grant.immunity,
+          };
+
+        case CanonicalTokenGrant():
+        case CanonicalTreasureGrant():
+        case CanonicalEquipmentBonusesGrant():
+          return null;
+      }
+    } catch (_) {
+      return grantMap;
+    }
+  }
+
+  int? _payloadInt(CanonicalChoiceGrant grant, String key) {
+    final value = grant.payload?[key];
+    if (value is num) return value.toInt();
+    return int.tryParse(value?.toString() ?? '');
   }
 
   // Removed local section label; using SectionLabel

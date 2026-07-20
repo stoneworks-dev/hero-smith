@@ -69,7 +69,14 @@
     "class": "elementalist",
     "level": 1,
     "description": "You have the following ability.",
-    "ability": "Practical Magic"
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "practical-magic",
+        "payload": { "name": "Practical Magic" }
+      }
+    ]
   },
 
   {
@@ -84,13 +91,19 @@
         "name": "Motivate Earth",
         "subclass_name": "Earth",
         "description": "You have the following ability.",
-        "ability": "Motivate Earth"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "motivate-earth",
+        "payload": { "name": "Motivate Earth" }
       },
       {
         "name": "Return to Formlessness",
         "subclass_name": "Fire",
         "description": "You have the following ability.",
-        "ability": "Return to Formlessness"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "return-to-formlessness",
+        "payload": { "name": "Return to Formlessness" }
       },
 
       {
@@ -102,7 +115,10 @@
         "name": "A Beyonding of Vision",
         "subclass_name": "Void",
         "description": "You instantly recognize illusions for what they are, you can see invisible creatures, and supernatural effects can't conceal creatures and objects from you. Additionally, you always know if an area or object you observe is magical or affected by magic, and you know the specifics of what that magic can do.\n\nYou also gain the following ability.",
-        "ability": "Shared Void Sense"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "shared-void-sense",
+        "payload": { "name": "Shared Void Sense" }
       }
     ]
   },
@@ -117,19 +133,31 @@
     "grants": [
       {
         "subclass_name": "Earth",
-        "ability": "Skin Like Castle Walls"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "skin-like-castle-walls",
+        "payload": { "name": "Skin Like Castle Walls" }
       },
       {
         "subclass_name": "Fire",
-        "ability": "Explosive Assistance"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "explosive-assistance",
+        "payload": { "name": "Explosive Assistance" }
       },
       {
         "subclass_name": "Green",
-        "ability": "Breath of Dawn Remembered"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "breath-of-dawn-remembered",
+        "payload": { "name": "Breath of Dawn Remembered" }
       },
       {
         "subclass_name": "Void",
-        "ability": "Subtle Relocation"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "subtle-relocation",
+        "payload": { "name": "Subtle Relocation" }
       }
     ]
   },
@@ -146,30 +174,33 @@
         "subclass_name": "Earth",
         "name": "Disciple of Earth",
         "description": "Your body is strengthened by your mind's connection to the element of permanence. You have a +6 bonus to Stamina, and you gain an additional +3 bonus to Stamina whenever you gain a level past 2nd.",
-        "stamina_increase": 6,
-        "stamina_per_level_increase": 3
+        "kind": "entry",
+        "entry_type": "feature_stat_bonus",
+        "entry_id": "feature_elementalist_specialization_feature_2_stat_bonus",
+        "payload": {
+          "stamina_increase": 6,
+          "stamina_per_level_increase": {
+            "value": 3,
+            "feature_level": 2
+          }
+        }
       },
       {
         "subclass_name": "Fire",
         "name": "Disciple of Fire",
         "description": "Your connection to fire allows you to protect yourself from it, even as you rip away the protections of others. You have fire immunity equal to 5 plus your level. Additionally, fire damage you deal ignores a target's fire immunity.\n\nAt the start of a combat encounter, you gain a number of surges equal to your Victories. Whenever you spend a surge to deal extra damage, you can make that damage fire damage.",
-        "increase_total": [
-          {
-            "stat": "immunity",
-            "type": "fire",
-            "value": 5
-          },
-          {
-            "stat": "immunity",
-            "type": "fire",
-            "value": "level"
-          }
-        ]
+        "kind": "resistance",
+        "damage_type": "fire",
+        "immunity": 5,
+        "dynamic_immunity": "level"
       },
       {
         "subclass_name": "Void",
         "description": "You have the following ability.",
-        "ability": "There Is No Space Between"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "there-is-no-space-between",
+        "payload": { "name": "There Is No Space Between" }
       },
       {
         "subclass_name": "Green",
@@ -178,7 +209,14 @@
           "type": "table",
           "name": "green_forms.json"
         },
-        "ability": "Disciple of the Green"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "disciple_of_the_green",
+            "payload": { "name": "Disciple of the Green" }
+          }
+        ]
       }
     ]
   },
@@ -194,7 +232,10 @@
       {
         "subclass_name": "Earth",
         "description": "You have the following ability.",
-        "ability": "Earth Accepts Me"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "earth-accepts-me",
+        "payload": { "name": "Earth Accepts Me" }
       },
       {
         "subclass_name": "Fire",
@@ -204,7 +245,10 @@
       {
         "subclass_name": "Green",
         "description": "You have the following ability.",
-        "ability": "Remember Growth and Sun and Rain"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "remember-growth-and-sun-and-rain",
+        "payload": { "name": "Remember Growth and Sun and Rain" }
       },
       {
         "subclass_name": "Void",
@@ -335,7 +379,10 @@
         "subclass_name": "Earth",
         "name": "Summon Source of Earth",
         "description": "**Source of Earth**\n\n|       Elemental       |            -             |       Level 8       |          BRUTE          |          EV -          |\n| :-------------------: | :----------------------: | :-----------------: | :---------------------: | :--------------------: |\n|    **2**<br/> Size    |     **6**<br/> Speed     | **45**<br/> Stamina |  **5**<br/> Stability   | **5**<br/> Free Strike |\n| **-**<br/> Immunities | **Burrow**<br/> Movement |                     | **-**<br/> With Captain | **-**<br/> Weaknesses  |\n|   **+3**<br/> Might   |   **+1**<br/> Agility    | **-5**<br/> Reason  |  **-5**<br/> Intuition  |  **-3**<br/> Presence  |",
-        "ability": "Summon Source of Earth"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "summon-source-of-earth",
+        "payload": { "name": "Summon Source of Earth" }
       }
     ]
   },

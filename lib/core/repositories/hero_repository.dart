@@ -7,47 +7,59 @@ import '../db/app_database.dart' as db;
 import '../models/dynamic_modifier_model.dart';
 import '../models/hero_model.dart';
 import '../models/hero_mod_keys.dart';
+import '../models/hero_mutation_model.dart';
 import '../models/stat_modification_model.dart';
+import '../services/hero_mutation_service.dart';
 import '../services/treasure_bonus_service.dart';
+import '../storage/hero_storage_contract.dart';
 import 'hero_entry_repository.dart';
 
 /// All valid sizes in order: 1T, 1S, 1M, 1L, 2, 3, 4, 5
 /// Each step is +1/-1 from the previous
-const List<String> _sizeProgression = ['1T', '1S', '1M', '1L', '2', '3', '4', '5'];
+const List<String> _sizeProgression = [
+  '1T',
+  '1S',
+  '1M',
+  '1L',
+  '2',
+  '3',
+  '4',
+  '5'
+];
 
 /// Represents the parsed components of a size string (e.g., "1M" -> number: 1, category: "M")
 class SizeParts {
   final int number;
   final String category; // T, S, M, L, or empty for sizes >= 2
-  
+
   const SizeParts(this.number, this.category);
-  
+
   @override
   String toString() => number >= 2 ? number.toString() : '$number$category';
-  
+
   /// Get the index in the size progression (0-7)
   int get progressionIndex {
     final sizeStr = toString();
     final idx = _sizeProgression.indexOf(sizeStr);
     return idx >= 0 ? idx : 2; // Default to 1M (index 2) if not found
   }
-  
+
   /// Create SizeParts from a progression index
   static SizeParts fromIndex(int index) {
     final clampedIndex = index.clamp(0, _sizeProgression.length - 1);
     return _parseSize(_sizeProgression[clampedIndex]);
   }
-  
+
   /// Parse a size string into SizeParts
   static SizeParts _parseSize(String size) {
     if (size.isEmpty) return const SizeParts(1, 'M');
-    
+
     final lastChar = size[size.length - 1].toUpperCase();
     if ('TSML'.contains(lastChar)) {
       final numPart = size.substring(0, size.length - 1);
       return SizeParts(int.tryParse(numPart) ?? 1, lastChar);
     }
-    
+
     // No category letter, just a number (e.g., "2", "3")
     return SizeParts(int.tryParse(size) ?? 2, '');
   }
@@ -64,6 +76,14 @@ class HeroSummary {
   final String? complicationName;
   final String? heroicResourceName;
 
+  /// Stored portrait image file name (resolved against the portraits dir), or
+  /// `null` when the hero has no portrait.
+  final String? portraitFile;
+
+  /// Portrait focal point in [-1, 1] on each axis (0 = centered).
+  final double portraitAlignX;
+  final double portraitAlignY;
+
   const HeroSummary({
     required this.id,
     required this.name,
@@ -74,7 +94,12 @@ class HeroSummary {
     required this.careerName,
     required this.complicationName,
     required this.heroicResourceName,
+    this.portraitFile,
+    this.portraitAlignX = 0,
+    this.portraitAlignY = 0,
   });
+
+  bool get hasPortrait => portraitFile != null && portraitFile!.isNotEmpty;
 }
 
 class HeroMainStats {
@@ -102,7 +127,8 @@ class HeroMainStats {
 
   final int recoveriesCurrent;
   final int recoveriesMaxBase;
-  final int recoveryValueBonus; // Legacy static bonus (for backward compatibility)
+  final int
+      recoveryValueBonus; // Legacy static bonus (for backward compatibility)
 
   final int surgesCurrent;
 
@@ -116,10 +142,10 @@ class HeroMainStats {
   final Map<String, int> userModifications;
   final Map<String, int> choiceModifications;
   final Map<String, int> equipmentBonuses;
-  
+
   /// All bonuses from equipped treasures (stamina, stability, speed, immunities).
   final EquippedTreasureBonuses treasureBonuses;
-  
+
   /// Dynamic modifiers that recalculate based on current stats
   final DynamicModifierList dynamicModifiers;
 
@@ -191,34 +217,34 @@ class HeroMainStats {
   String get sizeTotal {
     final mod = modValue(HeroModKeys.size);
     if (mod == 0) return sizeBase;
-    
+
     // Parse the base size and get its index in the progression
     final parsed = parseSize(sizeBase);
     final baseIndex = parsed.progressionIndex;
     final newIndex = (baseIndex + mod).clamp(0, _sizeProgression.length - 1);
-    
+
     return _sizeProgression[newIndex];
   }
-  
+
   /// Parse a size string into its numeric and category components
   static SizeParts parseSize(String size) {
     return SizeParts._parseSize(size);
   }
-  
+
   /// Get the progression index for a size string (0 = 1T, 7 = 5)
   static int sizeToIndex(String size) {
     final idx = _sizeProgression.indexOf(size.toUpperCase());
     return idx >= 0 ? idx : 2; // Default to 1M (index 2)
   }
-  
+
   /// Get size string from progression index
   static String indexToSize(int index) {
     return _sizeProgression[index.clamp(0, _sizeProgression.length - 1)];
   }
-  
+
   /// Get the progression index of the total size (for calculations)
   int get sizeIndex => sizeToIndex(sizeTotal);
-  
+
   /// Feature bonuses (from class features, ancestry traits, perks, titles, etc.)
   /// These are calculated from dynamic modifiers and shown separately in UI.
   int get speedFeatureBonus => dynamicBonusFor('speed');
@@ -226,18 +252,27 @@ class HeroMainStats {
   int get stabilityFeatureBonus => dynamicBonusFor('stability');
   int get staminaFeatureBonus => dynamicBonusFor('stamina');
   int get recoveriesFeatureBonus => dynamicBonusFor('recoveries');
-  
+
   /// Treasure bonuses for speed, stability
   int get treasureSpeedBonus => treasureBonuses.speed;
   int get treasureStabilityBonus => treasureBonuses.stability;
   int get treasureStaminaBonus => treasureBonuses.stamina;
-  
+
   /// Treasure immunities (damage type -> immunity value)
   Map<String, int> get treasureImmunities => treasureBonuses.immunities;
 
-  int get speedTotal => speedBase + modValue(HeroModKeys.speed) + speedFeatureBonus + treasureSpeedBonus;
-  int get disengageTotal => disengageBase + modValue(HeroModKeys.disengage) + disengageFeatureBonus;
-  int get stabilityTotal => stabilityBase + modValue(HeroModKeys.stability) + stabilityFeatureBonus + treasureStabilityBonus;
+  int get speedTotal =>
+      speedBase +
+      modValue(HeroModKeys.speed) +
+      speedFeatureBonus +
+      treasureSpeedBonus;
+  int get disengageTotal =>
+      disengageBase + modValue(HeroModKeys.disengage) + disengageFeatureBonus;
+  int get stabilityTotal =>
+      stabilityBase +
+      modValue(HeroModKeys.stability) +
+      stabilityFeatureBonus +
+      treasureStabilityBonus;
 
   /// Total stamina max including all bonuses:
   /// - Base stamina
@@ -245,9 +280,14 @@ class HeroMainStats {
   /// - Feature bonuses (from class features, etc.)
   /// - Treasure bonuses (armor imbuements + equipped treasures with stacking rules)
   int get staminaMaxEffective =>
-      staminaMaxBase + modValue(HeroModKeys.staminaMax) + staminaFeatureBonus + treasureStaminaBonus;
+      staminaMaxBase +
+      modValue(HeroModKeys.staminaMax) +
+      staminaFeatureBonus +
+      treasureStaminaBonus;
   int get recoveriesMaxEffective =>
-      recoveriesMaxBase + modValue(HeroModKeys.recoveriesMax) + recoveriesFeatureBonus;
+      recoveriesMaxBase +
+      modValue(HeroModKeys.recoveriesMax) +
+      recoveriesFeatureBonus;
   int get surgesTotal => surgesCurrent + modValue(HeroModKeys.surges);
 
   /// Create a context for dynamic modifier calculations
@@ -266,13 +306,13 @@ class HeroMainStats {
     if (max <= 0) return 0;
     final base = max ~/ 3;
     if (base <= 0) return 0;
-    
+
     // Calculate dynamic bonus from formulas
     final dynamicBonus = dynamicModifiers.calculateTotal(
       'recovery_value',
       _statsContext,
     );
-    
+
     // Also include legacy static bonus for backward compatibility
     return base + dynamicBonus + recoveryValueBonus;
   }
@@ -289,9 +329,12 @@ class HeroMainStats {
 }
 
 class HeroRepository {
-  HeroRepository(this._db) : _entries = HeroEntryRepository(_db);
+  HeroRepository(this._db)
+      : _entries = HeroEntryRepository(_db),
+        _mutations = HeroMutationService(_db);
   final db.AppDatabase _db;
   final HeroEntryRepository _entries;
+  final HeroMutationService _mutations;
 
   // Keys mapping for HeroValues
   static const _k = _HeroKeys._();
@@ -305,7 +348,8 @@ class HeroRepository {
     await _db.upsertHeroValue(heroId: id, key: _k.disengage, value: 1);
     await _db.upsertHeroValue(heroId: id, key: _k.speed, value: 5);
     await _db.upsertHeroValue(heroId: id, key: _k.stability, value: 0);
-    await _db.upsertHeroValue(heroId: id, key: _k.size, textValue: '1M'); // 1M (Medium)
+    await _db.upsertHeroValue(
+        heroId: id, key: _k.size, textValue: '1M'); // 1M (Medium)
     return id;
   }
 
@@ -313,6 +357,59 @@ class HeroRepository {
   Future<List<db.Heroe>> getAllHeroes() => _db.getAllHeroes();
 
   Future<void> deleteHero(String heroId) => _db.deleteHero(heroId);
+
+  // ===========================================================================
+  // PORTRAIT (device-local image reference)
+  // ===========================================================================
+
+  /// Persist the portrait [fileName] and its focal point for a hero.
+  Future<void> setHeroPortrait(
+    String heroId, {
+    required String fileName,
+    double alignX = 0,
+    double alignY = 0,
+  }) async {
+    await _db.upsertHeroValue(
+        heroId: heroId, key: _k.portraitFile, textValue: fileName);
+    await _db.upsertHeroValue(
+        heroId: heroId, key: _k.portraitAlignX, doubleValue: alignX);
+    await _db.upsertHeroValue(
+        heroId: heroId, key: _k.portraitAlignY, doubleValue: alignY);
+  }
+
+  /// Update only the portrait focal point (after a reposition).
+  Future<void> updateHeroPortraitAlignment(
+    String heroId, {
+    required double alignX,
+    required double alignY,
+  }) async {
+    await _db.upsertHeroValue(
+        heroId: heroId, key: _k.portraitAlignX, doubleValue: alignX);
+    await _db.upsertHeroValue(
+        heroId: heroId, key: _k.portraitAlignY, doubleValue: alignY);
+  }
+
+  /// Remove all portrait references for a hero.
+  Future<void> clearHeroPortrait(String heroId) async {
+    await _db.deleteHeroValue(heroId: heroId, key: _k.portraitFile);
+    await _db.deleteHeroValue(heroId: heroId, key: _k.portraitAlignX);
+    await _db.deleteHeroValue(heroId: heroId, key: _k.portraitAlignY);
+  }
+
+  /// Read the stored portrait reference and focal point for a hero.
+  Future<({String? fileName, double alignX, double alignY})> getHeroPortrait(
+      String heroId) async {
+    final values = await _db.getHeroValues(heroId);
+    final file =
+        values.firstWhereOrNull((v) => v.key == _k.portraitFile)?.textValue;
+    final alignX =
+        values.firstWhereOrNull((v) => v.key == _k.portraitAlignX)?.doubleValue ??
+            0;
+    final alignY =
+        values.firstWhereOrNull((v) => v.key == _k.portraitAlignY)?.doubleValue ??
+            0;
+    return (fileName: file, alignX: alignX, alignY: alignY);
+  }
 
   /// Get the current level of a hero.
   Future<int> getHeroLevel(String heroId) async {
@@ -468,10 +565,9 @@ class HeroRepository {
   Future<void> updateSubclass(String heroId, String? subclass) async {
     // Always clear existing subclass entries first to avoid duplicates
     await _db.clearHeroEntryType(heroId, 'subclass');
-    
+
     if (subclass == null || subclass.isEmpty) {
-      // Also clear legacy hero_values
-      await _db.upsertHeroValue(heroId: heroId, key: _k.subclass, textValue: '');
+      await _db.deleteHeroValue(heroId: heroId, key: _k.subclass);
       return;
     }
     await _entries.addEntriesFromSource(
@@ -482,8 +578,7 @@ class HeroRepository {
       entryIds: [subclass],
       gainedBy: 'choice',
     );
-    // Also save to legacy hero_values
-    await _db.upsertHeroValue(heroId: heroId, key: _k.subclass, textValue: subclass);
+    await _db.deleteHeroValue(heroId: heroId, key: _k.subclass);
   }
 
   /// Save the subclass key (used for matching the subclass option in the UI)
@@ -501,8 +596,7 @@ class HeroRepository {
 
   /// Load the subclass key
   Future<String?> getSubclassKey(String heroId) async {
-    final config =
-        await _db.getHeroConfigValue(heroId, 'strife.subclass_key');
+    final config = await _db.getHeroConfigValue(heroId, 'strife.subclass_key');
     return config?['key']?.toString();
   }
 
@@ -576,26 +670,40 @@ class HeroRepository {
     String heroId,
     List<String?> equipmentIds,
   ) async {
-    final ids = equipmentIds.whereType<String>().where((id) => id.isNotEmpty);
-    await _entries.addEntriesFromSource(
-      heroId: heroId,
-      sourceType: 'equipment',
-      sourceId: 'equipment_slots',
-      entryType: 'equipment',
-      entryIds: ids,
-      gainedBy: 'choice',
-    );
-    await _db.setHeroConfig(
-      heroId: heroId,
-      configKey: 'equipment.slots',
-      value: {'ids': equipmentIds},
-    );
-
-    // Also update legacy kit field for backwards compatibility
+    final ids = equipmentIds
+        .whereType<String>()
+        .where((id) => id.trim().isNotEmpty)
+        .toList(growable: false);
     final primaryKit = equipmentIds.firstWhereOrNull(
       (id) => id != null && id.isNotEmpty,
     );
-    await updateKit(heroId, primaryKit);
+    const source = HeroSource(
+      sourceType: HeroEntrySourceTypes.equipment,
+      sourceId: HeroEntrySourceIds.equipmentSlots,
+      gainedBy: HeroEntryGainedBy.choice,
+    );
+
+    await _db.transaction(() async {
+      await _mutations.replaceContentEntries(
+        heroId: heroId,
+        source: source,
+        entryType: HeroEntryTypes.equipment,
+        entryIds: ids,
+      );
+      // Keep the single primary-kit entry readable by compatibility callers,
+      // but give it the same exact editor source so replacement is idempotent.
+      await _mutations.replaceContentEntries(
+        heroId: heroId,
+        source: source,
+        entryType: HeroEntryTypes.kit,
+        entryIds: primaryKit == null ? const [] : [primaryKit],
+      );
+      await _db.setHeroConfig(
+        heroId: heroId,
+        configKey: HeroConfigKeys.equipmentSlots,
+        value: {'ids': equipmentIds},
+      );
+    });
   }
 
   /// Load equipment IDs
@@ -621,7 +729,7 @@ class HeroRepository {
   }
 
   /// Save equipment bonuses that have been applied to the hero.
-  /// Stores in hero_values as the source of truth. Legacy hero_entries are cleared.
+  /// Stores source-of-truth calculated bonuses in hero_entries.
   Future<void> saveEquipmentBonuses(
     String heroId, {
     required int staminaBonus,
@@ -633,14 +741,14 @@ class HeroRepository {
     required int meleeDistanceBonus,
     required int rangedDistanceBonus,
   }) async {
-    // Clear legacy hero_entries to avoid double application
-    await _db.clearHeroEntryType(heroId, 'equipment_bonuses');
-
-    // Persist to hero_values (source of truth)
-    await _db.upsertHeroValue(
+    await _entries.addEntry(
       heroId: heroId,
-      key: 'strife.equipment_bonuses',
-      jsonMap: {
+      entryType: HeroEntryTypes.equipmentBonuses,
+      entryId: 'combined_equipment_bonuses',
+      sourceType: HeroEntrySourceTypes.kit,
+      sourceId: 'combined',
+      gainedBy: HeroEntryGainedBy.calculated,
+      payload: {
         'stamina': staminaBonus,
         'speed': speedBonus,
         'stability': stabilityBonus,
@@ -651,14 +759,22 @@ class HeroRepository {
         'ranged_distance': rangedDistanceBonus,
       },
     );
+    await _db.deleteHeroValue(
+      heroId: heroId,
+      key: HeroValueKeys.legacyEquipmentBonuses,
+    );
   }
 
-  /// Load equipment bonuses from hero_entries (preferred) or legacy hero_values.
+  /// Load equipment bonuses from source-scoped hero_entries.
   Future<Map<String, int>> getEquipmentBonuses(String heroId) async {
-    // Source of truth: hero_entries (new pattern)
-    final entries = await _entries.listEntriesByType(heroId, 'equipment_bonuses');
+    final entries = await _entries.listEntriesByType(
+      heroId,
+      HeroEntryTypes.equipmentBonuses,
+    );
     final bonusEntry = entries.firstWhereOrNull(
-      (e) => e.entryId == 'combined_equipment_bonuses' && e.sourceType == 'kit',
+      (e) =>
+          e.entryId == 'combined_equipment_bonuses' &&
+          e.sourceType == HeroEntrySourceTypes.kit,
     );
     if (bonusEntry?.payload != null) {
       try {
@@ -677,12 +793,6 @@ class HeroRepository {
         }
       } catch (_) {}
     }
-
-    // Legacy fallback: hero_values (will be removed after migration)
-    final values = await _db.getHeroValues(heroId);
-    final parsed = _parseEquipmentBonuses(values);
-    if (parsed.isNotEmpty) return parsed;
-    
     return const {};
   }
 
@@ -691,45 +801,8 @@ class HeroRepository {
   Future<Map<String, int>> getFeatureStatBonuses(String heroId) async {
     final bonuses = <String, int>{};
 
-    // Source of truth: hero_values stored under strife.feature_stat_bonuses
-    final values = await _db.getHeroValues(heroId);
-    final hvRow = values.firstWhereOrNull((v) => v.key == 'strife.feature_stat_bonuses');
-    final hvRaw = hvRow?.jsonValue ?? hvRow?.textValue;
-    if (hvRaw != null && hvRaw.isNotEmpty) {
-      try {
-        final decoded = jsonDecode(hvRaw);
-        if (decoded is Map) {
-          for (final featureEntry in decoded.entries) {
-            final payload = featureEntry.value;
-            if (payload is! Map) continue;
-            for (final bonusEntry in payload.entries) {
-              final key = bonusEntry.key.toString();
-              final value = bonusEntry.value;
-
-              final statKey = switch (key) {
-                'speed_bonus' => 'speed',
-                'disengage_bonus' => 'disengage',
-                'stability_bonus' => 'stability',
-                'stamina_increase' => 'stamina',
-                'recoveries_bonus' => 'recoveries',
-                _ => key,
-              };
-
-              if (value is int) {
-                bonuses[statKey] = (bonuses[statKey] ?? 0) + value;
-              } else if (value is num) {
-                bonuses[statKey] = (bonuses[statKey] ?? 0) + value.toInt();
-              }
-            }
-          }
-        }
-      } catch (_) {}
-    }
-
-    if (bonuses.isNotEmpty) return bonuses;
-
-    // Fallback to legacy hero_entries
-    final entries = await _entries.listEntriesByType(heroId, 'feature_stat_bonus');
+    final entries = await _entries.listEntriesByType(
+        heroId, HeroEntryTypes.featureStatBonus);
     for (final entry in entries) {
       if (entry.payload == null) continue;
       try {
@@ -773,61 +846,178 @@ class HeroRepository {
   // CLEAR STRIFE DATA (for class change)
   // ===========================================================================
 
+  static const _classSourceEntryTypes = <String>{
+    HeroEntryTypes.classEntry,
+    HeroEntryTypes.subclass,
+    HeroEntryTypes.ability,
+    HeroEntryTypes.skill,
+    HeroEntryTypes.perk,
+  };
+
+  static const _classFeatureSourceEntryTypes = <String>{
+    HeroEntryTypes.classFeature,
+    HeroEntryTypes.ability,
+    HeroEntryTypes.skill,
+    HeroEntryTypes.language,
+    HeroEntryTypes.title,
+    HeroEntryTypes.treasure,
+    HeroEntryTypes.immunity,
+    HeroEntryTypes.weakness,
+    HeroEntryTypes.conditionImmunity,
+    HeroEntryTypes.statMod,
+    HeroEntryTypes.featureStatBonus,
+  };
+
   /// Clears all strife-related data when changing to a different class.
   /// This removes class, subclass, deity, domain, equipment, abilities (from strife),
   /// skills (from strife), perks (from strife), and all strife config values.
   /// Story-sourced data (ancestry, career, complication) is preserved.
   Future<void> clearStrifeData(String heroId) async {
-    // Clear hero_entries for strife-related entry types
-    await _db.clearHeroEntryType(heroId, 'class');
-    await _db.clearHeroEntryType(heroId, 'subclass');
-    await _db.clearHeroEntryType(heroId, 'deity');
-    await _db.clearHeroEntryType(heroId, 'domain');
-    await _db.clearHeroEntryType(heroId, 'kit');
-    await _db.clearHeroEntryType(heroId, 'equipment');
-    await _db.clearHeroEntryType(heroId, 'equipment_bonuses');
+    await _db.transaction(() async {
+      // Current Strife picker sources.
+      for (final scope in const [
+        (
+          HeroEntrySourceIds.strifeAbilityChoice,
+          HeroEntryTypes.ability,
+        ),
+        (
+          HeroEntrySourceIds.strifeSkillChoice,
+          HeroEntryTypes.skill,
+        ),
+        (
+          HeroEntrySourceIds.strifePerkChoice,
+          HeroEntryTypes.perk,
+        ),
+      ]) {
+        await _mutations.removeSource(
+          heroId: heroId,
+          source: HeroSource.manualChoice(sourceId: scope.$1),
+          entryType: scope.$2,
+          recomputeAggregates: false,
+        );
+      }
+      await _mutations.removeSource(
+        heroId: heroId,
+        source: const HeroSource(
+          sourceType: HeroEntrySourceTypes.subclass,
+          sourceId: HeroEntrySourceIds.subclassSkill,
+        ),
+        entryType: HeroEntryTypes.skill,
+        recomputeAggregates: false,
+      );
 
-    // Clear abilities - these are managed by strife only
-    await _db.clearHeroEntryType(heroId, 'ability');
+      // Current and legacy class/subclass rows. Entry-type allowlists prevent
+      // another feature from being swept up merely because it uses a familiar
+      // source token.
+      for (final entryType in _classSourceEntryTypes) {
+        await _mutations.removeSourceType(
+          heroId: heroId,
+          sourceType: HeroEntrySourceTypes.classEntry,
+          entryType: entryType,
+          recomputeAggregates: false,
+        );
+      }
+      for (final entryType in const [
+        HeroEntryTypes.classEntry,
+        HeroEntryTypes.subclass,
+      ]) {
+        await _mutations.removeSourceType(
+          heroId: heroId,
+          sourceType: HeroEntrySourceTypes.manualChoice,
+          entryType: entryType,
+          recomputeAggregates: false,
+        );
+      }
 
-    // Clear skills and perks from strife source only (preserve story-sourced ones)
-    // We need to clear by source_type to preserve story-granted entries
-    await _clearEntriesBySource(heroId, 'skill', 'manual_choice');
-    await _clearEntriesBySource(heroId, 'skill', 'subclass');
-    await _clearEntriesBySource(heroId, 'skill', 'class');
-    await _clearEntriesBySource(heroId, 'perk', 'manual_choice');
-    await _clearEntriesBySource(heroId, 'perk', 'class');
+      await _mutations.removeSourceType(
+        heroId: heroId,
+        sourceType: HeroEntrySourceTypes.deity,
+        entryType: HeroEntryTypes.deity,
+        recomputeAggregates: false,
+      );
+      await _mutations.removeSourceType(
+        heroId: heroId,
+        sourceType: HeroEntrySourceTypes.domain,
+        entryType: HeroEntryTypes.domain,
+        recomputeAggregates: false,
+      );
 
-    // Clear all strife config keys
-    await _db.deleteHeroConfig(heroId, 'strife.characteristic_array');
-    await _db.deleteHeroConfig(heroId, 'strife.characteristic_assignments');
-    await _db.deleteHeroConfig(heroId, 'strife.level_choice_selections');
-    await _db.deleteHeroConfig(heroId, 'strife.class_feature_selections');
-    await _db.deleteHeroConfig(heroId, 'strife.subclass_key');
-    await _db.deleteHeroConfig(heroId, 'strife.subclass_skill_id');
-    await _db.deleteHeroConfig(heroId, 'strife.ability_selections');
-    await _db.deleteHeroConfig(heroId, 'strife.skill_selections');
-    await _db.deleteHeroConfig(heroId, 'strife.perk_selections');
+      for (final entryType in _classFeatureSourceEntryTypes) {
+        await _mutations.removeSourceType(
+          heroId: heroId,
+          sourceType: HeroEntrySourceTypes.classFeature,
+          entryType: entryType,
+          recomputeAggregates: false,
+        );
+      }
 
-    // Clear equipment config
-    await _db.deleteHeroConfig(heroId, 'equipment.slots');
-    await _db.deleteHeroConfig(heroId, 'class_feature.selections');
+      // Remove only the Strife equipment selection and calculated aggregate.
+      // Kit-granted abilities and features remain until KitGrantsService
+      // replaces its own source set with the new equipment selection.
+      await _mutations.removeSource(
+        heroId: heroId,
+        source: const HeroSource(
+          sourceType: HeroEntrySourceTypes.equipment,
+          sourceId: HeroEntrySourceIds.equipmentSlots,
+        ),
+        entryType: HeroEntryTypes.equipment,
+        recomputeAggregates: false,
+      );
+      await _mutations.removeSource(
+        heroId: heroId,
+        source: const HeroSource(
+          sourceType: HeroEntrySourceTypes.equipment,
+          sourceId: HeroEntrySourceIds.equipmentSlots,
+        ),
+        entryType: HeroEntryTypes.kit,
+        recomputeAggregates: false,
+      );
+      await _mutations.removeSourceType(
+        heroId: heroId,
+        sourceType: HeroEntrySourceTypes.kit,
+        entryType: HeroEntryTypes.kit,
+        recomputeAggregates: false,
+      );
+      await _mutations.removeSource(
+        heroId: heroId,
+        source: const HeroSource(
+          sourceType: HeroEntrySourceTypes.kit,
+          sourceId: HeroEntrySourceIds.kitCombined,
+        ),
+        entryType: HeroEntryTypes.equipmentBonuses,
+        recomputeAggregates: false,
+      );
 
-    // Clear legacy hero_values for subclass
-    await _db.upsertHeroValue(heroId: heroId, key: _k.subclass, textValue: '');
-  }
+      for (final configKey in const [
+        HeroConfigKeys.strifeCharacteristicArray,
+        HeroConfigKeys.strifeCharacteristicAssignments,
+        HeroConfigKeys.strifeLevelChoiceSelections,
+        HeroConfigKeys.strifeClassFeatureSelections,
+        HeroConfigKeys.strifeSubclassKey,
+        HeroConfigKeys.strifeSubclassSkillId,
+        HeroConfigKeys.strifeAbilitySelections,
+        HeroConfigKeys.strifeSkillSelections,
+        HeroConfigKeys.strifePerkSelections,
+        HeroConfigKeys.equipmentSlots,
+        HeroConfigKeys.kitSelections,
+        HeroConfigKeys.classFeatureSelections,
+        HeroConfigKeys.classFeatureSkillGroupSelections,
+      ]) {
+        await _db.deleteHeroConfig(heroId, configKey);
+      }
 
-  /// Helper to clear entries by source type (preserves entries from other sources)
-  Future<void> _clearEntriesBySource(
-    String heroId,
-    String entryType,
-    String sourceType,
-  ) async {
-    await _entries.removeEntriesFromSource(
-      heroId: heroId,
-      entryType: entryType,
-      sourceType: sourceType,
-    );
+      await _db.deleteHeroValue(
+        heroId: heroId,
+        key: HeroValueKeys.legacyEquipmentBonuses,
+      );
+      await _db.deleteHeroValue(
+        heroId: heroId,
+        key: HeroValueKeys.legacyFeatureStatBonuses,
+      );
+      await _db.deleteHeroValue(heroId: heroId, key: _k.subclass);
+    });
+
+    await _mutations.recomputeAggregates(heroId);
   }
 
   // ===========================================================================
@@ -877,7 +1067,9 @@ class HeroRepository {
     if (config == null) return [];
     final containers = config['containers'];
     if (containers is List) {
-      return containers.map((e) => Map<String, dynamic>.from(e as Map)).toList();
+      return containers
+          .map((e) => Map<String, dynamic>.from(e as Map))
+          .toList();
     }
     return [];
   }
@@ -946,8 +1138,8 @@ class HeroRepository {
 
   /// Load the user's characteristic assignment choices
   Future<Map<String, int>> getCharacteristicAssignments(String heroId) async {
-    final config =
-        await _db.getHeroConfigValue(heroId, 'strife.characteristic_assignments');
+    final config = await _db.getHeroConfigValue(
+        heroId, 'strife.characteristic_assignments');
     final map = config?['assignments'];
     if (map is Map) {
       return map.map((k, v) => MapEntry(k.toString(), (v as num).toInt()));
@@ -989,8 +1181,7 @@ class HeroRepository {
     Map<String, Set<String>> selections,
   ) async {
     final jsonMap = <String, dynamic>{
-      for (final entry in selections.entries)
-        entry.key: entry.value.toList(),
+      for (final entry in selections.entries) entry.key: entry.value.toList(),
     };
     // Save to both legacy key and new key for compatibility
     await _db.setHeroConfig(
@@ -1009,8 +1200,10 @@ class HeroRepository {
   /// Checks both the new and legacy keys.
   Future<Map<String, Set<String>>> getFeatureSelections(String heroId) async {
     // Try new key first, fall back to legacy key
-    var config = await _db.getHeroConfigValue(heroId, 'class_feature.selections');
-    config ??= await _db.getHeroConfigValue(heroId, 'strife.class_feature_selections');
+    var config =
+        await _db.getHeroConfigValue(heroId, 'class_feature.selections');
+    config ??=
+        await _db.getHeroConfigValue(heroId, 'strife.class_feature_selections');
     if (config == null) return const {};
     final result = <String, Set<String>>{};
     config.forEach((key, value) {
@@ -1130,7 +1323,7 @@ class HeroRepository {
       return v?.textValue;
     }
 
-    final equipmentBonuses = _parseEquipmentBonuses(values);
+    const equipmentBonuses = <String, int>{};
     final userModifications = _extractUserModifications(values);
     final choiceModifications =
         _extractChoiceModifications(values, equipmentBonuses);
@@ -1239,7 +1432,8 @@ class HeroRepository {
       for (final entry in mods.modifications.entries) {
         final modKey = _ancestryStatToModKey(entry.key);
         if (modKey == null) continue;
-        final total = entry.value.fold<int>(0, (sum, mod) => sum + mod.baseValue);
+        final total =
+            entry.value.fold<int>(0, (sum, mod) => sum + mod.baseValue);
         if (total != 0) {
           totals[modKey] = (totals[modKey] ?? 0) + total;
         }
@@ -1283,21 +1477,6 @@ class HeroRepository {
     return Map.unmodifiable(result);
   }
 
-  Map<String, int> _parseEquipmentBonuses(List<db.HeroValue> values) {
-    final row =
-        values.firstWhereOrNull((v) => v.key == 'strife.equipment_bonuses');
-    final raw = row?.jsonValue ?? row?.textValue;
-    if (raw == null) return const {};
-    try {
-      final decoded = jsonDecode(raw) as Map<String, dynamic>;
-      return decoded.map(
-        (k, v) => MapEntry(k, (v as num?)?.toInt() ?? 0),
-      );
-    } catch (_) {
-      return const {};
-    }
-  }
-
   /// Maps ancestry stat names to HeroModKeys.
   String? _ancestryStatToModKey(String stat) {
     final normalized = stat.toLowerCase().replaceAll(' ', '_');
@@ -1334,7 +1513,7 @@ class HeroRepository {
   Stream<List<HeroSummary>> watchSummaries() {
     // Create a combined stream that triggers on either heroes or hero_values changes
     final controller = StreamController<List<HeroSummary>>();
-    
+
     StreamSubscription<List<db.Heroe>>? heroesSubscription;
     StreamSubscription<List<db.HeroValue>>? valuesSubscription;
     StreamSubscription<List<db.HeroEntry>>? entriesSubscription;
@@ -1349,6 +1528,14 @@ class HeroRepository {
       'ancestry',
       'career',
       'complication',
+    ];
+
+    final summaryValueKeys = <String>[
+      _k.level,
+      _k.heroicResource,
+      _k.portraitFile,
+      _k.portraitAlignX,
+      _k.portraitAlignY,
     ];
 
     Future<void> buildSummaries() async {
@@ -1368,7 +1555,7 @@ class HeroRepository {
 
         // Fetch only the values needed for summaries.
         final values = await (_db.select(_db.heroValues)
-              ..where((t) => t.key.isIn([_k.level, _k.heroicResource])))
+              ..where((t) => t.key.isIn(summaryValueKeys)))
             .get();
 
         // Fetch only the entry types needed for summaries.
@@ -1419,6 +1606,11 @@ class HeroRepository {
 
           final level = heroValues?[_k.level]?.value ?? 1;
           final heroicResource = heroValues?[_k.heroicResource]?.textValue;
+          final portraitFile = heroValues?[_k.portraitFile]?.textValue;
+          final portraitAlignX =
+              heroValues?[_k.portraitAlignX]?.doubleValue ?? 0;
+          final portraitAlignY =
+              heroValues?[_k.portraitAlignY]?.doubleValue ?? 0;
 
           final classId = heroEntries?['class']?.entryId;
           final subclassId = heroEntries?['subclass']?.entryId;
@@ -1436,6 +1628,9 @@ class HeroRepository {
             careerName: nameForComponentId(careerId),
             complicationName: nameForComponentId(complicationId),
             heroicResourceName: heroicResource,
+            portraitFile: portraitFile,
+            portraitAlignX: portraitAlignX,
+            portraitAlignY: portraitAlignY,
           ));
         }
 
@@ -1460,10 +1655,10 @@ class HeroRepository {
       heroesSubscription = _db.watchAllHeroes().listen((_) {
         buildSummaries();
       });
-      
+
       // Watch only the subset of hero_values used by the summaries.
       valuesSubscription = (_db.select(_db.heroValues)
-            ..where((t) => t.key.isIn([_k.level, _k.heroicResource])))
+            ..where((t) => t.key.isIn(summaryValueKeys)))
           .watch()
           .listen((_) {
         buildSummaries();
@@ -1476,7 +1671,7 @@ class HeroRepository {
           .listen((_) {
         buildSummaries();
       });
-      
+
       // Build initial summaries
       buildSummaries();
     };
@@ -1588,132 +1783,172 @@ class HeroRepository {
     String? environmentId,
     String? organisationId,
     String? upbringingId,
-    List<String> languageIds = const <String>[],
+    String? languageId,
     String? environmentSkillId,
     String? organisationSkillId,
     String? upbringingSkillId,
   }) async {
-    // Clear all previous culture entries before adding new ones
-    await _entries.removeEntriesFromSource(
+    String? normalized(String? value) {
+      final result = value?.trim();
+      return result == null || result.isEmpty ? null : result;
+    }
+
+    final normalizedEnvironmentId = normalized(environmentId);
+    final normalizedOrganisationId = normalized(organisationId);
+    final normalizedUpbringingId = normalized(upbringingId);
+    final normalizedEnvironmentSkillId = normalized(environmentSkillId);
+    final normalizedOrganisationSkillId = normalized(organisationSkillId);
+    final normalizedUpbringingSkillId = normalized(upbringingSkillId);
+
+    Future<void> replaceCultureEntries({
+      required String sourceId,
+      required String entryType,
+      required String? entryId,
+    }) {
+      return _entries.addEntriesFromSource(
+        heroId: heroId,
+        sourceType: HeroEntrySourceTypes.culture,
+        sourceId: sourceId,
+        entryType: entryType,
+        entryIds: entryId == null ? const <String>[] : [entryId],
+        gainedBy: HeroEntryGainedBy.choice,
+      );
+    }
+
+    await replaceCultureEntries(
+      sourceId: HeroEntrySourceIds.cultureEnvironment,
+      entryType: HeroEntryTypes.cultureEnvironment,
+      entryId: normalizedEnvironmentId,
+    );
+    await replaceCultureEntries(
+      sourceId: HeroEntrySourceIds.cultureOrganisation,
+      entryType: HeroEntryTypes.cultureOrganisation,
+      entryId: normalizedOrganisationId,
+    );
+    await replaceCultureEntries(
+      sourceId: HeroEntrySourceIds.cultureUpbringing,
+      entryType: HeroEntryTypes.cultureUpbringing,
+      entryId: normalizedUpbringingId,
+    );
+    final normalizedLanguageId = languageId?.trim();
+    await replaceCultureEntries(
+      sourceId: HeroEntrySourceIds.cultureLanguages,
+      entryType: HeroEntryTypes.language,
+      entryId: normalizedLanguageId == null || normalizedLanguageId.isEmpty
+          ? null
+          : normalizedLanguageId,
+    );
+    await _db.setHeroConfig(
       heroId: heroId,
-      sourceType: 'culture',
+      configKey: HeroConfigKeys.cultureLanguageSelection,
+      value: {
+        'selection':
+            normalizedLanguageId == null || normalizedLanguageId.isEmpty
+                ? null
+                : normalizedLanguageId,
+      },
     );
 
-    if (environmentId != null && environmentId.isNotEmpty) {
-      await _entries.addEntriesFromSource(
-        heroId: heroId,
-        sourceType: 'culture',
-        sourceId: 'culture_environment',
-        entryType: 'culture_environment',
-        entryIds: [environmentId],
-        gainedBy: 'choice',
-      );
-    }
-    if (organisationId != null && organisationId.isNotEmpty) {
-      await _entries.addEntriesFromSource(
-        heroId: heroId,
-        sourceType: 'culture',
-        sourceId: 'culture_organisation',
-        entryType: 'culture_organisation',
-        entryIds: [organisationId],
-        gainedBy: 'choice',
-      );
-    }
-    if (upbringingId != null && upbringingId.isNotEmpty) {
-      await _entries.addEntriesFromSource(
-        heroId: heroId,
-        sourceType: 'culture',
-        sourceId: 'culture_upbringing',
-        entryType: 'culture_upbringing',
-        entryIds: [upbringingId],
-        gainedBy: 'choice',
-      );
-    }
-    // Languages
-    if (languageIds.isNotEmpty) {
-      await _entries.addEntriesFromSource(
-        heroId: heroId,
-        sourceType: 'culture',
-        sourceId: 'culture_languages',
-        entryType: 'language',
-        entryIds: languageIds,
-        gainedBy: 'choice',
-      );
-    }
+    await _db.setHeroConfig(
+      heroId: heroId,
+      configKey: HeroConfigKeys.cultureEnvironmentSkill,
+      value: {'selection': normalizedEnvironmentSkillId},
+    );
+    await _db.setHeroConfig(
+      heroId: heroId,
+      configKey: HeroConfigKeys.cultureOrganisationSkill,
+      value: {'selection': normalizedOrganisationSkillId},
+    );
+    await _db.setHeroConfig(
+      heroId: heroId,
+      configKey: HeroConfigKeys.cultureUpbringingSkill,
+      value: {'selection': normalizedUpbringingSkillId},
+    );
 
-    // Persist chosen skill ids as HeroValues for traceability
-    if (environmentSkillId != null) {
-      await _db.setHeroConfig(
-        heroId: heroId,
-        configKey: _k.cultureEnvironmentSkill,
-        value: {'selection': environmentSkillId},
-      );
-    }
-    if (organisationSkillId != null) {
-      await _db.setHeroConfig(
-        heroId: heroId,
-        configKey: _k.cultureOrganisationSkill,
-        value: {'selection': organisationSkillId},
-      );
-    }
-    if (upbringingSkillId != null) {
-      await _db.setHeroConfig(
-        heroId: heroId,
-        configKey: _k.cultureUpbringingSkill,
-        value: {'selection': upbringingSkillId},
-      );
-    }
-
-    // Ensure selected skills are present among HeroComponents('skill') without removing others
-    if (environmentSkillId != null && environmentSkillId.isNotEmpty) {
-      await _entries.addEntry(
-        heroId: heroId,
-        entryType: 'skill',
-        entryId: environmentSkillId,
-        sourceType: 'culture',
-        sourceId: 'culture_environment',
-        gainedBy: 'choice',
-      );
-    }
-    if (organisationSkillId != null && organisationSkillId.isNotEmpty) {
-      await _entries.addEntry(
-        heroId: heroId,
-        entryType: 'skill',
-        entryId: organisationSkillId,
-        sourceType: 'culture',
-        sourceId: 'culture_organisation',
-        gainedBy: 'choice',
-      );
-    }
-    if (upbringingSkillId != null && upbringingSkillId.isNotEmpty) {
-      await _entries.addEntry(
-        heroId: heroId,
-        entryType: 'skill',
-        entryId: upbringingSkillId,
-        sourceType: 'culture',
-        sourceId: 'culture_upbringing',
-        gainedBy: 'choice',
-      );
-    }
+    await replaceCultureEntries(
+      sourceId: HeroEntrySourceIds.cultureEnvironment,
+      entryType: HeroEntryTypes.skill,
+      entryId: normalizedEnvironmentSkillId,
+    );
+    await replaceCultureEntries(
+      sourceId: HeroEntrySourceIds.cultureOrganisation,
+      entryType: HeroEntryTypes.skill,
+      entryId: normalizedOrganisationSkillId,
+    );
+    await replaceCultureEntries(
+      sourceId: HeroEntrySourceIds.cultureUpbringing,
+      entryType: HeroEntryTypes.skill,
+      entryId: normalizedUpbringingSkillId,
+    );
   }
 
   Future<CultureSelection> loadCultureSelection(String heroId) async {
     final comps = await _db.getHeroComponents(heroId);
     String? idFor(String category) => comps
         .firstWhereOrNull((c) => c['category'] == category)?['componentId'];
-    final envSkill =
-        await _db.getHeroConfigValue(heroId, _k.cultureEnvironmentSkill);
-    final orgSkill =
-        await _db.getHeroConfigValue(heroId, _k.cultureOrganisationSkill);
-    final upSkill =
-        await _db.getHeroConfigValue(heroId, _k.cultureUpbringingSkill);
+    final skillEntries = await _entries.listEntriesByType(
+      heroId,
+      HeroEntryTypes.skill,
+    );
+    Future<String?> loadOwnedSkill(String configKey, String sourceId) async {
+      final config = await _db.getHeroConfigValue(heroId, configKey);
+      if (config != null) {
+        final configured = config['selection']?.toString().trim();
+        return configured == null || configured.isEmpty ? null : configured;
+      }
+      final legacyEntries = skillEntries
+          .where(
+            (entry) =>
+                entry.sourceType == HeroEntrySourceTypes.culture &&
+                entry.sourceId == sourceId,
+          )
+          .toList()
+        ..sort((a, b) => a.id.compareTo(b.id));
+      return legacyEntries.firstOrNull?.entryId;
+    }
+
+    final environmentSkillId = await loadOwnedSkill(
+      HeroConfigKeys.cultureEnvironmentSkill,
+      HeroEntrySourceIds.cultureEnvironment,
+    );
+    final organisationSkillId = await loadOwnedSkill(
+      HeroConfigKeys.cultureOrganisationSkill,
+      HeroEntrySourceIds.cultureOrganisation,
+    );
+    final upbringingSkillId = await loadOwnedSkill(
+      HeroConfigKeys.cultureUpbringingSkill,
+      HeroEntrySourceIds.cultureUpbringing,
+    );
+    final languageConfig = await _db.getHeroConfigValue(
+      heroId,
+      HeroConfigKeys.cultureLanguageSelection,
+    );
+    String? languageId;
+    if (languageConfig != null) {
+      final configured = languageConfig['selection']?.toString().trim();
+      languageId = configured == null || configured.isEmpty ? null : configured;
+    } else {
+      final legacyLanguageEntries = (await _entries.listEntriesByType(
+        heroId,
+        HeroEntryTypes.language,
+      ))
+          .where(
+            (entry) =>
+                entry.sourceType == HeroEntrySourceTypes.culture &&
+                entry.sourceId == HeroEntrySourceIds.cultureLanguages,
+          )
+          .toList()
+        ..sort((a, b) => a.id.compareTo(b.id));
+      languageId = legacyLanguageEntries.firstOrNull?.entryId;
+    }
     return CultureSelection(
       environmentId: idFor('culture_environment'),
       organisationId: idFor('culture_organisation'),
       upbringingId: idFor('culture_upbringing'),
-      environmentSkillId: envSkill?['selection']?.toString(),
-      organisationSkillId: orgSkill?['selection']?.toString(),
-      upbringingSkillId: upSkill?['selection']?.toString(),
+      environmentSkillId: environmentSkillId,
+      organisationSkillId: organisationSkillId,
+      upbringingSkillId: upbringingSkillId,
+      languageId: languageId,
     );
   }
 
@@ -1741,8 +1976,8 @@ class HeroRepository {
 
   Future<String?> loadComplication(String heroId) async {
     final comps = await _db.getHeroComponents(heroId);
-    return comps
-        .firstWhereOrNull((c) => c['category'] == 'complication')?['componentId'];
+    return comps.firstWhereOrNull(
+        (c) => c['category'] == 'complication')?['componentId'];
   }
 
   // --- Career selections (career id, chosen skills/perks, incident) ---
@@ -1751,34 +1986,59 @@ class HeroRepository {
     required String? careerId,
     List<String> chosenSkillIds = const <String>[],
     List<String> chosenPerkIds = const <String>[],
+    List<String?> chosenLanguageIds = const <String?>[],
     String? incitingIncidentName,
   }) async {
+    final normalizedCareerId = careerId?.trim();
+    final effectiveCareerId =
+        normalizedCareerId == null || normalizedCareerId.isEmpty
+            ? null
+            : normalizedCareerId;
+    final normalizedSkillIds = chosenSkillIds
+        .map((id) => id.trim())
+        .where((id) => id.isNotEmpty)
+        .toSet()
+        .toList(growable: false);
+    final normalizedPerkIds = chosenPerkIds
+        .map((id) => id.trim())
+        .where((id) => id.isNotEmpty)
+        .toSet()
+        .toList(growable: false);
+    final normalizedLanguageSlots = chosenLanguageIds.map((id) {
+      final normalized = id?.trim();
+      return normalized == null || normalized.isEmpty ? null : normalized;
+    }).toList(growable: false);
     // Detect previous career to apply numeric grants only on change
-    final previousCareerId =
-        await _db.getSingleHeroEntryId(heroId, 'career');
+    final previousCareerId = await _db.getSingleHeroEntryId(heroId, 'career');
 
-    // Clear all previous career entries (career and granted skills) regardless of sourceId
+    if (previousCareerId != null && previousCareerId.isNotEmpty) {
+      await _entries.removeEntriesFromSource(
+        heroId: heroId,
+        sourceType: HeroEntrySourceTypes.career,
+        sourceId: previousCareerId,
+      );
+    }
     await _entries.removeEntriesFromSource(
       heroId: heroId,
-      sourceType: 'career',
+      sourceType: HeroEntrySourceTypes.career,
+      sourceId: HeroEntrySourceIds.careerChoice,
     );
 
-    if (careerId != null && careerId.isNotEmpty) {
+    if (effectiveCareerId != null) {
       await _entries.addEntriesFromSource(
         heroId: heroId,
-        sourceType: 'career',
-        sourceId: careerId,
-        entryType: 'career',
-        entryIds: [careerId],
-        gainedBy: 'choice',
+        sourceType: HeroEntrySourceTypes.career,
+        sourceId: effectiveCareerId,
+        entryType: HeroEntryTypes.career,
+        entryIds: [effectiveCareerId],
+        gainedBy: HeroEntryGainedBy.choice,
       );
-    } else {
-      await _db.clearHeroEntryType(heroId, 'career');
     }
 
     final allComps = await _db.getAllComponents();
     // Resolve granted skills from career definition by name
-    final careerComp = allComps.firstWhereOrNull((c) => c.id == careerId);
+    final careerComp =
+        allComps.firstWhereOrNull((c) => c.id == effectiveCareerId);
     final grantedSkillNames = <String>{};
     int renownGrant = 0, wealthGrant = 0, ppGrant = 0;
     if (careerComp != null) {
@@ -1817,46 +2077,60 @@ class HeroRepository {
     if (grantedSkillIds.isNotEmpty) {
       await _entries.addEntriesFromSource(
         heroId: heroId,
-        sourceType: 'career',
-        sourceId: careerId ?? 'career',
-        entryType: 'skill',
+        sourceType: HeroEntrySourceTypes.career,
+        sourceId: effectiveCareerId!,
+        entryType: HeroEntryTypes.skill,
         entryIds: grantedSkillIds,
-        gainedBy: 'grant',
+        gainedBy: HeroEntryGainedBy.grant,
       );
     }
 
-    if (chosenSkillIds.isNotEmpty) {
-      await _entries.addEntriesFromSource(
-        heroId: heroId,
-        sourceType: 'career',
-        sourceId: 'career_choice',
-        entryType: 'skill',
-        entryIds: chosenSkillIds,
-        gainedBy: 'choice',
-      );
-    }
+    await _entries.addEntriesFromSource(
+      heroId: heroId,
+      sourceType: HeroEntrySourceTypes.career,
+      sourceId: HeroEntrySourceIds.careerChoice,
+      entryType: HeroEntryTypes.skill,
+      entryIds: normalizedSkillIds,
+      gainedBy: HeroEntryGainedBy.choice,
+    );
 
-    if (chosenPerkIds.isNotEmpty) {
+    await _entries.addEntriesFromSource(
+      heroId: heroId,
+      sourceType: HeroEntrySourceTypes.career,
+      sourceId: HeroEntrySourceIds.careerChoice,
+      entryType: HeroEntryTypes.perk,
+      entryIds: normalizedPerkIds,
+      gainedBy: HeroEntryGainedBy.choice,
+    );
+
+    final chosenLanguageEntryIds =
+        normalizedLanguageSlots.whereType<String>().toSet().toList();
+    if (chosenLanguageEntryIds.isNotEmpty) {
       await _entries.addEntriesFromSource(
         heroId: heroId,
-        sourceType: 'career',
-        sourceId: 'career_choice',
-        entryType: 'perk',
-        entryIds: chosenPerkIds,
-        gainedBy: 'choice',
+        sourceType: HeroEntrySourceTypes.career,
+        sourceId: HeroEntrySourceIds.careerChoice,
+        entryType: HeroEntryTypes.language,
+        entryIds: chosenLanguageEntryIds,
+        gainedBy: HeroEntryGainedBy.choice,
       );
     }
 
     // Persist chosen lists for preloading UI
     await _db.setHeroConfig(
       heroId: heroId,
-      configKey: _k.careerChosenSkills,
-      value: {'list': chosenSkillIds},
+      configKey: HeroConfigKeys.careerChosenSkills,
+      value: {'list': normalizedSkillIds},
     );
     await _db.setHeroConfig(
       heroId: heroId,
-      configKey: _k.careerChosenPerks,
-      value: {'list': chosenPerkIds},
+      configKey: HeroConfigKeys.careerChosenPerks,
+      value: {'list': normalizedPerkIds},
+    );
+    await _db.setHeroConfig(
+      heroId: heroId,
+      configKey: HeroConfigKeys.careerChosenLanguages,
+      value: {'list': normalizedLanguageSlots},
     );
     if (incitingIncidentName != null) {
       await _db.setHeroConfig(
@@ -1869,9 +2143,7 @@ class HeroRepository {
     }
 
     // Apply numeric grants only when career changed
-    if (careerId != null &&
-        careerId.isNotEmpty &&
-        previousCareerId != careerId) {
+    if (effectiveCareerId != null && previousCareerId != effectiveCareerId) {
       final values = await _db.getHeroValues(heroId);
       int getInt(String key) =>
           values.firstWhereOrNull((v) => v.key == key)?.value ?? 0;
@@ -1889,28 +2161,126 @@ class HeroRepository {
 
   Future<CareerSelection> loadCareerSelection(String heroId) async {
     final comps = await _db.getHeroComponents(heroId);
-    final chosenSkills =
-        await _db.getHeroConfigValue(heroId, _k.careerChosenSkills);
-    final chosenPerks =
-        await _db.getHeroConfigValue(heroId, _k.careerChosenPerks);
+    final chosenSkills = await _db.getHeroConfigValue(
+      heroId,
+      HeroConfigKeys.careerChosenSkills,
+    );
+    final chosenPerks = await _db.getHeroConfigValue(
+      heroId,
+      HeroConfigKeys.careerChosenPerks,
+    );
+    final chosenLanguages = await _db.getHeroConfigValue(
+      heroId,
+      HeroConfigKeys.careerChosenLanguages,
+    );
     final incident =
         await _db.getHeroConfigValue(heroId, _k.careerIncitingIncident);
 
     String? idForCategory(String category) => comps
         .firstWhereOrNull((e) => e['category'] == category)?['componentId'];
 
+    Future<List<String>> loadOwnedChoices(
+      Map<String, dynamic>? config,
+      String entryType,
+    ) async {
+      if (config != null) {
+        return (config['list'] as List?)
+                ?.map((value) => value.toString().trim())
+                .where((value) => value.isNotEmpty)
+                .toList() ??
+            const <String>[];
+      }
+      final entries = (await _entries.listEntriesByType(heroId, entryType))
+          .where(
+            (entry) =>
+                entry.sourceType == HeroEntrySourceTypes.career &&
+                entry.sourceId == HeroEntrySourceIds.careerChoice,
+          )
+          .toList()
+        ..sort((a, b) => a.id.compareTo(b.id));
+      return entries.map((entry) => entry.entryId).toList();
+    }
+
+    final careerId = idForCategory('career');
+    final chosenSkillIds = await loadOwnedChoices(
+      chosenSkills,
+      HeroEntryTypes.skill,
+    );
+    final chosenPerkIds = await loadOwnedChoices(
+      chosenPerks,
+      HeroEntryTypes.perk,
+    );
+    List<String?> chosenLanguageIds;
+    if (chosenLanguages != null) {
+      chosenLanguageIds = (chosenLanguages['list'] as List?)?.map((value) {
+            final normalized = value?.toString().trim();
+            return normalized == null || normalized.isEmpty ? null : normalized;
+          }).toList() ??
+          const <String?>[];
+    } else {
+      final languageEntries = await _entries.listEntriesByType(
+        heroId,
+        HeroEntryTypes.language,
+      );
+      final exactCareerEntries = languageEntries
+          .where(
+            (entry) =>
+                entry.sourceType == HeroEntrySourceTypes.career &&
+                entry.sourceId == HeroEntrySourceIds.careerChoice,
+          )
+          .toList()
+        ..sort((a, b) => a.id.compareTo(b.id));
+      if (exactCareerEntries.isNotEmpty) {
+        chosenLanguageIds =
+            exactCareerEntries.map((entry) => entry.entryId).toList();
+      } else {
+        final cultureLanguageConfig = await _db.getHeroConfigValue(
+          heroId,
+          HeroConfigKeys.cultureLanguageSelection,
+        );
+        if (cultureLanguageConfig != null) {
+          chosenLanguageIds = const <String?>[];
+        } else {
+          final legacyCultureEntries = languageEntries
+              .where(
+                (entry) =>
+                    entry.sourceType == HeroEntrySourceTypes.culture &&
+                    entry.sourceId == HeroEntrySourceIds.cultureLanguages,
+              )
+              .toList()
+            ..sort((a, b) => a.id.compareTo(b.id));
+          final allowance = await _careerLanguageAllowance(careerId);
+          final legacyCareerIds = legacyCultureEntries.skip(1);
+          chosenLanguageIds = (allowance == null
+                  ? legacyCareerIds
+                  : legacyCareerIds.take(allowance))
+              .map<String?>((entry) => entry.entryId)
+              .toList();
+        }
+      }
+    }
+
     return CareerSelection(
-      careerId: idForCategory('career'),
-      chosenSkillIds: (chosenSkills?['list'] as List?)
-              ?.map((e) => e.toString())
-              .toList() ??
-          const <String>[],
-      chosenPerkIds: (chosenPerks?['list'] as List?)
-              ?.map((e) => e.toString())
-              .toList() ??
-          const <String>[],
+      careerId: careerId,
+      chosenSkillIds: chosenSkillIds,
+      chosenPerkIds: chosenPerkIds,
+      chosenLanguageIds: chosenLanguageIds,
       incitingIncidentName: incident?['name']?.toString(),
     );
+  }
+
+  Future<int?> _careerLanguageAllowance(String? careerId) async {
+    if (careerId == null || careerId.trim().isEmpty) return null;
+    final component = await _db.getComponentById(careerId);
+    if (component == null) return null;
+    try {
+      final data = jsonDecode(component.dataJson) as Map<String, dynamic>;
+      final value = data['languages'];
+      if (value is num) return value.toInt().clamp(0, 10);
+      return int.tryParse(value?.toString() ?? '')?.clamp(0, 10);
+    } catch (_) {
+      return null;
+    }
   }
 
   /// Load a HeroModel by id from DB aggregating values and components.
@@ -2028,6 +2398,39 @@ class HeroRepository {
     );
   }
 
+  /// Writes only the Story-owned scalar fields: name, ancestry, and career.
+  ///
+  /// Unlike [save], this touches nothing else, so it cannot overwrite stats,
+  /// stamina, resources, or any other value the hero sheet may have changed
+  /// since the builder loaded. Ancestry and career mirror the exact source
+  /// tuples [save] uses (`manual_choice`, gained by choice).
+  Future<void> saveStoryBasics({
+    required String heroId,
+    required String name,
+    required String? ancestryId,
+    required String? careerId,
+  }) async {
+    await _db.renameHero(heroId, name);
+
+    Future<void> setSingle(String entryType, String? value) async {
+      final normalized = value?.trim();
+      if (normalized == null || normalized.isEmpty) {
+        await _db.clearHeroEntryType(heroId, entryType);
+      } else {
+        await _db.setSingleHeroEntry(
+          heroId: heroId,
+          entryType: entryType,
+          entryId: normalized,
+          sourceType: HeroEntrySourceTypes.manualChoice,
+          gainedBy: HeroEntryGainedBy.choice,
+        );
+      }
+    }
+
+    await setSingle(HeroEntryTypes.ancestry, ancestryId);
+    await setSingle(HeroEntryTypes.career, careerId);
+  }
+
   /// Persist editable properties of a HeroModel back to DB.
   Future<void> save(HeroModel hero) async {
     await _db.renameHero(hero.id, hero.name);
@@ -2086,6 +2489,7 @@ class HeroRepository {
       }
       await _db.upsertHeroValue(heroId: hero.id, key: key, textValue: value);
     }
+
     Future<void> setJsonMap(String key, Map<String, dynamic>? map) =>
         _db.upsertHeroValue(heroId: hero.id, key: key, jsonMap: map);
 
@@ -2240,6 +2644,7 @@ class CultureSelection {
   final String? environmentSkillId;
   final String? organisationSkillId;
   final String? upbringingSkillId;
+  final String? languageId;
   const CultureSelection({
     this.environmentId,
     this.organisationId,
@@ -2247,6 +2652,7 @@ class CultureSelection {
     this.environmentSkillId,
     this.organisationSkillId,
     this.upbringingSkillId,
+    this.languageId,
   });
 }
 
@@ -2254,11 +2660,13 @@ class CareerSelection {
   final String? careerId;
   final List<String> chosenSkillIds;
   final List<String> chosenPerkIds;
+  final List<String?> chosenLanguageIds;
   final String? incitingIncidentName;
   const CareerSelection({
     this.careerId,
     this.chosenSkillIds = const <String>[],
     this.chosenPerkIds = const <String>[],
+    this.chosenLanguageIds = const <String?>[],
     this.incitingIncidentName,
   });
 }
@@ -2341,4 +2749,10 @@ class _HeroKeys {
   final String careerChosenSkills = 'career.chosen_skills';
   final String careerChosenPerks = 'career.chosen_perks';
   final String careerIncitingIncident = 'career.inciting_incident';
+
+  // portrait (device-local; intentionally excluded from export via
+  // HeroValueKeys.isAllowed so images never travel with a hero code)
+  final String portraitFile = 'portrait.file';
+  final String portraitAlignX = 'portrait.align_x';
+  final String portraitAlignY = 'portrait.align_y';
 }

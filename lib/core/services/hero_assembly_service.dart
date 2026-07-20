@@ -7,13 +7,15 @@ import '../models/damage_resistance_model.dart';
 import '../models/hero_assembled_model.dart';
 import '../models/stat_modification_model.dart';
 import '../repositories/hero_entry_repository.dart';
+import '../storage/hero_storage_contract.dart';
+import '../storage/stat_mod_entry_parser.dart';
 import 'hero_config_service.dart';
 
 /// Assembles a unified hero view from the three storage layers:
 /// - hero_values → numeric state (stats, stamina, recoveries, conditions, etc.)
 /// - hero_entries → all content (abilities, skills, perks, equipment, etc.)
 /// - hero_config → selections/choices metadata
-/// 
+///
 /// This service is IDEMPOTENT - calling assemble() multiple times
 /// produces identical results.
 class HeroAssemblyService {
@@ -25,29 +27,8 @@ class HeroAssemblyService {
   final HeroEntryRepository _entries;
   final HeroConfigService _config;
 
-  /// Keys that should remain in hero_values (numeric/state).
-  /// All other keys should be removed by migration.
-  static const _allowedValuePrefixes = <String>[
-    'stats.',
-    'stamina.',
-    'recoveries.',
-    'resistances.',
-    'conditions.',
-    'potency.',
-    'score.',
-    'projects.',
-    'heroic.',
-    'surges.',
-    'mods.',
-    'dynamic_modifiers',
-    'complication.tokens',
-    'complication.tokens_current',
-    'complication.recovery_bonus',
-    'downtime.story_project_points',
-  ];
-
   /// Build a HeroAssembly model from the database.
-  /// 
+  ///
   /// This method:
   /// 1. Loads hero_values for numeric/state data
   /// 2. Loads hero_entries for all content
@@ -98,8 +79,8 @@ class HeroAssemblyService {
       try {
         final decoded = jsonDecode(raw);
         if (decoded is Map) {
-          return decoded.map((k, v) =>
-              MapEntry(k.toString(), (v is num) ? v.toInt() : 0));
+          return decoded.map(
+              (k, v) => MapEntry(k.toString(), (v is num) ? v.toInt() : 0));
         }
       } catch (_) {}
       return const {};
@@ -135,7 +116,7 @@ class HeroAssemblyService {
     }
 
     final allEntriesBySource = groupBySource(entries);
-    
+
     // === CONTENT LISTS ===
     final skills = byType['skill'] ?? const [];
     final perks = byType['perk'] ?? const [];
@@ -146,7 +127,8 @@ class HeroAssemblyService {
     final traits = byType['ancestry_trait'] ?? const [];
     final classFeatures = byType['class_feature'] ?? const [];
     final conditionImmunities = byType['condition_immunity'] ?? const [];
-    final featureStatBonuses = byType['feature_stat_bonus'] ?? const [];
+    final featureStatBonuses =
+        byType[HeroEntryTypes.featureStatBonus] ?? const [];
 
     // === GROUPED BY SOURCE ===
     final abilitiesBySource = groupBySource(abilities);
@@ -256,69 +238,17 @@ class HeroAssemblyService {
   }
 
   /// Merge stat modifications from all hero_entries with entry_type='stat_mod'.
-  /// 
+  ///
   /// Supports two formats:
   /// 1. Batch format: { "mods": { "speed": 1, "stability": -2 } }
   /// 2. Individual format (entryId = stat name): { "mods": [{ "value": 1, "source": "..." }] }
   HeroStatModifications _mergeStatMods(List<db.HeroEntry> entries) {
-    final mods = <String, List<StatModification>>{};
-
-    for (final entry in entries) {
-      final defaultSource = '${entry.sourceType}:${entry.sourceId}';
-      
-      if (entry.payload == null) continue;
-      
-      try {
-        final payload = jsonDecode(entry.payload!);
-        if (payload is! Map) continue;
-
-        final modsData = payload['mods'];
-        
-        // Format 2: Individual entry where entryId is the stat name
-        // Payload: { "mods": [{ "value": 1, "source": "...", "dynamicValue": "level", "perEchelon": true, ... }] }
-        if (modsData is List) {
-          final stat = entry.entryId.toLowerCase();
-          for (final modItem in modsData) {
-            if (modItem is! Map) continue;
-            // Use fromJson to parse all fields including dynamic ones
-            final mod = StatModification.fromJson(
-              Map<String, dynamic>.from(modItem),
-              defaultSource: defaultSource,
-            );
-            // Skip mods with no base value and no dynamic properties
-            if (mod.baseValue == 0 && !mod.isDynamic) continue;
-            mods.putIfAbsent(stat, () => []);
-            mods[stat]!.add(mod);
-          }
-          continue;
-        }
-
-        // Format 1: Batch format { "mods": { "speed": 1, ... } } or just { "speed": 1, ... }
-        final modsMap = modsData ?? payload;
-        if (modsMap is! Map) continue;
-
-        for (final statEntry in modsMap.entries) {
-          final stat = statEntry.key.toString().toLowerCase();
-          final value = (statEntry.value is num) 
-              ? (statEntry.value as num).toInt() 
-              : int.tryParse(statEntry.value.toString()) ?? 0;
-          
-          if (value == 0) continue;
-          
-          mods.putIfAbsent(stat, () => []);
-          mods[stat]!.add(StaticStatModification(value: value, source: defaultSource));
-        }
-      } catch (_) {
-        // Skip malformed entries
-      }
-    }
-
-    return HeroStatModifications(modifications: mods);
+    return statModificationsFromEntries(entries);
   }
 
   /// Load resistances aggregate from hero_values.
   /// Load resistances from hero_values.
-  /// 
+  ///
   /// The resistances now store dynamic metadata (dynamicImmunity, immunityPerEchelon, etc.)
   /// which is calculated at display time using DamageResistance.netValueAtLevel(heroLevel).
   HeroDamageResistances _loadResistances(
@@ -327,7 +257,8 @@ class HeroAssemblyService {
     int heroLevel,
   ) {
     // Load resistances from hero_values - they already contain dynamic metadata
-    final baseValue = values.firstWhereOrNull((v) => v.key == 'resistances.damage');
+    final baseValue =
+        values.firstWhereOrNull((v) => v.key == 'resistances.damage');
     if (baseValue?.jsonValue == null && baseValue?.textValue == null) {
       return HeroDamageResistances.empty;
     }
@@ -345,15 +276,12 @@ class HeroAssemblyService {
     final idsToDelete = <int>[];
     for (final row in rows) {
       final key = row.key;
-      final allowed = _allowedValuePrefixes
-          .any((prefix) => key.startsWith(prefix));
-      if (!allowed) {
+      if (!HeroValueKeys.isAllowed(key)) {
         idsToDelete.add(row.id);
       }
     }
     if (idsToDelete.isEmpty) return 0;
-    return (_db.delete(_db.heroValues)
-          ..where((t) => t.id.isIn(idsToDelete)))
+    return (_db.delete(_db.heroValues)..where((t) => t.id.isIn(idsToDelete)))
         .go();
   }
 
@@ -367,18 +295,17 @@ class HeroAssemblyService {
     List<String> entryIds,
   ) async {
     if (entryIds.isEmpty) return const {};
-    
+
     final components = await (_db.select(_db.components)
           ..where((t) => t.id.isIn(entryIds)))
         .get();
-    
+
     return {for (final c in components) c.id: c};
   }
 
   /// Resolve a single entry_id to component data.
   Future<db.Component?> resolveComponent(String entryId) async {
-    return (_db.select(_db.components)
-          ..where((t) => t.id.equals(entryId)))
+    return (_db.select(_db.components)..where((t) => t.id.equals(entryId)))
         .getSingleOrNull();
   }
 

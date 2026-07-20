@@ -24,8 +24,11 @@ class StoryAncestrySectionText {
   static const String immunityDropdownHint = 'Select immunity';
   static const String abilityDropdownLabel = 'Choose Ability';
   static const String abilityDropdownHint = 'Select ability';
+  static const String skillDropdownLabel = 'Choose Skill';
+  static const String skillDropdownHint = 'Select skill';
   static const String selectImmunityTitle = 'Select Immunity';
   static const String selectAbilityTitle = 'Select Ability';
+  static const String selectSkillTitle = 'Select Skill';
   static const String cancelButton = 'Cancel';
   static const List<String> immunityTypes = [
     'acid',
@@ -41,12 +44,14 @@ class StoryAncestrySectionText {
   static const String formerLifeHint = 'Choose former ancestry';
   static const String selectFormerAncestryTitle = 'Select Former Ancestry';
   static const String previousLifeTraitLabel = 'Previous Life Trait';
-  static const String previousLifeTraitHint = 'Select trait from former ancestry';
+  static const String previousLifeTraitHint =
+      'Select trait from former ancestry';
   static const String selectPreviousLifeTraitTitle = 'Select Trait';
   static const String noTraitsAvailable = 'No matching traits available';
   static const String chosenTraitPrefix = 'Chosen: ';
   static const String cancel = 'Cancel';
   static const String notEnoughPoints = 'Not enough points';
+  static const String duplicateTrait = 'Already granted by another source';
   static const String chooseFormerAncestryFirst =
       'Choose a former ancestry first';
 }

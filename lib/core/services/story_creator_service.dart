@@ -7,6 +7,7 @@ import '../db/app_database.dart' as db;
 import '../db/providers.dart';
 import '../models/story_creator_models.dart';
 import '../repositories/hero_repository.dart';
+import '../storage/hero_storage_contract.dart';
 import 'ancestry_bonus_service.dart';
 import 'complication_grants_service.dart';
 import 'perk_grants_service.dart';
@@ -32,7 +33,8 @@ class StoryCreatorService {
     final traits = await _heroRepository.getSelectedAncestryTraits(heroId);
     final traitChoices = await _heroRepository.getAncestryTraitChoices(heroId);
     final complicationId = await _heroRepository.loadComplication(heroId);
-    final complicationChoices = await _complicationGrantsService.loadComplicationChoices(heroId);
+    final complicationChoices =
+        await _complicationGrantsService.loadComplicationChoices(heroId);
 
     await _complicationGrantsService.syncSkillGrants(heroId);
 
@@ -47,7 +49,15 @@ class StoryCreatorService {
     );
   }
 
+  /// Persists every Story-owned choice in one transaction, so a mid-save
+  /// failure cannot leave the hero with, say, a new ancestry but stale culture
+  /// rows. Only Story-owned sources are written; unrelated scalars are never
+  /// rewritten from the loaded aggregate.
   Future<void> saveStory(StoryCreatorSavePayload payload) async {
+    await _db.transaction(() => _saveStoryInner(payload));
+  }
+
+  Future<void> _saveStoryInner(StoryCreatorSavePayload payload) async {
     final hero = await _heroRepository.load(payload.heroId);
     if (hero == null) {
       throw Exception('Hero with id ${payload.heroId} not found.');
@@ -55,11 +65,15 @@ class StoryCreatorService {
 
     // Check if ancestry or traits have changed
     final oldAncestryId = hero.ancestry;
-    final oldTraitIds = await _heroRepository.getSelectedAncestryTraits(payload.heroId);
-    final oldTraitChoices = await _heroRepository.getAncestryTraitChoices(payload.heroId);
+    final oldTraitIds =
+        await _heroRepository.getSelectedAncestryTraits(payload.heroId);
+    final oldTraitChoices =
+        await _heroRepository.getAncestryTraitChoices(payload.heroId);
     final ancestryChanged = oldAncestryId != payload.ancestryId;
-    final traitsChanged = !_listEquals(oldTraitIds, payload.ancestryTraitIds.toList());
-    final choicesChanged = !_mapEquals(oldTraitChoices, payload.ancestryTraitChoices);
+    final traitsChanged =
+        !_listEquals(oldTraitIds, payload.ancestryTraitIds.toList());
+    final choicesChanged =
+        !_mapEquals(oldTraitChoices, payload.ancestryTraitChoices);
 
     // Remove old bonuses if ancestry, traits, or choices changed
     if (ancestryChanged || traitsChanged || choicesChanged) {
@@ -67,21 +81,28 @@ class StoryCreatorService {
     }
 
     // Check if complication or its choices have changed
-    final oldComplicationId = await _heroRepository.loadComplication(payload.heroId);
-    final oldComplicationChoices = await _complicationGrantsService.loadComplicationChoices(payload.heroId);
+    final oldComplicationId =
+        await _heroRepository.loadComplication(payload.heroId);
+    final oldComplicationChoices = await _complicationGrantsService
+        .loadComplicationChoices(payload.heroId);
     final complicationChanged = oldComplicationId != payload.complicationId;
-    final complicationChoicesChanged = !_mapEquals(oldComplicationChoices, payload.complicationChoices);
+    final complicationChoicesChanged =
+        !_mapEquals(oldComplicationChoices, payload.complicationChoices);
 
-    // Remove old complication grants if complication or choices changed
-    if (complicationChanged || complicationChoicesChanged) {
-      await _complicationGrantsService.removeGrants(payload.heroId);
-    }
+    // Note: complication grant removal/reapply happens later via
+    // reapplyAllComplications so that any complications added from the
+    // Complications tab (sourceId == 'sheet_add') are preserved when the
+    // creator-picked complication changes.
 
-    hero.name = payload.name;
-    hero.ancestry = payload.ancestryId;
-    hero.career = payload.careerId;
-
-    await _heroRepository.save(hero);
+    // Narrow write: only name, ancestry, and career. Never the whole aggregate,
+    // so a stale stamina/stat value on the loaded model cannot clobber a
+    // hero-sheet edit made since the builder opened.
+    await _heroRepository.saveStoryBasics(
+      heroId: payload.heroId,
+      name: payload.name,
+      ancestryId: payload.ancestryId,
+      careerId: payload.careerId,
+    );
 
     await _heroRepository.saveAncestryTraits(
       heroId: payload.heroId,
@@ -110,27 +131,23 @@ class StoryCreatorService {
       );
     }
 
-    final languageIds = payload.languageIds
-        .where((id) => id.trim().isNotEmpty)
-        .toSet()
-        .toList();
-
     await _heroRepository.saveCultureSelection(
       heroId: payload.heroId,
       environmentId: payload.environmentId,
       organisationId: payload.organisationId,
       upbringingId: payload.upbringingId,
-      languageIds: languageIds,
+      languageId: payload.cultureLanguageId,
       environmentSkillId: payload.environmentSkillId,
       organisationSkillId: payload.organisationSkillId,
       upbringingSkillId: payload.upbringingSkillId,
     );
 
     // Get previously selected perks before saving career selection
-    final oldCareerSelection = await _heroRepository.loadCareerSelection(payload.heroId);
+    final oldCareerSelection =
+        await _heroRepository.loadCareerSelection(payload.heroId);
     final oldPerkIds = oldCareerSelection.chosenPerkIds.toSet();
     final newPerkIds = payload.careerPerkIds.toSet();
-    
+
     // Determine which perks were removed and which were added
     final removedPerkIds = oldPerkIds.difference(newPerkIds);
     final addedPerkIds = newPerkIds.difference(oldPerkIds);
@@ -140,6 +157,7 @@ class StoryCreatorService {
       careerId: payload.careerId,
       chosenSkillIds: payload.careerSkillIds.toList(),
       chosenPerkIds: payload.careerPerkIds.toList(),
+      chosenLanguageIds: payload.careerLanguageIds,
       incitingIncidentName: payload.careerIncidentName,
     );
 
@@ -166,22 +184,27 @@ class StoryCreatorService {
       choices: payload.complicationChoices,
     );
 
-    // Apply new complication grants if complication or choices changed
+    // Re-apply grants for every complication the hero now has. This covers
+    // the creator-picked complication plus any extras added from the
+    // Complications tab. We always rebuild so a creator change cleanly
+    // swaps its grants without erasing tab-added complications.
     if (complicationChanged || complicationChoicesChanged) {
-      final grants = await _complicationGrantsService.parseComplicationGrants(
-        complicationId: payload.complicationId,
-        choices: payload.complicationChoices,
+      final allComplicationIds = await _db.getHeroEntryIds(
+        payload.heroId,
+        HeroEntryTypes.complication,
       );
       final heroLevel = await _heroRepository.getHeroLevel(payload.heroId);
-      await _complicationGrantsService.applyGrants(
+      await _complicationGrantsService.reapplyAllComplications(
         heroId: payload.heroId,
-        grants: grants,
+        complicationIds: allComplicationIds,
+        choices: payload.complicationChoices,
         heroLevel: heroLevel,
       );
     }
   }
 
-  Future<StoryCultureSuggestion?> suggestionForAncestry(String? ancestryName) async {
+  Future<StoryCultureSuggestion?> suggestionForAncestry(
+      String? ancestryName) async {
     if (ancestryName == null || ancestryName.trim().isEmpty) return null;
     final map = await _loadSuggestions();
     return map[ancestryName.trim().toLowerCase()];
@@ -231,14 +254,16 @@ class StoryCreatorService {
     // Get all perks from database
     final allComponents = await _db.getAllComponents();
     final perkGrantsService = PerkGrantsService(_db);
-    
+
     for (final perkId in perkIds) {
-      final perkComp = allComponents.where(
-        (c) => c.id == perkId && c.type == 'perk',
-      ).firstOrNull;
-      
+      final perkComp = allComponents
+          .where(
+            (c) => c.id == perkId && c.type == 'perk',
+          )
+          .firstOrNull;
+
       if (perkComp == null) continue;
-      
+
       try {
         final data = jsonDecode(perkComp.dataJson) as Map<String, dynamic>;
         final grantsRaw = data['grants'];
@@ -262,7 +287,7 @@ class StoryCreatorService {
     required List<String> perkIds,
   }) async {
     final perkGrantsService = PerkGrantsService(_db);
-    
+
     for (final perkId in perkIds) {
       await perkGrantsService.removePerkGrants(
         heroId: heroId,
@@ -293,5 +318,6 @@ final storyCreatorServiceProvider = Provider<StoryCreatorService>((ref) {
   final ancestryBonusService = ref.read(ancestryBonusServiceProvider);
   final complicationGrantsService = ref.read(complicationGrantsServiceProvider);
   final database = ref.read(appDatabaseProvider);
-  return StoryCreatorService(repo, ancestryBonusService, complicationGrantsService, database);
+  return StoryCreatorService(
+      repo, ancestryBonusService, complicationGrantsService, database);
 });

@@ -10,7 +10,7 @@ import '../../../widgets/abilities/ability_filter_dropdown.dart';
 import '../../../widgets/abilities/ability_summary.dart';
 
 /// Dialog for adding abilities to a hero with search and filters.
-/// 
+///
 /// Provides ability search by name and filtering by:
 /// - Resource type
 /// - Cost amount
@@ -21,10 +21,12 @@ class AddAbilityDialog extends StatefulWidget {
   const AddAbilityDialog({
     super.key,
     required this.heroId,
+    this.excludedAbilityIds = const <String>{},
     this.loadLibraryOverride,
   });
 
   final String heroId;
+  final Set<String> excludedAbilityIds;
   final Future<AbilityLibrary> Function()? loadLibraryOverride;
 
   @override
@@ -43,12 +45,16 @@ class _AddAbilityDialogState extends State<AddAbilityDialog> {
 
   List<Component> get _filteredItems {
     if (_allAbilities == null) return [];
-    
-    var filtered = _allAbilities!;
+
+    var filtered = _allAbilities!
+        .where((ability) => !widget.excludedAbilityIds.contains(ability.id))
+        .toList();
 
     if (_searchQuery.isNotEmpty) {
       final query = _searchQuery.toLowerCase();
-      filtered = filtered.where((item) => item.name.toLowerCase().contains(query)).toList();
+      filtered = filtered
+          .where((item) => item.name.toLowerCase().contains(query))
+          .toList();
     }
 
     if (_resourceFilter != null) {
@@ -100,7 +106,8 @@ class _AddAbilityDialogState extends State<AddAbilityDialog> {
     if (_isLoading || _allAbilities != null) return;
     setState(() => _isLoading = true);
     try {
-      final loader = widget.loadLibraryOverride ?? AbilityDataService().loadLibrary;
+      final loader =
+          widget.loadLibraryOverride ?? AbilityDataService().loadLibrary;
       final library = await loader();
       setState(() {
         _allAbilities = library.components.toList();
@@ -121,7 +128,7 @@ class _AddAbilityDialogState extends State<AddAbilityDialog> {
   @override
   Widget build(BuildContext context) {
     final filtered = _filteredItems;
-    
+
     // Extract unique filter options (only if abilities are loaded)
     final resourceOptions = _allAbilities
             ?.map((item) => AbilityData.fromComponent(item).resourceLabel)
@@ -131,7 +138,7 @@ class _AddAbilityDialogState extends State<AddAbilityDialog> {
             .toList() ??
         [];
     if (resourceOptions.isNotEmpty) resourceOptions.sort();
-    
+
     final costSet = <String>{};
     if (_allAbilities != null) {
       for (final item in _allAbilities!) {
@@ -141,16 +148,17 @@ class _AddAbilityDialogState extends State<AddAbilityDialog> {
         if (amount != null && amount > 0) costSet.add(amount.toString());
       }
     }
-    final costOptions = costSet.toList()..sort((a, b) {
-      if (a == 'signature' && b == 'signature') return 0;
-      if (a == 'signature') return -1;
-      if (b == 'signature') return 1;
-      final aInt = int.tryParse(a);
-      final bInt = int.tryParse(b);
-      if (aInt != null && bInt != null) return aInt.compareTo(bInt);
-      return a.compareTo(b);
-    });
-    
+    final costOptions = costSet.toList()
+      ..sort((a, b) {
+        if (a == 'signature' && b == 'signature') return 0;
+        if (a == 'signature') return -1;
+        if (b == 'signature') return 1;
+        final aInt = int.tryParse(a);
+        final bInt = int.tryParse(b);
+        if (aInt != null && bInt != null) return aInt.compareTo(bInt);
+        return a.compareTo(b);
+      });
+
     final actionTypeOptions = _allAbilities
             ?.map((item) => AbilityData.fromComponent(item).actionType)
             .where((type) => type != null && type.isNotEmpty)
@@ -159,7 +167,7 @@ class _AddAbilityDialogState extends State<AddAbilityDialog> {
             .toList() ??
         [];
     if (actionTypeOptions.isNotEmpty) actionTypeOptions.sort();
-    
+
     final distanceOptions = _allAbilities
             ?.map((item) => AbilityData.fromComponent(item).rangeSummary)
             .where((dist) => dist != null && dist.isNotEmpty)
@@ -168,7 +176,7 @@ class _AddAbilityDialogState extends State<AddAbilityDialog> {
             .toList() ??
         [];
     if (distanceOptions.isNotEmpty) distanceOptions.sort();
-    
+
     final targetsOptions = _allAbilities
             ?.map((item) => AbilityData.fromComponent(item).targets)
             .where((targets) => targets != null && targets.isNotEmpty)
@@ -181,14 +189,20 @@ class _AddAbilityDialogState extends State<AddAbilityDialog> {
     return Dialog(
       backgroundColor: NavigationTheme.cardBackgroundDark,
       child: Container(
-        constraints: BoxConstraints(maxWidth: 800, maxHeight: MediaQuery.of(context).size.height * 0.9),
+        constraints: BoxConstraints(
+            maxWidth: 800, maxHeight: MediaQuery.of(context).size.height * 0.9),
         child: Column(
           children: [
             AppBar(
-              title: const Text(AddAbilityDialogText.dialogTitle, style: TextStyle(color: FormTheme.textBright)),
+              title: const Text(AddAbilityDialogText.dialogTitle,
+                  style: TextStyle(color: FormTheme.textBright)),
               backgroundColor: NavigationTheme.navBarBackground,
               automaticallyImplyLeading: false,
-              actions: [IconButton(icon: const Icon(Icons.close, color: FormTheme.textBright), onPressed: () => Navigator.of(context).pop())],
+              actions: [
+                IconButton(
+                    icon: const Icon(Icons.close, color: FormTheme.textBright),
+                    onPressed: () => Navigator.of(context).pop())
+              ],
             ),
             Expanded(
               child: CustomScrollView(
@@ -197,30 +211,35 @@ class _AddAbilityDialogState extends State<AddAbilityDialog> {
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: _buildSearchAndFilters(
-                        context, 
-                        resourceOptions: resourceOptions, 
-                        costOptions: costOptions, 
-                        actionTypeOptions: actionTypeOptions, 
-                        distanceOptions: distanceOptions, 
+                        context,
+                        resourceOptions: resourceOptions,
+                        costOptions: costOptions,
+                        actionTypeOptions: actionTypeOptions,
+                        distanceOptions: distanceOptions,
                         targetsOptions: targetsOptions,
                       ),
                     ),
                   ),
-                  if (_isLoading) 
-                    SliverFillRemaining(child: Center(child: CircularProgressIndicator(color: NavigationTheme.abilitiesColor)))
-                  else if (_allAbilities == null) 
+                  if (_isLoading)
+                    SliverFillRemaining(
+                        child: Center(
+                            child: CircularProgressIndicator(
+                                color: NavigationTheme.abilitiesColor)))
+                  else if (_allAbilities == null)
                     SliverFillRemaining(
                       child: Center(
                         child: Padding(
-                          padding: const EdgeInsets.all(24), 
+                          padding: const EdgeInsets.all(24),
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center, 
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.search, size: 64, color: FormTheme.borderLight), 
-                              const SizedBox(height: 16), 
+                              Icon(Icons.search,
+                                  size: 64, color: FormTheme.borderLight),
+                              const SizedBox(height: 16),
                               Text(
-                                AddAbilityDialogText.searchPrompt, 
-                                style: TextStyle(color: FormTheme.textSecondary), 
+                                AddAbilityDialogText.searchPrompt,
+                                style:
+                                    TextStyle(color: FormTheme.textSecondary),
                                 textAlign: TextAlign.center,
                               ),
                             ],
@@ -228,31 +247,34 @@ class _AddAbilityDialogState extends State<AddAbilityDialog> {
                         ),
                       ),
                     )
-                  else if (filtered.isEmpty) 
+                  else if (filtered.isEmpty)
                     SliverFillRemaining(
                       child: Center(
                         child: Padding(
-                          padding: const EdgeInsets.all(24), 
+                          padding: const EdgeInsets.all(24),
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center, 
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.search_off, size: 64, color: FormTheme.borderLight), 
-                              const SizedBox(height: 16), 
+                              Icon(Icons.search_off,
+                                  size: 64, color: FormTheme.borderLight),
+                              const SizedBox(height: 16),
                               Text(
                                 AddAbilityDialogText.noAbilitiesFound,
-                                style: TextStyle(color: FormTheme.textSecondary),
+                                style:
+                                    TextStyle(color: FormTheme.textSecondary),
                               ),
                             ],
                           ),
                         ),
                       ),
                     )
-                  else 
+                  else
                     SliverPadding(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16), 
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                       sliver: SliverList(
                         delegate: SliverChildBuilderDelegate(
-                          (context, index) => _buildAbilitySummaryCard(filtered[index]), 
+                          (context, index) =>
+                              _buildAbilitySummaryCard(filtered[index]),
                           childCount: filtered.length,
                         ),
                       ),
@@ -275,10 +297,10 @@ class _AddAbilityDialogState extends State<AddAbilityDialog> {
         side: BorderSide(color: Colors.grey.withValues(alpha: 0.3)),
       ),
       child: InkWell(
-        onTap: () => Navigator.of(context).pop(ability.id), 
-        borderRadius: BorderRadius.circular(12), 
+        onTap: () => Navigator.of(context).pop(ability.id),
+        borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: const EdgeInsets.all(16), 
+          padding: const EdgeInsets.all(16),
           child: AbilitySummary(component: ability),
         ),
       ),
@@ -287,10 +309,10 @@ class _AddAbilityDialogState extends State<AddAbilityDialog> {
 
   Widget _buildSearchAndFilters(
     BuildContext context, {
-    required List<String> resourceOptions, 
-    required List<String> costOptions, 
-    required List<String> actionTypeOptions, 
-    required List<String> distanceOptions, 
+    required List<String> resourceOptions,
+    required List<String> costOptions,
+    required List<String> actionTypeOptions,
+    required List<String> distanceOptions,
     required List<String> targetsOptions,
   }) {
     final isEnabled = _allAbilities != null;
@@ -298,25 +320,29 @@ class _AddAbilityDialogState extends State<AddAbilityDialog> {
       color: FormTheme.surfaceDark,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: NavigationTheme.abilitiesColor.withValues(alpha: 0.3)),
+        side: BorderSide(
+            color: NavigationTheme.abilitiesColor.withValues(alpha: 0.3)),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16), 
+        padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start, 
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextField(
               style: const TextStyle(color: FormTheme.textBright),
               decoration: InputDecoration(
                 hintText: AddAbilityDialogText.searchHint,
                 hintStyle: TextStyle(color: FormTheme.textMuted),
-                prefixIcon: Icon(Icons.search, color: NavigationTheme.abilitiesColor),
-                suffixIcon: _searchQuery.isNotEmpty 
+                prefixIcon:
+                    Icon(Icons.search, color: NavigationTheme.abilitiesColor),
+                suffixIcon: _searchQuery.isNotEmpty
                     ? IconButton(
-                        icon: Icon(Icons.clear, color: FormTheme.textSecondary), 
-                        onPressed: () { setState(() => _searchQuery = ''); },
-                      ) 
-                    : null, 
+                        icon: Icon(Icons.clear, color: FormTheme.textSecondary),
+                        onPressed: () {
+                          setState(() => _searchQuery = '');
+                        },
+                      )
+                    : null,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(color: FormTheme.borderLight),
@@ -327,104 +353,106 @@ class _AddAbilityDialogState extends State<AddAbilityDialog> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: NavigationTheme.abilitiesColor, width: 2),
+                  borderSide: BorderSide(
+                      color: NavigationTheme.abilitiesColor, width: 2),
                 ),
-              ), 
-              onChanged: (value) { 
-                setState(() => _searchQuery = value); 
+              ),
+              onChanged: (value) {
+                setState(() => _searchQuery = value);
                 if (!isEnabled) _triggerSearch();
               },
-            ), 
-            const SizedBox(height: 16), 
+            ),
+            const SizedBox(height: 16),
             Text(
               AddAbilityDialogText.filtersTitle,
-              style: TextStyle(fontWeight: FontWeight.bold, color: FormTheme.textSecondary),
-            ), 
-            const SizedBox(height: 12), 
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, color: FormTheme.textSecondary),
+            ),
+            const SizedBox(height: 12),
             Wrap(
-              spacing: 8, 
-              runSpacing: 8, 
+              spacing: 8,
+              runSpacing: 8,
               children: [
                 GestureDetector(
                   onTap: !isEnabled ? _triggerSearch : null,
                   child: AbilityFilterDropdown(
-                    label: AddAbilityDialogText.filterResourceLabel, 
-                    value: _resourceFilter, 
-                    options: resourceOptions, 
+                    label: AddAbilityDialogText.filterResourceLabel,
+                    value: _resourceFilter,
+                    options: resourceOptions,
                     enabled: isEnabled,
                     allLabelPrefix: AddAbilityDialogText.allFilterPrefix,
-                    onChanged: (value) { 
-                      setState(() => _resourceFilter = value); 
-                      _triggerSearch(); 
+                    onChanged: (value) {
+                      setState(() => _resourceFilter = value);
+                      _triggerSearch();
                     },
                   ),
-                ), 
+                ),
                 GestureDetector(
                   onTap: !isEnabled ? _triggerSearch : null,
                   child: AbilityFilterDropdown(
-                    label: AddAbilityDialogText.filterCostLabel, 
+                    label: AddAbilityDialogText.filterCostLabel,
                     value: _costFilter == null
                         ? null
                         : (_costFilter == 'signature'
                             ? AddAbilityDialogText.signatureLabel
-                            : _costFilter), 
+                            : _costFilter),
                     options: costOptions
                         .map((c) => c == 'signature'
                             ? AddAbilityDialogText.signatureLabel
                             : c)
-                        .toList(), 
+                        .toList(),
                     enabled: isEnabled,
                     allLabelPrefix: AddAbilityDialogText.allFilterPrefix,
-                    onChanged: (value) { 
+                    onChanged: (value) {
                       setState(
                         () => _costFilter =
                             value == AddAbilityDialogText.signatureLabel
                                 ? 'signature'
                                 : value,
-                      ); 
-                      _triggerSearch(); 
+                      );
+                      _triggerSearch();
                     },
                   ),
-                ), 
+                ),
                 GestureDetector(
                   onTap: !isEnabled ? _triggerSearch : null,
                   child: AbilityFilterDropdown(
-                    label: AddAbilityDialogText.filterActionTypeLabel, 
-                    value: _actionTypeFilter, 
-                    options: actionTypeOptions, 
+                    label: AddAbilityDialogText.filterActionTypeLabel,
+                    value: _actionTypeFilter,
+                    options: actionTypeOptions,
                     enabled: isEnabled,
                     allLabelPrefix: AddAbilityDialogText.allFilterPrefix,
-                    onChanged: (value) { 
-                      setState(() => _actionTypeFilter = value); 
-                      _triggerSearch(); 
+                    onChanged: (value) {
+                      setState(() => _actionTypeFilter = value);
+                      _triggerSearch();
                     },
                   ),
-                ), 
+                ),
                 GestureDetector(
                   onTap: !isEnabled ? _triggerSearch : null,
                   child: AbilityFilterDropdown(
-                    label: AddAbilityDialogText.filterDistanceLabel, 
-                    value: _distanceFilter, 
-                    options: distanceOptions, 
+                    label: AddAbilityDialogText.filterDistanceLabel,
+                    value: _distanceFilter,
+                    options: distanceOptions,
                     enabled: isEnabled,
                     allLabelPrefix: AddAbilityDialogText.allFilterPrefix,
-                    onChanged: (value) { 
-                      setState(() => _distanceFilter = value); 
-                      _triggerSearch(); 
+                    onChanged: (value) {
+                      setState(() => _distanceFilter = value);
+                      _triggerSearch();
                     },
                   ),
-                ), 
+                ),
                 GestureDetector(
                   onTap: !isEnabled ? _triggerSearch : null,
                   child: AbilityFilterDropdown(
-                    label: AddAbilityDialogText.filterTargetsLabel, 
-                    value: _targetsFilter, 
-                    options: targetsOptions, 
+                    label: AddAbilityDialogText.filterTargetsLabel,
+                    value: _targetsFilter,
+                    options: targetsOptions,
                     enabled: isEnabled,
                     allLabelPrefix: AddAbilityDialogText.allFilterPrefix,
-                    onChanged: (value) { 
-                      setState(() => _targetsFilter = value); 
-                      _triggerSearch(); 
+                    onChanged: (value) {
+                      setState(() => _targetsFilter = value);
+                      _triggerSearch();
                     },
                   ),
                 ),

@@ -16,5 +16,7 @@ class AbilityListViewText {
   static const String removeDialogCancel = CommonText.cancel;
   static const String removeDialogConfirm = CommonText.remove;
   static const String snackAbilityRemoved = 'Ability removed';
+  static const String snackAbilityOwnedElsewhere =
+      'This ability is granted by another source and cannot be removed here.';
   static const String snackRemoveFailedPrefix = 'Failed to remove ability: ';
 }

@@ -1,6 +1,8 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 import '../db/app_database.dart';
+import '../storage/hero_storage_contract.dart';
 
 /// Validation result containing issues found during hero data validation.
 class HeroValidationResult {
@@ -41,57 +43,57 @@ class HeroValidationResult {
   @override
   String toString() {
     if (isValid) return 'Hero $heroId: VALID';
-    
+
     final buffer = StringBuffer('Hero $heroId: $totalIssues issues found\n');
-    
+
     if (bannedValueKeys.isNotEmpty) {
       buffer.writeln('  Banned hero_values keys:');
       for (final key in bannedValueKeys) {
         buffer.writeln('    - $key');
       }
     }
-    
+
     if (duplicateEntries.isNotEmpty) {
       buffer.writeln('  Duplicate hero_entries:');
       for (final entry in duplicateEntries) {
         buffer.writeln('    - $entry');
       }
     }
-    
+
     if (orphanConfigKeys.isNotEmpty) {
       buffer.writeln('  Orphan hero_config keys:');
       for (final key in orphanConfigKeys) {
         buffer.writeln('    - $key');
       }
     }
-    
+
     if (unresolvedComponentIds.isNotEmpty) {
       buffer.writeln('  Unresolved component IDs:');
       for (final id in unresolvedComponentIds) {
         buffer.writeln('    - $id');
       }
     }
-    
+
     if (aggregationMismatches.isNotEmpty) {
       buffer.writeln('  Aggregation mismatches:');
       for (final mismatch in aggregationMismatches) {
         buffer.writeln('    - $mismatch');
       }
     }
-    
+
     if (metadataMismatches.isNotEmpty) {
       buffer.writeln('  Metadata mismatches:');
       for (final mismatch in metadataMismatches) {
         buffer.writeln('    - $mismatch');
       }
     }
-    
+
     return buffer.toString();
   }
 }
 
 /// Debug utility for validating hero data integrity across all three storage layers.
-/// 
+///
 /// This validator checks:
 /// - No banned hero_values keys exist
 /// - No duplicate hero_entries
@@ -101,93 +103,6 @@ class HeroValidationResult {
 /// - No mismatched metadata
 class HeroDataValidator {
   final AppDatabase _db;
-
-  /// Banned prefixes that should NOT appear in hero_values.
-  /// Content should be in hero_entries, selections in hero_config.
-  static const List<String> _bannedValuePrefixes = [
-    // Identity content → hero_entries
-    'basics.className',
-    'basics.subclass',
-    'basics.ancestry',
-    'basics.career',
-    'basics.kit',
-    
-    // Ancestry grants → hero_entries
-    'ancestry.granted_abilities',
-    'ancestry.applied_bonuses',
-    'ancestry.condition_immunities',
-    'ancestry.stat_mods',
-    'ancestry.selected_traits',
-    
-    // Perk grants → hero_entries / hero_config
-    'perk_abilities.',
-    'perk_grant.',
-    
-    // Complication grants → hero_entries
-    'complication.applied_grants',
-    'complication.abilities',
-    'complication.skills',
-    'complication.features',
-    'complication.treasures',
-    'complication.languages',
-    'complication.damage_resistances',
-    'complication.stat_mods',
-    
-    // Class feature grants → hero_entries
-    'class_feature.',
-    'class_feature_abilities',
-    'class_feature_skills',
-    'class_feature_stat_mods',
-    'class_feature_resistances',
-    
-    // Kit grants → hero_entries
-    'kit_grants.',
-    'kit.abilities',
-    'kit.equipment',
-    'kit.stat_bonuses',
-    'kit.signature_ability',
-    
-    // Career grants → hero_entries
-    'career.abilities',
-    'career.skills_granted',
-    'career.perks_granted',
-    
-    // Culture grants → hero_entries
-    'culture.skills_granted',
-    'culture.languages_granted',
-    
-    // Faith → hero_entries
-    'faith.deity',
-    'faith.domain',
-    
-    // Legacy strife content
-    'strife.equipment_bonuses',
-  ];
-
-  /// Valid entry types for hero_entries table.
-  static const Set<String> _validEntryTypes = {
-    'class',
-    'subclass',
-    'ancestry',
-    'ancestry_trait',
-    'career',
-    'kit',
-    'deity',
-    'domain',
-    'ability',
-    'skill',
-    'perk',
-    'language',
-    'title',
-    'equipment',
-    'stat_mod',
-    'resistance',
-    'immunity',
-    'weakness',
-    'feature',
-    'complication',
-    'culture',
-  };
 
   HeroDataValidator(this._db);
 
@@ -214,7 +129,8 @@ class HeroDataValidator {
         .get();
     final entrySignatures = <String>{};
     for (final entry in entries) {
-      final signature = '${entry.entryType}:${entry.entryId}:${entry.sourceType}:${entry.sourceId}';
+      final signature =
+          '${entry.entryType}:${entry.entryId}:${entry.sourceType}:${entry.sourceId}';
       if (entrySignatures.contains(signature)) {
         duplicateEntries.add(signature);
       } else {
@@ -224,35 +140,43 @@ class HeroDataValidator {
 
     // 3. Check for invalid entry types
     for (final entry in entries) {
-      if (!_validEntryTypes.contains(entry.entryType)) {
-        metadataMismatches.add('Invalid entry_type: ${entry.entryType} for ${entry.entryId}');
+      if (!HeroEntryTypes.isValid(entry.entryType)) {
+        metadataMismatches
+            .add('Invalid entry_type: ${entry.entryType} for ${entry.entryId}');
+      }
+      if (!HeroEntrySourceTypes.isValid(entry.sourceType)) {
+        metadataMismatches.add(
+            'Invalid source_type: ${entry.sourceType} for ${entry.entryType}:${entry.entryId}');
+      }
+      if (!HeroEntryGainedBy.isValid(entry.gainedBy)) {
+        metadataMismatches.add(
+            'Invalid gained_by: ${entry.gainedBy} for ${entry.entryType}:${entry.entryId}');
       }
     }
 
     // 4. Check that component IDs resolve (for resolvable types)
-    final resolvableTypes = {'ability', 'skill', 'perk', 'equipment', 'class', 'subclass', 'ancestry', 'career', 'kit'};
     for (final entry in entries) {
-      if (resolvableTypes.contains(entry.entryType)) {
-        final component = await _db.getComponentById(entry.entryId);
+      final lookupId = HeroEntryTypes.componentLookupId(
+        entry.entryType,
+        entry.entryId,
+      );
+      if (lookupId != null) {
+        final component = await _db.getComponentById(lookupId);
         if (component == null) {
-          // Try by type lookup (some components may be stored differently)
-          final byType = await (_db.select(_db.components)
-                ..where((c) => c.type.equals(entry.entryType)))
-              .get();
-          final exists = byType.any((c) => c.id == entry.entryId);
-          if (!exists) {
-            unresolvedIds.add('${entry.entryType}:${entry.entryId}');
-          }
+          unresolvedIds.add('${entry.entryType}:${entry.entryId}');
         }
       }
     }
 
     // 5. Check aggregation consistency (resistances)
-    final resistanceEntries = entries.where((e) => e.entryType == 'resistance').toList();
-    
+    final resistanceEntries = entries
+        .where((e) => HeroEntryTypes.resistanceTypes.contains(e.entryType))
+        .toList();
+
     // Verify resistances.damage aggregate matches sum of resistance entries
-    final resistanceDamageValue = values.where((v) => v.key == 'resistances.damage').firstOrNull;
-    
+    final resistanceDamageValue =
+        values.where((v) => v.key == 'resistances.damage').firstOrNull;
+
     if (resistanceEntries.isEmpty && resistanceDamageValue?.textValue != null) {
       aggregationMismatches.add(
         'resistances.damage has value but no resistance entries exist',
@@ -263,36 +187,30 @@ class HeroDataValidator {
     final configs = await (_db.select(_db.heroConfig)
           ..where((t) => t.heroId.equals(heroId)))
         .get();
-    
+
     for (final config in configs) {
-      // Check if config references a selection that should have corresponding entries
-      if (config.configKey.contains('.selected_') || config.configKey.endsWith('_selection')) {
-        // These are selection configs - they're valid
+      if (HeroConfigKeys.isBanned(config.configKey)) {
+        orphanConfigs.add('Banned config key: ${config.configKey}');
         continue;
       }
-      
-      // Check for strife.* configs that should reference valid data
-      if (config.configKey.startsWith('strife.') && 
-          config.configKey != 'strife.subclass_key' &&
-          config.configKey != 'strife.characteristic_array' &&
-          config.configKey != 'strife.characteristic_assignments' &&
-          config.configKey != 'strife.level_choice_selections' &&
-          config.configKey != 'strife.class_feature_selections') {
-        // Unknown strife config key - might be orphaned
-        orphanConfigs.add('Unknown strife config: ${config.configKey}');
+      if (HeroConfigKeys.isKnown(config.configKey) ||
+          config.configKey.contains('.selected_') ||
+          config.configKey.endsWith('_selection')) {
+        continue;
       }
+      orphanConfigs.add('Unknown config key: ${config.configKey}');
     }
 
     // 7. Verify identity entries consistency
     final classEntry = entries.where((e) => e.entryType == 'class').firstOrNull;
-    
+
     // Check hero row matches entries (heroes table has classComponentId, not className)
     final heroRow = await (_db.select(_db.heroes)
           ..where((t) => t.id.equals(heroId)))
         .getSingleOrNull();
     if (heroRow != null) {
-      if (classEntry != null && 
-          heroRow.classComponentId != null && 
+      if (classEntry != null &&
+          heroRow.classComponentId != null &&
           heroRow.classComponentId != classEntry.entryId) {
         metadataMismatches.add(
           'heroes.classComponentId (${heroRow.classComponentId}) != class entry (${classEntry.entryId})',
@@ -315,26 +233,26 @@ class HeroDataValidator {
   Future<List<HeroValidationResult>> validateAll() async {
     final heroes = await _db.select(_db.heroes).get();
     final results = <HeroValidationResult>[];
-    
+
     for (final hero in heroes) {
       results.add(await validate(hero.id));
     }
-    
+
     return results;
   }
 
   /// Print a summary of validation results.
   static void printSummary(List<HeroValidationResult> results) {
     if (!kDebugMode) return;
-    
+
     final validCount = results.where((r) => r.isValid).length;
     final invalidCount = results.length - validCount;
-    
+
     debugPrint('=== Hero Data Validation Summary ===');
     debugPrint('Total heroes: ${results.length}');
     debugPrint('Valid: $validCount');
     debugPrint('Invalid: $invalidCount');
-    
+
     if (invalidCount > 0) {
       debugPrint('\n=== Invalid Heroes ===');
       for (final result in results.where((r) => !r.isValid)) {
@@ -344,11 +262,6 @@ class HeroDataValidator {
   }
 
   bool _isBannedKey(String key) {
-    for (final prefix in _bannedValuePrefixes) {
-      if (key.startsWith(prefix)) {
-        return true;
-      }
-    }
-    return false;
+    return HeroValueKeys.isBanned(key);
   }
 }

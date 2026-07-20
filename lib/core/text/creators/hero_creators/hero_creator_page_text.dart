@@ -8,6 +8,7 @@ class HeroCreatorPageText {
       'You have unsaved changes in the ';
   static const String tabChangeDialogContentStoryLabel = 'Story';
   static const String tabChangeDialogContentStrifeLabel = 'Strife';
+  static const String tabChangeDialogContentStrengthLabel = 'Strength';
   static const String tabChangeDialogContentSuffix =
       ' tab. Do you want to save before switching?';
   static const String tabChangeDialogCancelLabel = CommonText.cancel;
@@ -33,4 +34,5 @@ class HeroCreatorPageText {
   static const String tabLabelStrife = 'Strife';
   static const String tabLabelStrength = 'Strength';
   static const String saved = 'Saved!';
+  static const String failedToSavePrefix = 'Failed to save: ';
 }

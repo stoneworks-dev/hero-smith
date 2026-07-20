@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 import 'package:hero_smith/core/theme/app_icon.dart';
 import 'package:hero_smith/core/theme/app_icon_data.dart';
@@ -21,7 +21,10 @@ import 'package:hero_smith/core/text/creators/widgets/strength_creator/feature_c
 import 'package:hero_smith/core/text/creators/widgets/strength_creator/feature_header_text.dart';
 import 'package:hero_smith/core/text/creators/widgets/strength_creator/heroic_resource_progression_feature_text.dart';
 import 'package:hero_smith/core/text/creators/widgets/strength_creator/options_section_text.dart';
-import 'package:hero_smith/core/utils/selection_guard.dart';
+import 'package:hero_smith/core/storage/hero_storage_contract.dart';
+import 'package:hero_smith/features/hero_builder/domain/hero_claim.dart';
+import 'package:hero_smith/features/hero_builder/domain/hero_conflict_index.dart';
+import 'package:hero_smith/features/hero_builder/domain/hero_draft_claims.dart';
 import 'package:hero_smith/widgets/abilities/ability_expandable_item.dart';
 import 'package:hero_smith/widgets/heroic resource stacking tables/heroic_resource_stacking_tables.dart';
 
@@ -68,7 +71,7 @@ class ClassFeaturesWidget extends StatelessWidget {
     this.equipmentIds = const [],
     this.skillGroupSelections = const {},
     this.onSkillGroupSelectionChanged,
-    this.reservedSkillIds = const {},
+    this.skillConflictIndex = HeroConflictIndex.empty,
   });
 
   final int level;
@@ -86,43 +89,60 @@ class ClassFeaturesWidget extends StatelessWidget {
   final String? subclassLabel;
   final SubclassSelectionResult? subclassSelection;
   final Map<String, String> grantTypeByFeatureName;
-  
+
   /// Class name/id for determining heroic resource progression
   final String? className;
-  
+
   /// Equipment IDs for determining kit (used for Stormwight progression)
   final List<String?> equipmentIds;
-  
+
   /// skill_group skill selections: Map<featureId, Map<grantKey, skillId>>
   final Map<String, Map<String, String>> skillGroupSelections;
-  
+
   /// Callback when a skill_group skill selection changes
   final SkillGroupSelectionChanged? onSkillGroupSelectionChanged;
-  
-  /// Set of skill IDs that are already selected elsewhere (for duplicate prevention)
-  final Set<String> reservedSkillIds;
+
+  /// Effective persisted and draft skill claims for duplicate prevention.
+  final HeroConflictIndex skillConflictIndex;
 
   static const List<String> _widgetSubclassOptionKeys = [
-    'subclass', 'subclass_name', 'tradition', 'order', 'doctrine',
-    'mask', 'path', 'circle', 'college', 'element', 'role',
-    'discipline', 'oath', 'school', 'guild', 'name',
+    'subclass',
+    'subclass_name',
+    'tradition',
+    'order',
+    'doctrine',
+    'mask',
+    'path',
+    'circle',
+    'college',
+    'element',
+    'role',
+    'discipline',
+    'oath',
+    'school',
+    'guild',
+    'name',
   ];
 
   static const List<String> _widgetDeityOptionKeys = [
-    'deity', 'deity_name', 'patron', 'pantheon', 'god',
+    'deity',
+    'deity_name',
+    'patron',
+    'pantheon',
+    'god',
   ];
-  
+
   /// Feature IDs that should be rendered as heroic resource progression widgets
   static const Set<String> _progressionFeatureIds = {
     'feature_fury_growing_ferocity',
     'feature_null_discipline_mastery',
   };
-  
+
   /// Check if a feature should be rendered as a progression widget
   bool _isProgressionFeature(Feature feature) {
     return _progressionFeatureIds.contains(feature.id);
   }
-  
+
   /// Returns the count of features that still have pending choices.
   /// This includes features with:
   /// - Multiple options where user hasn't made required selections
@@ -136,39 +156,39 @@ class ClassFeaturesWidget extends StatelessWidget {
     }
     return count;
   }
-  
+
   /// Checks if a specific feature has pending choices.
   bool _featureHasPendingChoices(Feature feature) {
     final details = featureDetailsById[feature.id];
     if (details == null) return false;
-    
+
     // Check if it uses grants (auto-applied, but may have nested choices)
     final grants = details['grants'];
     final isGrantsFeature = grants is List && grants.isNotEmpty;
-    
+
     // Extract options using the service
     final options = ClassFeatureDataService.extractOptionMaps(details);
     if (options.isEmpty) return false;
-    
+
     // Check for pending skill_group selections in any option
     if (_hasPendingSkillGroupSelectionsForFeature(feature.id, options)) {
       return true;
     }
-    
+
     // For grants features, no further choice is needed
     if (isGrantsFeature) return false;
-    
+
     // If there's only one option, it's auto-applied
     if (options.length <= 1) return false;
-    
+
     // Check if user already made a selection
     final currentSelections = selectedOptions[feature.id] ?? const <String>{};
     final minimumRequired = ClassFeatureDataService.minimumSelections(details);
     final effectiveMinimum = minimumRequired <= 0 ? 1 : minimumRequired;
-    
+
     return currentSelections.length < effectiveMinimum;
   }
-  
+
   /// Checks if an option is active for the current subclass/domain selection.
   bool _isOptionActiveForCurrentSelection(Map<String, dynamic> option) {
     return ClassFeatureDataService.isOptionActiveForSelection(
@@ -178,7 +198,7 @@ class ClassFeaturesWidget extends StatelessWidget {
       selectedDeitySlugs: selectedDeitySlugs,
     );
   }
-  
+
   /// Checks if any option for a feature has a skill_group that hasn't been selected.
   bool _hasPendingSkillGroupSelectionsForFeature(
     String featureId,
@@ -187,15 +207,15 @@ class ClassFeaturesWidget extends StatelessWidget {
     for (final option in options) {
       final skillGroup = option['skill_group']?.toString().trim();
       if (skillGroup == null || skillGroup.isEmpty) continue;
-      
+
       // Skip options that don't match the current subclass/domain selection
       if (!_isOptionActiveForCurrentSelection(option)) continue;
-      
+
       // Check if user has made a skill_group selection for this option
       final grantKey = ClassFeatureDataService.optionGrantKey(option);
       final featureSelections = skillGroupSelections[featureId];
       final selectedSkillId = featureSelections?[grantKey];
-      
+
       if (selectedSkillId == null || selectedSkillId.isEmpty) {
         return true;
       }
@@ -218,7 +238,8 @@ class ClassFeaturesWidget extends StatelessWidget {
         itemCount: levels.length,
         itemBuilder: (context, index) {
           final levelNumber = levels[index];
-          if (grouped[levelNumber]?.isEmpty ?? true) return const SizedBox.shrink();
+          if (grouped[levelNumber]?.isEmpty ?? true)
+            return const SizedBox.shrink();
           return _LevelSection(
             key: PageStorageKey<String>('class_features_level_$levelNumber'),
             levelNumber: levelNumber,

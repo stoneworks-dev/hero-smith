@@ -22,9 +22,10 @@
     },
     "starting_skills": {
       "granted_skills": ["Psionics", "Read Person"],
-      "skill_groups": ["interpersonal", "lore"],
-      "skill_count": 2,
-      "quick_build": ["Empathize", "Psionics", "Read Person", "Timescape"]
+      "quick_build": ["Empathize", "Psionics", "Read Person", "Timescape"],
+      "allowances": [
+        { "count": 2, "groups": ["interpersonal", "lore"] }
+      ]
     },
     "fixed_starting_characteristics": {
       "reason": 2,
@@ -163,7 +164,7 @@
       "perks": [
         {
           "count": 1,
-          "restrictions": ["interpersonal", "lore", "supernatural"]
+          "perk_groups": ["interpersonal", "lore", "supernatural"]
         }
       ],
       "skills": [{ "count": 1 }],

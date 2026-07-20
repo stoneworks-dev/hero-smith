@@ -48,7 +48,14 @@
     "class": "tactician",
     "level": 1,
     "description": "You know how to focus the attention of your allies as you push them toward victory. You have the following ability.",
-    "ability": "Mark"
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "mark",
+        "payload": { "name": "Mark" }
+      }
+    ]
   },
   {
     "id": "feature_tactician_strike_now",
@@ -57,7 +64,14 @@
     "class": "tactician",
     "level": 1,
     "description": "You have the following ability.",
-    "ability": "Strike Now"
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "strike-now",
+        "payload": { "name": "Strike Now" }
+      }
+    ]
   },
   {
     "id": "feature_tactician_field_arsenal",
@@ -78,15 +92,24 @@
     "grants": [
       {
         "subclass_name": "Insurgent",
-        "ability": "Advanced Tactics"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "advanced-tactics",
+        "payload": { "name": "Advanced Tactics" }
       },
       {
         "subclass_name": "Mastermind",
-        "ability": "Overwatch"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "overwatch",
+        "payload": { "name": "Overwatch" }
       },
       {
         "subclass_name": "Vanguard",
-        "ability": "Parry"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "parry",
+        "payload": { "name": "Parry" }
       }
     ]
   },

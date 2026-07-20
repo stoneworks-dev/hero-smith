@@ -68,7 +68,8 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab>
       }
 
       // Load selected languages for this hero
-      _selectedLanguageIds = await db.getHeroComponentIds(widget.heroId, 'language');
+      _selectedLanguageIds =
+          await db.getHeroComponentIds(widget.heroId, 'language');
 
       setState(() {
         _isLoading = false;
@@ -118,23 +119,33 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab>
   }
 
   Future<void> _addLanguage(String languageId) async {
-    if (_selectedLanguageIds.contains(languageId)) {
+    final entryRepository = ref.read(heroEntryRepositoryProvider);
+    final existingEntries = await entryRepository.listEntriesByType(
+      widget.heroId,
+      HeroEntryTypes.language,
+    );
+    final isClaimed = ref.read(heroDuplicateGuardServiceProvider).isReserved(
+          candidateId: languageId,
+          entries: existingEntries,
+          entryType: HeroEntryTypes.language,
+        );
+    if (isClaimed) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text(SheetStoryLanguagesTabText.languageAlreadyAdded)),
+          const SnackBar(
+              content: Text(SheetStoryLanguagesTabText.languageAlreadyAdded)),
         );
       }
       return;
     }
     try {
-      final db = ref.read(appDatabaseProvider);
-      await db.upsertHeroEntry(
+      await entryRepository.addEntry(
         heroId: widget.heroId,
-        entryType: 'language',
+        entryType: HeroEntryTypes.language,
         entryId: languageId,
-        sourceType: 'hero_sheet',
-        sourceId: 'language',
-        gainedBy: 'choice',
+        sourceType: HeroEntrySourceTypes.heroSheet,
+        sourceId: HeroEntryTypes.language,
+        gainedBy: HeroEntryGainedBy.choice,
       );
 
       setState(() {
@@ -143,7 +154,8 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab>
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(SheetStoryLanguagesTabText.failedToAddLanguage(e))),
+          SnackBar(
+              content: Text(SheetStoryLanguagesTabText.failedToAddLanguage(e))),
         );
       }
     }
@@ -151,20 +163,34 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab>
 
   Future<void> _removeLanguage(String languageId) async {
     try {
-      final db = ref.read(appDatabaseProvider);
-      await db.removeSingleHeroEntry(
-        heroId: widget.heroId,
-        entryType: 'language',
-        entryId: languageId,
-      );
+      final removed =
+          await ref.read(heroEntryRepositoryProvider).removeEntryFromSource(
+                heroId: widget.heroId,
+                entryType: HeroEntryTypes.language,
+                entryId: languageId,
+                sourceType: HeroEntrySourceTypes.heroSheet,
+                sourceId: HeroEntryTypes.language,
+              );
 
-      setState(() {
-        _selectedLanguageIds = _selectedLanguageIds.where((id) => id != languageId).toList();
-      });
+      if (removed == 0) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                SheetStoryLanguagesTabText.languageOwnedElsewhere,
+              ),
+            ),
+          );
+        }
+        return;
+      }
+      await _loadData();
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(SheetStoryLanguagesTabText.failedToRemoveLanguage(e))),
+          SnackBar(
+              content:
+                  Text(SheetStoryLanguagesTabText.failedToRemoveLanguage(e))),
         );
       }
     }
@@ -173,8 +199,13 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab>
   Future<void> _showAddLanguageDialog() async {
     await _reloadAvailableLanguages();
     if (!mounted) return;
+    final claimedLanguageIds = ref.read(
+      heroClaimedEntryIdsProvider(
+        (heroId: widget.heroId, entryType: HeroEntryTypes.language),
+      ),
+    );
     final unselectedLanguages = _availableLanguages
-        .where((lang) => !_selectedLanguageIds.contains(lang.id))
+        .where((lang) => !claimedLanguageIds.contains(lang.id))
         .toList();
 
     showDialog(
@@ -207,7 +238,8 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab>
             dataMap: {
               'language_type': langOption.languageType,
               if (langOption.region.isNotEmpty) 'region': langOption.region,
-              if (langOption.ancestry.isNotEmpty) 'ancestry': langOption.ancestry,
+              if (langOption.ancestry.isNotEmpty)
+                'ancestry': langOption.ancestry,
               ...extraData,
             },
             source: 'user',
@@ -223,7 +255,8 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab>
               data: {
                 'language_type': langOption.languageType,
                 if (langOption.region.isNotEmpty) 'region': langOption.region,
-                if (langOption.ancestry.isNotEmpty) 'ancestry': langOption.ancestry,
+                if (langOption.ancestry.isNotEmpty)
+                  'ancestry': langOption.ancestry,
                 ...extraData,
               },
               source: 'user',
@@ -312,7 +345,8 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab>
                         color: _languagesColor.withAlpha(51),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: AppIcon(LanguageTypeIcons.tab, color: _languagesColor, size: 24),
+                      child: AppIcon(LanguageTypeIcons.tab,
+                          color: _languagesColor, size: 24),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -328,8 +362,10 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab>
                             ),
                           ),
                           Text(
-                            SheetStoryLanguagesTabText.languagesKnown(selectedComponents.length),
-                            style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
+                            SheetStoryLanguagesTabText.languagesKnown(
+                                selectedComponents.length),
+                            style: TextStyle(
+                                color: FormTheme.textSecondary, fontSize: 13),
                           ),
                         ],
                       ),
@@ -344,7 +380,8 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab>
                     padding: const EdgeInsets.all(32),
                     child: Column(
                       children: [
-                        Icon(Icons.language_outlined, size: 48, color: FormTheme.borderLight),
+                        Icon(Icons.language_outlined,
+                            size: 48, color: FormTheme.borderLight),
                         const SizedBox(height: 16),
                         Text(
                           SheetStoryLanguagesTabText.emptyState,
@@ -376,7 +413,8 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab>
                               ),
                             ),
                             const SizedBox(width: 8),
-                            AppIcon(LanguageTypeIcons.fromType(groupName), color: _languagesColor, size: 18),
+                            AppIcon(LanguageTypeIcons.fromType(groupName),
+                                color: _languagesColor, size: 18),
                             const SizedBox(width: 6),
                             Text(
                               groupName,
@@ -390,12 +428,12 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab>
                         ),
                       ),
                       ...languages.map((comp) => Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: LanguageCard(
-                          language: comp,
-                          onRemove: () => _removeLanguage(comp.id),
-                        ),
-                      )),
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: LanguageCard(
+                              language: comp,
+                              onRemove: () => _removeLanguage(comp.id),
+                            ),
+                          )),
                     ],
                   );
                 }),
@@ -422,7 +460,6 @@ class _LanguagesTabState extends ConsumerState<_LanguagesTab>
       ],
     );
   }
-
 }
 
 class _AddLanguageDialog extends StatefulWidget {
@@ -491,7 +528,8 @@ class _AddLanguageDialogState extends State<_AddLanguageDialog> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(16)),
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
@@ -509,7 +547,8 @@ class _AddLanguageDialogState extends State<_AddLanguageDialog> {
                       color: _languagesColor.withAlpha(51),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Icon(Icons.translate, color: _languagesColor, size: 24),
+                    child: const Icon(Icons.translate,
+                        color: _languagesColor, size: 24),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -537,7 +576,8 @@ class _AddLanguageDialogState extends State<_AddLanguageDialog> {
                 decoration: InputDecoration(
                   labelText: SheetStoryLanguagesTabText.searchLanguagesLabel,
                   labelStyle: TextStyle(color: FormTheme.textSecondary),
-                  prefixIcon: Icon(Icons.search, color: FormTheme.textSecondary),
+                  prefixIcon:
+                      Icon(Icons.search, color: FormTheme.textSecondary),
                   filled: true,
                   fillColor: StoryTheme.cardBackground,
                   border: OutlineInputBorder(
@@ -546,7 +586,8 @@ class _AddLanguageDialogState extends State<_AddLanguageDialog> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: _languagesColor, width: 2),
+                    borderSide:
+                        const BorderSide(color: _languagesColor, width: 2),
                   ),
                 ),
                 onChanged: _filterLanguages,
@@ -558,7 +599,8 @@ class _AddLanguageDialogState extends State<_AddLanguageDialog> {
               child: OutlinedButton.icon(
                 onPressed: widget.onCreateCustom,
                 icon: const Icon(Icons.edit_note, size: 18),
-                label: const Text(SheetStoryLanguagesTabText.createCustomLanguage),
+                label:
+                    const Text(SheetStoryLanguagesTabText.createCustomLanguage),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: _languagesColor,
                   side: BorderSide(color: _languagesColor.withAlpha(128)),
@@ -579,7 +621,8 @@ class _AddLanguageDialogState extends State<_AddLanguageDialog> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.search_off, size: 48, color: FormTheme.borderLight),
+                            Icon(Icons.search_off,
+                                size: 48, color: FormTheme.borderLight),
                             const SizedBox(height: 16),
                             Text(
                               SheetStoryLanguagesTabText.noLanguagesFound,
@@ -623,11 +666,13 @@ class _AddLanguageDialogState extends State<_AddLanguageDialog> {
                           ...languages.map((lang) {
                             String subtitle = '';
                             if (lang.region.isNotEmpty) {
-                              subtitle = SheetStoryLanguagesTabText.region(lang.region);
+                              subtitle = SheetStoryLanguagesTabText.region(
+                                  lang.region);
                             }
                             if (lang.ancestry.isNotEmpty) {
                               subtitle = subtitle.isEmpty
-                                  ? SheetStoryLanguagesTabText.ancestry(lang.ancestry)
+                                  ? SheetStoryLanguagesTabText.ancestry(
+                                      lang.ancestry)
                                   : '$subtitle • ${SheetStoryLanguagesTabText.ancestry(lang.ancestry)}';
                             }
 
@@ -640,23 +685,29 @@ class _AddLanguageDialogState extends State<_AddLanguageDialog> {
                               ),
                               child: ListTile(
                                 dense: true,
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 2),
                                 leading: Container(
                                   padding: const EdgeInsets.all(4),
                                   decoration: BoxDecoration(
                                     color: _languagesColor.withAlpha(26),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
-                                  child: const Icon(Icons.add_circle_outline, color: _languagesColor, size: 18),
+                                  child: const Icon(Icons.add_circle_outline,
+                                      color: _languagesColor, size: 18),
                                 ),
                                 title: Text(
                                   lang.name,
-                                  style: TextStyle(color: FormTheme.textBright, fontSize: 14),
+                                  style: TextStyle(
+                                      color: FormTheme.textBright,
+                                      fontSize: 14),
                                 ),
                                 subtitle: subtitle.isNotEmpty
                                     ? Text(
                                         subtitle,
-                                        style: TextStyle(color: FormTheme.textMuted, fontSize: 11),
+                                        style: TextStyle(
+                                            color: FormTheme.textMuted,
+                                            fontSize: 11),
                                       )
                                     : null,
                                 onTap: () => widget.onLanguageSelected(lang.id),
@@ -695,7 +746,7 @@ class _LanguageOption {
 
 class _CreateCustomLanguageDialog extends StatefulWidget {
   final Future<void> Function(
-      _LanguageOption langOption, Map<String, dynamic> extraData)
+          _LanguageOption langOption, Map<String, dynamic> extraData)
       onLanguageCreated;
 
   const _CreateCustomLanguageDialog({required this.onLanguageCreated});
@@ -765,12 +816,18 @@ class _CreateCustomLanguageDialogState
 
     final extraData = <String, dynamic>{};
     if (commonTopics.isNotEmpty) {
-      extraData['common_topics'] =
-          commonTopics.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+      extraData['common_topics'] = commonTopics
+          .split(',')
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .toList();
     }
     if (relatedLanguages.isNotEmpty) {
-      extraData['related_languages'] =
-          relatedLanguages.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+      extraData['related_languages'] = relatedLanguages
+          .split(',')
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .toList();
     }
 
     await widget.onLanguageCreated(langOption, extraData);
@@ -852,8 +909,7 @@ class _CreateCustomLanguageDialogState
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          SheetStoryLanguagesTabText
-                              .createCustomLanguageTitle,
+                          SheetStoryLanguagesTabText.createCustomLanguageTitle,
                           style: TextStyle(
                             color: FormTheme.textBright,
                             fontSize: 18,
@@ -899,7 +955,8 @@ class _CreateCustomLanguageDialogState
                                 SheetStoryLanguagesTabText.languageTypeLabel,
                             hintText:
                                 SheetStoryLanguagesTabText.languageTypeHint,
-                            labelStyle: TextStyle(color: FormTheme.textSecondary),
+                            labelStyle:
+                                TextStyle(color: FormTheme.textSecondary),
                             hintStyle: TextStyle(color: FormTheme.borderLight),
                             filled: true,
                             fillColor: StoryTheme.cardBackground,
@@ -977,10 +1034,8 @@ class _CreateCustomLanguageDialogState
                       // Related languages field (optional)
                       _buildTextField(
                         controller: _relatedLanguagesController,
-                        label:
-                            SheetStoryLanguagesTabText.relatedLanguagesLabel,
-                        hint:
-                            SheetStoryLanguagesTabText.relatedLanguagesHint,
+                        label: SheetStoryLanguagesTabText.relatedLanguagesLabel,
+                        hint: SheetStoryLanguagesTabText.relatedLanguagesHint,
                       ),
                       const SizedBox(height: 24),
 

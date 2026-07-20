@@ -24,11 +24,9 @@
     "enchants": [],
     "grants": [
       {
-        "increase_total": {
-          "stat": "immunity",
-          "type": "cold",
-          "value": "level"
-        }
+        "kind": "resistance",
+        "damage_type": "cold",
+        "dynamic_immunity": "level"
       }
     ]
   },
@@ -57,11 +55,9 @@
     "enchants": [],
     "grants": [
       {
-        "increase_total": {
-          "stat": "immunity",
-          "type": "fire",
-          "value": "level"
-        }
+        "kind": "resistance",
+        "damage_type": "fire",
+        "dynamic_immunity": "level"
       }
     ]
   },
@@ -90,11 +86,9 @@
     "enchants": [],
     "grants": [
       {
-        "increase_total": {
-          "stat": "immunity",
-          "type": "lightning",
-          "value": "level"
-        }
+        "kind": "resistance",
+        "damage_type": "lightning",
+        "dynamic_immunity": "level"
       }
     ]
   },
@@ -338,12 +332,16 @@
     "enchanted": false,
     "enchants": [],
     "grants": [
-      { "increase_total": { "stat": "stamina", "value": 3 } },
       {
-        "increase_total": {
-          "stat": "stability",
-          "value": 1
-        }
+        "kind": "stat_mod",
+        "stat": "stamina",
+        "mods": [{ "value": 3 }],
+        "payload": { "stacks_with_other_treasures": true }
+      },
+      {
+        "kind": "stat_mod",
+        "stat": "stability",
+        "mods": [{ "value": 1 }]
       }
     ]
   },

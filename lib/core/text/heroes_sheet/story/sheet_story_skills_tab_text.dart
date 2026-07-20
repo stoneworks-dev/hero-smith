@@ -10,17 +10,17 @@ class SheetStorySkillsTabText {
   static const String noSkillsFound = 'No skills found';
 
   static const String skillAlreadyAdded = 'Skill already added';
+  static const String skillOwnedElsewhere =
+      'This skill is granted by another source and cannot be removed here.';
   static const String removeSkillTooltip = 'Remove skill';
 
   static const String emptyState =
       'No skills selected. Tap "Add Skill" to get started.';
 
   // Error messages
-  static String failedToLoadSkills(Object e) =>
-      'Failed to load skills: $e';
+  static String failedToLoadSkills(Object e) => 'Failed to load skills: $e';
   static String failedToAddSkill(Object e) => 'Failed to add skill: $e';
-  static String failedToRemoveSkill(Object e) =>
-      'Failed to remove skill: $e';
+  static String failedToRemoveSkill(Object e) => 'Failed to remove skill: $e';
 
   // Counts & labels
   static String skillsLearned(int count) => '$count skills learned';

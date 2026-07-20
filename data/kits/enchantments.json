@@ -24,30 +24,21 @@
         "whip": false
       }
     },
-    "stamina_bonus": 3,
-    "speed_bonus": null,
-    "stability_bonus": null,
-    "melee_damage_bonus": {
-      "1st_tier": 1,
-      "2nd_tier": 1,
-      "3rd_tier": 1
-    },
-    "ranged_damage_bonus": {
-      "1st_tier": null,
-      "2nd_tier": null,
-      "3rd_tier": null
-    },
-    "melee_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "ranged_distance_bonus": {
-      "1st_echelon": null,
-      "2nd_echelon": null,
-      "3rd_echelon": null
-    },
-    "disengage_bonus": null,
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "bonuses": {
+          "stamina": 3
+        },
+        "tiered_bonuses": {
+          "melee_damage": {
+            "1st_tier": 1,
+            "2nd_tier": 1,
+            "3rd_tier": 1
+          }
+        }
+      }
+    ],
     "incompatible_with_kit": true
   },
   {
@@ -55,8 +46,15 @@
     "type": "enchantment",
     "name": "Enchantment of Celerity",
     "description": "You gain a +1 bonus to speed and to the distance you can shift when you take the Disengage move action.",
-    "speed_bonus": 1,
-    "disengage_bonus": 1
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "bonuses": {
+          "speed": 1,
+          "disengage": 1
+        }
+      }
+    ]
   },
   {
     "id": "enchantment_of_destruction",
@@ -64,7 +62,14 @@
     "name": "Enchantment of Destruction",
     "description": "You gain a +1 bonus to rolled damage with magic abilities.",
     "keywords": ["Magic"],
-    "bonus_damage": 1
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "bonuses": {
+          "bonus_damage": 1
+        }
+      }
+    ]
   },
   {
     "id": "enchantment_of_distance",
@@ -72,18 +77,32 @@
     "name": "Enchantment of Distance",
     "description": "You have a +2 bonus to the distance of your ranged magic abilities.",
     "keywords": ["Ranged", "Magic"],
-    "ranged_distance_bonus": {
-      "1st_echelon": 2,
-      "2nd_echelon": 2,
-      "3rd_echelon": 2
-    }
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "echelon_bonuses": {
+          "ranged_distance": {
+            "1st_echelon": 2,
+            "2nd_echelon": 2,
+            "3rd_echelon": 2
+          }
+        }
+      }
+    ]
   },
   {
     "id": "enchantment_of_permanence",
     "type": "enchantment",
     "name": "Enchantment of Permanence",
     "description": "You gain a +6 bonus to Stamina, and this bonus increases by 6 at 4th, 7th, and 10th levels. Additionally, you gain a +1 bonus to stability.",
-    "stamina_bonus": 6,
-    "stability_bonus": 1
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "bonuses": {
+          "stamina": 6,
+          "stability": 1
+        }
+      }
+    ]
   }
 ]

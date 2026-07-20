@@ -1,7 +1,8 @@
 import 'package:collection/collection.dart';
 
 import 'hero_model.dart';
-import '../repositories/hero_repository.dart' show CareerSelection, CultureSelection;
+import '../repositories/hero_repository.dart'
+    show CareerSelection, CultureSelection;
 
 class StoryCreatorLoadResult {
   const StoryCreatorLoadResult({
@@ -51,15 +52,21 @@ class StoryCreatorLoadResult {
         other.hero == hero &&
         other.cultureSelection == cultureSelection &&
         other.careerSelection == careerSelection &&
-        const ListEquality<String>().equals(other.ancestryTraitIds, ancestryTraitIds) &&
-        const MapEquality<String, String>().equals(other.ancestryTraitChoices, ancestryTraitChoices) &&
+        const ListEquality<String>()
+            .equals(other.ancestryTraitIds, ancestryTraitIds) &&
+        const MapEquality<String, String>()
+            .equals(other.ancestryTraitChoices, ancestryTraitChoices) &&
         other.complicationId == complicationId &&
-        const MapEquality<String, String>().equals(other.complicationChoices, complicationChoices);
+        const MapEquality<String, String>()
+            .equals(other.complicationChoices, complicationChoices);
   }
 
   @override
-  int get hashCode => Object.hash(hero, cultureSelection, careerSelection,
-      const ListEquality<String>().hash(ancestryTraitIds), 
+  int get hashCode => Object.hash(
+      hero,
+      cultureSelection,
+      careerSelection,
+      const ListEquality<String>().hash(ancestryTraitIds),
       const MapEquality<String, String>().hash(ancestryTraitChoices),
       complicationId,
       const MapEquality<String, String>().hash(complicationChoices));
@@ -79,7 +86,10 @@ class StoryCultureSuggestion {
   final String? upbringing;
 
   bool get isEmpty =>
-      language == null && environment == null && organization == null && upbringing == null;
+      language == null &&
+      environment == null &&
+      organization == null &&
+      upbringing == null;
 }
 
 class StoryCreatorSavePayload {
@@ -95,7 +105,8 @@ class StoryCreatorSavePayload {
     this.environmentSkillId,
     this.organisationSkillId,
     this.upbringingSkillId,
-    this.languageIds = const <String>{},
+    this.cultureLanguageId,
+    this.careerLanguageIds = const <String?>[],
     this.careerId,
     this.careerSkillIds = const <String>{},
     this.careerPerkIds = const <String>{},
@@ -108,6 +119,7 @@ class StoryCreatorSavePayload {
   final String name;
   final String? ancestryId;
   final Set<String> ancestryTraitIds;
+
   /// Map of trait ID to chosen value (e.g., immunity type or ability name)
   final Map<String, String> ancestryTraitChoices;
   final String? environmentId;
@@ -116,12 +128,14 @@ class StoryCreatorSavePayload {
   final String? environmentSkillId;
   final String? organisationSkillId;
   final String? upbringingSkillId;
-  final Set<String> languageIds;
+  final String? cultureLanguageId;
+  final List<String?> careerLanguageIds;
   final String? careerId;
   final Set<String> careerSkillIds;
   final Set<String> careerPerkIds;
   final String? careerIncidentName;
   final String? complicationId;
+
   /// Map of complication choice key to chosen value (e.g., skill, treasure, pick_one selection)
   final Map<String, String> complicationChoices;
 }

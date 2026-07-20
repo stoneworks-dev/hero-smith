@@ -30,9 +30,37 @@ class DiceRollerOverlay extends ConsumerStatefulWidget {
 }
 
 class _DiceRollerOverlayState extends ConsumerState<DiceRollerOverlay> {
-  // FAB position state — starts lower-left.
+  // FAB position state — parks lower-right on first real layout.
   double _dx = 0;
   double _dy = double.infinity; // sentinel: "not yet laid out"
+
+  /// Layouts smaller than this are transient (splash transitions, first
+  /// zero-size frames) and must not consume the position sentinel.
+  static const _kMinUsableHeight = 200.0;
+
+  // The FAB stays hidden until the persisted position (if any) has been
+  // loaded, so it never flashes at the default spot and then jumps.
+  bool _restoreDone = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _restorePosition();
+  }
+
+  Future<void> _restorePosition() async {
+    final stored = await ref
+        .read(diceRollerPreferencesProvider.notifier)
+        .loadFabPosition();
+    if (!mounted) return;
+    setState(() {
+      if (stored != null) {
+        _dx = stored.dx;
+        _dy = stored.dy;
+      }
+      _restoreDone = true;
+    });
+  }
 
   // Panel open/close.
   bool _panelOpen = false;
@@ -84,30 +112,50 @@ class _DiceRollerOverlayState extends ConsumerState<DiceRollerOverlay> {
 
   @override
   Widget build(BuildContext context) {
+    // Toggling visibility clears the persisted position (see
+    // DiceRollerPreferences.setVisible) — drop the in-memory one too, so a
+    // FAB stuck in a bad spot re-parks at the default on the next show.
+    ref.listen(diceRollerPreferencesProvider, (previous, next) {
+      final was = previous?.valueOrNull;
+      final now = next.valueOrNull;
+      if (was != null && now != null && was != now) {
+        setState(() => _dy = double.infinity);
+      }
+    });
+
     final showRoller =
         ref.watch(diceRollerPreferencesProvider).valueOrNull ?? true;
-    if (!showRoller) return widget.child;
+    if (!showRoller || !_restoreDone) return widget.child;
 
     return LayoutBuilder(
       builder: (context, constraints) {
         const fabW = 52.0;
         const fabH = 48.0;
-        final maxX = max(0.0, constraints.maxWidth - fabW);
-        final maxY = max(0.0, constraints.maxHeight - fabH);
 
-        // First layout: park just above the bottom navigation bar.
+        // Keep the FAB inside the safe area: below the status bar / camera
+        // cutout, above the home-indicator / gesture bar, and clear of
+        // landscape notches.
+        final padding = MediaQuery.paddingOf(context);
+        final minX = padding.left;
+        final minY = padding.top;
+        final maxX = max(minX, constraints.maxWidth - fabW - padding.right);
+        final maxY = max(minY, constraints.maxHeight - fabH - padding.bottom);
+
+        // First *usable* layout: park bottom-right, just above the bottom
+        // navigation bar. Transient degenerate layouts keep the sentinel so
+        // the default position isn't computed from garbage constraints.
         if (_dy == double.infinity) {
-          final bottomNav = kBottomNavigationBarHeight +
-              MediaQuery.of(context).padding.bottom;
-          _dy = max(0.0, maxY - bottomNav);
+          if (constraints.maxHeight < _kMinUsableHeight) return widget.child;
+          _dx = maxX;
+          _dy = max(minY, maxY - kBottomNavigationBarHeight - 16.0);
         }
 
-        // Clamp so it never goes off screen.
-        _dx = _dx.clamp(0.0, maxX);
-        _dy = _dy.clamp(0.0, maxY);
+        // Clamp so it never leaves the safe area.
+        _dx = _dx.clamp(minX, maxX);
+        _dy = _dy.clamp(minY, maxY);
 
         // Determine which edge the FAB is closest to for border-radius.
-        final onLeft = _dx < (maxX / 2);
+        final onLeft = _dx < ((minX + maxX) / 2);
 
         final borderRadius = onLeft
             ? const BorderRadius.only(
@@ -167,10 +215,13 @@ class _DiceRollerOverlayState extends ConsumerState<DiceRollerOverlay> {
                   });
                 },
                 onPanEnd: (_) {
-                  // Snap to nearest horizontal edge.
+                  // Snap to nearest horizontal edge (safe-area aware).
                   setState(() {
-                    _dx = _dx < (maxX / 2) ? 0.0 : maxX;
+                    _dx = _dx < ((minX + maxX) / 2) ? minX : maxX;
                   });
+                  ref
+                      .read(diceRollerPreferencesProvider.notifier)
+                      .saveFabPosition(Offset(_dx, _dy));
                 },
                 child: Material(
                   elevation: 8,

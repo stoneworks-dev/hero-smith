@@ -15,9 +15,11 @@ class TokenTrackerWidget extends ConsumerStatefulWidget {
   const TokenTrackerWidget({
     super.key,
     required this.heroId,
+    required this.maxTokens,
   });
 
   final String heroId;
+  final Map<String, int> maxTokens;
 
   @override
   ConsumerState<TokenTrackerWidget> createState() => _TokenTrackerWidgetState();
@@ -34,16 +36,43 @@ class _TokenTrackerWidgetState extends ConsumerState<TokenTrackerWidget> {
     _loadTokens();
   }
 
+  @override
+  void didUpdateWidget(covariant TokenTrackerWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.heroId != widget.heroId ||
+        !_sameTokens(oldWidget.maxTokens, widget.maxTokens)) {
+      setState(() {
+        _isLoading = true;
+      });
+      _loadTokens();
+    }
+  }
+
   Future<void> _loadTokens() async {
     try {
       final service = ref.read(complicationGrantsServiceProvider);
-      final max = await service.loadTokenGrants(widget.heroId);
+      final heroMax = await service.loadTokenGrants(widget.heroId);
       final current = await service.loadCurrentTokenValues(widget.heroId);
+      final visibleMax = <String, int>{};
+
+      for (final entry in widget.maxTokens.entries) {
+        if (entry.value <= 0) continue;
+        final savedMax = heroMax[entry.key];
+        visibleMax[entry.key] =
+            savedMax != null && savedMax > 0 ? savedMax : entry.value;
+      }
+
+      final visibleCurrent = <String, int>{};
+      for (final entry in visibleMax.entries) {
+        final savedCurrent = current[entry.key];
+        visibleCurrent[entry.key] =
+            (savedCurrent ?? entry.value).clamp(0, entry.value).toInt();
+      }
 
       if (mounted) {
         setState(() {
-          _maxTokens = max;
-          _currentTokens = current;
+          _maxTokens = visibleMax;
+          _currentTokens = visibleCurrent;
           _isLoading = false;
         });
       }
@@ -59,7 +88,7 @@ class _TokenTrackerWidgetState extends ConsumerState<TokenTrackerWidget> {
   Future<void> _updateToken(String tokenType, int delta) async {
     final current = _currentTokens[tokenType] ?? 0;
     final max = _maxTokens[tokenType] ?? 0;
-    final newValue = (current + delta).clamp(0, max);
+    final newValue = (current + delta).clamp(0, max).toInt();
 
     if (newValue != current) {
       setState(() {
@@ -73,7 +102,11 @@ class _TokenTrackerWidgetState extends ConsumerState<TokenTrackerWidget> {
 
   Future<void> _resetTokens() async {
     final service = ref.read(complicationGrantsServiceProvider);
-    await service.resetTokensToMax(widget.heroId);
+    final current = await service.loadCurrentTokenValues(widget.heroId);
+    for (final entry in _maxTokens.entries) {
+      current[entry.key] = entry.value;
+    }
+    await service.saveCurrentTokenValues(widget.heroId, current);
     await _loadTokens();
   }
 
@@ -82,7 +115,9 @@ class _TokenTrackerWidgetState extends ConsumerState<TokenTrackerWidget> {
     if (_isLoading) {
       return const SizedBox(
         height: 60,
-        child: Center(child: CircularProgressIndicator(strokeWidth: 2, color: StoryTheme.storyAccent)),
+        child: Center(
+            child: CircularProgressIndicator(
+                strokeWidth: 2, color: StoryTheme.storyAccent)),
       );
     }
 
@@ -150,5 +185,13 @@ class _TokenTrackerWidgetState extends ConsumerState<TokenTrackerWidget> {
             ? '${word[0].toUpperCase()}${word.substring(1)}'
             : '')
         .join(' ');
+  }
+
+  bool _sameTokens(Map<String, int> left, Map<String, int> right) {
+    if (left.length != right.length) return false;
+    for (final entry in left.entries) {
+      if (right[entry.key] != entry.value) return false;
+    }
+    return true;
   }
 }

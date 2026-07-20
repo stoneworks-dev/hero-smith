@@ -6,7 +6,8 @@ class HeroesPageText {
   // Header
   static const String aboutHeroSmith = 'About Hero Smith';
   static const String yourHeroes = 'Your Heroes';
-  static const String heroesSubtitle = 'Create and manage your Draw Steel heroes';
+  static const String heroesSubtitle =
+      'Create and manage your Draw Steel heroes';
 
   // Actions
   static const String createNewHero = 'Create New Hero';
@@ -14,8 +15,9 @@ class HeroesPageText {
   static const String importFromCode = 'Import from Code';
   static const String importFromFile = 'Import from File';
   static const String exportAllHeroes = 'Export All Heroes';
-  static const String exportCode = 'Export Code';
-  static const String exportFile = 'Export File';
+  static const String exportCode = 'Export Hero Smith Code';
+  static const String exportFile = 'Export for Hero Smith';
+  static const String exportCodexFile = 'Export for Codex';
   static const String editHeroTooltip = 'Edit Hero';
   static const String delete = CommonText.delete;
   static String heroLevel(int level) => 'Lvl $level';
@@ -23,7 +25,8 @@ class HeroesPageText {
   // Empty state
   static const String about = 'About';
   static const String noHeroesYet = 'No Heroes Yet';
-  static const String emptySubtitle = 'Create your first hero to begin your Draw Steel adventure';
+  static const String emptySubtitle =
+      'Create your first hero to begin your Draw Steel adventure';
   static const String createFirstHero = 'Create First Hero';
   static const String importCode = 'Import Code';
   static const String importFile = 'Import File';
@@ -70,18 +73,42 @@ class HeroesPageText {
 
   // Export file
   static String exportedToFile(String name) => 'Exported "$name" to file';
+  static String exportedToCodexFile(String name) =>
+      'Exported "$name" for Codex';
   static String failedToExportFile(Object e) => 'Failed to export file: $e';
+  static String failedToExportCodexFile(Object e) =>
+      'Failed to export Codex file: $e';
+  static const String codexExportNoticeTitle = 'Export for Codex';
+  static const String codexExportNotice =
+      'This creates a Codex-compatible .ds-hero file, not a Hero Smith backup. '
+      'Use a .hero backup to preserve notes, downtime, retainers, inventory, '
+      'and other Hero Smith-only data.';
+  static const String continueExport = 'Continue export';
+  static const String codexWarningTitle = 'Codex export is experimental';
+  static const String codexWarning =
+      'Some selected features may not transfer to Codex yet. Your Hero Smith '
+      'hero will not be changed; export if you want to try it and review the '
+      'result in Codex.';
+  static const String nativeWarningTitle = 'Export warning';
+  static const String nativeWarning =
+      'Some data may not be included as expected. Your Hero Smith hero will '
+      'not be changed.';
+  static const String exportBlockedTitle = 'Export unavailable';
+  static const String exportBlocked =
+      'Hero Smith cannot create this export until the reported problem is fixed.';
 
   // Import file
   static const String heroImportedSuccessfully = 'Hero imported successfully!';
   static String failedToImportFile(Object e) => 'Failed to import file: $e';
 
   // Export all
-  static String exportedHeroesToFiles(int count) =>
-      'Exported $count hero(es) to files';
+  static String exportedHeroesToFiles(int count, {int skipped = 0}) => skipped == 0
+      ? 'Exported $count hero(es) to files'
+      : 'Exported $count hero(es); $skipped need review';
+  static String batchExportNeedsReview(int count) =>
+      '$count hero(es) need export review before they can be saved';
   static const String noHeroesToExport = 'No heroes to export';
-  static String failedToExportHeroes(Object e) =>
-      'Failed to export heroes: $e';
+  static String failedToExportHeroes(Object e) => 'Failed to export heroes: $e';
 
   // Export options dialog
   static const String chooseExportContent =
@@ -90,4 +117,18 @@ class HeroesPageText {
 
   // Data values
   static const String allHeroes = 'All Heroes';
+
+  // Portrait
+  static const String addPhoto = 'Add Photo';
+  static const String changePhoto = 'Change Photo';
+  static const String repositionPhoto = 'Reposition Photo';
+  static const String removePhoto = 'Remove Photo';
+  static const String removePhotoTitle = 'Remove Photo';
+  static String removePhotoConfirmation(String name) =>
+      'Remove the photo from "$name"?';
+  static const String remove = 'Remove';
+  static const String positionPhotoTitle = 'Position Photo';
+  static const String positionPhotoHint = 'Drag the image to reposition it';
+  static const String save = 'Save';
+  static const String failedToAddPhoto = 'Could not add the photo';
 }

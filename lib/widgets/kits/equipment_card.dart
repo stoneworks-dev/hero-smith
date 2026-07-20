@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/models/component.dart';
 import '../../core/services/ability_data_service.dart';
+import '../../core/services/kit_bonus_service.dart';
 import '../../core/theme/app_icon.dart';
 import '../../core/theme/app_icon_data.dart';
 import '../../core/theme/app_icons.dart';
@@ -11,7 +12,7 @@ import '../../core/text/widgets/equipment_card_text.dart';
 import '../abilities/ability_expandable_item.dart';
 
 /// Modern equipment card with clean styling matching the TreasureCard design.
-/// 
+///
 /// Handles: kits, stormwight kits, modifiers (augmentations, enchantments, prayers), wards
 class EquipmentCard extends StatefulWidget {
   final Component component;
@@ -176,7 +177,8 @@ class _EquipmentCardState extends State<EquipmentCard>
                   color: accentColor,
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(NavigationTheme.cardBorderRadius),
-                    bottomLeft: Radius.circular(NavigationTheme.cardBorderRadius),
+                    bottomLeft:
+                        Radius.circular(NavigationTheme.cardBorderRadius),
                   ),
                 ),
               ),
@@ -281,25 +283,30 @@ class _EquipmentCardState extends State<EquipmentCard>
 
   Widget _buildQuickStats(BuildContext context, Color accentColor) {
     final data = widget.component.data;
-    final stamina = data['stamina_bonus'] as int?;
-    final speed = data['speed_bonus'] as int?;
-    final stability = data['stability_bonus'] as int?;
-    final disengage = data['disengage_bonus'] as int?;
+    final bonusData = const KitBonusService().extractBonusData(data);
+    final stamina = bonusData['stamina_bonus'] as int?;
+    final speed = bonusData['speed_bonus'] as int?;
+    final stability = bonusData['stability_bonus'] as int?;
+    final disengage = bonusData['disengage_bonus'] as int?;
     final characteristicScore = data['characteristic_score'] as String?;
 
     final stats = <Widget>[];
 
     if (stamina != null && stamina > 0) {
-      stats.add(_buildStatChip('STM', '+$stamina', KitPageTheme.statColors['STM']!));
+      stats.add(
+          _buildStatChip('STM', '+$stamina', KitPageTheme.statColors['STM']!));
     }
     if (speed != null && speed > 0) {
-      stats.add(_buildStatChip('SPD', '+$speed', KitPageTheme.statColors['SPD']!));
+      stats.add(
+          _buildStatChip('SPD', '+$speed', KitPageTheme.statColors['SPD']!));
     }
     if (stability != null && stability > 0) {
-      stats.add(_buildStatChip('STB', '+$stability', KitPageTheme.statColors['STB']!));
+      stats.add(_buildStatChip(
+          'STB', '+$stability', KitPageTheme.statColors['STB']!));
     }
     if (disengage != null && disengage > 0) {
-      stats.add(_buildStatChip('DSG', '+$disengage', KitPageTheme.statColors['DSG']!));
+      stats.add(_buildStatChip(
+          'DSG', '+$disengage', KitPageTheme.statColors['DSG']!));
     }
     if (characteristicScore != null && characteristicScore.isNotEmpty) {
       stats.add(_buildStatChip('CHAR', characteristicScore, accentColor));
@@ -361,9 +368,11 @@ class _EquipmentCardState extends State<EquipmentCard>
     );
   }
 
-  List<Widget> _buildEquipmentChips(Map<String, dynamic> equipment, Color accentColor) {
+  List<Widget> _buildEquipmentChips(
+      Map<String, dynamic> equipment, Color accentColor) {
     final armor = (equipment['armor'] as Map?)?.cast<String, dynamic>() ?? {};
-    final weapons = (equipment['weapons'] as Map?)?.cast<String, dynamic>() ?? {};
+    final weapons =
+        (equipment['weapons'] as Map?)?.cast<String, dynamic>() ?? {};
     final chips = <Widget>[];
 
     for (final entry in armor.entries) {
@@ -439,7 +448,8 @@ class _EquipmentCardState extends State<EquipmentCard>
     );
   }
 
-  Widget _buildIconTierRow(AppIconData icon, String label, Map<String, dynamic> data, bool isTier) {
+  Widget _buildIconTierRow(
+      AppIconData icon, String label, Map<String, dynamic> data, bool isTier) {
     final key1 = isTier ? '1st_tier' : '1st_echelon';
     final key2 = isTier ? '2nd_tier' : '2nd_echelon';
     final key3 = isTier ? '3rd_tier' : '3rd_echelon';
@@ -468,9 +478,15 @@ class _EquipmentCardState extends State<EquipmentCard>
         const SizedBox(height: 6),
         Row(
           children: [
-            if (v1 != null) _buildTierBox(isTier ? 'T1' : 'E1', '+$v1', isTier ? '≤11' : '1st'),
-            if (v2 != null) _buildTierBox(isTier ? 'T2' : 'E2', '+$v2', isTier ? '12-16' : '2nd'),
-            if (v3 != null) _buildTierBox(isTier ? 'T3' : 'E3', '+$v3', isTier ? '17+' : '3rd'),
+            if (v1 != null)
+              _buildTierBox(
+                  isTier ? 'T1' : 'E1', '+$v1', isTier ? '≤11' : '1st'),
+            if (v2 != null)
+              _buildTierBox(
+                  isTier ? 'T2' : 'E2', '+$v2', isTier ? '12-16' : '2nd'),
+            if (v3 != null)
+              _buildTierBox(
+                  isTier ? 'T3' : 'E3', '+$v3', isTier ? '17+' : '3rd'),
           ],
         ),
       ],
@@ -479,6 +495,7 @@ class _EquipmentCardState extends State<EquipmentCard>
 
   Widget _buildExpandedContent(BuildContext context, Color accentColor) {
     final data = widget.component.data;
+    final bonusData = const KitBonusService().extractBonusData(data);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -506,10 +523,10 @@ class _EquipmentCardState extends State<EquipmentCard>
         _buildEquipmentSection(context, data, accentColor),
 
         // Damage bonuses
-        _buildDamageBonusSection(context, data, accentColor),
+        _buildDamageBonusSection(context, bonusData, accentColor),
 
         // Distance bonuses
-        _buildDistanceBonusSection(context, data, accentColor),
+        _buildDistanceBonusSection(context, bonusData, accentColor),
 
         // Stormwight-specific: lightning damage
         if (data['lightning_damage'] != null)
@@ -600,7 +617,8 @@ class _EquipmentCardState extends State<EquipmentCard>
     );
   }
 
-  Widget _buildEquipmentSection(BuildContext context, Map<String, dynamic> data, Color accentColor) {
+  Widget _buildEquipmentSection(
+      BuildContext context, Map<String, dynamic> data, Color accentColor) {
     final equipment = data['equipment'] as Map<String, dynamic>?;
     final equipmentDescription = data['equipment_description'] as String?;
 
@@ -608,7 +626,9 @@ class _EquipmentCardState extends State<EquipmentCard>
       return const SizedBox.shrink();
     }
 
-    final equipmentChips = equipment != null ? _buildEquipmentChips(equipment, accentColor) : <Widget>[];
+    final equipmentChips = equipment != null
+        ? _buildEquipmentChips(equipment, accentColor)
+        : <Widget>[];
 
     return _buildSection(
       title: EquipmentCardText.equipment,
@@ -635,7 +655,8 @@ class _EquipmentCardState extends State<EquipmentCard>
     );
   }
 
-  Widget _buildDamageBonusSection(BuildContext context, Map<String, dynamic> data, Color accentColor) {
+  Widget _buildDamageBonusSection(
+      BuildContext context, Map<String, dynamic> data, Color accentColor) {
     final meleeDamage = data['melee_damage_bonus'] as Map<String, dynamic>?;
     final rangedDamage = data['ranged_damage_bonus'] as Map<String, dynamic>?;
 
@@ -651,20 +672,24 @@ class _EquipmentCardState extends State<EquipmentCard>
       content: Column(
         children: [
           if (meleeDamage != null && _hasNonNullValues(meleeDamage))
-            _buildIconTierRow(KitEquipmentIcons.meleeDamage, 'Melee', meleeDamage, true),
+            _buildIconTierRow(
+                KitEquipmentIcons.meleeDamage, 'Melee', meleeDamage, true),
           if (rangedDamage != null && _hasNonNullValues(rangedDamage)) ...[
             if (meleeDamage != null && _hasNonNullValues(meleeDamage))
               const SizedBox(height: 10),
-            _buildIconTierRow(KitEquipmentIcons.rangedDamage, 'Ranged', rangedDamage, true),
+            _buildIconTierRow(
+                KitEquipmentIcons.rangedDamage, 'Ranged', rangedDamage, true),
           ],
         ],
       ),
     );
   }
 
-  Widget _buildDistanceBonusSection(BuildContext context, Map<String, dynamic> data, Color accentColor) {
+  Widget _buildDistanceBonusSection(
+      BuildContext context, Map<String, dynamic> data, Color accentColor) {
     final meleeDistance = data['melee_distance_bonus'] as Map<String, dynamic>?;
-    final rangedDistance = data['ranged_distance_bonus'] as Map<String, dynamic>?;
+    final rangedDistance =
+        data['ranged_distance_bonus'] as Map<String, dynamic>?;
 
     if ((meleeDistance == null || !_hasNonNullValues(meleeDistance)) &&
         (rangedDistance == null || !_hasNonNullValues(rangedDistance))) {
@@ -678,18 +703,21 @@ class _EquipmentCardState extends State<EquipmentCard>
       content: Column(
         children: [
           if (meleeDistance != null && _hasNonNullValues(meleeDistance))
-            _buildIconTierRow(KitEquipmentIcons.meleeRange, 'Melee', meleeDistance, false),
+            _buildIconTierRow(
+                KitEquipmentIcons.meleeRange, 'Melee', meleeDistance, false),
           if (rangedDistance != null && _hasNonNullValues(rangedDistance)) ...[
             if (meleeDistance != null && _hasNonNullValues(meleeDistance))
               const SizedBox(height: 10),
-            _buildIconTierRow(KitEquipmentIcons.rangedRange, 'Ranged', rangedDistance, false),
+            _buildIconTierRow(
+                KitEquipmentIcons.rangedRange, 'Ranged', rangedDistance, false),
           ],
         ],
       ),
     );
   }
 
-  Widget _buildLightningDamageSection(BuildContext context, Map<String, dynamic> data, Color accentColor) {
+  Widget _buildLightningDamageSection(
+      BuildContext context, Map<String, dynamic> data, Color accentColor) {
     final lightningDamage = data['lightning_damage'] as Map<String, dynamic>?;
     if (lightningDamage == null || !_hasNonNullValues(lightningDamage)) {
       return const SizedBox.shrink();
@@ -707,7 +735,7 @@ class _EquipmentCardState extends State<EquipmentCard>
     final key1 = isTier ? '1st_tier' : '1st_echelon';
     final key2 = isTier ? '2nd_tier' : '2nd_echelon';
     final key3 = isTier ? '3rd_tier' : '3rd_echelon';
-    
+
     final v1 = data[key1];
     final v2 = data[key2];
     final v3 = data[key3];
@@ -726,9 +754,15 @@ class _EquipmentCardState extends State<EquipmentCard>
         const SizedBox(height: 6),
         Row(
           children: [
-            if (v1 != null) _buildTierBox(isTier ? 'T1' : 'E1', '+$v1', isTier ? '≤11' : '1st'),
-            if (v2 != null) _buildTierBox(isTier ? 'T2' : 'E2', '+$v2', isTier ? '12-16' : '2nd'),
-            if (v3 != null) _buildTierBox(isTier ? 'T3' : 'E3', '+$v3', isTier ? '17+' : '3rd'),
+            if (v1 != null)
+              _buildTierBox(
+                  isTier ? 'T1' : 'E1', '+$v1', isTier ? '≤11' : '1st'),
+            if (v2 != null)
+              _buildTierBox(
+                  isTier ? 'T2' : 'E2', '+$v2', isTier ? '12-16' : '2nd'),
+            if (v3 != null)
+              _buildTierBox(
+                  isTier ? 'T3' : 'E3', '+$v3', isTier ? '17+' : '3rd'),
           ],
         ),
       ],
@@ -777,7 +811,8 @@ class _EquipmentCardState extends State<EquipmentCard>
     );
   }
 
-  Widget _buildKeywordsSection(BuildContext context, Map<String, dynamic> data, Color accentColor) {
+  Widget _buildKeywordsSection(
+      BuildContext context, Map<String, dynamic> data, Color accentColor) {
     final keywords = data['keywords'] as List?;
     if (keywords == null || keywords.isEmpty) return const SizedBox.shrink();
 
@@ -788,30 +823,34 @@ class _EquipmentCardState extends State<EquipmentCard>
       content: Wrap(
         spacing: 6,
         runSpacing: 6,
-        children: keywords.map((k) => Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          decoration: BoxDecoration(
-            color: accentColor.withOpacity(0.12),
-            borderRadius: BorderRadius.circular(6),
-            border: Border.all(
-              color: accentColor.withOpacity(0.25),
-              width: 1,
-            ),
-          ),
-          child: Text(
-            k.toString(),
-            style: TextStyle(
-              color: accentColor,
-              fontSize: 11,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        )).toList(),
+        children: keywords
+            .map((k) => Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: accentColor.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(
+                      color: accentColor.withOpacity(0.25),
+                      width: 1,
+                    ),
+                  ),
+                  child: Text(
+                    k.toString(),
+                    style: TextStyle(
+                      color: accentColor,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ))
+            .toList(),
       ),
     );
   }
 
-  Widget _buildSignatureAbilitySection(BuildContext context, Map<String, dynamic> data, Color accentColor) {
+  Widget _buildSignatureAbilitySection(
+      BuildContext context, Map<String, dynamic> data, Color accentColor) {
     if (_signatureAbilities.isNotEmpty) {
       return Padding(
         padding: const EdgeInsets.only(bottom: 8),
@@ -830,10 +869,13 @@ class _EquipmentCardState extends State<EquipmentCard>
             // Header
             Row(
               children: [
-                AppIcon(KitIcons.fromType(widget.component.type.toLowerCase()), size: 14, color: accentColor),
+                AppIcon(KitIcons.fromType(widget.component.type.toLowerCase()),
+                    size: 14, color: accentColor),
                 const SizedBox(width: 6),
                 Text(
-                  _signatureAbilities.length > 1 ? 'SIGNATURE ABILITIES' : 'SIGNATURE ABILITY',
+                  _signatureAbilities.length > 1
+                      ? 'SIGNATURE ABILITIES'
+                      : 'SIGNATURE ABILITY',
                   style: TextStyle(
                     color: accentColor,
                     fontSize: 11,
@@ -846,9 +888,10 @@ class _EquipmentCardState extends State<EquipmentCard>
             const SizedBox(height: 12),
             // Abilities - full width with more breathing room
             ..._signatureAbilities.map((ability) => Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: AbilityExpandableItem(component: ability, embedded: true),
-            )),
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child:
+                      AbilityExpandableItem(component: ability, embedded: true),
+                )),
           ],
         ),
       );
@@ -878,31 +921,36 @@ class _EquipmentCardState extends State<EquipmentCard>
       }
 
       return _buildSection(
-        title: abilityNames.length > 1 ? 'SIGNATURE ABILITIES' : 'SIGNATURE ABILITY',
+        title: abilityNames.length > 1
+            ? 'SIGNATURE ABILITIES'
+            : 'SIGNATURE ABILITY',
         icon: KitIcons.fromType(widget.component.type.toLowerCase()),
         accentColor: accentColor,
         content: Column(
-          children: abilityNames.map((name) => Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(12),
-            margin: EdgeInsets.only(bottom: name != abilityNames.last ? 8 : 0),
-            decoration: BoxDecoration(
-              color: accentColor.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: accentColor.withOpacity(0.2),
-                width: 1,
-              ),
-            ),
-            child: Text(
-              name,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: accentColor,
-              ),
-            ),
-          )).toList(),
+          children: abilityNames
+              .map((name) => Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(12),
+                    margin: EdgeInsets.only(
+                        bottom: name != abilityNames.last ? 8 : 0),
+                    decoration: BoxDecoration(
+                      color: accentColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: accentColor.withOpacity(0.2),
+                        width: 1,
+                      ),
+                    ),
+                    child: Text(
+                      name,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: accentColor,
+                      ),
+                    ),
+                  ))
+              .toList(),
         ),
       );
     }
@@ -936,8 +984,11 @@ class _EquipmentCardState extends State<EquipmentCard>
       case 'shield':
         return 'Shield';
       default:
-        return key.replaceAll('_', ' ').split(' ')
-            .map((w) => w.isNotEmpty ? w[0].toUpperCase() + w.substring(1) : w).join(' ');
+        return key
+            .replaceAll('_', ' ')
+            .split(' ')
+            .map((w) => w.isNotEmpty ? w[0].toUpperCase() + w.substring(1) : w)
+            .join(' ');
     }
   }
 }

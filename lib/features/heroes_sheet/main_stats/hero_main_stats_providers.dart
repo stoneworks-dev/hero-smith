@@ -27,7 +27,8 @@ final heroMainStatsProvider =
   final valuesAsync = ref.watch(heroValuesProvider(heroId));
   final assemblyAsync = ref.watch(heroAssemblyProvider(heroId));
   final equipmentBonusesAsync = ref.watch(heroEquipmentBonusesProvider(heroId));
-  final treasureBonusesAsync = ref.watch(heroEquippedTreasureBonusesProvider(heroId));
+  final treasureBonusesAsync =
+      ref.watch(heroEquippedTreasureBonusesProvider(heroId));
 
   // Propagate loading/error states if any dependency is not ready
   if (valuesAsync.isLoading ||
@@ -53,14 +54,15 @@ final heroMainStatsProvider =
     );
   }
   // Treasure bonuses errors are non-fatal, default to empty
-  final treasureBonuses = treasureBonusesAsync.valueOrNull ?? EquippedTreasureBonuses.empty();
+  final treasureBonuses =
+      treasureBonusesAsync.valueOrNull ?? EquippedTreasureBonuses.empty();
 
   final values = valuesAsync.requireValue;
   final assembly = assemblyAsync.value; // may be null
   final equipmentBonuses = equipmentBonusesAsync.requireValue;
 
-  final stats =
-      _mapValuesAndAssemblyToMainStats(values, assembly, equipmentBonuses, treasureBonuses);
+  final stats = _mapValuesAndAssemblyToMainStats(
+      values, assembly, equipmentBonuses, treasureBonuses);
   return AsyncData(stats);
 });
 
@@ -93,26 +95,18 @@ HeroMainStats _mapValuesAndAssemblyToMainStats(
   final modifications =
       _combineModificationMaps(choiceModifications, userModifications);
 
-  // Class ID comes from assembly (hero_entries), fallback to legacy hero_values
-  final classId = assembly?.classId ?? readText('basics.className');
+  final classId = assembly?.classId;
 
   // Heroic resource name from hero_values
   final heroicResourceName = readText('heroic.resource');
 
-  // Build dynamic modifiers from hero_values + feature stat bonuses stored in hero_values
+  // Build dynamic modifiers from hero_values plus source-scoped feature entries.
   final baseDynamicMods = DynamicModifierList.fromJsonString(
     readText('dynamic_modifiers'),
   );
 
-  final featureBonusMap = _parseFeatureStatBonusMap(values);
-  var featureDynamicMods =
-      _buildFeatureStatBonusDynamicModifiersFromMap(featureBonusMap);
-
-  // Fallback to assembly-derived entries for backward compatibility
-  if (featureDynamicMods.modifiers.isEmpty) {
-    featureDynamicMods =
-        _buildFeatureStatBonusDynamicModifiersFromAssembly(assembly);
-  }
+  final featureDynamicMods =
+      _buildFeatureStatBonusDynamicModifiersFromAssembly(assembly);
 
   final dynamicModifiers = baseDynamicMods.add(featureDynamicMods.modifiers);
 
@@ -264,22 +258,6 @@ String? _normalizeCharacteristic(String value) {
   };
 }
 
-/// Parse feature stat bonuses stored in hero_values under strife.feature_stat_bonuses.
-/// Returns a map keyed by featureId -> payload map.
-Map<String, dynamic> _parseFeatureStatBonusMap(List<db.HeroValue> values) {
-  final row =
-      values.firstWhereOrNull((v) => v.key == 'strife.feature_stat_bonuses');
-  final raw = row?.jsonValue ?? row?.textValue;
-  if (raw == null || raw.isEmpty) return const {};
-  try {
-    final decoded = jsonDecode(raw);
-    if (decoded is Map<String, dynamic>) {
-      return decoded;
-    }
-  } catch (_) {}
-  return const {};
-}
-
 /// Build dynamic modifiers from a feature bonus map stored in hero_values.
 DynamicModifierList _buildFeatureStatBonusDynamicModifiersFromMap(
     Map<String, dynamic> featureBonusMap) {
@@ -359,11 +337,11 @@ DynamicModifierList _buildFeatureStatBonusDynamicModifiersFromMap(
   return DynamicModifierList(modifiers);
 }
 
-/// Legacy: build dynamic modifiers from assembly feature_stat_bonus hero_entries.
+/// Build dynamic modifiers from assembly feature_stat_bonus hero_entries.
 DynamicModifierList _buildFeatureStatBonusDynamicModifiersFromAssembly(
     HeroAssembly? assembly) {
   if (assembly == null) return DynamicModifierList.empty();
-  final modifiers = <DynamicModifier>[];
+  final featureBonusMap = <String, dynamic>{};
 
   for (final entry in assembly.featureStatBonuses) {
     if (entry.payload == null) continue;
@@ -371,41 +349,15 @@ DynamicModifierList _buildFeatureStatBonusDynamicModifiersFromAssembly(
     try {
       final payload = jsonDecode(entry.payload!);
       if (payload is! Map) continue;
-
-      final source = 'class_feature:${entry.sourceId}';
-
-      for (final bonusEntry in payload.entries) {
-        final key = bonusEntry.key.toString();
-        final value = bonusEntry.value;
-
-        final stat = _bonusKeyToStat(key);
-        if (stat == null) continue;
-
-        if (value is int) {
-          modifiers.add(DynamicModifier(
-            stat: stat,
-            formulaType: FormulaType.fixed,
-            formulaParam: value.toString(),
-            source: source,
-          ));
-        } else if (value is String) {
-          final characteristic = _normalizeCharacteristic(value);
-          if (characteristic != null) {
-            modifiers.add(DynamicModifier(
-              stat: stat,
-              formulaType: FormulaType.characteristic,
-              formulaParam: characteristic,
-              source: source,
-            ));
-          }
-        }
-      }
+      final sourceId =
+          entry.sourceId.isNotEmpty ? entry.sourceId : entry.entryId;
+      featureBonusMap[sourceId] = payload;
     } catch (_) {
       // Skip malformed entries
     }
   }
 
-  return DynamicModifierList(modifiers);
+  return _buildFeatureStatBonusDynamicModifiersFromMap(featureBonusMap);
 }
 
 /// Add equipment bonuses to the modifications map.
@@ -474,7 +426,7 @@ final heroAncestryStatModsProvider =
 });
 
 /// Provider to watch BASE damage resistances (user-editable values only).
-/// This returns data from hero_values with only baseImmunity/baseWeakness - 
+/// This returns data from hero_values with only baseImmunity/baseWeakness -
 /// no bonus values. Use this for saving.
 final heroDamageResistancesProvider =
     StreamProvider.family<HeroDamageResistances, String>((ref, heroId) {
@@ -485,7 +437,8 @@ final heroDamageResistancesProvider =
 /// Provider to watch resistance bonuses from hero_entries (ancestry + complication).
 /// Returns a map of damage type -> DamageResistanceBonus.
 final heroResistanceBonusEntriesProvider =
-    StreamProvider.family<Map<String, DamageResistanceBonus>, String>((ref, heroId) {
+    StreamProvider.family<Map<String, DamageResistanceBonus>, String>(
+        (ref, heroId) {
   final service = ref.watch(ancestryBonusServiceProvider);
   return service.watchResistanceBonusEntries(heroId);
 });
@@ -494,13 +447,15 @@ final heroResistanceBonusEntriesProvider =
 /// - Base values (user-editable) from hero_values
 /// - Ancestry/complication bonuses from hero_entries
 /// - Treasure bonuses from equipped treasures
-/// 
+///
 /// Use this for DISPLAY purposes only - do not save this data.
 final heroCombinedDamageResistancesProvider =
     Provider.family<AsyncValue<HeroDamageResistances>, String>((ref, heroId) {
   final baseResistancesAsync = ref.watch(heroDamageResistancesProvider(heroId));
-  final entryBonusesAsync = ref.watch(heroResistanceBonusEntriesProvider(heroId));
-  final treasureBonusesAsync = ref.watch(heroEquippedTreasureBonusesProvider(heroId));
+  final entryBonusesAsync =
+      ref.watch(heroResistanceBonusEntriesProvider(heroId));
+  final treasureBonusesAsync =
+      ref.watch(heroEquippedTreasureBonusesProvider(heroId));
 
   return baseResistancesAsync.when(
     data: (baseResistances) {
@@ -510,15 +465,17 @@ final heroCombinedDamageResistancesProvider =
             data: (treasureBonuses) {
               // Start with base resistances
               var combined = baseResistances;
-              
+
               // Apply ancestry/complication bonuses from entries
               if (entryBonuses.isNotEmpty) {
-                combined = combined.applyBonuses(entryBonuses, clearMissing: false);
+                combined =
+                    combined.applyBonuses(entryBonuses, clearMissing: false);
               }
-              
+
               // Merge treasure immunities on top
               if (treasureBonuses.immunities.isNotEmpty) {
-                final treasureImmunityBonuses = <String, DamageResistanceBonus>{};
+                final treasureImmunityBonuses =
+                    <String, DamageResistanceBonus>{};
                 for (final entry in treasureBonuses.immunities.entries) {
                   final damageType = entry.key.toLowerCase();
                   treasureImmunityBonuses[damageType] = DamageResistanceBonus(
@@ -529,14 +486,15 @@ final heroCombinedDamageResistancesProvider =
                 }
                 combined = combined.mergeBonuses(treasureImmunityBonuses);
               }
-              
+
               return AsyncValue.data(combined);
             },
             loading: () {
               // Still apply entry bonuses even if treasure is loading
               var combined = baseResistances;
               if (entryBonuses.isNotEmpty) {
-                combined = combined.applyBonuses(entryBonuses, clearMissing: false);
+                combined =
+                    combined.applyBonuses(entryBonuses, clearMissing: false);
               }
               return AsyncValue.data(combined);
             },
@@ -544,7 +502,8 @@ final heroCombinedDamageResistancesProvider =
               // Still apply entry bonuses even if treasure errors
               var combined = baseResistances;
               if (entryBonuses.isNotEmpty) {
-                combined = combined.applyBonuses(entryBonuses, clearMissing: false);
+                combined =
+                    combined.applyBonuses(entryBonuses, clearMissing: false);
               }
               return AsyncValue.data(combined);
             },
@@ -562,6 +521,7 @@ final heroCombinedDamageResistancesProvider =
 /// Provider to load equipment bonuses that have been applied to the hero.
 final heroEquipmentBonusesProvider =
     FutureProvider.family<Map<String, int>, String>((ref, heroId) async {
+  ref.watch(heroEntriesProvider(heroId));
   final repo = ref.read(heroRepositoryProvider);
   return repo.getEquipmentBonuses(heroId);
 });

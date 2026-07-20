@@ -25,11 +25,11 @@
 
     "starting_skills": {
       "granted_skills": ["Read Person"],
-      "skill_groups": ["interpersonal"],
-      "skill_count": 2,
-      "skill_groups_2": ["intrigue", "lore"],
-      "skill_count_1": 1,
-      "quick_build": ["Brag", "Read Person", "Rumors", "Society"]
+      "quick_build": ["Brag", "Read Person", "Rumors", "Society"],
+      "allowances": [
+        { "count": 2, "groups": ["interpersonal"] },
+        { "count": 1, "groups": ["intrigue", "lore"] }
+      ]
     },
     "fixed_starting_characteristics": {
       "agility": 2,

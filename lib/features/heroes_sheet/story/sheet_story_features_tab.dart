@@ -25,7 +25,25 @@ class _FeaturesTabState extends ConsumerState<_FeaturesTab> {
   Map<String, Set<String>> _featureSelections = const {};
   List<String?> _equipmentIds = const [];
   Map<String, Map<String, String>> _skillGroupSelections = const {};
-  Set<String> _reservedSkillIds = const {};
+  List<app_db.HeroEntry> _skillEntries = const [];
+
+  HeroConflictIndex get _skillConflictIndex => buildStrengthSkillConflictIndex(
+        persistedClaims: _skillEntries.map(
+          (entry) => HeroEntryClaim(
+            key: HeroEntryKey(
+              entryType: entry.entryType,
+              canonicalEntryId: entry.entryId,
+            ),
+            owner: HeroClaimOwner.persisted(
+              source: HeroClaimSource(
+                sourceType: entry.sourceType,
+                sourceId: entry.sourceId,
+              ),
+            ),
+          ),
+        ),
+        selections: _skillGroupSelections,
+      );
 
   @override
   void initState() {
@@ -112,19 +130,20 @@ class _FeaturesTabState extends ConsumerState<_FeaturesTab> {
         );
       }
 
-      final savedFeatureSelections = await repo.getFeatureSelections(widget.heroId);
+      final savedFeatureSelections =
+          await repo.getFeatureSelections(widget.heroId);
       final equipmentIds = await repo.getEquipmentIds(widget.heroId);
-      
+
       // Load skill_group selections
       Map<String, Map<String, String>> skillGroupSelections = const {};
-      Set<String> reservedSkillIds = const {};
+      List<app_db.HeroEntry> skillEntries = const [];
       try {
-        final grantService = ClassFeatureGrantsService(db);
-        skillGroupSelections = await grantService.loadSkillGroupSelections(widget.heroId);
-        
-        // Get reserved skill IDs (skills from all sources)
-        final allSkillEntries = await repo.getSkillEntries(widget.heroId);
-        reservedSkillIds = allSkillEntries.map((e) => e.entryId).toSet();
+        final grantService = ref.read(classFeatureGrantsServiceProvider);
+        skillGroupSelections =
+            await grantService.loadSkillGroupSelections(widget.heroId);
+
+        // Get skill entries from all sources for duplicate prevention
+        skillEntries = await repo.getSkillEntries(widget.heroId);
       } catch (_) {
         // Best-effort: continue without skill group data
       }
@@ -142,7 +161,7 @@ class _FeaturesTabState extends ConsumerState<_FeaturesTab> {
               : const {};
           _equipmentIds = equipmentIds;
           _skillGroupSelections = skillGroupSelections;
-          _reservedSkillIds = reservedSkillIds;
+          _skillEntries = skillEntries;
           _isLoading = false;
         });
       }
@@ -210,7 +229,7 @@ class _FeaturesTabState extends ConsumerState<_FeaturesTab> {
             onSelectionsChanged: _handleSelectionsChanged,
             skillGroupSelections: _skillGroupSelections,
             onSkillGroupSelectionChanged: _handleSkillGroupSelectionChanged,
-            reservedSkillIds: _reservedSkillIds,
+            skillConflictIndex: _skillConflictIndex,
           ),
         ],
       ),
@@ -228,8 +247,7 @@ class _FeaturesTabState extends ConsumerState<_FeaturesTab> {
       final repo = ref.read(heroRepositoryProvider);
       await repo.saveFeatureSelections(widget.heroId, selections);
       if (_classData != null) {
-        final db = ref.read(appDatabaseProvider);
-        final grantService = ClassFeatureGrantsService(db);
+        final grantService = ref.read(classFeatureGrantsServiceProvider);
         await grantService.applyClassFeatureSelections(
           heroId: widget.heroId,
           classData: _classData!,
@@ -242,7 +260,8 @@ class _FeaturesTabState extends ConsumerState<_FeaturesTab> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(SheetStoryFeaturesTabText.failedToSaveFeatureSelections(e)),
+          content:
+              Text(SheetStoryFeaturesTabText.failedToSaveFeatureSelections(e)),
           backgroundColor: Colors.red,
         ),
       );
@@ -256,7 +275,8 @@ class _FeaturesTabState extends ConsumerState<_FeaturesTab> {
   ) async {
     // Update local state immediately for responsiveness
     setState(() {
-      final updated = Map<String, Map<String, String>>.from(_skillGroupSelections);
+      final updated =
+          Map<String, Map<String, String>>.from(_skillGroupSelections);
       if (skillId == null || skillId.isEmpty) {
         if (updated.containsKey(featureId)) {
           updated[featureId]!.remove(grantKey);
@@ -269,39 +289,32 @@ class _FeaturesTabState extends ConsumerState<_FeaturesTab> {
         updated[featureId]![grantKey] = skillId;
       }
       _skillGroupSelections = updated;
-      
-      // Update reserved skill IDs
-      final updatedReserved = Set<String>.from(_reservedSkillIds);
-      if (skillId != null && skillId.isNotEmpty) {
-        updatedReserved.add(skillId);
-      }
-      _reservedSkillIds = updatedReserved;
     });
-    
+
     // Save to database
     try {
-      final db = ref.read(appDatabaseProvider);
-      final grantService = ClassFeatureGrantsService(db);
+      final grantService = ref.read(classFeatureGrantsServiceProvider);
       await grantService.setSkillGroupSelection(
         heroId: widget.heroId,
         featureId: featureId,
         grantKey: grantKey,
         skillId: skillId,
       );
-      
-      // Reload reserved skills to ensure consistency
+
+      // Reload skill entries to ensure consistency
       final repo = ref.read(heroRepositoryProvider);
       final allSkillEntries = await repo.getSkillEntries(widget.heroId);
       if (mounted) {
         setState(() {
-          _reservedSkillIds = allSkillEntries.map((e) => e.entryId).toSet();
+          _skillEntries = allSkillEntries;
         });
       }
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(SheetStoryFeaturesTabText.failedToSaveSkillSelection(e)),
+          content:
+              Text(SheetStoryFeaturesTabText.failedToSaveSkillSelection(e)),
           backgroundColor: Colors.red,
         ),
       );
@@ -313,7 +326,8 @@ class _FeaturesTabState extends ConsumerState<_FeaturesTab> {
 
     final subclassName = _subclassSelection?.subclassName;
     if (subclassName != null && subclassName.trim().isNotEmpty) {
-      chips.add(_buildCompactChip(theme, subclassName.trim(), FeatureIcons.subclass));
+      chips.add(
+          _buildCompactChip(theme, subclassName.trim(), FeatureIcons.subclass));
     }
 
     if (_selectedDomains.isNotEmpty) {
@@ -325,12 +339,16 @@ class _FeaturesTabState extends ConsumerState<_FeaturesTab> {
 
     final deityDisplay = _selectedDeity?.name ?? _subclassSelection?.deityName;
     if (deityDisplay != null && deityDisplay.trim().isNotEmpty) {
-      chips.add(_buildCompactChip(theme, deityDisplay.trim(), FeatureIcons.deity));
+      chips.add(
+          _buildCompactChip(theme, deityDisplay.trim(), FeatureIcons.deity));
     }
 
     if (_characteristicArrayDescription != null &&
         _characteristicArrayDescription!.trim().isNotEmpty) {
-      chips.add(_buildCompactChip(theme, _characteristicArrayDescription!.trim(), FeatureIcons.characteristics));
+      chips.add(_buildCompactChip(
+          theme,
+          _characteristicArrayDescription!.trim(),
+          FeatureIcons.characteristics));
     }
 
     return chips;

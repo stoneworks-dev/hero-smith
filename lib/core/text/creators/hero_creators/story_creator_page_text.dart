@@ -9,4 +9,5 @@ class StoryCreatorPageText {
   static const String heroTitleFallbackOnNameChanged = 'Hero Creator';
   static const String heroNotFoundMessage = 'Hero data could not be found.';
   static const String errorViewRetry = 'Retry';
+  static const String failedToSaveStoryPrefix = 'Failed to save story: ';
 }

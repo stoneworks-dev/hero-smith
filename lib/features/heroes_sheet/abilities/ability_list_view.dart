@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/db/providers.dart';
 import '../../../core/models/component.dart';
-import '../../../core/repositories/hero_entry_repository.dart';
 import '../../../core/services/ability_data_service.dart';
+import '../../../core/storage/hero_storage_contract.dart';
 import '../../../core/text/heroes_sheet/abilities/ability_list_view_text.dart';
 import '../../../core/theme/ability_colors.dart';
 import '../../../core/theme/app_icon.dart';
@@ -35,7 +35,7 @@ extension ActionCategoryLabel on ActionCategory {
         return AbilityListViewText.actionLabelTriggered;
     }
   }
-  
+
   AppIconData get icon {
     switch (this) {
       case ActionCategory.actions:
@@ -46,7 +46,7 @@ extension ActionCategoryLabel on ActionCategory {
         return AppIcons.abilities.triggered;
     }
   }
-  
+
   Color get color {
     switch (this) {
       case ActionCategory.actions:
@@ -62,15 +62,16 @@ extension ActionCategoryLabel on ActionCategory {
 /// Displays hero abilities grouped by action type (Actions, Maneuvers, Triggered)
 class AbilityListView extends ConsumerStatefulWidget {
   const AbilityListView({
-    super.key, 
-    required this.abilityIds, 
+    super.key,
+    required this.abilityIds,
     required this.heroId,
     this.loadAbilities,
   });
 
   final List<String> abilityIds;
   final String heroId;
-  final Future<List<Component>> Function(List<String> abilityIds)? loadAbilities;
+  final Future<List<Component>> Function(List<String> abilityIds)?
+      loadAbilities;
 
   @override
   ConsumerState<AbilityListView> createState() => _AbilityListViewState();
@@ -79,13 +80,14 @@ class AbilityListView extends ConsumerStatefulWidget {
 class _AbilityListViewState extends ConsumerState<AbilityListView>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  
+
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: ActionCategory.values.length, vsync: this);
+    _tabController =
+        TabController(length: ActionCategory.values.length, vsync: this);
   }
-  
+
   @override
   void dispose() {
     _tabController.dispose();
@@ -95,8 +97,9 @@ class _AbilityListViewState extends ConsumerState<AbilityListView>
   /// Categorize an ability into an action category based on action_type
   ActionCategory _categorizeAbility(Component ability) {
     final data = ability.data;
-    final actionType = (data['action_type']?.toString().toLowerCase() ?? '').trim();
-    
+    final actionType =
+        (data['action_type']?.toString().toLowerCase() ?? '').trim();
+
     // Categorize by action_type
     if (actionType.contains('triggered')) {
       return ActionCategory.triggered;
@@ -107,7 +110,7 @@ class _AbilityListViewState extends ConsumerState<AbilityListView>
     if (actionType.contains('action')) {
       return ActionCategory.actions;
     }
-    
+
     // Fallback: check trigger field for older data format
     final trigger = data['trigger']?.toString().toLowerCase() ?? '';
     if (trigger == 'triggered' || trigger == 'free triggered') {
@@ -116,21 +119,22 @@ class _AbilityListViewState extends ConsumerState<AbilityListView>
     if (trigger == 'maneuver' || trigger == 'free maneuver') {
       return ActionCategory.maneuvers;
     }
-    
+
     // Default to actions
     return ActionCategory.actions;
   }
 
   @override
   Widget build(BuildContext context) {
-    
     final load = widget.loadAbilities ?? _loadAbilityComponents;
 
     return FutureBuilder<List<Component>>(
       future: load(widget.abilityIds),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator(color: NavigationTheme.abilitiesColor));
+          return Center(
+              child: CircularProgressIndicator(
+                  color: NavigationTheme.abilitiesColor));
         }
 
         if (snapshot.hasError) {
@@ -145,8 +149,8 @@ class _AbilityListViewState extends ConsumerState<AbilityListView>
                   Text(
                     AbilityListViewText.errorTitle,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: FormTheme.textBright,
-                    ),
+                          color: FormTheme.textBright,
+                        ),
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -179,12 +183,12 @@ class _AbilityListViewState extends ConsumerState<AbilityListView>
         for (final category in ActionCategory.values) {
           grouped[category] = [];
         }
-        
+
         for (final ability in abilities) {
           final category = _categorizeAbility(ability);
           grouped[category]!.add(ability);
         }
-        
+
         // Sort each category by cost (resource_value)
         for (final category in ActionCategory.values) {
           grouped[category]!.sort((a, b) {
@@ -202,12 +206,16 @@ class _AbilityListViewState extends ConsumerState<AbilityListView>
                 // Custom styled tab bar - compact horizontal
                 Container(
                   color: NavigationTheme.navBarBackground,
-                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                   child: Row(
-                    children: List.generate(ActionCategory.values.length, (index) {
+                    children:
+                        List.generate(ActionCategory.values.length, (index) {
                       final category = ActionCategory.values[index];
                       final isSelected = _tabController.index == index;
-                      final color = isSelected ? category.color : NavigationTheme.inactiveColor;
+                      final color = isSelected
+                          ? category.color
+                          : NavigationTheme.inactiveColor;
                       final count = grouped[category]!.length;
 
                       return Expanded(
@@ -217,10 +225,12 @@ class _AbilityListViewState extends ConsumerState<AbilityListView>
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 200),
                             curve: Curves.easeOut,
-                            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 6, horizontal: 4),
                             margin: const EdgeInsets.symmetric(horizontal: 2),
                             decoration: isSelected
-                                ? NavigationTheme.selectedNavItemDecoration(category.color)
+                                ? NavigationTheme.selectedNavItemDecoration(
+                                    category.color)
                                 : null,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -238,7 +248,9 @@ class _AbilityListViewState extends ConsumerState<AbilityListView>
                                     style: TextStyle(
                                       color: color,
                                       fontSize: 11,
-                                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                                      fontWeight: isSelected
+                                          ? FontWeight.w600
+                                          : FontWeight.w500,
                                     ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -247,9 +259,11 @@ class _AbilityListViewState extends ConsumerState<AbilityListView>
                                 if (count > 0) ...[
                                   const SizedBox(width: 4),
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 5, vertical: 1),
                                     decoration: BoxDecoration(
-                                      color: category.color.withValues(alpha: isSelected ? 1.0 : 0.7),
+                                      color: category.color.withValues(
+                                          alpha: isSelected ? 1.0 : 0.7),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: Text(
@@ -287,10 +301,11 @@ class _AbilityListViewState extends ConsumerState<AbilityListView>
       },
     );
   }
-  
-  Widget _buildCategoryList(List<Component> abilities, ActionCategory category) {
+
+  Widget _buildCategoryList(
+      List<Component> abilities, ActionCategory category) {
     final theme = Theme.of(context);
-    
+
     if (abilities.isEmpty) {
       return Container(
         color: NavigationTheme.cardBackgroundDark,
@@ -300,7 +315,8 @@ class _AbilityListViewState extends ConsumerState<AbilityListView>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                AppIcon(category.icon, size: 48, color: category.color.withValues(alpha: 0.5)),
+                AppIcon(category.icon,
+                    size: 48, color: category.color.withValues(alpha: 0.5)),
                 const SizedBox(height: 12),
                 Text(
                   '${AbilityListViewText.emptyCategoryPrefix}${category.label}',
@@ -321,7 +337,7 @@ class _AbilityListViewState extends ConsumerState<AbilityListView>
         ),
       );
     }
-    
+
     return Container(
       color: NavigationTheme.cardBackgroundDark,
       child: ListView.builder(
@@ -383,24 +399,26 @@ class _AbilityListViewState extends ConsumerState<AbilityListView>
     if (confirmed != true) return;
 
     try {
-      final db = ref.read(appDatabaseProvider);
-      final entries = HeroEntryRepository(db);
-      
-      // Remove the ability entry from hero_entries
-      // Only remove if it was manually added (sourceType='manual_choice')
-      // First get the entries to find the one matching our criteria
-      final existingEntries = await entries.listEntriesByType(widget.heroId, 'ability');
-      final toRemove = existingEntries.where(
-        (e) => e.entryId == abilityId && e.sourceType == 'manual_choice',
-      ).toList();
-      
-      for (final entry in toRemove) {
-        await db.customStatement(
-          'DELETE FROM hero_entries WHERE id = ?',
-          [entry.id],
-        );
+      final removed =
+          await ref.read(heroEntryRepositoryProvider).removeEntryFromSource(
+                heroId: widget.heroId,
+                entryType: HeroEntryTypes.ability,
+                entryId: abilityId,
+                sourceType: HeroEntrySourceTypes.manualChoice,
+                sourceId: HeroEntrySourceIds.sheetAdd,
+              );
+
+      if (removed == 0) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(AbilityListViewText.snackAbilityOwnedElsewhere),
+            ),
+          );
+        }
+        return;
       }
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -472,4 +490,5 @@ class _AbilityListViewState extends ConsumerState<AbilityListView>
     }
 
     return components;
-  }}
+  }
+}

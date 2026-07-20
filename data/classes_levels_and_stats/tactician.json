@@ -23,9 +23,11 @@
 
     "starting_skills": {
       "granted_skills": ["Lead"],
-      "skill_groups": [
-        "Exploration",
+      "quick_build": ["Lead", "Monsters", "Strategy"],
+      "allowances": [
         {
+          "count": 2,
+          "groups": ["exploration"],
           "individual_skill_choices": [
             "Alertness",
             "Architecture",
@@ -40,9 +42,7 @@
             "Strategy"
           ]
         }
-      ],
-      "skill_count": 2,
-      "quick_build": ["Lead", "Monsters", "Strategy"]
+      ]
     },
     "fixed_starting_characteristics": { "might": 2, "reason": 2 },
     "starting_characteristics_arrays": [

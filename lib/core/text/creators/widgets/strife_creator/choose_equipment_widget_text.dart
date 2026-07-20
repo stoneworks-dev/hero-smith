@@ -2,7 +2,9 @@
 
 class ChooseEquipmentWidgetText {
   static const String sectionTitle = 'Equipment & Modifications';
-  static const String sectionSubtitle = 'Select the loadout required by your class';
+  static const String sectionSubtitle =
+      'Select the loadout required by your class';
+  static const String conflictOwnerPrefix = 'Already owned by: ';
   static const String equipmentTypeTitleKit = 'Standard Kits';
   static const String equipmentTypeTitlePsionic = 'Psionic Augmentations';
   static const String equipmentTypeTitleEnchantment = 'Enchantments';

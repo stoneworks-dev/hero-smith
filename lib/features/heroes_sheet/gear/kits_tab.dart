@@ -8,7 +8,6 @@ import '../../../core/models/class_data.dart';
 import '../../../core/models/component.dart' as model;
 import '../../../core/repositories/hero_repository.dart';
 import '../../../core/services/class_data_service.dart';
-import '../../../core/services/kit_grants_service.dart';
 import '../../../core/theme/form_theme.dart';
 import '../../../core/theme/navigation_theme.dart';
 import '../../../core/text/heroes_sheet/gear/kits_tab_text.dart';
@@ -29,13 +28,10 @@ class KitsTab extends ConsumerStatefulWidget {
 
 class _KitsTabState extends ConsumerState<KitsTab> {
   List<model.Component> _allKits = [];
-  List<String> _allowedEquipmentTypes = ['kit']; // Default to standard kit
   List<String> _favoriteKitIds = [];
   List<String> _equippedKitIds = [];
   List<EquipmentSlotConfig> _equipmentSlots = [];
   List<String?> _equippedSlotIds = [];
-  String? _classId;
-  String? _normalizedClassId;
   final Map<String, model.Component> _kitCache = {};
   bool _isLoading = true;
   String? _error;
@@ -58,19 +54,12 @@ class _KitsTabState extends ConsumerState<KitsTab> {
   Future<void> _loadData() async {
     try {
       final db = ref.read(appDatabaseProvider);
-      final values = await db.getHeroValues(widget.heroId);
+      final heroRepo = ref.read(heroRepositoryProvider);
+      final hero = await heroRepo.load(widget.heroId);
 
       // Get class and subclass info
-      String? className;
-      String? subclassName;
-
-      for (final value in values) {
-        if (value.key == 'basics.className') {
-          className = value.textValue;
-        } else if (value.key == 'basics.subclass') {
-          subclassName = value.textValue;
-        }
-      }
+      final className = hero?.className;
+      final subclassName = hero?.subclass;
 
       // Normalize class id to match stored class data ids (e.g., class_conduit)
       String? resolvedClassId = _normalizeClassId(className);
@@ -114,7 +103,6 @@ class _KitsTabState extends ConsumerState<KitsTab> {
         ..sort((a, b) => a.name.compareTo(b.name));
 
       // Load favorite and equipped kits
-      final heroRepo = ref.read(heroRepositoryProvider);
       final favorites = await heroRepo.getFavoriteKitIds(widget.heroId);
       final equipped = await heroRepo.getEquipmentIds(widget.heroId);
       final alignedEquipped = await _alignEquipmentToSlots(
@@ -165,13 +153,10 @@ class _KitsTabState extends ConsumerState<KitsTab> {
       if (mounted) {
         setState(() {
           _allKits = kits;
-          _allowedEquipmentTypes = allowedTypes;
           _favoriteKitIds = mergedFavorites;
           _equipmentSlots = slots;
           _equippedSlotIds = alignedEquipped;
           _equippedKitIds = equippedActive;
-          _classId = resolvedClassId ?? className;
-          _normalizedClassId = normalizedClassName;
           _kitCache
             ..clear()
             ..addAll(cache);
@@ -301,8 +286,8 @@ class _KitsTabState extends ConsumerState<KitsTab> {
         : slots;
   }
 
-  /// Best-effort normalization of class ids from hero values.
-  /// The data files use ids like "class_conduit"; hero values may store "conduit" or already the id.
+  /// Best-effort normalization of class ids from selected hero entries.
+  /// The data files use ids like "class_conduit"; entries may store "conduit" or already the id.
   String? _normalizeClassId(String? raw) {
     if (raw == null || raw.isEmpty) return null;
     final trimmed = raw.trim().toLowerCase();
@@ -593,12 +578,6 @@ class _KitsTabState extends ConsumerState<KitsTab> {
       final updatedSlots = updatedKitIds.map<String?>((id) => id).toList();
 
       await heroRepo.saveEquipmentIds(widget.heroId, updatedSlots);
-      await db.upsertHeroValue(
-        heroId: widget.heroId,
-        key: 'basics.equipment',
-        jsonMap: {'ids': updatedSlots},
-      );
-
       await _recalculateAndSaveBonuses(heroRepo, updatedSlots);
 
       ref.invalidate(heroRepositoryProvider);
@@ -648,11 +627,10 @@ class _KitsTabState extends ConsumerState<KitsTab> {
 
   Future<void> _recalculateAndSaveBonuses(
       HeroRepository heroRepo, List<String?> equipmentSlotIds) async {
-    final db = ref.read(appDatabaseProvider);
     final level = await heroRepo.getHeroLevel(widget.heroId);
 
     // Use KitGrantsService to apply all kit grants (including stat mods like decrease_total)
-    final kitGrantsService = KitGrantsService(db);
+    final kitGrantsService = ref.read(kitGrantsServiceProvider);
     await kitGrantsService.applyKitGrants(
       heroId: widget.heroId,
       equipmentIds: equipmentSlotIds,

@@ -12,9 +12,13 @@ import '../repositories/downtime_repository.dart';
 import '../models/component.dart' as model;
 import '../services/perk_grants_service.dart';
 import '../services/title_grants_service.dart';
+import '../services/class_feature_grants_service.dart';
+import '../services/kit_grants_service.dart';
 import '../services/ability_resolver_service.dart';
 import '../services/damage_resistance_service.dart';
 import '../services/hero_config_service.dart';
+import '../services/hero_duplicate_guard_service.dart';
+import '../services/hero_mutation_service.dart';
 import '../services/hero_assembly_service.dart';
 import '../services/treasure_bonus_service.dart';
 import '../services/items_catalog_service.dart';
@@ -23,6 +27,8 @@ import '../repositories/retainer_repository.dart';
 import '../models/retainer.dart';
 import '../models/retainer_instance.dart';
 import '../models/hero_assembled_model.dart';
+import '../../features/hero_builder/domain/hero_claim.dart';
+import '../../features/hero_builder/domain/hero_conflict_index.dart';
 
 // Core singletons
 final appDatabaseProvider =
@@ -42,6 +48,16 @@ final heroConfigServiceProvider = Provider<HeroConfigService>((ref) {
   return HeroConfigService(db);
 });
 
+final heroDuplicateGuardServiceProvider =
+    Provider<HeroDuplicateGuardService>((ref) {
+  return const HeroDuplicateGuardService();
+});
+
+final heroMutationServiceProvider = Provider<HeroMutationService>((ref) {
+  final db = ref.read(appDatabaseProvider);
+  return HeroMutationService(db);
+});
+
 final heroAssemblyServiceProvider = Provider<HeroAssemblyService>((ref) {
   final db = ref.read(appDatabaseProvider);
   return HeroAssemblyService(db);
@@ -57,6 +73,19 @@ final perkGrantsServiceProvider = Provider<PerkGrantsService>((ref) {
   return PerkGrantsService(db);
 });
 
+final classFeatureGrantsServiceProvider =
+    Provider<ClassFeatureGrantsService>((ref) {
+  final db = ref.read(appDatabaseProvider);
+  final mutations = ref.read(heroMutationServiceProvider);
+  return ClassFeatureGrantsService(db, mutations: mutations);
+});
+
+final kitGrantsServiceProvider = Provider<KitGrantsService>((ref) {
+  final db = ref.read(appDatabaseProvider);
+  final mutations = ref.read(heroMutationServiceProvider);
+  return KitGrantsService(db, mutations: mutations);
+});
+
 final titleGrantsServiceProvider = Provider<TitleGrantsService>((ref) {
   final db = ref.read(appDatabaseProvider);
   return TitleGrantsService(db);
@@ -67,7 +96,8 @@ final abilityResolverServiceProvider = Provider<AbilityResolverService>((ref) {
   return AbilityResolverService(db);
 });
 
-final damageResistanceServiceProvider = Provider<DamageResistanceService>((ref) {
+final damageResistanceServiceProvider =
+    Provider<DamageResistanceService>((ref) {
   final db = ref.read(appDatabaseProvider);
   return DamageResistanceService(db);
 });
@@ -108,7 +138,8 @@ final allComponentsProvider = StreamProvider<List<model.Component>>((ref) {
   return repo.watchAll();
 });
 
-final componentsByTypeProvider = StreamProvider.family<List<model.Component>, String>((ref, type) {
+final componentsByTypeProvider =
+    StreamProvider.family<List<model.Component>, String>((ref, type) {
   final repo = ref.read(componentRepositoryProvider);
   return repo.watchByType(type);
 });
@@ -132,11 +163,61 @@ final heroEntriesProvider =
   return repo.watchEntries(heroId);
 });
 
+/// Hero-wide persisted ownership for every guarded component type.
+///
+/// Creator drafts project their own mutation scopes on top of these claims.
+/// Hero-sheet manual-add pickers consume this index directly because they add
+/// a new source and therefore must conflict with every existing owner.
+final heroPersistedConflictIndexProvider =
+    Provider.family<HeroConflictIndex, String>((ref, heroId) {
+  final guard = ref.watch(heroDuplicateGuardServiceProvider);
+  final entries = ref.watch(heroEntriesProvider(heroId)).valueOrNull;
+  if (entries == null) return HeroConflictIndex.empty;
+
+  return HeroConflictIndex.projected(
+    persistedClaims: entries
+        .where(
+          (entry) => guard.guardsEntryType(entry.entryType),
+        )
+        .map(
+          (entry) => HeroEntryClaim(
+            key: HeroEntryKey(
+              entryType: entry.entryType,
+              canonicalEntryId: entry.entryId,
+            ),
+            owner: HeroClaimOwner.persisted(
+              source: HeroClaimSource(
+                sourceType: entry.sourceType,
+                sourceId: entry.sourceId,
+              ),
+              displayLabel: entry.sourceId.trim().isEmpty
+                  ? entry.sourceType
+                  : '${entry.sourceType}:${entry.sourceId}',
+            ),
+          ),
+        ),
+  );
+});
+
+/// Hero-wide claimed IDs for a guarded entry type. Titles intentionally return
+/// an empty set until their dedicated rule is defined.
+final heroClaimedEntryIdsProvider =
+    Provider.family<Set<String>, ({String heroId, String entryType})>(
+  (ref, args) {
+    final guard = ref.watch(heroDuplicateGuardServiceProvider);
+    if (!guard.guardsEntryType(args.entryType)) return const <String>{};
+    return ref
+        .watch(heroPersistedConflictIndexProvider(args.heroId))
+        .claimedEntryIds(args.entryType);
+  },
+);
+
 /// Provider to get entry IDs of a specific type for a hero.
 /// Useful for pickers to exclude already-saved entries.
 /// Args: (heroId: String, entryType: String)
-final heroEntryIdsByTypeProvider = Provider.family<Set<String>,
-    ({String heroId, String entryType})>((ref, args) {
+final heroEntryIdsByTypeProvider =
+    Provider.family<Set<String>, ({String heroId, String entryType})>(
+        (ref, args) {
   final entriesAsync = ref.watch(heroEntriesProvider(args.heroId));
   // Use valueOrNull to prevent flicker - return empty set only on error or initial load
   final entries = entriesAsync.valueOrNull;
@@ -159,8 +240,7 @@ final heroValuesProvider =
   return dbInstance.watchHeroValues(heroId);
 });
 
-final heroRowProvider =
-    StreamProvider.family<db.Heroe?, String>((ref, heroId) {
+final heroRowProvider = StreamProvider.family<db.Heroe?, String>((ref, heroId) {
   final dbInstance = ref.read(appDatabaseProvider);
   return (dbInstance.select(dbInstance.heroes)
         ..where((t) => t.id.equals(heroId)))
@@ -197,7 +277,8 @@ final heroEquippedTreasureBonusesProvider =
 });
 
 /// Provider to fetch an ability by name (used for perk grants lookup)
-final abilityByNameProvider = FutureProvider.family<model.Component?, String>((ref, rawName) async {
+final abilityByNameProvider =
+    FutureProvider.family<model.Component?, String>((ref, rawName) async {
   final name = rawName.trim();
   if (name.isEmpty) return null;
 
@@ -218,7 +299,7 @@ final abilityByNameProvider = FutureProvider.family<model.Component?, String>((r
   if (normalizedMatch != null && normalizedMatch.id.isNotEmpty) {
     return normalizedMatch;
   }
-  
+
   // Try ID match (slugified name) - perk/title abilities use ID like "arcane_trick"
   final slugId = _slugifyForId(name);
   final idMatch = _findAbility(abilities, (c) => c.id == slugId);
@@ -309,8 +390,7 @@ final heroRetainerStatsProvider =
 });
 
 /// All seeded retainer templates (for the "Add Retainer" picker).
-final allRetainerTemplatesProvider =
-    StreamProvider<List<Retainer>>((ref) {
+final allRetainerTemplatesProvider = StreamProvider<List<Retainer>>((ref) {
   final repo = ref.read(componentRepositoryProvider);
   return repo.watchByType('retainer').map(
         (components) =>
@@ -326,14 +406,14 @@ Map<String, model.Component>? _supplementalAbilitiesCache;
 Future<model.Component?> _loadAbilityFromJsonFiles(String nameOrId) async {
   // Build cache if not already built
   _supplementalAbilitiesCache ??= await _buildSupplementalAbilitiesCache();
-  
+
   final cache = _supplementalAbilitiesCache!;
-  
+
   // Try exact match (works for both name and id keys)
   if (cache.containsKey(nameOrId)) {
     return cache[nameOrId];
   }
-  
+
   // Try normalized name match
   final normalized = _normalizeAbilityName(nameOrId);
   for (final entry in cache.entries) {
@@ -341,38 +421,38 @@ Future<model.Component?> _loadAbilityFromJsonFiles(String nameOrId) async {
       return entry.value;
     }
   }
-  
+
   // Try slugified id match
   final slugified = _slugifyForId(nameOrId);
   if (cache.containsKey(slugified)) {
     return cache[slugified];
   }
-  
+
   return null;
 }
 
 Future<Map<String, model.Component>> _buildSupplementalAbilitiesCache() async {
   final cache = <String, model.Component>{};
-  
+
   for (final filePath in _supplementalAbilityJsonFiles) {
     try {
       final raw = await rootBundle.loadString(filePath);
       final decoded = jsonDecode(raw);
       if (decoded is! List) continue;
-      
+
       for (final item in decoded) {
         if (item is! Map) continue;
         final map = Map<String, dynamic>.from(item);
         final id = map['id']?.toString() ?? '';
         final name = map['name']?.toString() ?? '';
         if (id.isEmpty || name.isEmpty) continue;
-        
+
         // Remove id, name, type from data - they go in Component fields
         final data = Map<String, dynamic>.from(map);
         data.remove('id');
         data.remove('name');
         data.remove('type');
-        
+
         final component = model.Component(
           id: id,
           type: 'ability',
@@ -380,7 +460,7 @@ Future<Map<String, model.Component>> _buildSupplementalAbilitiesCache() async {
           data: data,
           source: 'json_fallback',
         );
-        
+
         // Store by both name and id for flexible lookup
         cache[name] = component;
         cache[id] = component;
@@ -389,7 +469,7 @@ Future<Map<String, model.Component>> _buildSupplementalAbilitiesCache() async {
       // Ignore errors for individual files
     }
   }
-  
+
   return cache;
 }
 
@@ -397,7 +477,7 @@ String _slugifyForId(String value) {
   return value
       .trim()
       .toLowerCase()
-      .replaceAll(RegExp(r"[''']"), '')  // Remove apostrophes
+      .replaceAll(RegExp(r"[''']"), '') // Remove apostrophes
       .replaceAll(RegExp(r'[^a-z0-9]+'), '_')
       .replaceAll(RegExp(r'^_+|_+$'), '');
 }

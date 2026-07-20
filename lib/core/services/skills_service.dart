@@ -21,9 +21,11 @@ class StartingSkillsService {
     SubclassSelectionResult? subclassSelection,
     List<SkillAllowance> additionalAllowances = const <SkillAllowance>[],
     List<String> additionalGrantedSkillNames = const <String>[],
+
     /// When true, excludes level-based skill allowances (from class level progression).
     /// These are handled in the Strength tab via class feature grants instead.
     bool excludeLevelAllowances = false,
+
     /// When true, excludes subclass skill_group allowances (from class features).
     /// These are handled in the Strength tab via the subclass feature's skill_group option.
     bool excludeSubclassSkillAllowances = false,
@@ -76,7 +78,6 @@ class StartingSkillsService {
   }) {
     final allowances = <SkillAllowance>[];
     final granted = startingSkills.grantedSkills;
-    final raw = startingSkills.rawData;
 
     var allowanceIndex = 0;
 
@@ -106,38 +107,13 @@ class StartingSkillsService {
       allowanceIndex++;
     }
 
-    // Extract individual skill choices from skill_groups raw data
-    final individualChoices = _extractIndividualSkillChoices(
-      raw['skill_groups'],
-    );
-
-    addAllowance(
-      count: startingSkills.skillCount,
-      groups: startingSkills.skillGroups,
-      individualChoices: individualChoices,
-      includeGranted: true,
-    );
-
-    final additionalCounts = <String, int>{};
-    raw.forEach((key, value) {
-      if (key == 'skill_count') return;
-      if (key.startsWith('skill_count')) {
-        final suffix = key.substring('skill_count'.length);
-        final count = CharacteristicUtils.toIntOrNull(value) ?? 0;
-        additionalCounts[suffix] = count;
-      }
-    });
-
-    final sortedSuffixes = additionalCounts.keys.toList()..sort();
-
-    for (final suffix in sortedSuffixes) {
-      final count = additionalCounts[suffix] ?? 0;
-      final groups = _findGroupsForSuffix(
-        raw: raw,
-        baseGroups: startingSkills.skillGroups,
-        suffix: suffix,
+    for (final allowance in startingSkills.allowances) {
+      addAllowance(
+        count: allowance.count,
+        groups: allowance.groups,
+        individualChoices: allowance.individualSkillChoices,
+        includeGranted: allowanceIndex == 0,
       );
-      addAllowance(count: count, groups: groups);
     }
 
     return _StartingAllowanceBundle(
@@ -188,32 +164,6 @@ class StartingSkillsService {
       allowances: allowances,
       grantedSkills: granted,
     );
-  }
-
-  Iterable<String> _findGroupsForSuffix({
-    required Map<String, dynamic> raw,
-    required List<String> baseGroups,
-    required String suffix,
-  }) {
-    if (suffix.isEmpty) {
-      return baseGroups;
-    }
-
-    final candidates = <String>[];
-    candidates.add('skill_groups$suffix');
-    final numeric = int.tryParse(suffix.replaceFirst('_', ''));
-    if (numeric != null) {
-      candidates.add('skill_groups_${numeric + 1}');
-      candidates.add('skill_groups_$numeric');
-    }
-
-    for (final candidate in candidates) {
-      final value = raw[candidate];
-      final parsed = _extractStringList(value);
-      if (parsed.isNotEmpty) return parsed;
-    }
-
-    return const <String>[];
   }
 
   List<SkillAllowance> _buildLevelAllowances({
@@ -289,29 +239,6 @@ class StartingSkillsService {
       }
     }
     return allowAny ? <String>{} : normalized;
-  }
-
-  List<String> _extractIndividualSkillChoices(dynamic skillGroupsRaw) {
-    final choices = <String>[];
-    
-    if (skillGroupsRaw is! List) {
-      return choices;
-    }
-
-    for (final item in skillGroupsRaw) {
-      if (item is Map<String, dynamic>) {
-        final individualChoicesRaw = item['individual_skill_choices'];
-        if (individualChoicesRaw is List) {
-          for (final choice in individualChoicesRaw) {
-            if (choice is String && choice.trim().isNotEmpty) {
-              choices.add(choice.trim());
-            }
-          }
-        }
-      }
-    }
-    
-    return choices;
   }
 
   List<String> _extractStringList(dynamic value) {

@@ -66,8 +66,7 @@ class _PerksTabState extends ConsumerState<_PerksTab> {
 
   Future<void> _refreshReservedEntries() async {
     final db = ref.read(appDatabaseProvider);
-    final languageIds =
-        await db.getHeroComponentIds(widget.heroId, 'language');
+    final languageIds = await db.getHeroComponentIds(widget.heroId, 'language');
     final skillIds = await db.getHeroComponentIds(widget.heroId, 'skill');
     if (mounted) {
       setState(() {
@@ -147,8 +146,8 @@ class _PerksTabState extends ConsumerState<_PerksTab> {
                         color: _perksColor.withAlpha(51),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child:
-                          AppIcon(PerkGroupIcons.tab, color: _perksColor, size: 24),
+                      child: AppIcon(PerkGroupIcons.tab,
+                          color: _perksColor, size: 24),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -164,7 +163,8 @@ class _PerksTabState extends ConsumerState<_PerksTab> {
                             ),
                           ),
                           Text(
-                            SheetStoryPerksTabText.perksSelected(selectedPerkIds.length),
+                            SheetStoryPerksTabText.perksSelected(
+                                selectedPerkIds.length),
                             style: TextStyle(
                                 color: FormTheme.textSecondary, fontSize: 13),
                           ),
@@ -221,16 +221,39 @@ class _PerksTabState extends ConsumerState<_PerksTab> {
         selectedPerkIds: selectedPerkIds,
         onPerkSelected: (perkId) async {
           Navigator.of(context).pop();
-          final newSelection = Set<String>.from(selectedPerkIds)..add(perkId);
-          await _handleSelectionChanged(newSelection);
-
-          // Persist the new perk
-          final db = ref.read(appDatabaseProvider);
-          await db.addHeroComponentId(
-            heroId: widget.heroId,
-            componentId: perkId,
-            category: 'perk',
+          final entries = ref.read(heroEntryRepositoryProvider);
+          final existingPerks = await entries.listEntriesByType(
+            widget.heroId,
+            HeroEntryTypes.perk,
           );
+          final isClaimed =
+              ref.read(heroDuplicateGuardServiceProvider).isReserved(
+                    candidateId: perkId,
+                    entries: existingPerks,
+                    entryType: HeroEntryTypes.perk,
+                  );
+          if (isClaimed) {
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(PerksWidgetText.perkAlreadyAdded),
+                ),
+              );
+            }
+            return;
+          }
+          await entries.addEntry(
+            heroId: widget.heroId,
+            entryType: HeroEntryTypes.perk,
+            entryId: perkId,
+            sourceType: HeroEntrySourceTypes.heroSheet,
+            sourceId: HeroEntryTypes.perk,
+            gainedBy: HeroEntryGainedBy.choice,
+          );
+          await ref.read(perkGrantsServiceProvider).ensureAllPerkGrantsApplied(
+                heroId: widget.heroId,
+              );
+          await _refreshReservedEntries();
         },
       ),
     );

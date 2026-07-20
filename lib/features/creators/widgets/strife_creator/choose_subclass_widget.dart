@@ -12,6 +12,10 @@ import '../../../../core/theme/creator_theme.dart';
 import '../../../../core/theme/navigation_theme.dart';
 import '../../../../core/theme/form_theme.dart';
 import '../../../../core/text/creators/widgets/strife_creator/choose_subclass_widget_text.dart';
+import '../../../../core/storage/hero_storage_contract.dart';
+import '../../../hero_builder/domain/hero_claim.dart';
+import '../../../hero_builder/domain/hero_conflict_index.dart';
+import '../../../hero_builder/domain/hero_draft_claims.dart';
 
 class _SearchOption<T> {
   const _SearchOption({
@@ -39,7 +43,7 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
   Color? accent,
 }) {
   final accentColor = accent ?? CreatorTheme.classAccent;
-  
+
   return showDialog<_PickerSelection<T>>(
     context: context,
     builder: (dialogContext) {
@@ -56,8 +60,8 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                     (option) =>
                         option.label.toLowerCase().contains(normalizedQuery) ||
                         (option.subtitle?.toLowerCase().contains(
-                              normalizedQuery,
-                            ) ??
+                                  normalizedQuery,
+                                ) ??
                             false),
                   )
                   .toList();
@@ -110,7 +114,8 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                               color: accentColor.withValues(alpha: 0.4),
                             ),
                           ),
-                          child: Icon(Icons.search, color: accentColor, size: 20),
+                          child:
+                              Icon(Icons.search, color: accentColor, size: 20),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -125,7 +130,8 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                         ),
                         IconButton(
                           onPressed: () => Navigator.of(context).pop(),
-                          icon: Icon(Icons.close, color: FormTheme.textSecondary),
+                          icon:
+                              Icon(Icons.close, color: FormTheme.textSecondary),
                           splashRadius: 20,
                         ),
                       ],
@@ -141,7 +147,8 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                       decoration: InputDecoration(
                         hintText: ChooseSubclassWidgetText.searchHint,
                         hintStyle: TextStyle(color: FormTheme.textMuted),
-                        prefixIcon: Icon(Icons.search, color: FormTheme.textMuted),
+                        prefixIcon:
+                            Icon(Icons.search, color: FormTheme.textMuted),
                         filled: true,
                         fillColor: FormTheme.surface,
                         border: OutlineInputBorder(
@@ -215,7 +222,8 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                                           : Colors.transparent,
                                   border: isSelected
                                       ? Border.all(
-                                          color: accentColor.withValues(alpha: 0.4),
+                                          color: accentColor.withValues(
+                                              alpha: 0.4),
                                         )
                                       : isNoneOption
                                           ? Border.all(
@@ -254,7 +262,8 @@ Future<_PickerSelection<T>?> _showSearchablePicker<T>({
                                         )
                                       : null,
                                   trailing: isSelected
-                                      ? Icon(Icons.check_circle, color: accentColor, size: 22)
+                                      ? Icon(Icons.check_circle,
+                                          color: accentColor, size: 22)
                                       : null,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
@@ -303,21 +312,19 @@ class ChooseSubclassWidget extends StatefulWidget {
     required this.selectedLevel,
     this.selectedSubclass,
     this.onSelectionChanged,
-    this.reservedSkillIds = const {},
+    this.skillConflictIndex = HeroConflictIndex.empty,
     this.skillNameToIdLookup = const {},
-    this.savedSubclassSkillId,
   });
 
   final ClassData classData;
   final int selectedLevel;
   final SubclassSelectionResult? selectedSubclass;
   final SubclassSelectionChanged? onSelectionChanged;
-  /// Skill IDs that are already taken (from story page, DB, etc.)
-  final Set<String> reservedSkillIds;
+
+  final HeroConflictIndex skillConflictIndex;
+
   /// Map of skill name (lowercase) to skill ID for resolving granted skill names
   final Map<String, String> skillNameToIdLookup;
-  /// The skill ID currently saved in DB as granted by this subclass (to avoid self-flagging)
-  final String? savedSubclassSkillId;
 
   @override
   State<ChooseSubclassWidget> createState() => _ChooseSubclassWidgetState();
@@ -325,7 +332,7 @@ class ChooseSubclassWidget extends StatefulWidget {
 
 class _ChooseSubclassWidgetState extends State<ChooseSubclassWidget> {
   static const _accent = CreatorTheme.classAccent;
-  
+
   final SubclassService _planService = const SubclassService();
   final SubclassDataService _dataService = SubclassDataService();
   final ListEquality<String> _listEquality = const ListEquality<String>();
@@ -348,20 +355,19 @@ class _ChooseSubclassWidgetState extends State<ChooseSubclassWidget> {
   int _callbackVersion = 0;
   int _loadRequestId = 0;
 
-  /// Checks if a skill name corresponds to a reserved skill ID
-  /// Excludes the skill that was previously saved as granted by this subclass
   bool _isSkillReserved(String? skillName) {
     if (skillName == null || skillName.isEmpty) return false;
     final normalized = skillName.trim().toLowerCase();
-    final skillId = widget.skillNameToIdLookup[normalized] ?? 'skill_$normalized';
-    
-    // If this skill was saved as granted by the subclass itself, don't flag it
-    if (widget.savedSubclassSkillId != null && 
-        widget.savedSubclassSkillId == skillId) {
-      return false;
-    }
-    
-    return widget.reservedSkillIds.contains(skillId);
+    final skillId =
+        widget.skillNameToIdLookup[normalized] ?? 'skill_$normalized';
+
+    return widget.skillConflictIndex.isClaimed(
+      HeroEntryKey(
+        entryType: HeroEntryTypes.skill,
+        canonicalEntryId: skillId,
+      ),
+      ignoredDraftSlotKey: HeroDraftClaims.subclassSkillSlot,
+    );
   }
 
   @override
@@ -575,13 +581,13 @@ class _ChooseSubclassWidgetState extends State<ChooseSubclassWidget> {
         ? null
         : _deities.firstWhere(
             (entry) => entry.id == _selectedDeityId,
-          orElse: () => DeityOption(
-            id: _selectedDeityId!,
-            name: _selectedDeityId!,
-            category: ChooseSubclassWidgetText.deityCategoryFallback,
-            domains: const [],
-          ),
-        );
+            orElse: () => DeityOption(
+              id: _selectedDeityId!,
+              name: _selectedDeityId!,
+              category: ChooseSubclassWidgetText.deityCategoryFallback,
+              domains: const [],
+            ),
+          );
 
     // Get the skill from the selected subclass option
     final selectedOption = _selectedSubclassKey == null
@@ -717,8 +723,8 @@ class _ChooseSubclassWidgetState extends State<ChooseSubclassWidget> {
         : _optionsByKey[_selectedSubclassKey!];
 
     // Only use the selected key if it exists in the options
-    final validatedValue = _selectedSubclassKey != null && 
-                           _optionsByKey.containsKey(_selectedSubclassKey!)
+    final validatedValue = _selectedSubclassKey != null &&
+            _optionsByKey.containsKey(_selectedSubclassKey!)
         ? _selectedSubclassKey
         : null;
 
@@ -814,7 +820,11 @@ class _ChooseSubclassWidgetState extends State<ChooseSubclassWidget> {
 
     final chips = <Widget>[];
     if (skillInfo != null && skillInfo.isNotEmpty) {
-      chips.add(_buildInfoChip(StoryIcons.skills, skillInfo));
+      chips.add(_buildInfoChip(
+        StoryIcons.skills,
+        skillInfo,
+        isConflict: skillIsReserved,
+      ));
     }
     if (skillGroup != null && skillGroup.isNotEmpty) {
       chips.add(_buildInfoChip(StoryIcons.skills, skillGroup));
@@ -867,7 +877,7 @@ class _ChooseSubclassWidgetState extends State<ChooseSubclassWidget> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.warning_amber_rounded, 
+                Icon(Icons.warning_amber_rounded,
                     size: 16, color: Colors.orange.shade700),
                 const SizedBox(width: 4),
                 Flexible(
@@ -1020,7 +1030,8 @@ class _ChooseSubclassWidgetState extends State<ChooseSubclassWidget> {
             label: Text(
               domain,
               style: TextStyle(
-                color: isSelected ? FormTheme.textBright : FormTheme.textSecondary,
+                color:
+                    isSelected ? FormTheme.textBright : FormTheme.textSecondary,
               ),
             ),
             selected: isSelected,
@@ -1045,26 +1056,41 @@ class _ChooseSubclassWidgetState extends State<ChooseSubclassWidget> {
     ];
   }
 
-  Widget _buildInfoChip(AppIconData icon, String label) {
+  Widget _buildInfoChip(
+    AppIconData icon,
+    String label, {
+    bool isConflict = false,
+  }) {
+    final color = isConflict ? Colors.orange : _accent;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: _accent.withValues(alpha: 0.15),
+        color: color.withValues(alpha: isConflict ? 0.18 : 0.15),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: _accent.withValues(alpha: 0.3)),
+        border:
+            Border.all(color: color.withValues(alpha: isConflict ? 0.6 : 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          AppIcon(icon, size: 16, color: _accent),
+          if (isConflict)
+            Icon(Icons.warning_amber_rounded,
+                size: 16, color: Colors.orange.shade600)
+          else
+            AppIcon(icon, size: 16, color: _accent),
           const SizedBox(width: 6),
           Text(
-            label,
-            style: TextStyle(fontSize: 13, color: FormTheme.textSecondary),
+            isConflict
+                ? '$label (${ChooseSubclassWidgetText.duplicateLabel})'
+                : label,
+            style: TextStyle(
+              fontSize: 13,
+              color:
+                  isConflict ? Colors.orange.shade200 : FormTheme.textSecondary,
+            ),
           ),
         ],
       ),
     );
   }
 }
-

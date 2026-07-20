@@ -1,4 +1,4 @@
-﻿class ChooseAbilitiesWidgetText {
+class ChooseAbilitiesWidgetText {
   static const String loadErrorPrefix = 'Failed to load abilities: ';
   static const String loadErrorTitle = 'Failed to load abilities';
   static const String noAbilitiesMessage =
@@ -12,6 +12,8 @@
       'No abilities available for this allowance.';
   static const String choiceLabelPrefix = 'Choice ';
   static const String unassignedLabel = 'Unassigned';
+  static const String duplicateLabel = 'duplicate';
+  static const String conflictOwnerPrefix = 'Already owned by: ';
   static const String signatureSuffix = ' (Signature)';
   static const String resourceCostPrefix = ' (';
   static const String resourceCostMiddle = ' ';

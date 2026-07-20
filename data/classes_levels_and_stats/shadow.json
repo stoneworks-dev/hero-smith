@@ -23,15 +23,6 @@
 
     "starting_skills": {
       "granted_skills": ["Hide", "Sneak"],
-      "skill_groups": [
-        "Exploration",
-        "Interpersonal",
-        "Intrigue",
-        {
-          "individual_skill_choices": ["Criminal Underworld"]
-        }
-      ],
-      "skill_count": 5,
       "quick_build": [
         "Criminal Underworld",
         "Hide",
@@ -40,6 +31,13 @@
         "Pick Pocket",
         "Sabotage",
         "Sneak"
+      ],
+      "allowances": [
+        {
+          "count": 5,
+          "groups": ["exploration", "interpersonal", "intrigue"],
+          "individual_skill_choices": ["Criminal Underworld"]
+        }
       ]
     },
     "fixed_starting_characteristics": { "agility": 2 },

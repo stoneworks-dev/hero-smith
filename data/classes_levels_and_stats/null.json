@@ -23,9 +23,10 @@
 
     "starting_skills": {
       "granted_skills": ["Psionics"],
-      "skill_groups": ["interpersonal", "lore"],
-      "skill_count": 2,
-      "quick_build": ["Psionics", "Read Person", "Timescape"]
+      "quick_build": ["Psionics", "Read Person", "Timescape"],
+      "allowances": [
+        { "count": 2, "groups": ["interpersonal", "lore"] }
+      ]
     },
     "fixed_starting_characteristics": {
       "agility": 2,
@@ -61,7 +62,7 @@
         { "name": "Psionic Martial Arts", "grant_type": "granted" }
       ],
       "new_abilities": {
-        "signature": 1,
+        "signature": 2,
         "3_cost": 1,
         "5_cost": 1
       }
@@ -161,7 +162,8 @@
       "level": 10,
       "features": [
         {
-          "name": " Discipline Mastery Improvement",
+          "feature_id": "feature_null_discipline_mastery_improvement",
+          "name": "Discipline Mastery Improvement",
           "grant_type": "granted"
         },
         { "name": "Manifold Body", "grant_type": "granted" },

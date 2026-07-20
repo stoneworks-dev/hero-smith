@@ -6,7 +6,6 @@ import '../../../core/db/providers.dart';
 import '../../../core/repositories/hero_entry_repository.dart';
 
 import '../../../core/theme/app_icon.dart';
-import '../../../core/theme/app_icon_data.dart';
 import '../../../core/theme/app_icons.dart';
 import '../../../core/theme/form_theme.dart';
 import '../../../core/theme/navigation_theme.dart';
@@ -61,9 +60,17 @@ class _SheetAbilitiesState extends ConsumerState<SheetAbilities> {
   }
 
   Future<void> _showAddAbilityDialog(BuildContext context) async {
+    final claimedAbilityIds = ref.read(
+      heroClaimedEntryIdsProvider(
+        (heroId: widget.heroId, entryType: HeroEntryTypes.ability),
+      ),
+    );
     final selectedAbilityId = await showDialog<String?>(
       context: context,
-      builder: (context) => AddAbilityDialog(heroId: widget.heroId),
+      builder: (context) => AddAbilityDialog(
+        heroId: widget.heroId,
+        excludedAbilityIds: claimedAbilityIds,
+      ),
     );
 
     if (selectedAbilityId != null && mounted) {
@@ -76,14 +83,14 @@ class _SheetAbilitiesState extends ConsumerState<SheetAbilities> {
       final db = ref.read(appDatabaseProvider);
       final entries = HeroEntryRepository(db);
 
-      // Check if ability is already added with manual_choice source
       final existingEntries = await entries.listEntriesByType(
           widget.heroId, HeroEntryTypes.ability);
-      final alreadyAdded = existingEntries.any(
-        (e) =>
-            e.entryId == abilityId &&
-            e.sourceType == HeroEntrySourceTypes.manualChoice,
-      );
+      final alreadyAdded =
+          ref.read(heroDuplicateGuardServiceProvider).isReserved(
+                candidateId: abilityId,
+                entries: existingEntries,
+                entryType: HeroEntryTypes.ability,
+              );
 
       if (alreadyAdded) {
         if (mounted) {

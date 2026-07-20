@@ -13,7 +13,8 @@ import '../../../../core/theme/app_icons.dart';
 import '../../../../core/theme/creator_theme.dart';
 import '../../../../core/theme/form_theme.dart';
 import '../../../../core/text/creators/widgets/strife_creator/choose_perks_widget_text.dart';
-import '../../../../core/utils/selection_guard.dart';
+import '../../../hero_builder/domain/hero_conflict_index.dart';
+import '../../../hero_builder/domain/hero_draft_claims.dart';
 import '../../../../widgets/perks/perks_selection_widget.dart';
 
 typedef PerkSelectionChanged = void Function(
@@ -28,9 +29,9 @@ class StartingPerksWidget extends ConsumerStatefulWidget {
     required this.classData,
     required this.selectedLevel,
     this.selectedPerks = const <String, String?>{},
-    this.reservedPerkIds = const <String>{},
-    this.reservedLanguageIds = const <String>{},
-    this.reservedSkillIds = const <String>{},
+    this.conflictIndex,
+    this.skillConflictIndex,
+    this.ownedSkillIds = const <String>{},
     this.onSelectionChanged,
   });
 
@@ -38,9 +39,12 @@ class StartingPerksWidget extends ConsumerStatefulWidget {
   final ClassData classData;
   final int selectedLevel;
   final Map<String, String?> selectedPerks;
-  final Set<String> reservedPerkIds;
-  final Set<String> reservedLanguageIds;
-  final Set<String> reservedSkillIds;
+  final HeroConflictIndex? conflictIndex;
+  final HeroConflictIndex? skillConflictIndex;
+
+  /// Effective skills used only by `one_owned` perk grants. New grant choices
+  /// use their source-scoped conflict index instead of a flat reserved set.
+  final Set<String> ownedSkillIds;
   final PerkSelectionChanged? onSelectionChanged;
 
   @override
@@ -55,7 +59,6 @@ class _StartingPerksWidgetState extends ConsumerState<StartingPerksWidget>
   final MapEquality<String, String?> _mapEquality =
       const MapEquality<String, String?>();
   final SetEquality<String> _setEquality = const SetEquality<String>();
-
 
   StartingPerkPlan? _plan;
   final Map<String, List<String?>> _selections = {};
@@ -82,10 +85,6 @@ class _StartingPerksWidgetState extends ConsumerState<StartingPerksWidget>
     final classChanged =
         oldWidget.classData.classId != widget.classData.classId;
     final levelChanged = oldWidget.selectedLevel != widget.selectedLevel;
-    final reservedChanged = !_setEquality.equals(
-      oldWidget.reservedPerkIds,
-      widget.reservedPerkIds,
-    );
     if (classChanged || levelChanged) {
       _rebuildPlan(
         preserveSelections: !classChanged,
@@ -94,12 +93,6 @@ class _StartingPerksWidgetState extends ConsumerState<StartingPerksWidget>
     } else if (!_mapEquality.equals(
         oldWidget.selectedPerks, widget.selectedPerks)) {
       _applyExternalSelections(widget.selectedPerks);
-    }
-    if (reservedChanged) {
-      final changed = _applyReservedPruning();
-      if (changed) {
-        _notifySelectionChanged();
-      }
     }
   }
 
@@ -143,7 +136,6 @@ class _StartingPerksWidgetState extends ConsumerState<StartingPerksWidget>
         ..addAll(newSelections);
     });
 
-    _applyReservedPruning();
     _notifySelectionChanged();
   }
 
@@ -164,24 +156,8 @@ class _StartingPerksWidgetState extends ConsumerState<StartingPerksWidget>
     });
     if (changed) {
       setState(() {});
-      _applyReservedPruning();
       _notifySelectionChanged();
     }
-  }
-
-  bool _applyReservedPruning() {
-    if (widget.reservedPerkIds.isEmpty) return false;
-    final allowIds =
-        _selections.values.expand((slots) => slots).whereType<String>().toSet();
-    final changed = ComponentSelectionGuard.pruneBlockedSelections(
-      _selections,
-      widget.reservedPerkIds,
-      allowIds: allowIds,
-    );
-    if (changed) {
-      setState(() {});
-    }
-    return changed;
   }
 
   void _handleAllowanceSelectionChanged(
@@ -334,7 +310,8 @@ class _StartingPerksWidgetState extends ConsumerState<StartingPerksWidget>
         children: [
           CreatorTheme.sectionHeader(
             title: ChoosePerksWidgetText.expansionTitle,
-            subtitle: '${ChoosePerksWidgetText.selectionSubtitlePrefix}$assigned${ChoosePerksWidgetText.selectionSubtitleMiddle}$totalSlots${ChoosePerksWidgetText.selectionSubtitleSuffix}',
+            subtitle:
+                '${ChoosePerksWidgetText.selectionSubtitlePrefix}$assigned${ChoosePerksWidgetText.selectionSubtitleMiddle}$totalSlots${ChoosePerksWidgetText.selectionSubtitleSuffix}',
             appIcon: PerkIcons.grant,
             accent: _accent,
           ),
@@ -384,21 +361,14 @@ class _StartingPerksWidgetState extends ConsumerState<StartingPerksWidget>
   ) {
     final slots = _selections[allowance.id] ?? const [];
     final selected = LinkedHashSet<String>.from(slots.whereType<String>());
-    final otherSelected = _selections.entries
-        .where((entry) => entry.key != allowance.id)
-        .expand((entry) => entry.value)
-        .whereType<String>()
-        .toSet();
-
     final allowedGroups = allowance.allowedGroups
         .map((group) => group.trim())
         .where((group) => group.isNotEmpty)
         .toSet();
 
-    final allowedGroupsText =
-        allowedGroups.isEmpty
-            ? ChoosePerksWidgetText.anyPerkLabel
-            : allowedGroups.map(_formatGroupLabel).join(', ');
+    final allowedGroupsText = allowedGroups.isEmpty
+        ? ChoosePerksWidgetText.anyPerkLabel
+        : allowedGroups.map(_formatGroupLabel).join(', ');
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
@@ -407,7 +377,7 @@ class _StartingPerksWidgetState extends ConsumerState<StartingPerksWidget>
         children: [
           Text(
             allowance.label,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
               color: FormTheme.textBright,
@@ -416,23 +386,25 @@ class _StartingPerksWidgetState extends ConsumerState<StartingPerksWidget>
           const SizedBox(height: 4),
           Text(
             '${ChoosePerksWidgetText.allowancePickPrefix}${allowance.pickCount}${allowance.pickCount == 1 ? ChoosePerksWidgetText.allowancePickSingularSuffix : ChoosePerksWidgetText.allowancePickPluralSuffix}${ChoosePerksWidgetText.allowancePickFromPrefix}$allowedGroupsText',
-            style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
+            style: const TextStyle(
+              color: FormTheme.textSecondary,
+              fontSize: 13,
+            ),
           ),
           const SizedBox(height: 8),
           PerksSelectionWidget(
             heroId: widget.heroId,
             selectedPerkIds: selected,
-            reservedPerkIds: {
-              ...widget.reservedPerkIds,
-              ...otherSelected,
-            },
+            perkConflictIndex: widget.conflictIndex,
+            skillConflictIndex: widget.skillConflictIndex,
+            perkSlotKeyPrefix:
+                HeroDraftClaims.strifePerkSlotPrefix(allowance.id),
             perkType: allowedGroups.length == 1 ? allowedGroups.first : null,
             allowedGroups: allowedGroups.isNotEmpty ? allowedGroups : null,
             pickCount: allowance.pickCount,
             languages: languages,
             skills: skills,
-            reservedLanguageIds: widget.reservedLanguageIds,
-            reservedSkillIds: widget.reservedSkillIds,
+            ownedSkillIds: widget.ownedSkillIds,
             onSelectionChanged: (selection) =>
                 _handleAllowanceSelectionChanged(allowance, selection),
             onDirty: () => setState(() {}),

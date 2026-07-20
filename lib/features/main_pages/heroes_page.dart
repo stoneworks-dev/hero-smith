@@ -3,7 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/db/providers.dart';
 import '../../core/services/hero_export_service.dart';
+import '../../core/services/hero_export_models.dart';
+import '../../core/services/hero_export_workflow.dart';
 import '../../core/services/hero_file_service.dart';
+import '../../core/services/hero_portrait_service.dart';
+import '../../core/services/update_provider.dart';
 import '../../core/theme/ability_colors.dart';
 import '../../core/theme/app_icon.dart';
 import '../../core/theme/app_icons.dart';
@@ -11,9 +15,11 @@ import '../../core/theme/form_theme.dart';
 import '../../core/text/main_pages/heroes_page_text.dart';
 import '../../core/theme/hero_theme.dart';
 import '../../core/theme/navigation_theme.dart';
+import '../../widgets/update_dialog.dart';
 import '../about/about_page.dart';
 import '../creators/hero_creators/hero_creator_page.dart';
 import '../heroes_sheet/hero_sheet_page.dart';
+import 'widgets/hero_portrait_position_dialog.dart';
 // import '../creators/hero_creators/strife_creator_page.dart';
 // OutlinedButton.icon(
 //             onPressed: () {
@@ -31,18 +37,20 @@ class HeroesPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final summariesAsync = ref.watch(heroSummariesProvider);
+    final portraitsDir = ref.watch(portraitsDirProvider).valueOrNull;
 
     return Scaffold(
       backgroundColor: NavigationTheme.navBarBackground,
       body: summariesAsync.when(
-        data: (items) => _buildContent(context, ref, items),
+        data: (items) => _buildContent(context, ref, items, portraitsDir),
         error: (e, st) => _buildErrorState(context, ref, e),
         loading: () => _buildLoadingState(context),
       ),
     );
   }
 
-  Widget _buildContent(BuildContext context, WidgetRef ref, List items) {
+  Widget _buildContent(
+      BuildContext context, WidgetRef ref, List items, String? portraitsDir) {
     if (items.isEmpty) {
       return _buildEmptyState(context, ref);
     }
@@ -69,7 +77,8 @@ class HeroesPage extends ConsumerWidget {
           padding: const EdgeInsets.only(bottom: 24),
           sliver: SliverList(
             delegate: SliverChildBuilderDelegate(
-              (context, index) => _buildHeroCard(context, ref, items[index]),
+              (context, index) =>
+                  _buildHeroCard(context, ref, items[index], portraitsDir),
               childCount: items.length,
             ),
           ),
@@ -146,7 +155,8 @@ class HeroesPage extends ConsumerWidget {
                   width: 48,
                   height: 48,
                   decoration: NavigationTheme.cardIconDecoration(accent),
-                  child: AppIcon(StoryIcons.yourHeroes, color: accent, size: 24),
+                  child:
+                      AppIcon(StoryIcons.yourHeroes, color: accent, size: 24),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -172,7 +182,6 @@ class HeroesPage extends ConsumerWidget {
                     ],
                   ),
                 ),
-
               ],
             ),
           ),
@@ -235,7 +244,8 @@ class HeroesPage extends ConsumerWidget {
                     value: 'import_code',
                     child: Row(
                       children: [
-                        Icon(Icons.content_paste, color: FormTheme.textSecondary),
+                        Icon(Icons.content_paste,
+                            color: FormTheme.textSecondary),
                         const SizedBox(width: 8),
                         Text(HeroesPageText.importFromCode,
                             style: TextStyle(color: Colors.grey.shade200)),
@@ -275,24 +285,26 @@ class HeroesPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildHeroCard(BuildContext context, WidgetRef ref, dynamic hero) {
-    final accent = hero.heroicResourceName != null
-        ? AbilityColors.getHeroicResourceColor(hero.heroicResourceName!)
-        : NavigationTheme.heroesColor;
+  Color _accentFor(dynamic hero) => hero.heroicResourceName != null
+      ? AbilityColors.getHeroicResourceColor(hero.heroicResourceName!)
+      : NavigationTheme.heroesColor;
+
+  /// Class/ancestry/career/complication chips (level excluded — the caller
+  /// decides where the level chip goes).
+  List<Widget> _buildDescriptorChips(BuildContext context, dynamic hero) {
     final chips = <Widget>[];
 
-    // Add class/subclass chip - combined into one
     if (hero.className != null && hero.className!.isNotEmpty) {
       final resourceColor = hero.heroicResourceName != null
           ? AbilityColors.getHeroicResourceColor(hero.heroicResourceName!)
           : HeroTheme.primarySection;
-      
-      // Combine class and subclass: "Class: Subclass" or just "Class"
-      final hasSubclass = hero.subclassName != null && hero.subclassName!.isNotEmpty;
+
+      final hasSubclass =
+          hero.subclassName != null && hero.subclassName!.isNotEmpty;
       final classLabel = hasSubclass
           ? '${hero.className!}: ${hero.subclassName!}'
           : hero.className!;
-      
+
       chips.add(_buildChip(context, classLabel, resourceColor));
     }
     if (hero.ancestryName != null && hero.ancestryName!.isNotEmpty) {
@@ -306,6 +318,14 @@ class HeroesPage extends ConsumerWidget {
       chips.add(_buildChip(
           context, hero.complicationName!, NavigationTheme.conditionsColor));
     }
+    return chips;
+  }
+
+  Widget _buildHeroCard(
+      BuildContext context, WidgetRef ref, dynamic hero, String? portraitsDir) {
+    final accent = _accentFor(hero);
+    final chips = _buildDescriptorChips(context, hero);
+    final showPortrait = hero.hasPortrait && portraitsDir != null;
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
@@ -338,111 +358,185 @@ class HeroesPage extends ConsumerWidget {
             ),
           ),
           padding: const EdgeInsets.all(16),
-          child: Row(
+          child: showPortrait
+              ? _buildPortraitLayout(
+                  context, ref, hero, accent, chips, portraitsDir)
+              : _buildCompactLayout(context, ref, hero, accent, chips),
+        ),
+      ),
+    );
+  }
+
+  /// Original card body (no photo): level+avatar column on the left, name/menu
+  /// row and chips on the right.
+  Widget _buildCompactLayout(BuildContext context, WidgetRef ref, dynamic hero,
+      Color accent, List<Widget> chips) {
+    return Row(
+      children: [
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildChip(context, HeroesPageText.heroLevel(hero.level), accent),
+            const SizedBox(height: 8),
+            Container(
+              width: 44,
+              height: 44,
+              decoration: NavigationTheme.cardIconDecoration(accent),
+              child: AppIcon(
+                StoryIcons.heroAvatar,
+                color: accent,
+                size: 22,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildChip(context, HeroesPageText.heroLevel(hero.level), accent),
-                  const SizedBox(height: 8),
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: NavigationTheme.cardIconDecoration(accent),
-                    child: AppIcon(
-                      StoryIcons.heroAvatar,
-                      color: accent,
-                      size: 22,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      hero.name,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                        color: Colors.grey.shade100,
-                      ),
-                    ),
-                    if (chips.isNotEmpty) ...[
-                      const SizedBox(height: 8),
-                      Wrap(
-                        spacing: 6,
-                        runSpacing: 6,
-                        children: chips,
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              IconButton(
-                icon: AppIcon(StoryIcons.editHero, color: FormTheme.textSecondary),
-                tooltip: HeroesPageText.editHeroTooltip,
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => HeroCreatorPage(heroId: hero.id),
-                    ),
-                  );
-                },
-              ),
-              PopupMenuButton<String>(
-                icon: Icon(Icons.more_vert, color: FormTheme.textSecondary),
-                color: NavigationTheme.cardBackgroundDark,
-                onSelected: (value) async {
-                  if (value == 'export') {
-                    await _exportHeroCode(context, ref, hero);
-                  } else if (value == 'export_file') {
-                    await _exportHeroFile(context, ref, hero);
-                  } else if (value == 'delete') {
-                    await _deleteHero(context, ref, hero);
-                  }
-                },
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    value: 'export',
-                    child: Row(
-                      children: [
-                        Icon(Icons.share, color: FormTheme.textSecondary),
-                        const SizedBox(width: 8),
-                        Text(HeroesPageText.exportCode,
-                            style: TextStyle(color: Colors.grey.shade200)),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem(
-                    value: 'export_file',
-                    child: Row(
-                      children: [
-                        Icon(Icons.save_alt, color: FormTheme.textSecondary),
-                        const SizedBox(width: 8),
-                        Text(HeroesPageText.exportFile,
-                            style: TextStyle(color: Colors.grey.shade200)),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem(
-                    value: 'delete',
-                    child: Row(
-                      children: [
-                        const Icon(Icons.delete_outline, color: Colors.red),
-                        const SizedBox(width: 8),
-                        Text(HeroesPageText.delete,
-                            style: TextStyle(color: Colors.grey.shade200)),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+              _buildTitleRow(context, ref, hero, null),
+              if (chips.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Wrap(spacing: 6, runSpacing: 6, children: chips),
+              ],
             ],
           ),
         ),
+      ],
+    );
+  }
+
+  /// Photo card body: name/menu row on top, the portrait banner in the middle,
+  /// and chips (with the level chip folded in) below.
+  Widget _buildPortraitLayout(BuildContext context, WidgetRef ref, dynamic hero,
+      Color accent, List<Widget> chips, String portraitsDir) {
+    final chipsWithLevel = <Widget>[
+      _buildChip(context, HeroesPageText.heroLevel(hero.level), accent),
+      ...chips,
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildTitleRow(context, ref, hero, portraitsDir),
+        const SizedBox(height: 10),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: AspectRatio(
+            aspectRatio: HeroPortraitService.bandAspectRatio,
+            child: Image.file(
+              HeroPortraitService.resolve(portraitsDir, hero.portraitFile!),
+              fit: BoxFit.cover,
+              alignment:
+                  Alignment(hero.portraitAlignX, hero.portraitAlignY),
+              gaplessPlayback: true,
+              errorBuilder: (context, error, stack) => Container(
+                color: NavigationTheme.cardBackgroundDark,
+                alignment: Alignment.center,
+                child: Icon(Icons.broken_image_outlined,
+                    color: FormTheme.textSecondary),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        Wrap(spacing: 6, runSpacing: 6, children: chipsWithLevel),
+      ],
+    );
+  }
+
+  /// Name on the left, edit + overflow-menu buttons on the right. Shared by
+  /// both layouts; [portraitsDir] is only needed for the reposition action.
+  Widget _buildTitleRow(BuildContext context, WidgetRef ref, dynamic hero,
+      String? portraitsDir) {
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            hero.name,
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+              color: Colors.grey.shade100,
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        IconButton(
+          icon: AppIcon(StoryIcons.editHero, color: FormTheme.textSecondary),
+          tooltip: HeroesPageText.editHeroTooltip,
+          visualDensity: VisualDensity.compact,
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => HeroCreatorPage(heroId: hero.id),
+              ),
+            );
+          },
+        ),
+        _buildHeroMenu(context, ref, hero, portraitsDir),
+      ],
+    );
+  }
+
+  Widget _buildHeroMenu(BuildContext context, WidgetRef ref, dynamic hero,
+      String? portraitsDir) {
+    return PopupMenuButton<String>(
+      icon: Icon(Icons.more_vert, color: FormTheme.textSecondary),
+      color: NavigationTheme.cardBackgroundDark,
+      onSelected: (value) async {
+        switch (value) {
+          case 'add_photo':
+          case 'change_photo':
+            await _addOrChangePhoto(context, ref, hero);
+          case 'reposition_photo':
+            await _repositionPhoto(context, ref, hero, portraitsDir);
+          case 'remove_photo':
+            await _removePhoto(context, ref, hero);
+          case 'export':
+            await _exportHeroCode(context, ref, hero);
+          case 'export_file':
+            await _exportHeroFile(context, ref, hero);
+          case 'export_codex_file':
+            await _exportHeroCodexFile(context, ref, hero);
+          case 'delete':
+            await _deleteHero(context, ref, hero);
+        }
+      },
+      itemBuilder: (context) => [
+        if (!hero.hasPortrait)
+          _menuItem('add_photo', Icons.add_a_photo_outlined,
+              HeroesPageText.addPhoto)
+        else ...[
+          _menuItem('change_photo', Icons.image_outlined,
+              HeroesPageText.changePhoto),
+          _menuItem('reposition_photo', Icons.open_with,
+              HeroesPageText.repositionPhoto),
+          _menuItem('remove_photo', Icons.hide_image_outlined,
+              HeroesPageText.removePhoto),
+        ],
+        const PopupMenuDivider(),
+        _menuItem('export', Icons.share, HeroesPageText.exportCode),
+        _menuItem('export_file', Icons.save_alt, HeroesPageText.exportFile),
+        _menuItem('export_codex_file', Icons.file_upload_outlined,
+            HeroesPageText.exportCodexFile),
+        _menuItem('delete', Icons.delete_outline, HeroesPageText.delete,
+            iconColor: Colors.red),
+      ],
+    );
+  }
+
+  PopupMenuItem<String> _menuItem(String value, IconData icon, String label,
+      {Color? iconColor}) {
+    return PopupMenuItem<String>(
+      value: value,
+      child: Row(
+        children: [
+          Icon(icon, color: iconColor ?? FormTheme.textSecondary),
+          const SizedBox(width: 8),
+          Text(label, style: TextStyle(color: Colors.grey.shade200)),
+        ],
       ),
     );
   }
@@ -532,8 +626,8 @@ class HeroesPage extends ConsumerWidget {
                   OutlinedButton.icon(
                     onPressed: () => _showImportDialog(context, ref),
                     icon: Icon(Icons.content_paste, color: accent),
-                    label:
-                        Text(HeroesPageText.importCode, style: TextStyle(color: accent)),
+                    label: Text(HeroesPageText.importCode,
+                        style: TextStyle(color: accent)),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 14),
@@ -547,8 +641,8 @@ class HeroesPage extends ConsumerWidget {
                   OutlinedButton.icon(
                     onPressed: () => _importHeroFile(context, ref),
                     icon: Icon(Icons.file_open, color: accent),
-                    label:
-                        Text(HeroesPageText.importFile, style: TextStyle(color: accent)),
+                    label: Text(HeroesPageText.importFile,
+                        style: TextStyle(color: accent)),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 14),
@@ -617,6 +711,55 @@ class HeroesPage extends ConsumerWidget {
                 elevation: 2,
               ),
             ),
+            const SizedBox(height: 16),
+            OutlinedButton.icon(
+              onPressed: () async {
+                try {
+                  final service = ref.read(updateServiceProvider);
+                  final update = await service.checkForUpdate();
+                  if (!context.mounted) return;
+                  if (update != null) {
+                    showUpdateDialog(context, ref, update);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text('You are on the latest version.')),
+                    );
+                  }
+                } catch (e) {
+                  if (!context.mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Update check failed: $e')),
+                  );
+                }
+              },
+              icon: Icon(Icons.system_update, color: accent, size: 18),
+              label: Text(
+                'Check for Updates',
+                style: TextStyle(color: accent),
+              ),
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(color: accent.withValues(alpha: 0.5)),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            TextButton.icon(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const AboutPage()),
+                );
+              },
+              icon: Icon(Icons.info_outline, color: accent, size: 18),
+              label: Text(
+                HeroesPageText.aboutHeroSmith,
+                style: TextStyle(color: accent, fontSize: 13),
+              ),
+            ),
           ],
         ),
       ),
@@ -651,8 +794,7 @@ class HeroesPage extends ConsumerWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(HeroesPageText.deleteHero),
-        content: Text(
-            HeroesPageText.deleteConfirmation(hero.name)),
+        content: Text(HeroesPageText.deleteConfirmation(hero.name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
@@ -673,11 +815,94 @@ class HeroesPage extends ConsumerWidget {
     if (confirmed == true) {
       final repo = ref.read(heroRepositoryProvider);
       await repo.deleteHero(hero.id);
+      // Remove the device-local portrait image, if any.
+      await HeroPortraitService().deleteForHero(hero.id);
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(HeroesPageText.deletedHero(hero.name))),
       );
     }
+  }
+
+  /// Pick a new image, store it, then open the reposition dialog so the user
+  /// can set the focal point straight away.
+  Future<void> _addOrChangePhoto(
+      BuildContext context, WidgetRef ref, dynamic hero) async {
+    final fileName = await HeroPortraitService().pickAndStore(hero.id);
+    if (fileName == null) {
+      // Either cancelled or the copy failed; only surface the failure case.
+      return;
+    }
+    final repo = ref.read(heroRepositoryProvider);
+    // Save immediately (centered) so the photo shows even if positioning is
+    // cancelled.
+    await repo.setHeroPortrait(hero.id, fileName: fileName);
+
+    final dirPath = await HeroPortraitService.ensurePortraitsDir();
+    if (!context.mounted) return;
+    final alignment = await HeroPortraitPositionDialog.show(
+      context,
+      image: HeroPortraitService.resolve(dirPath, fileName),
+      initialAlignment: Alignment.center,
+      accent: _accentFor(hero),
+    );
+    if (alignment != null) {
+      await repo.updateHeroPortraitAlignment(
+        hero.id,
+        alignX: alignment.x,
+        alignY: alignment.y,
+      );
+    }
+  }
+
+  Future<void> _repositionPhoto(BuildContext context, WidgetRef ref,
+      dynamic hero, String? portraitsDir) async {
+    if (!hero.hasPortrait) return;
+    final dirPath = portraitsDir ?? await HeroPortraitService.ensurePortraitsDir();
+    if (!context.mounted) return;
+    final alignment = await HeroPortraitPositionDialog.show(
+      context,
+      image: HeroPortraitService.resolve(dirPath, hero.portraitFile!),
+      initialAlignment: Alignment(hero.portraitAlignX, hero.portraitAlignY),
+      accent: _accentFor(hero),
+    );
+    if (alignment == null) return;
+    await ref.read(heroRepositoryProvider).updateHeroPortraitAlignment(
+          hero.id,
+          alignX: alignment.x,
+          alignY: alignment.y,
+        );
+  }
+
+  Future<void> _removePhoto(
+      BuildContext context, WidgetRef ref, dynamic hero) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: NavigationTheme.cardBackgroundDark,
+        title: Text(HeroesPageText.removePhotoTitle,
+            style: TextStyle(color: Colors.grey.shade100)),
+        content: Text(
+          HeroesPageText.removePhotoConfirmation(hero.name),
+          style: TextStyle(color: FormTheme.textSecondary),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(HeroesPageText.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            style: FilledButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.error),
+            child: Text(HeroesPageText.remove),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    await HeroPortraitService().deleteForHero(hero.id);
+    await ref.read(heroRepositoryProvider).clearHeroPortrait(hero.id);
   }
 
   Future<void> _exportHeroCode(
@@ -694,13 +919,15 @@ class HeroesPage extends ConsumerWidget {
       final db = ref.read(appDatabaseProvider);
       final exportService = HeroExportService(db);
 
-      // Generate compressed database snapshot with selected options
-      final code = await exportService.exportHeroToCode(
+      final artifact = await exportService.exportHeroToArtifact(
         hero.id,
         options: selectedOptions,
       );
 
       if (!context.mounted) return;
+      if (!await _reviewExportReport(context, artifact.report)) return;
+      if (!context.mounted) return;
+      final code = artifact.content;
 
       await showDialog(
         context: context,
@@ -718,8 +945,8 @@ class HeroesPage extends ConsumerWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color:
-                        theme.colorScheme.secondaryContainer.withValues(alpha: 0.7),
+                    color: theme.colorScheme.secondaryContainer
+                        .withValues(alpha: 0.7),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
@@ -771,7 +998,8 @@ class HeroesPage extends ConsumerWidget {
 
                 // Code info
                 Text(
-                  HeroesPageText.codeInfo(codeLength, selectedOptions.description),
+                  HeroesPageText.codeInfo(
+                      codeLength, selectedOptions.description),
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant
                         .withValues(alpha: 0.7),
@@ -960,9 +1188,8 @@ class HeroesPage extends ConsumerWidget {
       if (!context.mounted) return;
 
       // Show success message with tier info
-      final tierInfo = preview.exportOptions != null
-          ? ' (${preview.tierDescription})'
-          : '';
+      final tierInfo =
+          preview.exportOptions != null ? ' (${preview.tierDescription})' : '';
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -971,8 +1198,8 @@ class HeroesPage extends ConsumerWidget {
               Icon(Icons.check_circle, color: FormTheme.textBright),
               const SizedBox(width: 12),
               Expanded(
-                  child:
-                      Text(HeroesPageText.importedSuccessfully(preview.name, tierInfo))),
+                  child: Text(HeroesPageText.importedSuccessfully(
+                      preview.name, tierInfo))),
             ],
           ),
           backgroundColor: Colors.green.shade700,
@@ -1015,10 +1242,17 @@ class HeroesPage extends ConsumerWidget {
     try {
       final db = ref.read(appDatabaseProvider);
       final fileService = HeroFileService(db);
-      final success = await fileService.exportHeroToFile(
+      final artifact = await fileService.buildNativeArtifact(
         hero.id,
-        heroName: hero.name,
         options: selectedOptions,
+      );
+      if (!context.mounted) return;
+      if (!await _reviewExportReport(context, artifact.report)) return;
+      if (!context.mounted) return;
+      final success = await fileService.saveArtifactToFile(
+        artifact,
+        heroName: hero.name,
+        allowWarnings: true,
       );
 
       if (!context.mounted) return;
@@ -1043,6 +1277,107 @@ class HeroesPage extends ConsumerWidget {
         SnackBar(content: Text(HeroesPageText.failedToExportFile(e))),
       );
     }
+  }
+
+  Future<void> _exportHeroCodexFile(
+      BuildContext context, WidgetRef ref, dynamic hero) async {
+    final acknowledged = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text(HeroesPageText.codexExportNoticeTitle),
+        content: const Text(HeroesPageText.codexExportNotice),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(HeroesPageText.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text(HeroesPageText.continueExport),
+          ),
+        ],
+      ),
+    );
+    if (acknowledged != true || !context.mounted) return;
+
+    try {
+      final db = ref.read(appDatabaseProvider);
+      final fileService = HeroFileService(db);
+      final artifact = await fileService.buildCodexArtifact(hero.id);
+      if (!context.mounted) return;
+      if (!await _reviewExportReport(context, artifact.report)) return;
+      if (!context.mounted) return;
+      final success = await fileService.saveArtifactToFile(
+        artifact,
+        heroName: hero.name,
+        allowWarnings: true,
+      );
+
+      if (!context.mounted) return;
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                Icon(Icons.check_circle, color: FormTheme.textBright),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(HeroesPageText.exportedToCodexFile(hero.name)),
+                ),
+              ],
+            ),
+            backgroundColor: Colors.green.shade700,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(HeroesPageText.failedToExportCodexFile(e))),
+      );
+    }
+  }
+
+  Future<bool> _reviewExportReport(
+    BuildContext context,
+    ExportReport report,
+  ) async {
+    final decision = HeroExportWorkflow.decisionFor(report);
+    if (decision == ExportProceedDecision.allowed) return true;
+
+    final blocking = decision == ExportProceedDecision.blocked;
+    final isCodex = report.target == HeroExportTarget.codexForge;
+    final accepted = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(blocking
+            ? HeroesPageText.exportBlockedTitle
+            : isCodex
+                ? HeroesPageText.codexWarningTitle
+                : HeroesPageText.nativeWarningTitle),
+        content: SizedBox(
+          width: 480,
+          child: Text(blocking
+              ? HeroesPageText.exportBlocked
+              : isCodex
+                  ? HeroesPageText.codexWarning
+                  : HeroesPageText.nativeWarning),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(blocking ? 'Close' : HeroesPageText.cancel),
+          ),
+          if (!blocking)
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: const Text('Export anyway'),
+            ),
+        ],
+      ),
+    );
+    return accepted == true;
   }
 
   Future<void> _importHeroFile(BuildContext context, WidgetRef ref) async {
@@ -1092,7 +1427,8 @@ class HeroesPage extends ConsumerWidget {
     // Show export options for all heroes
     final selectedOptions = await showDialog<ExportOptions>(
       context: context,
-      builder: (ctx) => _ExportOptionsDialog(heroName: HeroesPageText.allHeroes),
+      builder: (ctx) =>
+          _ExportOptionsDialog(heroName: HeroesPageText.allHeroes),
     );
 
     if (selectedOptions == null || !context.mounted) return;
@@ -1100,17 +1436,22 @@ class HeroesPage extends ConsumerWidget {
     try {
       final db = ref.read(appDatabaseProvider);
       final fileService = HeroFileService(db);
-      final count = await fileService.exportAllHeroesToFiles(options: selectedOptions);
+      final result =
+          await fileService.exportAllHeroesToFiles(options: selectedOptions);
 
       if (!context.mounted) return;
-      if (count > 0) {
+      if (result.savedCount > 0) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Row(
               children: [
                 Icon(Icons.check_circle, color: FormTheme.textBright),
                 const SizedBox(width: 12),
-                Expanded(child: Text(HeroesPageText.exportedHeroesToFiles(count))),
+                Expanded(
+                    child: Text(HeroesPageText.exportedHeroesToFiles(
+                      result.savedCount,
+                      skipped: result.notReadyCount,
+                    ))),
               ],
             ),
             backgroundColor: Colors.green.shade700,
@@ -1119,7 +1460,11 @@ class HeroesPage extends ConsumerWidget {
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(HeroesPageText.noHeroesToExport)),
+          SnackBar(
+            content: Text(result.notReadyCount > 0
+                ? HeroesPageText.batchExportNeedsReview(result.notReadyCount)
+                : HeroesPageText.noHeroesToExport),
+          ),
         );
       }
     } catch (e) {
@@ -1174,7 +1519,9 @@ class _ExportOptionsDialogState extends State<_ExportOptionsDialog> {
           // Core build — always included (disabled checkbox)
           _buildOptionTile(
             theme: theme,
-            icon: Icon(Icons.person, size: 20, color: theme.colorScheme.onSurface.withValues(alpha: 0.4)),
+            icon: Icon(Icons.person,
+                size: 20,
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.4)),
             title: 'Core Build',
             subtitle: 'Class, ancestry, kit, abilities, stats',
             value: true,
@@ -1186,7 +1533,8 @@ class _ExportOptionsDialogState extends State<_ExportOptionsDialog> {
           // Downtime
           _buildOptionTile(
             theme: theme,
-            icon: Icon(Icons.construction, size: 20, color: theme.colorScheme.onSurface),
+            icon: Icon(Icons.construction,
+                size: 20, color: theme.colorScheme.onSurface),
             title: 'Downtime',
             subtitle: 'Projects, followers, and sources',
             value: _includeDowntime,
@@ -1198,7 +1546,8 @@ class _ExportOptionsDialogState extends State<_ExportOptionsDialog> {
           // Titles
           _buildOptionTile(
             theme: theme,
-            icon: Icon(Icons.military_tech, size: 20, color: theme.colorScheme.onSurface),
+            icon: Icon(Icons.military_tech,
+                size: 20, color: theme.colorScheme.onSurface),
             title: 'Titles',
             subtitle: 'Title progress tracking data',
             value: _includeTitles,
@@ -1210,7 +1559,8 @@ class _ExportOptionsDialogState extends State<_ExportOptionsDialog> {
           // Notes
           _buildOptionTile(
             theme: theme,
-            icon: Icon(Icons.note_alt_outlined, size: 20, color: theme.colorScheme.onSurface),
+            icon: Icon(Icons.note_alt_outlined,
+                size: 20, color: theme.colorScheme.onSurface),
             title: 'Notes',
             subtitle: 'Personal notes and session logs',
             value: _includeNotes,
@@ -1222,7 +1572,8 @@ class _ExportOptionsDialogState extends State<_ExportOptionsDialog> {
           // Retainers
           _buildOptionTile(
             theme: theme,
-            icon: AppIcon(DowntimeIcons.follower, size: 20, color: theme.colorScheme.onSurface),
+            icon: AppIcon(DowntimeIcons.follower,
+                size: 20, color: theme.colorScheme.onSurface),
             title: 'Retainers',
             subtitle: 'Retainer instances and advancement choices',
             value: _includeRetainers,

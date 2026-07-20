@@ -23,9 +23,10 @@
 
     "starting_skills": {
       "granted_skills": ["Nature"],
-      "skill_groups": ["exploration", "intrigue"],
-      "skill_count": 2,
-      "quick_build": ["Alertness", "Jump", "Nature"]
+      "quick_build": ["Alertness", "Jump", "Nature"],
+      "allowances": [
+        { "count": 2, "groups": ["exploration", "intrigue"] }
+      ]
     },
 
     "starting_characteristics_arrays": [
@@ -174,7 +175,13 @@
     },
     {
       "level": 9,
-      "features": ["Harbinger of the Primordial Chaos"],
+      "features": [
+        {
+          "feature_id": "feature_fury_harbinger_of_the_primordial_chaos",
+          "name": "Harbinger of the Primordial Chaos",
+          "grant_type": "granted"
+        }
+      ],
       "new_subclass_abilities": {
         "11_cost": 1
       }

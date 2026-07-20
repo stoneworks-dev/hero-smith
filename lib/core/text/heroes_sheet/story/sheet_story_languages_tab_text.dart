@@ -12,6 +12,8 @@ class SheetStoryLanguagesTabText {
   static const String otherGroup = 'Other';
 
   static const String languageAlreadyAdded = 'Language already added';
+  static const String languageOwnedElsewhere =
+      'This language is granted by another source and cannot be removed here.';
   static const String removeLanguageTooltip = 'Remove language';
 
   static const String emptyState =
@@ -20,8 +22,7 @@ class SheetStoryLanguagesTabText {
   // Error messages
   static String failedToLoadLanguages(Object e) =>
       'Failed to load languages: $e';
-  static String failedToAddLanguage(Object e) =>
-      'Failed to add language: $e';
+  static String failedToAddLanguage(Object e) => 'Failed to add language: $e';
   static String failedToRemoveLanguage(Object e) =>
       'Failed to remove language: $e';
 

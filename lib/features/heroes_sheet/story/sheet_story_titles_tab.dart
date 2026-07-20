@@ -15,9 +15,11 @@ class _TitlesTab extends ConsumerStatefulWidget {
 
 class _TitlesTabState extends ConsumerState<_TitlesTab> {
   List<Map<String, dynamic>> _availableTitles = [];
-  Map<String, Map<String, dynamic>> _selectedTitles = {}; // titleId -> {title, selectedBenefitIndex}
+  Map<String, Map<String, dynamic>> _selectedTitles =
+      {}; // titleId -> {title, selectedBenefitIndex}
   Map<String, String> _charChoices = {}; // choiceKey -> chosen characteristic
-  Map<String, List<String>> _ancestryTraitSelections = {}; // titleId -> [traitIds]
+  Map<String, List<String>> _ancestryTraitSelections =
+      {}; // titleId -> [traitIds]
   Map<String, String> _ancestryTraitSubChoices = {}; // titleId.traitId -> value
   Map<String, List<String>> _skillChoices = {}; // choiceKey -> [skillIds]
   Map<String, List<String>> _languageChoices = {}; // titleId -> [langIds]
@@ -48,7 +50,7 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
       // Load selected titles for this hero from database
       final db = ref.read(appDatabaseProvider);
       final storedTitles = await db.getHeroComponentIds(widget.heroId, 'title');
-      
+
       // Parse stored titles - format: "titleId:benefitIndex"
       _selectedTitles = {};
       for (final storedTitle in storedTitles) {
@@ -71,13 +73,16 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
 
       // Load stored characteristic choices
       final service = ref.read(titleGrantsServiceProvider);
-      _charChoices = await service.getAllCharacteristicChoices(heroId: widget.heroId);
+      _charChoices =
+          await service.getAllCharacteristicChoices(heroId: widget.heroId);
 
       // Load stored ancestry trait selections
       _ancestryTraitSelections = {};
-      _ancestryTraitSubChoices = await service.getAllAncestryTraitSubChoices(heroId: widget.heroId);
+      _ancestryTraitSubChoices =
+          await service.getAllAncestryTraitSubChoices(heroId: widget.heroId);
       for (final titleId in _selectedTitles.keys) {
-        final traitIds = await service.getAncestryTraitSelections(heroId: widget.heroId, titleId: titleId);
+        final traitIds = await service.getAncestryTraitSelections(
+            heroId: widget.heroId, titleId: titleId);
         if (traitIds.isNotEmpty) {
           _ancestryTraitSelections[titleId] = traitIds;
         }
@@ -87,7 +92,13 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
       _skillChoices = {};
       for (final titleId in _selectedTitles.keys) {
         // Check each potential group key
-        for (final suffix in ['', '__interpersonal', '__lore', '__crafting', '__exploration']) {
+        for (final suffix in [
+          '',
+          '__interpersonal',
+          '__lore',
+          '__crafting',
+          '__exploration'
+        ]) {
           final key = '$titleId$suffix';
           final chosen = await service.getSkillChoice(
             heroId: widget.heroId,
@@ -99,7 +110,8 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
           }
         }
         // Also check without group (any skill)
-        final anyChosen = await service.getSkillChoice(heroId: widget.heroId, titleId: titleId);
+        final anyChosen = await service.getSkillChoice(
+            heroId: widget.heroId, titleId: titleId);
         if (anyChosen.isNotEmpty && !_skillChoices.containsKey(titleId)) {
           _skillChoices[titleId] = anyChosen;
         }
@@ -108,7 +120,8 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
       // Load stored language choices
       _languageChoices = {};
       for (final titleId in _selectedTitles.keys) {
-        final chosen = await service.getLanguageChoice(heroId: widget.heroId, titleId: titleId);
+        final chosen = await service.getLanguageChoice(
+            heroId: widget.heroId, titleId: titleId);
         if (chosen.isNotEmpty) {
           _languageChoices[titleId] = chosen;
         }
@@ -117,14 +130,16 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
       // Load stored heroic ability choices
       _heroicAbilityChoices = {};
       for (final titleId in _selectedTitles.keys) {
-        final chosen = await service.getHeroicAbilityChoice(heroId: widget.heroId, titleId: titleId);
+        final chosen = await service.getHeroicAbilityChoice(
+            heroId: widget.heroId, titleId: titleId);
         if (chosen != null) {
           _heroicAbilityChoices[titleId] = chosen;
         }
       }
 
       // Load stored damage type choices
-      _damageTypeChoices = await service.getAllDamageTypeChoices(heroId: widget.heroId);
+      _damageTypeChoices =
+          await service.getAllDamageTypeChoices(heroId: widget.heroId);
 
       if (!mounted) return;
       setState(() {
@@ -143,7 +158,8 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
     if (_selectedTitles.containsKey(titleId)) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text(SheetStoryTitlesTabText.titleAlreadyAdded)),
+          const SnackBar(
+              content: Text(SheetStoryTitlesTabText.titleAlreadyAdded)),
         );
       }
       return;
@@ -151,23 +167,23 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
     try {
       final db = ref.read(appDatabaseProvider);
       final title = _availableTitles.firstWhere((t) => t['id'] == titleId);
-      
+
       _selectedTitles[titleId] = {
         'title': title,
         'selectedBenefitIndex': benefitIndex,
       };
-      
+
       // Store as "titleId:benefitIndex"
       final updatedIds = _selectedTitles.entries
           .map((e) => '${e.key}:${e.value['selectedBenefitIndex']}')
           .toList();
-      
+
       await db.setHeroComponentIds(
         heroId: widget.heroId,
         category: 'title',
         componentIds: updatedIds,
       );
-      
+
       // Apply title grants (abilities, etc.)
       final service = ref.read(titleGrantsServiceProvider);
       await service.applyTitleGrants(
@@ -189,17 +205,17 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
     try {
       final db = ref.read(appDatabaseProvider);
       _selectedTitles.remove(titleId);
-      
+
       final updatedIds = _selectedTitles.entries
           .map((e) => '${e.key}:${e.value['selectedBenefitIndex']}')
           .toList();
-      
+
       await db.setHeroComponentIds(
         heroId: widget.heroId,
         category: 'title',
         componentIds: updatedIds,
       );
-      
+
       // Reapply title grants with updated list
       final service = ref.read(titleGrantsServiceProvider);
       await service.applyTitleGrants(
@@ -211,7 +227,8 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(SheetStoryTitlesTabText.failedToRemoveTitle(e))),
+          SnackBar(
+              content: Text(SheetStoryTitlesTabText.failedToRemoveTitle(e))),
         );
       }
     }
@@ -220,18 +237,18 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
   Future<void> _changeBenefit(String titleId, int newBenefitIndex) async {
     if (_selectedTitles.containsKey(titleId)) {
       _selectedTitles[titleId]!['selectedBenefitIndex'] = newBenefitIndex;
-      
+
       final db = ref.read(appDatabaseProvider);
       final updatedIds = _selectedTitles.entries
           .map((e) => '${e.key}:${e.value['selectedBenefitIndex']}')
           .toList();
-      
+
       await db.setHeroComponentIds(
         heroId: widget.heroId,
         category: 'title',
         componentIds: updatedIds,
       );
-      
+
       // Reapply title grants with new benefit selection
       final service = ref.read(titleGrantsServiceProvider);
       await service.applyTitleGrants(
@@ -261,7 +278,8 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
   }
 
   void _openProgressPage() {
-    Navigator.of(context).push(
+    Navigator.of(context)
+        .push(
       MaterialPageRoute(
         builder: (_) => TitleProgressPage(
           heroId: widget.heroId,
@@ -276,14 +294,13 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
             if (title.isNotEmpty) {
               final benefits = title['benefits'] as List? ?? [];
               // Count chooseable (non-auto) benefits
-              final choiceCount = benefits.where((b) =>
-                b is Map<String, dynamic> && b['auto'] != true
-              ).length;
+              final choiceCount = benefits
+                  .where((b) => b is Map<String, dynamic> && b['auto'] != true)
+                  .length;
               if (choiceCount <= 1) {
                 // Find the single chooseable index, or -1 if all auto
-                final choiceIdx = benefits.indexWhere((b) =>
-                  b is Map<String, dynamic> && b['auto'] != true
-                );
+                final choiceIdx = benefits.indexWhere(
+                    (b) => b is Map<String, dynamic> && b['auto'] != true);
                 _addTitle(titleId, choiceIdx);
               } else {
                 // Show benefit selection via the add dialog
@@ -302,7 +319,8 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
           },
         ),
       ),
-    ).then((_) {
+    )
+        .then((_) {
       // Refresh data when returning from progress page
       _loadData();
     });
@@ -376,7 +394,8 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                         color: _titlesColor.withAlpha(51),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: AppIcon(TitleIcons.tab, color: _titlesColor, size: 24),
+                      child: AppIcon(TitleIcons.tab,
+                          color: _titlesColor, size: 24),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -392,8 +411,10 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                             ),
                           ),
                           Text(
-                            SheetStoryTitlesTabText.titlesEarned(_selectedTitles.length),
-                            style: TextStyle(color: FormTheme.textSecondary, fontSize: 13),
+                            SheetStoryTitlesTabText.titlesEarned(
+                                _selectedTitles.length),
+                            style: TextStyle(
+                                color: FormTheme.textSecondary, fontSize: 13),
                           ),
                         ],
                       ),
@@ -406,7 +427,8 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
               GestureDetector(
                 onTap: _openProgressPage,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                   decoration: BoxDecoration(
                     color: _titlesColor.withAlpha(16),
                     borderRadius: BorderRadius.circular(10),
@@ -431,12 +453,14 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                             const SizedBox(height: 2),
                             Text(
                               'View prerequisites and track your journey',
-                              style: TextStyle(color: FormTheme.textSecondary, fontSize: 12),
+                              style: TextStyle(
+                                  color: FormTheme.textSecondary, fontSize: 12),
                             ),
                           ],
                         ),
                       ),
-                      Icon(Icons.chevron_right, color: _titlesColor.withAlpha(180), size: 22),
+                      Icon(Icons.chevron_right,
+                          color: _titlesColor.withAlpha(180), size: 22),
                     ],
                   ),
                 ),
@@ -448,7 +472,8 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                     padding: const EdgeInsets.all(32),
                     child: Column(
                       children: [
-                        Icon(Icons.emoji_events_outlined, size: 48, color: FormTheme.borderLight),
+                        Icon(Icons.emoji_events_outlined,
+                            size: 48, color: FormTheme.borderLight),
                         const SizedBox(height: 16),
                         Text(
                           SheetStoryTitlesTabText.noTitlesSelected,
@@ -463,7 +488,7 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                 ...groupedTitles.entries.map((group) {
                   final echelon = group.key;
                   final titles = group.value;
-                  
+
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -480,7 +505,8 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                               ),
                             ),
                             const SizedBox(width: 8),
-                            AppIcon(TitleIcons.fromEchelon(echelon), color: _titlesColor, size: 18),
+                            AppIcon(TitleIcons.fromEchelon(echelon),
+                                color: _titlesColor, size: 18),
                             const SizedBox(width: 6),
                             Text(
                               SheetStoryTitlesTabText.echelonLabel(echelon),
@@ -493,7 +519,8 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                           ],
                         ),
                       ),
-                      ...titles.map((entry) => _buildTitleCard(context, entry.key, entry.value)),
+                      ...titles.map((entry) =>
+                          _buildTitleCard(context, entry.key, entry.value)),
                       const SizedBox(height: 8),
                     ],
                   );
@@ -522,12 +549,13 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
     );
   }
 
-  Widget _buildTitleCard(BuildContext context, String titleId, Map<String, dynamic> data) {
+  Widget _buildTitleCard(
+      BuildContext context, String titleId, Map<String, dynamic> data) {
     final title = data['title'] as Map<String, dynamic>;
     final selectedBenefitIndex = data['selectedBenefitIndex'] as int;
     final benefits = title['benefits'] as List? ?? [];
     final echelon = title['echelon'] as int? ?? 1;
-    
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
@@ -548,7 +576,8 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                     color: _titlesColor.withAlpha(26),
                     borderRadius: BorderRadius.circular(6),
                   ),
-                  child: AppIcon(TitleIcons.fromEchelon(echelon), color: _titlesColor, size: 20),
+                  child: AppIcon(TitleIcons.fromEchelon(echelon),
+                      color: _titlesColor, size: 20),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -556,7 +585,8 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        title['name'] as String? ?? SheetStoryTitlesTabText.unknown,
+                        title['name'] as String? ??
+                            SheetStoryTitlesTabText.unknown,
                         style: const TextStyle(
                           color: FormTheme.textBright,
                           fontSize: 16,
@@ -566,7 +596,8 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                       if (title['prerequisite'] != null) ...[
                         const SizedBox(height: 2),
                         Text(
-                          SheetStoryTitlesTabText.prerequisite(title['prerequisite'].toString()),
+                          SheetStoryTitlesTabText.prerequisite(
+                              title['prerequisite'].toString()),
                           style: TextStyle(
                             fontStyle: FontStyle.italic,
                             color: FormTheme.textMuted,
@@ -595,7 +626,8 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
             // Title-level grants (characteristic increases, languages, etc.)
             ..._buildTitleLevelGrants(context, titleId, title),
             // Separate auto benefits from chooseable ones
-            ..._buildBenefitsSections(context, titleId, benefits, selectedBenefitIndex),
+            ..._buildBenefitsSections(
+                context, titleId, benefits, selectedBenefitIndex),
             if (title['special'] != null) ...[
               const SizedBox(height: 12),
               Container(
@@ -607,12 +639,15 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(Icons.info_outline, size: 20, color: Colors.blue.shade300),
+                    Icon(Icons.info_outline,
+                        size: 20, color: Colors.blue.shade300),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        SheetStoryTitlesTabText.special(title['special'].toString()),
-                        style: TextStyle(color: FormTheme.textSecondary, fontSize: 12),
+                        SheetStoryTitlesTabText.special(
+                            title['special'].toString()),
+                        style: TextStyle(
+                            color: FormTheme.textSecondary, fontSize: 12),
                       ),
                     ),
                   ],
@@ -677,7 +712,8 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.check_circle, size: 16, color: Colors.green.shade400),
+                    Icon(Icons.check_circle,
+                        size: 16, color: Colors.green.shade400),
                     const SizedBox(width: 6),
                     Text(
                       entry.value['name'] as String? ?? '',
@@ -703,7 +739,8 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
     final hasValidChoice = selectedBenefitIndex >= 0 &&
         selectedBenefitIndex < benefits.length &&
         !((benefits[selectedBenefitIndex] is Map<String, dynamic>) &&
-            (benefits[selectedBenefitIndex] as Map<String, dynamic>)['auto'] == true);
+            (benefits[selectedBenefitIndex] as Map<String, dynamic>)['auto'] ==
+                true);
 
     if (choiceBenefits.isNotEmpty && hasValidChoice) {
       widgets.add(
@@ -742,11 +779,13 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                       ),
                     ),
                   ),
-                _buildBenefitContent(context, benefits[selectedBenefitIndex], titleId: titleId),
+                _buildBenefitContent(context, benefits[selectedBenefitIndex],
+                    titleId: titleId),
                 if (choiceBenefits.length > 1) ...[
                   const SizedBox(height: 12),
                   TextButton.icon(
-                    onPressed: () => _showChangeBenefitDialog(titleId, benefits),
+                    onPressed: () =>
+                        _showChangeBenefitDialog(titleId, benefits),
                     style: TextButton.styleFrom(
                       foregroundColor: _titlesColor,
                     ),
@@ -775,12 +814,14 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
 
     final widgets = <Widget>[];
     for (final grant in grants) {
-      if (grant is! Map<String, dynamic>) continue;
-      final type = grant['type'] as String?;
+      final grantMap = _titleGrantViewMap(grant);
+      if (grantMap == null) continue;
+      final type = grantMap['type'] as String?;
       if (type == 'characteristic_increase') {
-        widgets.add(_buildCharacteristicPicker(context, titleId, grant));
+        widgets.add(_buildCharacteristicPicker(context, titleId, grantMap));
       } else if (type == 'languages') {
-        final specific = (grant['specific'] as List?)?.whereType<String>().toList();
+        final specific =
+            (grantMap['specific'] as List?)?.whereType<String>().toList();
         if (specific != null && specific.isNotEmpty) {
           widgets.add(
             Padding(
@@ -806,13 +847,139 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
     return widgets;
   }
 
+  Map<String, dynamic>? _titleGrantViewMap(dynamic rawGrant) {
+    if (rawGrant is! Map) return null;
+    final grantMap = rawGrant.cast<String, dynamic>();
+    if (!grantMap.containsKey('kind')) return grantMap;
+
+    try {
+      return _legacyTitleGrantView(CanonicalGrant.fromJson(grantMap));
+    } catch (_) {
+      return grantMap;
+    }
+  }
+
+  Map<String, dynamic>? _legacyTitleGrantView(CanonicalGrant grant) {
+    switch (grant) {
+      case CanonicalChoiceGrant():
+        return switch (grant.choiceType) {
+          'characteristic' => {
+              'type': 'characteristic_increase',
+              'choices': grant.options,
+              'value': _canonicalPayloadInt(grant, 'value') ?? 1,
+              if (_canonicalPayloadInt(grant, 'max') != null)
+                'max': _canonicalPayloadInt(grant, 'max'),
+              if (_canonicalPayloadString(grant, 'tag') != null)
+                'tag': _canonicalPayloadString(grant, 'tag'),
+            },
+          'ancestry_trait' => {
+              'type': 'ancestry_points',
+              if (_canonicalPayloadString(grant, 'ancestry') != null)
+                'ancestry': _canonicalPayloadString(grant, 'ancestry'),
+              'value': _canonicalPayloadInt(grant, 'points') ?? grant.count,
+            },
+          'skill' => {
+              'type': 'skill_choice',
+              if (grant.groups.isNotEmpty) 'group': grant.groups.first,
+              'count': grant.count,
+              if (_canonicalPayloadString(grant, 'mode') != null)
+                'mode': _canonicalPayloadString(grant, 'mode'),
+            },
+          'language' => {
+              'type': 'languages',
+              'count': grant.count,
+            },
+          'ability' => {
+              'type': 'heroic_ability_choice',
+              'count': grant.count,
+              if (_canonicalPayloadString(grant, 'source') != null)
+                'source': _canonicalPayloadString(grant, 'source'),
+            },
+          'damage_type' => {
+              'type': 'damage_immunity',
+              'damage_type': 'choose',
+              'damage_type_options': grant.options,
+              if (_canonicalPayloadString(grant, 'value_source') != null)
+                'value_source': _canonicalPayloadString(grant, 'value_source'),
+              if (_canonicalPayloadInt(grant, 'value') != null)
+                'value': _canonicalPayloadInt(grant, 'value'),
+              if (_canonicalPayloadString(grant, 'note') != null)
+                'note': _canonicalPayloadString(grant, 'note'),
+            },
+          _ => null,
+        };
+
+      case CanonicalEntryGrant():
+        return switch (grant.entryType) {
+          HeroEntryTypes.conditionImmunity => {
+              'type': 'condition_immunity',
+              'condition': grant.entryId,
+            },
+          HeroEntryTypes.itemPrerequisite => {
+              'type': 'item_prerequisite',
+              'category': grant.payload?['category'],
+              'tag': grant.payload?['tag'],
+              'count': grant.payload?['count'],
+            },
+          HeroEntryTypes.skill => {
+              'type': 'skill_choice',
+              'skill': grant.entryId,
+              'count': grant.payload?['count'] ?? 1,
+              if (grant.payload?['mode'] != null)
+                'mode': grant.payload?['mode'],
+            },
+          HeroEntryTypes.language => {
+              'type': 'languages',
+              'count': grant.payload?['count'] ?? 1,
+              'specific': [grant.entryId],
+            },
+          _ => null,
+        };
+
+      case CanonicalStatModGrant():
+        final value = grant.modifications.isEmpty
+            ? null
+            : grant.modifications.first.baseValue;
+        return {
+          'type': grant.entryId ?? grant.stat,
+          if (value != null) 'value': value,
+        };
+
+      case CanonicalResistanceGrant():
+        return {
+          'type': 'damage_immunity',
+          'damage_type': grant.damageType,
+          if (grant.dynamicImmunity != null)
+            'value_source': grant.dynamicImmunity,
+          if (grant.immunity != 0) 'value': grant.immunity,
+        };
+
+      case CanonicalTokenGrant():
+      case CanonicalTreasureGrant():
+      case CanonicalEquipmentBonusesGrant():
+        return null;
+    }
+  }
+
+  String? _canonicalPayloadString(CanonicalChoiceGrant grant, String key) {
+    final value = grant.payload?[key]?.toString().trim();
+    return value == null || value.isEmpty ? null : value;
+  }
+
+  int? _canonicalPayloadInt(CanonicalChoiceGrant grant, String key) {
+    final value = grant.payload?[key];
+    if (value is num) return value.toInt();
+    return int.tryParse(value?.toString() ?? '');
+  }
+
   /// Build an interactive characteristic choice dropdown for a title grant.
   Widget _buildCharacteristicPicker(
     BuildContext context,
     String titleId,
     Map<String, dynamic> grant,
   ) {
-    final choices = (grant['choices'] as List?)?.whereType<String>().toList() ?? [];
+    final choices =
+        (grant['choices'] as List?)?.whereType<String>().toList() ?? [];
     final value = (grant['value'] as num?)?.toInt() ?? 1;
     final tag = grant['tag'] as String?;
 
@@ -829,7 +996,9 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
           Text(
             '+$value ',
             style: TextStyle(
-              color: Colors.amber.shade300, fontSize: 13, fontWeight: FontWeight.bold,
+              color: Colors.amber.shade300,
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
             ),
           ),
           Expanded(
@@ -840,7 +1009,9 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                 color: StoryTheme.cardBackground,
                 borderRadius: BorderRadius.circular(6),
                 border: Border.all(
-                  color: selected != null ? Colors.amber.shade700 : Colors.orange.shade700,
+                  color: selected != null
+                      ? Colors.amber.shade700
+                      : Colors.orange.shade700,
                   width: selected != null ? 1 : 1.5,
                 ),
               ),
@@ -851,16 +1022,19 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                   dropdownColor: NavigationTheme.cardBackgroundDark,
                   hint: Text(
                     'Choose characteristic…',
-                    style: TextStyle(color: Colors.orange.shade300, fontSize: 12),
+                    style:
+                        TextStyle(color: Colors.orange.shade300, fontSize: 12),
                   ),
                   style: TextStyle(color: Colors.amber.shade200, fontSize: 13),
-                  icon: Icon(Icons.arrow_drop_down, color: Colors.amber.shade400, size: 20),
+                  icon: Icon(Icons.arrow_drop_down,
+                      color: Colors.amber.shade400, size: 20),
                   items: choices.map((c) {
                     return DropdownMenuItem(
                       value: c,
                       child: Text(
                         c[0].toUpperCase() + c.substring(1),
-                        style: TextStyle(color: Colors.amber.shade200, fontSize: 13),
+                        style: TextStyle(
+                            color: Colors.amber.shade200, fontSize: 13),
                       ),
                     );
                   }).toList(),
@@ -901,20 +1075,23 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
     if (mounted) setState(() {});
   }
 
-  Widget _buildBenefitContent(BuildContext context, dynamic benefit, {String? titleId}) {
+  Widget _buildBenefitContent(BuildContext context, dynamic benefit,
+      {String? titleId}) {
     if (benefit is! Map<String, dynamic>) return const SizedBox.shrink();
-    
+
     final description = benefit['description'] as String?;
     final ability = benefit['ability'] as String?;
     final grantsRaw = benefit['grants'];
     // Normalize grants to a List (can be Map or List)
-    final grants = grantsRaw is List ? grantsRaw : (grantsRaw is Map ? [grantsRaw] : null);
-    
+    final grants =
+        grantsRaw is List ? grantsRaw : (grantsRaw is Map ? [grantsRaw] : null);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (description != null && description.isNotEmpty)
-          Text(description, style: TextStyle(color: FormTheme.textSecondary, fontSize: 13)),
+          Text(description,
+              style: TextStyle(color: FormTheme.textSecondary, fontSize: 13)),
         if (ability != null && ability.isNotEmpty) ...[
           const SizedBox(height: 8),
           _buildAbilityCard(ability),
@@ -922,64 +1099,74 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
         if (grants != null && grants.isNotEmpty) ...[
           const SizedBox(height: 8),
           ...grants.map((grant) {
-            if (grant is Map<String, dynamic>) {
-              final type = grant['type'] as String?;
+            final grantMap = _titleGrantViewMap(grant);
+            if (grantMap != null) {
+              final type = grantMap['type'] as String?;
               if (type == 'characteristic_increase' && titleId != null) {
-                return _buildCharacteristicPicker(context, titleId, grant);
+                return _buildCharacteristicPicker(context, titleId, grantMap);
               }
               if (type == 'ancestry_points' && titleId != null) {
-                return _buildAncestryPointsPicker(context, titleId, grant);
+                return _buildAncestryPointsPicker(context, titleId, grantMap);
               }
-              if (type == 'skill_choice' && titleId != null && grant['skill'] == null) {
-                return _buildSkillChoicePicker(context, titleId, grant);
+              if (type == 'skill_choice' &&
+                  titleId != null &&
+                  grantMap['skill'] == null) {
+                return _buildSkillChoicePicker(context, titleId, grantMap);
               }
-              if (type == 'languages' && titleId != null && grant['specific'] == null) {
-                return _buildLanguageChoicePicker(context, titleId, grant);
+              if (type == 'languages' &&
+                  titleId != null &&
+                  grantMap['specific'] == null) {
+                return _buildLanguageChoicePicker(context, titleId, grantMap);
               }
               if (type == 'heroic_ability_choice' && titleId != null) {
-                return _buildHeroicAbilityPicker(context, titleId, grant);
+                return _buildHeroicAbilityPicker(context, titleId, grantMap);
               }
               if (type == 'damage_immunity' && titleId != null) {
-                final damageType = grant['damage_type'] as String?;
+                final damageType = grantMap['damage_type'] as String?;
                 if (damageType == 'choose') {
-                  return _buildDamageImmunityPicker(context, titleId, grant);
+                  return _buildDamageImmunityPicker(context, titleId, grantMap);
                 }
-                return _buildDamageImmunityBadge(grant);
+                return _buildDamageImmunityBadge(grantMap);
               }
               if (type == 'condition_immunity') {
-                final condition = grant['condition'] as String? ?? '';
+                final condition = grantMap['condition'] as String? ?? '';
                 return _buildConditionImmunityBadge(condition);
               }
               if (type == 'item_prerequisite') {
-                final category = grant['category'] as String? ?? '';
-                final tag = grant['tag'] as String? ?? '';
+                final category = grantMap['category'] as String? ?? '';
+                final tag = grantMap['tag'] as String? ?? '';
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 4),
                   child: Row(
                     children: [
-                      Icon(Icons.inventory_2, size: 16, color: Colors.purple.shade300),
+                      Icon(Icons.inventory_2,
+                          size: 16, color: Colors.purple.shade300),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
-                          SheetStoryTitlesTabText.itemPrerequisite(category, tag),
-                          style: TextStyle(color: Colors.purple.shade300, fontSize: 12),
+                          SheetStoryTitlesTabText.itemPrerequisite(
+                              category, tag),
+                          style: TextStyle(
+                              color: Colors.purple.shade300, fontSize: 12),
                         ),
                       ),
                     ],
                   ),
                 );
               }
-              final value = grant['value'];
+              final value = grantMap['value'];
               if (type != null) {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 4),
                   child: Row(
                     children: [
-                      Icon(Icons.card_giftcard, size: 16, color: Colors.teal.shade300),
+                      Icon(Icons.card_giftcard,
+                          size: 16, color: Colors.teal.shade300),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
-                          SheetStoryTitlesTabText.grantsLabel(_formatGrant(type, value)),
+                          SheetStoryTitlesTabText.grantsLabel(
+                              _formatGrant(type, value)),
                           style: TextStyle(
                             color: Colors.teal.shade300,
                             fontSize: 12,
@@ -1044,16 +1231,20 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      SheetStoryTitlesTabText.ancestryTraitsTitle(ancestryLabel),
+                      SheetStoryTitlesTabText.ancestryTraitsTitle(
+                          ancestryLabel),
                       style: TextStyle(
-                        color: hasSelection ? _titlesColor : Colors.orange.shade300,
+                        color: hasSelection
+                            ? _titlesColor
+                            : Colors.orange.shade300,
                         fontWeight: FontWeight.w600,
                         fontSize: 13,
                       ),
                     ),
                     Text(
                       hasSelection
-                          ? SheetStoryTitlesTabText.traitsSelected(selected.length)
+                          ? SheetStoryTitlesTabText.traitsSelected(
+                              selected.length)
                           : SheetStoryTitlesTabText.noTraitsSelected,
                       style: TextStyle(
                         color: hasSelection
@@ -1187,7 +1378,9 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
               Icon(
                 Icons.school,
                 size: 16,
-                color: hasSelection ? Colors.blue.shade300 : Colors.orange.shade300,
+                color: hasSelection
+                    ? Colors.blue.shade300
+                    : Colors.orange.shade300,
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -1196,8 +1389,11 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                       ? chosen.map((s) => s.replaceAll('_', ' ')).join(', ')
                       : '$label ($count)',
                   style: TextStyle(
-                    color: hasSelection ? Colors.blue.shade300 : Colors.orange.shade300,
-                    fontWeight: hasSelection ? FontWeight.w600 : FontWeight.normal,
+                    color: hasSelection
+                        ? Colors.blue.shade300
+                        : Colors.orange.shade300,
+                    fontWeight:
+                        hasSelection ? FontWeight.w600 : FontWeight.normal,
                     fontSize: 13,
                   ),
                 ),
@@ -1205,7 +1401,9 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
               Icon(
                 Icons.edit,
                 size: 16,
-                color: hasSelection ? Colors.blue.shade300 : Colors.orange.shade300,
+                color: hasSelection
+                    ? Colors.blue.shade300
+                    : Colors.orange.shade300,
               ),
             ],
           ),
@@ -1230,13 +1428,15 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
 
     if (!mounted) return;
 
-    final options = filteredSkills.map((s) => SearchableOption<String>(
-      label: s.name,
-      value: s.id,
-      subtitle: s.group.isNotEmpty
-          ? '${s.group[0].toUpperCase()}${s.group.substring(1)}'
-          : null,
-    )).toList();
+    final options = filteredSkills
+        .map((s) => SearchableOption<String>(
+              label: s.name,
+              value: s.id,
+              subtitle: s.group.isNotEmpty
+                  ? '${s.group[0].toUpperCase()}${s.group.substring(1)}'
+                  : null,
+            ))
+        .toList();
 
     // For single-pick, use searchable picker
     if (count == 1) {
@@ -1329,7 +1529,9 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
               Icon(
                 Icons.translate,
                 size: 16,
-                color: hasSelection ? Colors.teal.shade300 : Colors.orange.shade300,
+                color: hasSelection
+                    ? Colors.teal.shade300
+                    : Colors.orange.shade300,
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -1338,8 +1540,11 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                       ? chosen.map((l) => l.replaceAll('_', ' ')).join(', ')
                       : SheetStoryTitlesTabText.chooseLanguages(count),
                   style: TextStyle(
-                    color: hasSelection ? Colors.teal.shade300 : Colors.orange.shade300,
-                    fontWeight: hasSelection ? FontWeight.w600 : FontWeight.normal,
+                    color: hasSelection
+                        ? Colors.teal.shade300
+                        : Colors.orange.shade300,
+                    fontWeight:
+                        hasSelection ? FontWeight.w600 : FontWeight.normal,
                     fontSize: 13,
                   ),
                 ),
@@ -1347,7 +1552,9 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
               Icon(
                 Icons.edit,
                 size: 16,
-                color: hasSelection ? Colors.teal.shade300 : Colors.orange.shade300,
+                color: hasSelection
+                    ? Colors.teal.shade300
+                    : Colors.orange.shade300,
               ),
             ],
           ),
@@ -1382,7 +1589,8 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
       if (!mounted) return;
       final result = await showSearchablePicker<String>(
         context: context,
-        title: '${SheetStoryTitlesTabText.chooseLanguageHint} (${i + 1}/$count)',
+        title:
+            '${SheetStoryTitlesTabText.chooseLanguageHint} (${i + 1}/$count)',
         options: options.where((o) => !chosen.contains(o.value)).toList(),
         accentColor: Colors.teal.shade300,
         icon: Icons.translate,
@@ -1455,9 +1663,8 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                         color: hasSelection
                             ? Colors.purple.shade300
                             : Colors.orange.shade300,
-                        fontWeight: hasSelection
-                            ? FontWeight.w600
-                            : FontWeight.normal,
+                        fontWeight:
+                            hasSelection ? FontWeight.w600 : FontWeight.normal,
                         fontSize: 13,
                       ),
                     ),
@@ -1498,7 +1705,9 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
       if (cost is int && cost >= 3) return true;
       // Also check the keywords for "heroic"
       final kw = data['keywords'];
-      final keywords = kw is String ? kw.toLowerCase() : (kw is List ? kw.join('/').toLowerCase() : '');
+      final keywords = kw is String
+          ? kw.toLowerCase()
+          : (kw is List ? kw.join('/').toLowerCase() : '');
       if (keywords.contains('heroic')) return true;
       return false;
     }).toList()
@@ -1510,7 +1719,8 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
           : <String, dynamic>{};
       final resource = data['resource'] as String?;
       final cost = data['resource_value'];
-      final subtitle = resource != null && cost != null ? '$resource $cost' : null;
+      final subtitle =
+          resource != null && cost != null ? '$resource $cost' : null;
       return SearchableOption<String>(
         label: a.name,
         value: a.id,
@@ -1564,7 +1774,8 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
       } else if (valueSource == 'highest_characteristic') {
         subtitle = SheetStoryTitlesTabText.damageImmunityHighestChar(label);
       } else if (staticValue != null) {
-        subtitle = SheetStoryTitlesTabText.damageImmunityStatic(label, staticValue);
+        subtitle =
+            SheetStoryTitlesTabText.damageImmunityStatic(label, staticValue);
       } else {
         subtitle = label;
       }
@@ -1595,7 +1806,8 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
               Icon(
                 Icons.shield,
                 size: 16,
-                color: hasSelection ? Colors.red.shade300 : Colors.orange.shade300,
+                color:
+                    hasSelection ? Colors.red.shade300 : Colors.orange.shade300,
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -1605,7 +1817,9 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                     Text(
                       SheetStoryTitlesTabText.damageImmunityTitle,
                       style: TextStyle(
-                        color: hasSelection ? Colors.red.shade300 : Colors.orange.shade300,
+                        color: hasSelection
+                            ? Colors.red.shade300
+                            : Colors.orange.shade300,
                         fontWeight: FontWeight.w600,
                         fontSize: 13,
                       ),
@@ -1625,7 +1839,8 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
               Icon(
                 Icons.edit,
                 size: 16,
-                color: hasSelection ? Colors.red.shade300 : Colors.orange.shade300,
+                color:
+                    hasSelection ? Colors.red.shade300 : Colors.orange.shade300,
               ),
             ],
           ),
@@ -1758,7 +1973,7 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
 
   Widget _buildAbilityCard(String abilityNameOrId) {
     final abilityAsync = ref.watch(abilityByNameProvider(abilityNameOrId));
-    
+
     return abilityAsync.when(
       data: (ability) {
         if (ability == null) {
@@ -1790,10 +2005,12 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
             SizedBox(
               width: 12,
               height: 12,
-              child: CircularProgressIndicator(strokeWidth: 1.5, color: _titlesColor),
+              child: CircularProgressIndicator(
+                  strokeWidth: 1.5, color: _titlesColor),
             ),
             const SizedBox(width: 8),
-            Text(SheetStoryTitlesTabText.loadingAbility(abilityNameOrId), style: TextStyle(fontSize: 10, color: FormTheme.textSecondary)),
+            Text(SheetStoryTitlesTabText.loadingAbility(abilityNameOrId),
+                style: TextStyle(fontSize: 10, color: FormTheme.textSecondary)),
           ],
         ),
       ),
@@ -1843,7 +2060,8 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(16)),
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
@@ -1861,7 +2079,8 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                         color: _titlesColor.withAlpha(51),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Icon(Icons.swap_horiz, color: _titlesColor, size: 24),
+                      child: const Icon(Icons.swap_horiz,
+                          color: _titlesColor, size: 24),
                     ),
                     const SizedBox(width: 12),
                     const Expanded(
@@ -1890,8 +2109,10 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                   itemBuilder: (context, listIndex) {
                     final originalIndex = choiceEntries[listIndex].key;
                     final benefit = choiceEntries[listIndex].value;
-                    final isSelected = _selectedTitles[titleId]!['selectedBenefitIndex'] == originalIndex;
-                    
+                    final isSelected =
+                        _selectedTitles[titleId]!['selectedBenefitIndex'] ==
+                            originalIndex;
+
                     return Container(
                       margin: const EdgeInsets.only(bottom: 8),
                       decoration: BoxDecoration(
@@ -1900,7 +2121,8 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                             : StoryTheme.cardBackground,
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(
-                          color: isSelected ? _titlesColor : FormTheme.borderDim,
+                          color:
+                              isSelected ? _titlesColor : FormTheme.borderDim,
                           width: isSelected ? 2 : 1,
                         ),
                       ),
@@ -1918,12 +2140,16 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                               Row(
                                 children: [
                                   Text(
-                                    (benefit is Map<String, dynamic> && benefit['name'] != null)
+                                    (benefit is Map<String, dynamic> &&
+                                            benefit['name'] != null)
                                         ? benefit['name'] as String
-                                        : SheetStoryTitlesTabText.benefitLabel(listIndex),
+                                        : SheetStoryTitlesTabText.benefitLabel(
+                                            listIndex),
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      color: isSelected ? _titlesColor : FormTheme.textBright,
+                                      color: isSelected
+                                          ? _titlesColor
+                                          : FormTheme.textBright,
                                     ),
                                   ),
                                   if (isSelected) ...[
@@ -1937,7 +2163,8 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
                                 ],
                               ),
                               const SizedBox(height: 8),
-                              _buildBenefitContent(context, benefit, titleId: titleId),
+                              _buildBenefitContent(context, benefit,
+                                  titleId: titleId),
                             ],
                           ),
                         ),

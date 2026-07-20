@@ -60,12 +60,18 @@
       {
         "name": "Choreography",
         "description": "You have the following ability.",
-        "ability": "Choreography"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "choreography",
+        "payload": { "name": "Choreography" }
       },
       {
         "name": "Revitalizing Limerick",
         "description": "You have the following ability.",
-        "ability": "Revitalizing Limerick"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "revitalizing-limerick",
+        "payload": { "name": "Revitalizing Limerick" }
       }
     ]
   },
@@ -82,37 +88,65 @@
         "name": "Blocking",
         "subclass_name": "Auteur",
         "description": "You have the following performance ability, which is usable with your Routines feature.",
-        "ability": "Blocking"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "blocking",
+        "payload": { "name": "Blocking" }
       },
       {
         "name": "Dramatic Monologue",
         "subclass_name": "Auteur",
         "description": "You have the following ability.",
-        "ability": "Dramatic Monologue"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "dramatic-monologue",
+        "payload": { "name": "Dramatic Monologue" }
       },
       {
         "name": "Acrobatics",
         "subclass_name": "Duelist",
         "description": "You have the following performance ability, which is usable with your Routines feature.",
-        "ability": "Acrobatics"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "acrobatics",
+        "payload": { "name": "Acrobatics" }
       },
       {
         "name": "Star Power",
         "subclass_name": "Duelist",
         "description": "You have the following ability.",
-        "ability": "Star Power"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "star-power-1-drama",
+        "payload": { "name": "Star Power" }
       },
       {
         "name": "Power Chord",
         "subclass_name": "Virtuoso",
         "description": "You have the following ability.",
-        "ability": "Power Chord"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "power-chord",
+        "payload": { "name": "Power Chord" }
       },
       {
         "name": "Virtuoso Performances",
         "subclass_name": "Virtuoso",
         "description": " You have the following performance abilities, which are usable with your Routines feature.",
-        "ability": ["“Thunder Mother”", "“Ballad of the Beast”"]
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "thunder-mother",
+            "payload": { "name": "\"Thunder Mother\"" }
+          },
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "ballad-of-the-beast",
+            "payload": { "name": "\"Ballad of the Beast\"" }
+          }
+        ]
       }
     ]
   },
@@ -128,17 +162,26 @@
       {
         "subclass_name": "Auteur",
         "name": "Turnabout Is Fair Play",
-        "ability": "Turnabout Is Fair Play"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "turnabout-is-fair-play",
+        "payload": { "name": "Turnabout Is Fair Play" }
       },
       {
         "subclass_name": "Duelist",
         "name": "Riposte",
-        "ability": "Riposte"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "riposte",
+        "payload": { "name": "Riposte" }
       },
       {
         "subclass_name": "Virtuoso",
         "name": "Harmonize",
-        "ability": "Harmonize"
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "harmonize-3-drama",
+        "payload": { "name": "Harmonize" }
       }
     ]
   },
@@ -195,7 +238,20 @@
         "subclass_name": "Virtuoso",
         "name": "Second Album",
         "description": "You have the following performance abilities, which are usable with your Routines feature.",
-        "ability": ["“Fire Up the Night”", "“Never-Ending Hero”"]
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "fire-up-the-night",
+            "payload": { "name": "\"Fire Up the Night\"" }
+          },
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "never-ending-hero",
+            "payload": { "name": "\"Never-Ending Hero\"" }
+          }
+        ]
       }
     ]
   },
@@ -269,7 +325,14 @@
         "subclass_name": "Auteur",
         "name": "Take Two!",
         "description": "You have the following performance ability, which is usable with your Routines feature.",
-        "ability": "Take Two!"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "take-two",
+            "payload": { "name": "Take Two!" }
+          }
+        ]
       },
       {
         "subclass_name": "Duelist",
@@ -280,7 +343,14 @@
         "subclass_name": "Duelist",
         "name": "We Can't Be Upstaged!",
         "description": "You have the following performance ability, which is usable with your Routines feature.",
-        "ability": "We Can't Be Upstaged!"
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "we-cant-be-upstaged",
+            "payload": { "name": "We Can't Be Upstaged!" }
+          }
+        ]
       },
       {
         "subclass_name": "Virtuoso",
@@ -301,7 +371,14 @@
     "class": "troubadour",
     "level": 6,
     "description": "You have the following performance ability, which is usable with your Routines feature.",
-    "ability": "Spotlight"
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "spotlight",
+        "payload": { "name": "Spotlight" }
+      }
+    ]
   },
   {
     "id": "feature_troubadour_equal_billing",
@@ -342,7 +419,20 @@
         "subclass_name": "Virtuoso",
         "name": "Crowd Favorites",
         "description": "You have the following performance abilities, which are usable with your Routines feature.",
-        "ability": ["Moonlight Sonata", "Radical Fantasia"]
+        "grants": [
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "moonlight-sonata",
+            "payload": { "name": "Moonlight Sonata" }
+          },
+          {
+            "kind": "entry",
+            "entry_type": "ability",
+            "entry_id": "radical-fantasia",
+            "payload": { "name": "Radical Fantasia" }
+          }
+        ]
       }
     ]
   },

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
+import '../models/canonical_grant_model.dart';
 import '../models/class_data.dart';
 import '../models/feature.dart' as feature_model;
 import '../models/subclass_models.dart';
@@ -240,7 +241,9 @@ class ClassFeatureDataService {
   static List<dynamic>? extractOptionsOrGrants(Map<String, dynamic>? details) {
     if (details == null) return null;
     final grants = details['grants'];
-    if (grants is List && grants.isNotEmpty) return grants;
+    if (grants is List && grants.isNotEmpty && !_isCanonicalGrantList(grants)) {
+      return grants;
+    }
     final options = details['options'];
     if (options is List && options.isNotEmpty) return options;
     // Check for options_X pattern (options_2, options_3, etc.)
@@ -280,7 +283,62 @@ class ClassFeatureDataService {
   static bool hasGrants(Map<String, dynamic>? details) {
     if (details == null) return false;
     final grants = details['grants'];
-    return grants is List && grants.isNotEmpty;
+    return grants is List &&
+        grants.isNotEmpty &&
+        !_isCanonicalGrantList(grants);
+  }
+
+  static bool _isCanonicalGrantList(List<dynamic> grants) {
+    if (grants.isEmpty) return false;
+    final allCanonical = grants.every((entry) {
+      if (entry is Map<String, dynamic>) return entry.containsKey('kind');
+      if (entry is Map) return entry.containsKey('kind');
+      return false;
+    });
+    if (!allCanonical) return false;
+    return !grants.any((entry) {
+      if (entry is Map<String, dynamic>) {
+        return _hasCanonicalGrantOptionMetadata(entry);
+      }
+      if (entry is Map) {
+        return _hasCanonicalGrantOptionMetadata(entry.cast<String, dynamic>());
+      }
+      return false;
+    });
+  }
+
+  static bool _hasCanonicalGrantOptionMetadata(Map<String, dynamic> grant) {
+    const optionMetadataKeys = {
+      'label',
+      'name',
+      'title',
+      'domain',
+      'subclass',
+      'subclass_name',
+      'tradition',
+      'order',
+      'doctrine',
+      'mask',
+      'path',
+      'circle',
+      'college',
+      'element',
+      'role',
+      'discipline',
+      'oath',
+      'school',
+      'guild',
+      'skill_group',
+      'choice_key',
+    };
+    for (final key in optionMetadataKeys) {
+      final value = grant[key];
+      if (value == null) continue;
+      if (value is String && value.trim().isEmpty) continue;
+      if (value is List && value.isEmpty) continue;
+      return true;
+    }
+    return false;
   }
 
   /// Normalizes the raw options/grants list into a typed list of maps.
@@ -293,12 +351,82 @@ class ClassFeatureDataService {
     final result = <Map<String, dynamic>>[];
     for (final entry in raw) {
       if (entry is Map<String, dynamic>) {
-        result.add(entry);
+        result.add(_normalizeOptionMap(entry));
       } else if (entry is Map) {
-        result.add(entry.cast<String, dynamic>());
+        result.add(_normalizeOptionMap(entry.cast<String, dynamic>()));
       }
     }
     return result;
+  }
+
+  static Map<String, dynamic> _normalizeOptionMap(
+    Map<String, dynamic> option,
+  ) {
+    final skillGroup = optionSkillGroup(option);
+    if (skillGroup == null || option.containsKey('skill_group')) {
+      return option;
+    }
+    return Map<String, dynamic>.from(option)..['skill_group'] = skillGroup;
+  }
+
+  static String? optionSkillGroup(Map<String, dynamic> option) {
+    final direct = option['skill_group']?.toString().trim();
+    if (direct != null && direct.isNotEmpty) return direct;
+
+    for (final grant in _canonicalChoiceGrants(option)) {
+      if (grant.choiceType != 'skill') continue;
+      if (grant.groups.isNotEmpty) return grant.groups.first;
+      final payloadGroup = grant.payload?['skill_group']?.toString().trim();
+      if (payloadGroup != null && payloadGroup.isNotEmpty) {
+        return payloadGroup;
+      }
+    }
+    return null;
+  }
+
+  static List<CanonicalChoiceGrant> _canonicalChoiceGrants(
+    Map<String, dynamic> option,
+  ) {
+    return _canonicalGrants(option)
+        .whereType<CanonicalChoiceGrant>()
+        .toList(growable: false);
+  }
+
+  static List<CanonicalEntryGrant> _canonicalEntryGrants(
+    Map<String, dynamic> option,
+  ) {
+    return _canonicalGrants(option)
+        .whereType<CanonicalEntryGrant>()
+        .toList(growable: false);
+  }
+
+  static List<CanonicalGrant> _canonicalGrants(
+    Map<String, dynamic> option,
+  ) {
+    final grantValue = option.containsKey('kind') ? option : option['grants'];
+    if (grantValue == null) return const [];
+
+    try {
+      return CanonicalGrant.parseList(grantValue);
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  static String? _canonicalEntryGrantLabel(CanonicalEntryGrant grant) {
+    final label = grant.label?.trim();
+    if (label != null && label.isNotEmpty) return label;
+
+    final payload = grant.payload;
+    if (payload != null) {
+      for (final key in ['name', 'title', 'label']) {
+        final value = payload[key]?.toString().trim();
+        if (value != null && value.isNotEmpty) return value;
+      }
+    }
+
+    final entryId = grant.entryId.trim();
+    return entryId.isEmpty ? null : entryId;
   }
 
   /// Maximum number of selections allowed for a feature.
@@ -412,6 +540,15 @@ class ClassFeatureDataService {
     if (skill != null && skill.trim().isNotEmpty) {
       return skill.trim();
     }
+    for (final grant in _canonicalChoiceGrants(option)) {
+      final label = grant.label?.trim();
+      if (label != null && label.isNotEmpty) return label;
+      if (grant.groups.isNotEmpty) return grant.groups.first;
+    }
+    for (final grant in _canonicalEntryGrants(option)) {
+      final label = _canonicalEntryGrantLabel(grant);
+      if (label != null && label.isNotEmpty) return label;
+    }
     final benefit = option['benefit']?.toString();
     if (benefit != null && benefit.trim().isNotEmpty) {
       return benefit.trim();
@@ -426,9 +563,22 @@ class ClassFeatureDataService {
     final name = option['name']?.toString().trim();
     final ability = option['ability']?.toString().trim();
     final abilityId = option['ability_id']?.toString().trim();
-    return domain ?? subclass ?? name ?? ability ?? abilityId ?? 'default';
+    final canonicalChoiceKey = _canonicalChoiceGrants(option)
+        .map((grant) => grant.choiceKey.trim())
+        .firstWhere((key) => key.isNotEmpty, orElse: () => '');
+    final canonicalEntryKey = _canonicalEntryGrants(option)
+        .map((grant) => _canonicalEntryGrantLabel(grant)?.trim() ?? '')
+        .firstWhere((key) => key.isNotEmpty, orElse: () => '');
+    return domain ??
+        subclass ??
+        name ??
+        ability ??
+        abilityId ??
+        (canonicalChoiceKey.isEmpty ? null : canonicalChoiceKey) ??
+        (canonicalEntryKey.isEmpty ? null : canonicalEntryKey) ??
+        'default';
   }
-  
+
   /// Counts features that have pending choices (user needs to make selections).
   /// This includes:
   /// - Features with multiple options where user hasn't made required selections
@@ -464,7 +614,7 @@ class ClassFeatureDataService {
     }
     return count;
   }
-  
+
   /// Keys used to decide if an option is active for a subclass selection.
   /// This intentionally excludes 'name' so domain/deity grants with a name
   /// are not treated as subclass-gated.
@@ -565,7 +715,7 @@ class ClassFeatureDataService {
     }
     return slugs;
   }
-  
+
   /// Checks if a specific feature has pending choices.
   static bool _featureHasPendingChoices({
     required String featureId,
@@ -579,16 +729,16 @@ class ClassFeatureDataService {
     // Check if it uses grants (auto-applied, but may have nested choices)
     final grants = details['grants'];
     final isGrantsFeature = grants is List && grants.isNotEmpty;
-    
+
     // Extract options using the service
     final options = extractOptionMaps(details);
     if (options.isEmpty) return false;
-    
+
     // Check for pending skill_group selections in any ACTIVE option
     for (final option in options) {
-      final skillGroup = option['skill_group']?.toString().trim();
+      final skillGroup = optionSkillGroup(option);
       if (skillGroup == null || skillGroup.isEmpty) continue;
-      
+
       // Skip options that don't match the current subclass/domain selection
       if (!isOptionActiveForSelection(
         option,
@@ -598,28 +748,28 @@ class ClassFeatureDataService {
       )) {
         continue;
       }
-      
+
       // Check if user has made a skill_group selection for this option
       final grantKey = optionGrantKey(option);
       final featureSelections = skillGroupSelections[featureId];
       final selectedSkillId = featureSelections?[grantKey];
-      
+
       if (selectedSkillId == null || selectedSkillId.isEmpty) {
         return true;
       }
     }
-    
+
     // For grants features, no further choice is needed
     if (isGrantsFeature) return false;
-    
+
     // If there's only one option, it's auto-applied
     if (options.length <= 1) return false;
-    
+
     // Check if user already made a selection
     final currentSelections = selectedOptions[featureId] ?? const <String>{};
     final minimumRequired = ClassFeatureDataService.minimumSelections(details);
     final effectiveMinimum = minimumRequired <= 0 ? 1 : minimumRequired;
-    
+
     return currentSelections.length < effectiveMinimum;
   }
 
@@ -831,10 +981,10 @@ class ClassFeatureDataService {
         selections.remove(featureId);
         continue;
       }
-      
+
       final details = featureDetailsById[featureId];
       final isGrants = hasGrants(details);
-      
+
       final matchingKeys = domainOptionKeysFor(
         featureDetailsById,
         featureId,
@@ -852,8 +1002,7 @@ class ClassFeatureDataService {
         } else {
           final existing = selections[featureId] ?? const <String>{};
           final validExisting = existing.intersection(matchingKeys);
-          final chosen =
-              validExisting.isNotEmpty ? validExisting : <String>{};
+          final chosen = validExisting.isNotEmpty ? validExisting : <String>{};
           selections[featureId] = ClassFeatureDataService.clampSelectionKeys(
             chosen,
             details,

@@ -1,104 +1,332 @@
-import 'dart:convert';
-
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 
 import '../db/app_database.dart' as db;
+import '../models/canonical_grant_model.dart';
 import '../models/class_data.dart';
 import '../models/feature.dart' as feature_model;
+import '../models/hero_mutation_model.dart';
 import '../models/subclass_models.dart';
 import '../repositories/feature_repository.dart';
 import '../repositories/hero_entry_repository.dart';
+import '../storage/hero_storage_contract.dart';
 import 'ability_resolver_service.dart';
 import 'class_feature_data_service.dart';
 import 'hero_config_service.dart';
-import 'hero_entry_normalizer.dart';
+import 'hero_duplicate_guard_service.dart';
+import 'hero_mutation_service.dart';
+
+/// One component-backed hero entry the future class-feature state will own.
+///
+/// [sourceId] is the `class_feature` source the entry persists under. Grants
+/// sharing a source id collapse into a single `hero_entries` row, so they can
+/// never duplicate one another.
+class ClassFeatureEntryGrant {
+  const ClassFeatureEntryGrant({
+    required this.featureId,
+    required this.entryType,
+    required this.entryId,
+    this.optionKey,
+    String? sourceId,
+  }) : sourceId = sourceId ?? featureId;
+
+  final String featureId;
+  final String entryType;
+  final String entryId;
+
+  /// Set when a feature option produced the grant rather than a fixed grant.
+  final String? optionKey;
+
+  final String sourceId;
+
+  String get ownerLabel => '${HeroEntrySourceTypes.classFeature}:$sourceId';
+
+  /// Rule-level identity: what may only be owned once across the hero.
+  String get entryKey => '$entryType:$entryId';
+
+  /// Storage-level identity: one `hero_entries` row.
+  String get rowKey => '$entryType:$entryId:$sourceId';
+}
+
+class ClassFeatureGrantConflict {
+  const ClassFeatureGrantConflict({
+    required this.grant,
+    required this.ownerLabels,
+  });
+
+  final ClassFeatureEntryGrant grant;
+  final List<String> ownerLabels;
+}
+
+class ClassFeatureGrantConflictException implements Exception {
+  const ClassFeatureGrantConflictException(this.conflicts);
+
+  final List<ClassFeatureGrantConflict> conflicts;
+
+  @override
+  String toString() =>
+      'Class feature grants conflict with existing hero content';
+}
+
+/// Reports the duplicate conflicts a proposed class-feature batch introduces.
+///
+/// Applying a batch replaces the whole `class_feature` source type, so every
+/// persisted class-feature row is projected away and [proposedGrants] must
+/// describe the *complete* future class-feature state. Every other owner —
+/// Story, Strife, ancestry, complication, career, perk, kit, hero sheet —
+/// survives and is checked. Titles and non component-backed bookkeeping rows
+/// are outside the duplicate rule.
+///
+/// Only newly introduced conflicts are returned. A grant that rewrites the
+/// exact row it already owns is left alone: its conflict predates this save,
+/// and blocking it would make the tab unusable until the other owner is
+/// repaired elsewhere. `HeroDataValidator` reports those standing conflicts.
+List<ClassFeatureGrantConflict> projectClassFeatureGrantConflicts({
+  required Iterable<db.HeroEntry> persistedEntries,
+  required Iterable<ClassFeatureEntryGrant> proposedGrants,
+}) {
+  const guard = HeroDuplicateGuardService();
+
+  final ownersByEntry = <String, Set<String>>{};
+  final persistedFeatureRows = <String>{};
+  for (final entry in persistedEntries) {
+    if (!guard.guardsEntryType(entry.entryType)) continue;
+    final entryKey = '${entry.entryType}:${entry.entryId}';
+    if (entry.sourceType == HeroEntrySourceTypes.classFeature) {
+      persistedFeatureRows.add('$entryKey:${entry.sourceId}');
+      continue;
+    }
+    ownersByEntry.putIfAbsent(entryKey, () => <String>{}).add(
+          entry.sourceId.trim().isEmpty
+              ? entry.sourceType
+              : '${entry.sourceType}:${entry.sourceId}',
+        );
+  }
+
+  // Collapse grants that persist as one row before building the owner map, so
+  // owners are evaluated against the complete future state rather than the
+  // order grants happen to be resolved in.
+  final batch = <String, ClassFeatureEntryGrant>{};
+  for (final grant in proposedGrants) {
+    if (!guard.guardsEntryType(grant.entryType)) continue;
+    batch.putIfAbsent(grant.rowKey, () => grant);
+  }
+  for (final grant in batch.values) {
+    ownersByEntry
+        .putIfAbsent(grant.entryKey, () => <String>{})
+        .add(grant.ownerLabel);
+  }
+
+  final conflicts = <ClassFeatureGrantConflict>[];
+  for (final grant in batch.values) {
+    if (persistedFeatureRows.contains(grant.rowKey)) continue;
+    final owners = ownersByEntry[grant.entryKey]!
+        .where((owner) => owner != grant.ownerLabel)
+        .toList()
+      ..sort();
+    if (owners.isEmpty) continue;
+    conflicts.add(
+      ClassFeatureGrantConflict(
+        grant: grant,
+        ownerLabels: List<String>.unmodifiable(owners),
+      ),
+    );
+  }
+  return List<ClassFeatureGrantConflict>.unmodifiable(conflicts);
+}
 
 /// Service for applying class feature selections to a hero.
-/// 
+///
 /// This service handles storing feature grants based on user selections
 /// in the class feature UI. All grants are written to hero_entries with
 /// source_type='class_feature' and source_id=<featureId>.
 class ClassFeatureGrantsService {
-  ClassFeatureGrantsService(this._db)
+  ClassFeatureGrantsService(this._db, {HeroMutationService? mutations})
       : _entries = HeroEntryRepository(_db),
         _config = HeroConfigService(_db),
-        _abilityResolver = AbilityResolverService(_db);
+        _abilityResolver = AbilityResolverService(_db),
+        _mutations = mutations ?? HeroMutationService(_db);
 
   final db.AppDatabase _db;
   final HeroEntryRepository _entries;
   final HeroConfigService _config;
   final AbilityResolverService _abilityResolver;
+  final HeroMutationService _mutations;
 
   /// Config key for storing feature selections.
-  static const _kFeatureSelections = 'class_feature.selections';
-  
+  static const _kFeatureSelections = HeroConfigKeys.classFeatureSelections;
+
   /// Config key for storing subclass key.
-  static const _kSubclassKey = 'class_feature.subclass_key';
-  
+  static const _kSubclassKey = HeroConfigKeys.classFeatureSubclassKey;
+
   /// Config key for storing skill_group skill selections.
-  static const _kSkillGroupSelections = 'class_feature.skill_group_selections';
+  static const _kSkillGroupSelections =
+      HeroConfigKeys.classFeatureSkillGroupSelections;
 
   /// Apply class feature selections to a hero.
-  /// 
-  /// This stores the selected features and their grants into hero_entries.
-  /// Selections are stored in hero_config.
+  ///
+  /// The complete future class-feature state is resolved and validated first,
+  /// then committed in one transaction, so a mid-write failure cannot leave the
+  /// hero holding part of a batch.
+  /// [skillGroupSelections] overrides the stored nested choices. A draft
+  /// commit passes its in-memory values so the batch is resolved, validated,
+  /// and persisted from one consistent state instead of stale config.
   Future<void> applyClassFeatureSelections({
     required String heroId,
     required ClassData classData,
     required int level,
     required Map<String, Set<String>> selections,
     SubclassSelectionResult? subclassSelection,
+    Map<String, Map<String, String>>? skillGroupSelections,
   }) async {
-    final classSlug = _classSlugFromId(classData.classId);
-    if (classSlug == null) return;
+    final batch = await _resolveClassFeatureBatch(
+      heroId: heroId,
+      classData: classData,
+      level: level,
+      selections: selections,
+      subclassSelection: subclassSelection,
+      skillGroupSelections: skillGroupSelections,
+    );
+    if (batch == null) return;
 
-    // Store selections in hero_config
-    await _saveFeatureSelections(heroId, selections);
-    
-    // Store subclass key if present
-    if (subclassSelection?.subclassKey != null) {
-      await _config.setConfigValue(
-        heroId: heroId,
-        key: _kSubclassKey,
-        value: {'key': subclassSelection!.subclassKey},
-      );
+    final conflicts = await _conflictsForBatch(heroId, batch);
+    if (conflicts.isNotEmpty) {
+      throw ClassFeatureGrantConflictException(conflicts);
     }
 
-    // Load feature details to process grants
+    await _db.transaction(() async {
+      // Store selections in hero_config
+      await _saveFeatureSelections(heroId, selections);
+      if (skillGroupSelections != null) {
+        await saveSkillGroupSelections(heroId, skillGroupSelections);
+      }
+
+      // Store subclass key if present.
+      final subclassKey = subclassSelection?.subclassKey?.trim();
+      if (subclassKey != null && subclassKey.isNotEmpty) {
+        await _mutations.saveConfigChoice(
+          heroId: heroId,
+          key: _kSubclassKey,
+          value: {'key': subclassKey},
+        );
+      } else {
+        await _mutations.removeConfigChoice(heroId: heroId, key: _kSubclassKey);
+      }
+
+      // Remove existing class feature grants for this hero
+      await _clearAllClassFeatureGrants(
+        heroId,
+        recomputeAggregates: false,
+      );
+
+      // Clear the legacy value cache; feature stat bonuses are source-scoped entries.
+      await _db.deleteHeroValue(
+        heroId: heroId,
+        key: HeroValueKeys.legacyFeatureStatBonuses,
+      );
+
+      await _writeBatch(heroId, batch);
+
+      // Rebuild damage resistances from all hero_entries (including new grants).
+      await _mutations.recomputeAggregates(heroId);
+    });
+  }
+
+  /// Preflights the complete class-feature state [selections] would persist.
+  ///
+  /// Returns the conflicts that applying the batch would introduce, so a caller
+  /// can report them without attempting the write.
+  Future<List<ClassFeatureGrantConflict>> validateFeatureSelections({
+    required String heroId,
+    required ClassData classData,
+    required int level,
+    required Map<String, Set<String>> selections,
+    SubclassSelectionResult? subclassSelection,
+    Map<String, Map<String, String>>? skillGroupSelections,
+  }) async {
+    final batch = await _resolveClassFeatureBatch(
+      heroId: heroId,
+      classData: classData,
+      level: level,
+      selections: selections,
+      subclassSelection: subclassSelection,
+      skillGroupSelections: skillGroupSelections,
+    );
+    if (batch == null) return const [];
+    return _conflictsForBatch(heroId, batch);
+  }
+
+  /// Every component-backed entry the future class-feature state would own.
+  ///
+  /// This covers fixed top-level grants, automatically matched subclass/domain
+  /// grants, selected option grants, nested canonical grants, and stored
+  /// skill-group choices. Titles and bookkeeping rows are excluded because they
+  /// are outside the duplicate rule.
+  Future<List<ClassFeatureEntryGrant>> previewClassFeatureEntryGrants({
+    required String heroId,
+    required ClassData classData,
+    required int level,
+    required Map<String, Set<String>> selections,
+    SubclassSelectionResult? subclassSelection,
+    Map<String, Map<String, String>>? skillGroupSelections,
+  }) async {
+    final batch = await _resolveClassFeatureBatch(
+      heroId: heroId,
+      classData: classData,
+      level: level,
+      selections: selections,
+      subclassSelection: subclassSelection,
+      skillGroupSelections: skillGroupSelections,
+    );
+    return batch?.componentGrants ?? const [];
+  }
+
+  Future<List<ClassFeatureGrantConflict>> _conflictsForBatch(
+    String heroId,
+    _ClassFeatureBatch batch,
+  ) async {
+    return projectClassFeatureGrantConflicts(
+      persistedEntries: await _entries.listAllEntriesForHero(heroId),
+      proposedGrants: batch.componentGrants,
+    );
+  }
+
+  /// Resolves the complete future class-feature batch without writing.
+  ///
+  /// All component/asset lookups happen here, so the write phase only replays
+  /// resolved rows. Returns null when the class id has no usable slug.
+  Future<_ClassFeatureBatch?> _resolveClassFeatureBatch({
+    required String heroId,
+    required ClassData classData,
+    required int level,
+    required Map<String, Set<String>> selections,
+    SubclassSelectionResult? subclassSelection,
+    Map<String, Map<String, String>>? skillGroupSelections,
+  }) async {
+    final classSlug = _classSlugFromId(classData.classId);
+    if (classSlug == null) return null;
+
     final featureDetails = await _loadFeatureDetails(classSlug);
     final activeSubclassSlugs =
         ClassFeatureDataService.activeSubclassSlugs(subclassSelection);
     final domainSlugs =
         ClassFeatureDataService.selectedDomainSlugs(subclassSelection);
 
-    // Load all features for this class up to the hero's level
     final allFeatures = await FeatureRepository.loadClassFeatures(classSlug);
-    final applicableFeatures = allFeatures
-        .where((f) => f.level <= level)
-        .where((f) {
-          if (!f.isSubclassFeature) return true;
-          if (activeSubclassSlugs.isEmpty) return true;
-          return ClassFeatureDataService.matchesSelectedSubclass(
-            f.subclassName,
-            activeSubclassSlugs,
-          );
-        })
-        .toList();
+    final applicableFeatures =
+        allFeatures.where((f) => f.level <= level).where((f) {
+      if (!f.isSubclassFeature) return true;
+      if (activeSubclassSlugs.isEmpty) return true;
+      return ClassFeatureDataService.matchesSelectedSubclass(
+        f.subclassName,
+        activeSubclassSlugs,
+      );
+    }).toList();
 
-    // Remove existing class feature grants for this hero
-    await _clearAllClassFeatureGrants(heroId);
-
-    // Clear stored feature stat bonuses in hero_values (source of truth)
-    await _db.upsertHeroValue(
-      heroId: heroId,
-      key: 'strife.feature_stat_bonuses',
-      jsonMap: const {},
-    );
-
-    // Process each applicable feature
+    final batch = _ClassFeatureBatch();
     for (final feature in applicableFeatures) {
-      await _processFeatureGrants(
-        heroId: heroId,
+      await _collectFeatureGrants(
+        batch: batch,
         feature: feature,
         featureDetails: featureDetails,
         selections: selections,
@@ -107,9 +335,10 @@ class ClassFeatureGrantsService {
       );
     }
 
-    await _applySkillGroupSelections(
-      heroId: heroId,
-      selections: await loadSkillGroupSelections(heroId),
+    _collectSkillGroupGrants(
+      batch: batch,
+      selections:
+          skillGroupSelections ?? await loadSkillGroupSelections(heroId),
       featureDetails: featureDetails,
       applicableFeatures: applicableFeatures,
       featureSelections: selections,
@@ -117,33 +346,82 @@ class ClassFeatureGrantsService {
       domainSlugs: domainSlugs,
     );
 
-    // Rebuild damage resistances from all hero_entries (including new grants)
-    final normalizer = HeroEntryNormalizer(_db);
-    await normalizer.normalize(heroId);
+    return batch;
+  }
+
+  Future<void> _writeBatch(String heroId, _ClassFeatureBatch batch) async {
+    for (final entry in batch.entries) {
+      await _mutations.addContentEntry(
+        heroId: heroId,
+        source: _classFeatureSource(entry.sourceId, gainedBy: entry.gainedBy),
+        grant: ResolvedGrant(
+          entryType: entry.entryType,
+          entryId: entry.entryId,
+          payload: entry.payload,
+        ),
+      );
+    }
+
+    for (final resistance in batch.resistances) {
+      await _mutations.addResistance(
+        heroId: heroId,
+        source: _classFeatureSource(resistance.sourceId),
+        damageType: resistance.damageType,
+        immunity: resistance.immunity,
+        weakness: resistance.weakness,
+        dynamicImmunity: resistance.dynamicImmunity,
+        dynamicWeakness: resistance.dynamicWeakness,
+        immunityPerEchelon: resistance.immunityPerEchelon,
+        weaknessPerEchelon: resistance.weaknessPerEchelon,
+        recompute: false,
+      );
+    }
   }
 
   /// Remove all class feature grants for a hero.
   Future<void> removeClassFeatureGrants(String heroId) async {
     await _clearAllClassFeatureGrants(heroId);
-    await _config.removeConfigKey(heroId, _kFeatureSelections);
-    await _config.removeConfigKey(heroId, _kSubclassKey);
-    await _config.removeConfigKey(heroId, _kSkillGroupSelections);
+    await _mutations.removeConfigChoice(
+        heroId: heroId, key: _kFeatureSelections);
+    await _mutations.removeConfigChoice(heroId: heroId, key: _kSubclassKey);
+    await _mutations.removeConfigChoice(
+      heroId: heroId,
+      key: _kSkillGroupSelections,
+    );
   }
 
   /// Remove grants for a specific feature.
   Future<void> removeFeatureGrants(String heroId, String featureId) async {
-    await _entries.removeEntriesFromSource(
+    await _mutations.removeSource(
       heroId: heroId,
-      sourceType: 'class_feature',
-      sourceId: featureId,
+      source: _classFeatureSource(featureId),
+      recomputeAggregates: false,
     );
+
+    final skillGroupSelections = await loadSkillGroupSelections(heroId);
+    final featureSkillGroups = skillGroupSelections[featureId];
+    if (featureSkillGroups != null) {
+      for (final grantKey in featureSkillGroups.keys) {
+        await _mutations.removeSource(
+          heroId: heroId,
+          source: _classFeatureSource(
+            _skillGroupSourceId(featureId, grantKey),
+            gainedBy: HeroEntryGainedBy.choice,
+          ),
+          entryType: HeroEntryTypes.skill,
+          recomputeAggregates: false,
+        );
+      }
+    }
+
+    await _mutations.recomputeAggregates(heroId);
   }
 
   /// Load current feature selections from hero_config.
   Future<Map<String, Set<String>>> loadFeatureSelections(String heroId) async {
     final config = await _config.getConfigValue(heroId, _kFeatureSelections);
     if (config == null) return const {};
-    
+
     final result = <String, Set<String>>{};
     config.forEach((key, value) {
       final normalizedKey = key.toString().trim();
@@ -175,7 +453,7 @@ class ClassFeatureGrantsService {
   ) async {
     final config = await _config.getConfigValue(heroId, _kSkillGroupSelections);
     if (config == null) return const {};
-    
+
     final result = <String, Map<String, String>>{};
     config.forEach((featureId, grantMap) {
       if (grantMap is! Map) return;
@@ -201,10 +479,9 @@ class ClassFeatureGrantsService {
   ) async {
     // Convert to JSON-serializable map
     final jsonMap = <String, dynamic>{
-      for (final entry in selections.entries)
-        entry.key: entry.value,
+      for (final entry in selections.entries) entry.key: entry.value,
     };
-    await _config.setConfigValue(
+    await _mutations.saveConfigChoice(
       heroId: heroId,
       key: _kSkillGroupSelections,
       value: jsonMap,
@@ -212,7 +489,7 @@ class ClassFeatureGrantsService {
   }
 
   /// Save a single skill_group skill selection and update hero_entries.
-  /// This removes the old skill entry (if any) and adds the new one.
+  /// This replaces the exact nested-choice source with the current skill.
   Future<void> setSkillGroupSelection({
     required String heroId,
     required String featureId,
@@ -226,10 +503,7 @@ class ClassFeatureGrantsService {
       for (final entry in current.entries)
         entry.key: Map<String, String>.from(entry.value),
     };
-    
-    // Get the old skill ID (if any) to remove it from hero_entries
-    final oldSkillId = updated[featureId]?[grantKey];
-    
+
     // Update the selection
     if (skillId == null || skillId.isEmpty) {
       // Remove the selection
@@ -244,57 +518,89 @@ class ClassFeatureGrantsService {
       updated.putIfAbsent(featureId, () => {});
       updated[featureId]![grantKey] = skillId;
     }
-    
+
     // Save updated selections
     await saveSkillGroupSelections(heroId, updated);
-    
-    // Remove old skill entry from hero_entries if it exists
-    if (oldSkillId != null && oldSkillId.isNotEmpty && oldSkillId != skillId) {
-      // The source ID includes the grant key to differentiate from other grants
-      final sourceId = '${featureId}_skill_group_$grantKey';
-      await _entries.removeEntriesFromSource(
-        heroId: heroId,
-        sourceType: 'class_feature',
-        sourceId: sourceId,
-      );
-    }
-    
-    // Add new skill entry to hero_entries
-    if (skillId != null && skillId.isNotEmpty) {
-      final sourceId = '${featureId}_skill_group_$grantKey';
-      await _entries.addEntry(
-        heroId: heroId,
-        entryType: 'skill',
-        entryId: skillId,
-        sourceType: 'class_feature',
-        sourceId: sourceId,
-        gainedBy: 'choice',
-      );
-    }
+
+    final sourceId = _skillGroupSourceId(featureId, grantKey);
+    await _mutations.replaceContentEntries(
+      heroId: heroId,
+      source: _classFeatureSource(
+        sourceId,
+        gainedBy: HeroEntryGainedBy.choice,
+      ),
+      entryType: HeroEntryTypes.skill,
+      entryIds:
+          skillId == null || skillId.trim().isEmpty ? const [] : [skillId],
+      gainedBy: HeroEntryGainedBy.choice,
+    );
   }
 
   /// Get all abilities granted by class features.
   Future<List<String>> getGrantedAbilities(String heroId) async {
-    final entries = await _entries.listEntriesByType(heroId, 'ability');
+    final entries = await _entries.listEntriesByType(
+      heroId,
+      HeroEntryTypes.ability,
+    );
     return entries
-        .where((e) => e.sourceType == 'class_feature')
+        .where((e) => e.sourceType == HeroEntrySourceTypes.classFeature)
         .map((e) => e.entryId)
         .toList();
   }
 
   /// Get all skills granted by class features.
   Future<List<String>> getGrantedSkills(String heroId) async {
-    final entries = await _entries.listEntriesByType(heroId, 'skill');
+    final entries = await _entries.listEntriesByType(
+      heroId,
+      HeroEntryTypes.skill,
+    );
     return entries
-        .where((e) => e.sourceType == 'class_feature')
+        .where((e) => e.sourceType == HeroEntrySourceTypes.classFeature)
         .map((e) => e.entryId)
         .toList();
   }
 
   /// Get all features (class_feature entries) for a hero.
   Future<List<db.HeroEntry>> getClassFeatureEntries(String heroId) async {
-    final entries = await _entries.listEntriesByType(heroId, 'class_feature');
-    return entries.where((e) => e.sourceType == 'class_feature').toList();
+    final entries = await _entries.listEntriesByType(
+      heroId,
+      HeroEntryTypes.classFeature,
+    );
+    return entries
+        .where((e) => e.sourceType == HeroEntrySourceTypes.classFeature)
+        .toList();
+  }
+
+  @visibleForTesting
+  Future<void> applyFeatureDetailsForTesting({
+    required String heroId,
+    required feature_model.Feature feature,
+    required Map<String, dynamic> details,
+    Map<String, Set<String>> selections = const {},
+    Set<String> activeSubclassSlugs = const {},
+    Set<String> domainSlugs = const {},
+  }) async {
+    final featureDetails = {feature.id: details};
+    final batch = _ClassFeatureBatch();
+    await _collectFeatureGrants(
+      batch: batch,
+      feature: feature,
+      featureDetails: featureDetails,
+      selections: selections,
+      activeSubclassSlugs: activeSubclassSlugs,
+      domainSlugs: domainSlugs,
+    );
+    _collectSkillGroupGrants(
+      batch: batch,
+      selections: await loadSkillGroupSelections(heroId),
+      featureDetails: featureDetails,
+      applicableFeatures: [feature],
+      featureSelections: selections,
+      activeSubclassSlugs: activeSubclassSlugs,
+      domainSlugs: domainSlugs,
+    );
+    await _writeBatch(heroId, batch);
+    await _mutations.recomputeAggregates(heroId);
   }
 
   // Private implementation
@@ -304,20 +610,61 @@ class ClassFeatureGrantsService {
     Map<String, Set<String>> selections,
   ) async {
     final jsonMap = <String, dynamic>{
-      for (final entry in selections.entries)
-        entry.key: entry.value.toList(),
+      for (final entry in selections.entries) entry.key: entry.value.toList(),
     };
-    await _config.setConfigValue(
+    await _mutations.saveConfigChoice(
       heroId: heroId,
       key: _kFeatureSelections,
       value: jsonMap,
     );
   }
 
-  Future<void> _clearAllClassFeatureGrants(String heroId) async {
-    await _entries.removeEntriesFromSource(
+  Future<void> _clearAllClassFeatureGrants(
+    String heroId, {
+    bool recomputeAggregates = true,
+  }) async {
+    await _mutations.removeSourceType(
       heroId: heroId,
-      sourceType: 'class_feature',
+      sourceType: HeroEntrySourceTypes.classFeature,
+      recomputeAggregates: recomputeAggregates,
+    );
+  }
+
+  HeroSource _classFeatureSource(
+    String sourceId, {
+    String gainedBy = HeroEntryGainedBy.grant,
+  }) {
+    return HeroSource(
+      sourceType: HeroEntrySourceTypes.classFeature,
+      sourceId: sourceId,
+      gainedBy: gainedBy,
+    );
+  }
+
+  String _skillGroupSourceId(String featureId, String grantKey) {
+    return '${featureId}_skill_group_$grantKey';
+  }
+
+  void _addClassFeatureGrant({
+    required _ClassFeatureBatch batch,
+    required String featureId,
+    required String entryType,
+    required String entryId,
+    String? sourceId,
+    String? optionKey,
+    Map<String, dynamic>? payload,
+    String gainedBy = HeroEntryGainedBy.grant,
+  }) {
+    batch.addEntry(
+      _ResolvedFeatureEntry(
+        featureId: featureId,
+        sourceId: sourceId ?? featureId,
+        optionKey: optionKey,
+        entryType: entryType,
+        entryId: entryId,
+        payload: payload,
+        gainedBy: gainedBy,
+      ),
     );
   }
 
@@ -333,8 +680,8 @@ class ClassFeatureGrantsService {
     return details;
   }
 
-  Future<void> _processFeatureGrants({
-    required String heroId,
+  Future<void> _collectFeatureGrants({
+    required _ClassFeatureBatch batch,
     required feature_model.Feature feature,
     required Map<String, Map<String, dynamic>> featureDetails,
     required Map<String, Set<String>> selections,
@@ -342,15 +689,13 @@ class ClassFeatureGrantsService {
     required Set<String> domainSlugs,
   }) async {
     final details = featureDetails[feature.id];
-    
+
     // Always add the feature itself as a class_feature entry
-    await _entries.addEntry(
-      heroId: heroId,
-      entryType: 'class_feature',
+    _addClassFeatureGrant(
+      batch: batch,
+      featureId: feature.id,
+      entryType: HeroEntryTypes.classFeature,
       entryId: feature.id,
-      sourceType: 'class_feature',
-      sourceId: feature.id,
-      gainedBy: 'grant',
       payload: {
         'name': feature.name,
         'level': feature.level,
@@ -365,6 +710,11 @@ class ClassFeatureGrantsService {
     // Process grants (auto-granted items)
     final isGrants = ClassFeatureDataService.hasGrants(details);
     final options = ClassFeatureDataService.extractOptionMaps(details);
+    // The subclass picker owns its fixed skill under subclass:subclass_skill.
+    // Re-granting that same skill from this selector feature creates a false
+    // duplicate-owner conflict during the first save.
+    final includeDirectOptionSkill =
+        feature.type.trim().toLowerCase() != 'subclass';
 
     if (isGrants && options.isNotEmpty) {
       final remainingDomainSlugs =
@@ -388,47 +738,60 @@ class ClassFeatureGrantsService {
               continue;
             }
           }
-          await _applyOptionGrants(heroId, feature.id, option);
+          await _collectOptionGrants(
+            batch,
+            feature.id,
+            option,
+            includeDirectSkillGrant: includeDirectOptionSkill,
+          );
         }
       }
     } else if (options.isNotEmpty) {
-      // Apply user-selected options
+      // Apply user-selected options.
       final selectedKeys = selections[feature.id] ?? const <String>{};
-      for (final optionKey in selectedKeys) {
-        final option = options.firstWhereOrNull(
-          (o) => ClassFeatureDataService.featureOptionKey(o) == optionKey,
-        );
-        if (option != null) {
-          await _applyOptionGrants(heroId, feature.id, option);
+      for (final option in options) {
+        if (_optionMatchesSelection(
+          option,
+          selectedKeys: selectedKeys,
+          activeSubclassSlugs: activeSubclassSlugs,
+          domainSlugs: domainSlugs,
+        )) {
+          await _collectOptionGrants(
+            batch,
+            feature.id,
+            option,
+            includeDirectSkillGrant: includeDirectOptionSkill,
+          );
         }
       }
     }
 
     // Process top-level ability grant (e.g., "ability": "Judgment")
-    await _processTopLevelAbility(heroId, feature.id, details);
+    await _collectTopLevelAbility(batch, feature.id, details);
 
     // Process stat_mods if present
-    await _processStatMods(heroId, feature.id, details);
+    _collectStatMods(batch, feature.id, details);
 
     // Process resistance grants if present
-    await _processResistanceGrants(heroId, feature.id, details);
+    _collectResistanceGrants(batch, feature.id, details);
 
     // Process title grants if present
-    await _processTitleGrants(heroId, feature.id, details);
+    await _collectTitleGrants(batch, feature.id, details);
 
     // Process top-level grants array (for stat bonuses, condition immunities, etc.)
-    await _processGrantsArray(heroId, feature.id, details, activeSubclassSlugs, feature.level);
+    await _collectGrantsArray(
+        batch, feature.id, details, activeSubclassSlugs, feature.level);
   }
 
-  Future<void> _applySkillGroupSelections({
-    required String heroId,
+  void _collectSkillGroupGrants({
+    required _ClassFeatureBatch batch,
     required Map<String, Map<String, String>> selections,
     required Map<String, Map<String, dynamic>> featureDetails,
     required List<feature_model.Feature> applicableFeatures,
     required Map<String, Set<String>> featureSelections,
     required Set<String> activeSubclassSlugs,
     required Set<String> domainSlugs,
-  }) async {
+  }) {
     if (selections.isEmpty) return;
     final applicableIds = {
       for (final feature in applicableFeatures) feature.id,
@@ -457,13 +820,17 @@ class ClassFeatureGrantsService {
       final filterSecondaryDomains = remainingDomainSlugs.isNotEmpty;
 
       for (final option in options) {
-        final skillGroup = option['skill_group']?.toString().trim();
+        final skillGroup = ClassFeatureDataService.optionSkillGroup(option);
         if (skillGroup == null || skillGroup.isEmpty) continue;
 
-        final optionKey = ClassFeatureDataService.featureOptionKey(option);
         final isSelected = isGrants
             ? _optionMatchesSubclass(option, activeSubclassSlugs)
-            : selectedKeys.contains(optionKey);
+            : _optionMatchesSelection(
+                option,
+                selectedKeys: selectedKeys,
+                activeSubclassSlugs: activeSubclassSlugs,
+                domainSlugs: domainSlugs,
+              );
         if (!isSelected) continue;
         if (filterSecondaryDomains) {
           final domain = option['domain']?.toString().trim();
@@ -476,13 +843,14 @@ class ClassFeatureGrantsService {
         final skillId = entry.value[grantKey];
         if (skillId == null || skillId.trim().isEmpty) continue;
 
-        await _entries.addEntry(
-          heroId: heroId,
-          entryType: 'skill',
+        _addClassFeatureGrant(
+          batch: batch,
+          featureId: featureId,
+          sourceId: _skillGroupSourceId(featureId, grantKey),
+          optionKey: grantKey,
+          entryType: HeroEntryTypes.skill,
           entryId: skillId,
-          sourceType: 'class_feature',
-          sourceId: '${featureId}_skill_group_$grantKey',
-          gainedBy: 'choice',
+          gainedBy: HeroEntryGainedBy.choice,
         );
       }
     }
@@ -498,7 +866,7 @@ class ClassFeatureGrantsService {
     for (final key in _subclassOptionKeys) {
       final value = option[key];
       if (value == null) continue;
-      
+
       Set<String> optionSlugs;
       if (value is String) {
         optionSlugs = ClassFeatureDataService.slugVariants(value);
@@ -519,23 +887,91 @@ class ClassFeatureGrantsService {
     return true;
   }
 
-  Future<void> _applyOptionGrants(
-    String heroId,
-    String featureId,
+  bool _optionMatchesSelection(
+    Map<String, dynamic> option, {
+    required Set<String> selectedKeys,
+    required Set<String> activeSubclassSlugs,
+    required Set<String> domainSlugs,
+  }) {
+    if (_selectedKeysMatchOption(option, selectedKeys)) {
+      return true;
+    }
+    if (selectedKeys.isNotEmpty) return false;
+    if (!_hasDomainSelectionMetadata(option) || domainSlugs.isEmpty) {
+      return false;
+    }
+    return ClassFeatureDataService.isOptionActiveForSelection(
+      option,
+      activeSubclassSlugs: activeSubclassSlugs,
+      selectedDomainSlugs: domainSlugs,
+    );
+  }
+
+  bool _selectedKeysMatchOption(
     Map<String, dynamic> option,
-  ) async {
+    Set<String> selectedKeys,
+  ) {
+    if (selectedKeys.isEmpty) return false;
+    final selectedVariants = selectedKeys
+        .expand(ClassFeatureDataService.slugVariants)
+        .where((key) => key.isNotEmpty)
+        .toSet();
+    if (selectedVariants.isEmpty) return false;
+    return _optionSelectionKeyVariants(option)
+        .any((key) => selectedVariants.contains(key));
+  }
+
+  Set<String> _optionSelectionKeyVariants(Map<String, dynamic> option) {
+    final variants = <String>{};
+
+    void addValue(Object? value) {
+      final text = value?.toString().trim();
+      if (text == null || text.isEmpty) return;
+      variants.addAll(ClassFeatureDataService.slugVariants(text));
+    }
+
+    addValue(ClassFeatureDataService.featureOptionKey(option));
+    addValue(ClassFeatureDataService.optionGrantKey(option));
+    for (final key in const [
+      'domain',
+      'subclass',
+      'subclass_name',
+      'name',
+      'title',
+      'ability',
+      'ability_id',
+      'skill',
+    ]) {
+      addValue(option[key]);
+    }
+
+    return variants;
+  }
+
+  bool _hasDomainSelectionMetadata(Map<String, dynamic> option) {
+    final domain = option['domain']?.toString().trim();
+    return domain != null && domain.isNotEmpty;
+  }
+
+  Future<void> _collectOptionGrants(
+    _ClassFeatureBatch batch,
+    String featureId,
+    Map<String, dynamic> option, {
+    bool includeDirectSkillGrant = true,
+  }) async {
+    final optionKey = ClassFeatureDataService.featureOptionKey(option);
+
     // Grant skill if specified
     final skill = option['skill']?.toString();
-    if (skill != null && skill.isNotEmpty) {
+    if (includeDirectSkillGrant && skill != null && skill.isNotEmpty) {
       final skillId = await _resolveSkillId(skill);
       if (skillId != null) {
-        await _entries.addEntry(
-          heroId: heroId,
-          entryType: 'skill',
+        _addClassFeatureGrant(
+          batch: batch,
+          featureId: featureId,
+          optionKey: optionKey,
+          entryType: HeroEntryTypes.skill,
           entryId: skillId,
-          sourceType: 'class_feature',
-          sourceId: featureId,
-          gainedBy: 'grant',
         );
       }
     }
@@ -544,33 +980,29 @@ class ClassFeatureGrantsService {
     final abilityNames = <String>{};
     _collectAbilityNames(abilityNames, option['ability']);
     _collectAbilityNames(abilityNames, option['abilities']);
-    if (abilityNames.isNotEmpty) {
-      for (final abilityName in abilityNames) {
-        final abilityId = await _abilityResolver.resolveAbilityId(
-          abilityName,
-          sourceType: 'class_feature',
-        );
-        await _entries.addEntry(
-          heroId: heroId,
-          entryType: 'ability',
-          entryId: abilityId,
-          sourceType: 'class_feature',
-          sourceId: featureId,
-          gainedBy: 'grant',
-        );
-      }
+    for (final abilityName in abilityNames) {
+      final abilityId = await _abilityResolver.resolveAbilityId(
+        abilityName,
+        sourceType: HeroEntrySourceTypes.classFeature,
+      );
+      _addClassFeatureGrant(
+        batch: batch,
+        featureId: featureId,
+        optionKey: optionKey,
+        entryType: HeroEntryTypes.ability,
+        entryId: abilityId,
+      );
     }
 
     // Grant feature benefits with stat_mods
     final statMods = option['stat_mods'] ?? option['statMods'];
     if (statMods is Map) {
-      await _entries.addEntry(
-        heroId: heroId,
-        entryType: 'stat_mod',
+      _addClassFeatureGrant(
+        batch: batch,
+        featureId: featureId,
+        optionKey: optionKey,
+        entryType: HeroEntryTypes.statMod,
         entryId: '${featureId}_option_stat_mod',
-        sourceType: 'class_feature',
-        sourceId: featureId,
-        gainedBy: 'grant',
         payload: {'mods': statMods},
       );
     }
@@ -578,13 +1010,12 @@ class ClassFeatureGrantsService {
     // Grant resistances from option
     final immunities = option['immunities'] ?? option['immunity'];
     if (immunities != null) {
-      await _entries.addEntry(
-        heroId: heroId,
-        entryType: 'immunity',
+      _addClassFeatureGrant(
+        batch: batch,
+        featureId: featureId,
+        optionKey: optionKey,
+        entryType: HeroEntryTypes.immunity,
         entryId: '${featureId}_option_immunity',
-        sourceType: 'class_feature',
-        sourceId: featureId,
-        gainedBy: 'grant',
         payload: {'immunities': _normalizeToList(immunities)},
       );
     }
@@ -593,70 +1024,70 @@ class ClassFeatureGrantsService {
     final title = option['title']?.toString();
     if (title != null && title.isNotEmpty) {
       final titleId = await _resolveTitleId(title);
-      await _entries.addEntry(
-        heroId: heroId,
-        entryType: 'title',
+      _addClassFeatureGrant(
+        batch: batch,
+        featureId: featureId,
+        optionKey: optionKey,
+        entryType: HeroEntryTypes.title,
         entryId: titleId,
-        sourceType: 'class_feature',
-        sourceId: featureId,
-        gainedBy: 'grant',
       );
     }
+
+    _collectCanonicalGrantValue(
+      batch: batch,
+      featureId: featureId,
+      optionKey: optionKey,
+      value: option['grants'],
+    );
   }
 
-  Future<void> _processStatMods(
-    String heroId,
+  void _collectStatMods(
+    _ClassFeatureBatch batch,
     String featureId,
     Map<String, dynamic> details,
-  ) async {
+  ) {
     final statMods = details['stat_mods'] ?? details['statMods'];
     if (statMods is! Map) return;
 
-    await _entries.addEntry(
-      heroId: heroId,
-      entryType: 'stat_mod',
+    _addClassFeatureGrant(
+      batch: batch,
+      featureId: featureId,
+      entryType: HeroEntryTypes.statMod,
       entryId: '${featureId}_stat_mod',
-      sourceType: 'class_feature',
-      sourceId: featureId,
-      gainedBy: 'grant',
       payload: {'mods': statMods},
     );
   }
 
-  Future<void> _processResistanceGrants(
-    String heroId,
+  void _collectResistanceGrants(
+    _ClassFeatureBatch batch,
     String featureId,
     Map<String, dynamic> details,
-  ) async {
+  ) {
     final immunities = details['immunities'] ?? details['immunity'];
     if (immunities != null) {
-      await _entries.addEntry(
-        heroId: heroId,
-        entryType: 'immunity',
+      _addClassFeatureGrant(
+        batch: batch,
+        featureId: featureId,
+        entryType: HeroEntryTypes.immunity,
         entryId: '${featureId}_immunity',
-        sourceType: 'class_feature',
-        sourceId: featureId,
-        gainedBy: 'grant',
         payload: {'immunities': _normalizeToList(immunities)},
       );
     }
 
     final weaknesses = details['weaknesses'] ?? details['weakness'];
     if (weaknesses != null) {
-      await _entries.addEntry(
-        heroId: heroId,
-        entryType: 'weakness',
+      _addClassFeatureGrant(
+        batch: batch,
+        featureId: featureId,
+        entryType: HeroEntryTypes.weakness,
         entryId: '${featureId}_weakness',
-        sourceType: 'class_feature',
-        sourceId: featureId,
-        gainedBy: 'grant',
         payload: {'weaknesses': _normalizeToList(weaknesses)},
       );
     }
   }
 
-  Future<void> _processTitleGrants(
-    String heroId,
+  Future<void> _collectTitleGrants(
+    _ClassFeatureBatch batch,
     String featureId,
     Map<String, dynamic> details,
   ) async {
@@ -667,20 +1098,18 @@ class ClassFeatureGrantsService {
     for (final title in titleList) {
       if (title.isEmpty) continue;
       final titleId = await _resolveTitleId(title);
-      await _entries.addEntry(
-        heroId: heroId,
-        entryType: 'title',
+      _addClassFeatureGrant(
+        batch: batch,
+        featureId: featureId,
+        entryType: HeroEntryTypes.title,
         entryId: titleId,
-        sourceType: 'class_feature',
-        sourceId: featureId,
-        gainedBy: 'grant',
       );
     }
   }
 
   /// Process top-level ability granted by a feature (e.g., "ability": "Judgment")
-  Future<void> _processTopLevelAbility(
-    String heroId,
+  Future<void> _collectTopLevelAbility(
+    _ClassFeatureBatch batch,
     String featureId,
     Map<String, dynamic> details,
   ) async {
@@ -691,21 +1120,19 @@ class ClassFeatureGrantsService {
     for (final abilityName in abilityNames) {
       final abilityId = await _abilityResolver.resolveAbilityId(
         abilityName,
-        sourceType: 'class_feature',
+        sourceType: HeroEntrySourceTypes.classFeature,
       );
-      await _entries.addEntry(
-        heroId: heroId,
-        entryType: 'ability',
+      _addClassFeatureGrant(
+        batch: batch,
+        featureId: featureId,
+        entryType: HeroEntryTypes.ability,
         entryId: abilityId,
-        sourceType: 'class_feature',
-        sourceId: featureId,
-        gainedBy: 'grant',
       );
     }
   }
 
   /// Process the top-level "grants" array in a feature.
-  /// 
+  ///
   /// Handles various grant types:
   /// - speed_bonus: Grants speed bonus (may be static or linked to characteristic)
   /// - disengage_bonus: Grants disengage bonus (may be static or linked to characteristic)
@@ -714,26 +1141,44 @@ class ClassFeatureGrantsService {
   /// - ability: Grants an ability
   /// - skill: Grants a skill
   /// - language: Grants a language
-  Future<void> _processGrantsArray(
-    String heroId,
+  Future<void> _collectGrantsArray(
+    _ClassFeatureBatch batch,
     String featureId,
     Map<String, dynamic> details,
     Set<String> activeSubclassSlugs,
     int featureLevel,
   ) async {
     final grants = details['grants'];
+    if (grants is Map && _isCanonicalGrantValue(grants)) {
+      _collectCanonicalGrantValue(
+        batch: batch,
+        featureId: featureId,
+        value: grants,
+      );
+      return;
+    }
     if (grants is! List) return;
 
-    // Collect stat bonuses to merge into a single hero_values entry later
+    // Collect stat bonuses to merge into a single source-scoped entry.
     final statBonuses = <String, dynamic>{};
     final conditionImmunities = <String>[];
     final damageResistanceGrants = <Map<String, dynamic>>[];
 
-    for (final grant in grants) {
-      if (grant is! Map<String, dynamic>) continue;
+    for (final rawGrant in grants) {
+      final grant = _stringKeyedMapOrNull(rawGrant);
+      if (grant == null) continue;
 
       // Check if this grant is subclass-specific
       if (!_optionMatchesSubclass(grant, activeSubclassSlugs)) continue;
+
+      if (_isCanonicalGrantValue(grant)) {
+        _collectCanonicalGrantValue(
+          batch: batch,
+          featureId: featureId,
+          value: grant,
+        );
+        continue;
+      }
 
       // Process each type of grant
       for (final entry in grant.entries) {
@@ -766,7 +1211,8 @@ class ClassFeatureGrantsService {
 
           // increase_total: array or single object of stat increases (supports immunity with level scaling)
           case 'increase_total':
-            _processIncreaseTotalGrant(value, statBonuses, damageResistanceGrants, featureId);
+            _processIncreaseTotalGrant(
+                value, statBonuses, damageResistanceGrants, featureId);
             break;
 
           // Condition immunity
@@ -783,15 +1229,13 @@ class ClassFeatureGrantsService {
             for (final abilityName in abilityNames) {
               final abilityId = await _abilityResolver.resolveAbilityId(
                 abilityName,
-                sourceType: 'class_feature',
+                sourceType: HeroEntrySourceTypes.classFeature,
               );
-              await _entries.addEntry(
-                heroId: heroId,
-                entryType: 'ability',
+              _addClassFeatureGrant(
+                batch: batch,
+                featureId: featureId,
+                entryType: HeroEntryTypes.ability,
                 entryId: abilityId,
-                sourceType: 'class_feature',
-                sourceId: featureId,
-                gainedBy: 'grant',
               );
             }
             break;
@@ -801,13 +1245,11 @@ class ClassFeatureGrantsService {
             if (value is String && value.isNotEmpty) {
               final skillId = await _resolveSkillId(value);
               if (skillId != null) {
-                await _entries.addEntry(
-                  heroId: heroId,
-                  entryType: 'skill',
+                _addClassFeatureGrant(
+                  batch: batch,
+                  featureId: featureId,
+                  entryType: HeroEntryTypes.skill,
                   entryId: skillId,
-                  sourceType: 'class_feature',
-                  sourceId: featureId,
-                  gainedBy: 'grant',
                 );
               }
             }
@@ -816,13 +1258,11 @@ class ClassFeatureGrantsService {
           // Language grant
           case 'language':
             if (value is String && value.isNotEmpty) {
-              await _entries.addEntry(
-                heroId: heroId,
-                entryType: 'language',
+              _addClassFeatureGrant(
+                batch: batch,
+                featureId: featureId,
+                entryType: HeroEntryTypes.language,
                 entryId: 'language_${ClassFeatureDataService.slugify(value)}',
-                sourceType: 'class_feature',
-                sourceId: featureId,
-                gainedBy: 'grant',
                 payload: {'name': value},
               );
             }
@@ -830,9 +1270,23 @@ class ClassFeatureGrantsService {
 
           // Nested grants object (contains stamina_per_level_increase, increase_total, etc.)
           case 'grants':
-            if (value is Map<String, dynamic>) {
+            if (_isCanonicalGrantValue(value)) {
+              _collectCanonicalGrantValue(
+                batch: batch,
+                featureId: featureId,
+                value: value,
+              );
+            } else if (value is Map<String, dynamic>) {
               _processNestedGrants(
                 value,
+                statBonuses,
+                damageResistanceGrants,
+                featureId,
+                featureLevel,
+              );
+            } else if (value is Map) {
+              _processNestedGrants(
+                value.cast<String, dynamic>(),
                 statBonuses,
                 damageResistanceGrants,
                 featureId,
@@ -848,67 +1302,199 @@ class ClassFeatureGrantsService {
       }
     }
 
-    // Store stat bonuses into hero_values under strife.feature_stat_bonuses
-    // We keep a map keyed by featureId to preserve source
+    // Store stat bonuses as source-scoped hero_entries.
     if (statBonuses.isNotEmpty) {
-      // Load existing map (if any) to merge with other features
-      final values = await _db.getHeroValues(heroId);
-      final hvRow = values.firstWhereOrNull((v) => v.key == 'strife.feature_stat_bonuses');
-      Map<String, dynamic> combined = {};
-      final raw = hvRow?.jsonValue ?? hvRow?.textValue;
-      if (raw != null && raw.isNotEmpty) {
-        try {
-          combined = Map<String, dynamic>.from(jsonDecode(raw));
-        } catch (_) {
-          combined = {};
-        }
-      }
-
-      combined[featureId] = statBonuses;
-
-      // Clear legacy hero_entries for feature_stat_bonus to avoid double counting
-      await _db.clearHeroEntryType(heroId, 'feature_stat_bonus');
-
-      await _db.upsertHeroValue(
-        heroId: heroId,
-        key: 'strife.feature_stat_bonuses',
-        jsonMap: combined,
+      _addClassFeatureGrant(
+        batch: batch,
+        featureId: featureId,
+        entryType: HeroEntryTypes.featureStatBonus,
+        entryId: '${featureId}_stat_bonus',
+        payload: statBonuses,
       );
     }
 
     // Store damage resistance grants (immunity/weakness with level scaling)
     if (damageResistanceGrants.isNotEmpty) {
-      var grantIndex = 0;
-      for (final grant in damageResistanceGrants) {
-        final damageType = grant['type']?.toString().toLowerCase() ?? '';
-        if (damageType.isEmpty) continue;
-        
-        await _entries.addEntry(
-          heroId: heroId,
-          entryType: 'damage_resistance',
-          entryId: '${featureId}_resistance_${damageType}_$grantIndex',
-          sourceType: 'class_feature',
-          sourceId: featureId,
-          gainedBy: 'grant',
-          payload: grant,
-        );
-        grantIndex++;
-      }
+      _collectDamageResistanceGrants(
+        batch: batch,
+        featureId: featureId,
+        grants: damageResistanceGrants,
+      );
     }
 
     // Store condition immunities
     if (conditionImmunities.isNotEmpty) {
       for (final condition in conditionImmunities) {
-        await _entries.addEntry(
-          heroId: heroId,
-          entryType: 'condition_immunity',
+        _addClassFeatureGrant(
+          batch: batch,
+          featureId: featureId,
+          entryType: HeroEntryTypes.conditionImmunity,
           entryId: 'immunity_$condition',
-          sourceType: 'class_feature',
-          sourceId: featureId,
-          gainedBy: 'grant',
           payload: {'condition': condition},
         );
       }
+    }
+  }
+
+  void _collectCanonicalGrantValue({
+    required _ClassFeatureBatch batch,
+    required String featureId,
+    required Object? value,
+    String? optionKey,
+  }) {
+    if (!_isCanonicalGrantValue(value)) return;
+
+    final grants = <CanonicalGrant>[];
+    if (value is List) {
+      for (final item in value) {
+        final map = _stringKeyedMapOrNull(item);
+        if (map == null || !map.containsKey('kind')) continue;
+        grants.add(
+          CanonicalGrant.fromJson(
+            map,
+            defaultSource: featureId,
+          ),
+        );
+      }
+    } else {
+      grants.addAll(
+        CanonicalGrant.parseList(
+          value,
+          defaultSource: featureId,
+        ),
+      );
+    }
+
+    for (final grant in grants) {
+      _collectCanonicalGrant(
+        batch: batch,
+        featureId: featureId,
+        optionKey: optionKey,
+        grant: grant,
+      );
+    }
+  }
+
+  void _collectCanonicalGrant({
+    required _ClassFeatureBatch batch,
+    required String featureId,
+    required CanonicalGrant grant,
+    String? optionKey,
+  }) {
+    switch (grant) {
+      case CanonicalEntryGrant():
+        _addClassFeatureGrant(
+          batch: batch,
+          featureId: featureId,
+          optionKey: optionKey,
+          entryType: grant.entryType,
+          entryId: grant.entryId,
+          payload: grant.payload,
+          gainedBy: grant.gainedBy,
+        );
+      case CanonicalStatModGrant():
+        final stat = grant.stat.trim().toLowerCase();
+        if (stat.isEmpty) return;
+        _addClassFeatureGrant(
+          batch: batch,
+          featureId: featureId,
+          optionKey: optionKey,
+          entryType: HeroEntryTypes.statMod,
+          entryId: grant.entryId ??
+              '${featureId}_${ClassFeatureDataService.slugify(stat)}_stat_mod',
+          payload: {
+            'mods': {
+              stat: grant.modifications
+                  .map((modification) => modification.toJson())
+                  .toList(),
+            },
+            ...?grant.payload,
+          },
+        );
+      case CanonicalResistanceGrant():
+        if (!grant.hasEffect) return;
+        batch.addResistance(
+          _ResolvedFeatureResistance(
+            sourceId: featureId,
+            damageType: grant.damageType,
+            immunity: grant.immunity,
+            weakness: grant.weakness,
+            dynamicImmunity: grant.dynamicImmunity,
+            dynamicWeakness: grant.dynamicWeakness,
+            immunityPerEchelon: grant.immunityPerEchelon,
+            weaknessPerEchelon: grant.weaknessPerEchelon,
+          ),
+        );
+      case CanonicalTreasureGrant():
+        _addClassFeatureGrant(
+          batch: batch,
+          featureId: featureId,
+          optionKey: optionKey,
+          entryType: HeroEntryTypes.treasure,
+          entryId: grant.treasureId,
+          payload: grant.entryPayload,
+        );
+      case CanonicalEquipmentBonusesGrant():
+        _addClassFeatureGrant(
+          batch: batch,
+          featureId: featureId,
+          optionKey: optionKey,
+          entryType: HeroEntryTypes.equipmentBonuses,
+          entryId: grant.entryId,
+          payload: grant.toJson(),
+        );
+      case CanonicalChoiceGrant():
+      case CanonicalTokenGrant():
+        break;
+    }
+  }
+
+  bool _isCanonicalGrantValue(Object? value) {
+    if (value is Map) {
+      final map = _stringKeyedMapOrNull(value);
+      if (map == null) return false;
+      return map['schema'] == canonicalGrantSchemaId || map.containsKey('kind');
+    }
+    if (value is List) {
+      return value.any((item) {
+        final map = _stringKeyedMapOrNull(item);
+        return map != null && map.containsKey('kind');
+      });
+    }
+    return false;
+  }
+
+  void _collectDamageResistanceGrants({
+    required _ClassFeatureBatch batch,
+    required String featureId,
+    required List<Map<String, dynamic>> grants,
+  }) {
+    final grantsByType = <String, _ClassFeatureResistanceGrant>{};
+
+    for (final grant in grants) {
+      final stat = grant['stat']?.toString().trim().toLowerCase();
+      final damageType = grant['type']?.toString().trim().toLowerCase();
+      if (stat == null || damageType == null || damageType.isEmpty) continue;
+
+      final accumulator = grantsByType.putIfAbsent(
+        damageType,
+        () => _ClassFeatureResistanceGrant(),
+      );
+      accumulator.add(stat: stat, value: grant['value']);
+    }
+
+    for (final entry in grantsByType.entries) {
+      final grant = entry.value;
+      batch.addResistance(
+        _ResolvedFeatureResistance(
+          sourceId: featureId,
+          damageType: entry.key,
+          immunity: grant.immunity,
+          weakness: grant.weakness,
+          dynamicImmunity: grant.dynamicImmunity,
+          dynamicWeakness: grant.dynamicWeakness,
+        ),
+      );
     }
   }
 
@@ -996,7 +1582,8 @@ class ClassFeatureGrantsService {
             } else {
               final itemValue = value['value'];
               if (itemValue is int) {
-                statBonuses[stat] = (statBonuses[stat] as int? ?? 0) + itemValue;
+                statBonuses[stat] =
+                    (statBonuses[stat] as int? ?? 0) + itemValue;
               } else if (itemValue is String) {
                 statBonuses['${stat}_dynamic'] = itemValue;
               }
@@ -1021,10 +1608,12 @@ class ClassFeatureGrantsService {
     if (value is List) {
       for (final item in value) {
         if (item is! Map<String, dynamic>) continue;
-        _processSingleIncreaseTotal(item, statBonuses, damageResistanceGrants, featureId);
+        _processSingleIncreaseTotal(
+            item, statBonuses, damageResistanceGrants, featureId);
       }
     } else if (value is Map<String, dynamic>) {
-      _processSingleIncreaseTotal(value, statBonuses, damageResistanceGrants, featureId);
+      _processSingleIncreaseTotal(
+          value, statBonuses, damageResistanceGrants, featureId);
     }
   }
 
@@ -1071,9 +1660,18 @@ class ClassFeatureGrantsService {
     if (value == null) return const [];
     if (value is String) return [value];
     if (value is List) {
-      return value.map((e) => e?.toString() ?? '').where((e) => e.isNotEmpty).toList();
+      return value
+          .map((e) => e?.toString() ?? '')
+          .where((e) => e.isNotEmpty)
+          .toList();
     }
     return const [];
+  }
+
+  Map<String, dynamic>? _stringKeyedMapOrNull(Object? value) {
+    if (value is Map<String, dynamic>) return value;
+    if (value is Map) return value.cast<String, dynamic>();
+    return null;
   }
 
   void _collectAbilityNames(Set<String> target, dynamic value) {
@@ -1088,7 +1686,8 @@ class ClassFeatureGrantsService {
   Future<String?> _resolveSkillId(String skillName) async {
     final components = await _db.getAllComponents();
     final match = components.firstWhereOrNull(
-      (c) => c.type == 'skill' && c.name.toLowerCase() == skillName.toLowerCase(),
+      (c) =>
+          c.type == 'skill' && c.name.toLowerCase() == skillName.toLowerCase(),
     );
     return match?.id ?? 'skill_${ClassFeatureDataService.slugify(skillName)}';
   }
@@ -1096,7 +1695,8 @@ class ClassFeatureGrantsService {
   Future<String> _resolveTitleId(String titleName) async {
     final components = await _db.getAllComponents();
     final match = components.firstWhereOrNull(
-      (c) => c.type == 'title' && c.name.toLowerCase() == titleName.toLowerCase(),
+      (c) =>
+          c.type == 'title' && c.name.toLowerCase() == titleName.toLowerCase(),
     );
     return match?.id ?? 'title_${ClassFeatureDataService.slugify(titleName)}';
   }
@@ -1129,4 +1729,121 @@ class ClassFeatureGrantsService {
     'domain',
     'aspect',
   ];
+}
+
+/// One resolved `hero_entries` row the class-feature batch will write.
+class _ResolvedFeatureEntry {
+  const _ResolvedFeatureEntry({
+    required this.featureId,
+    required this.sourceId,
+    required this.entryType,
+    required this.entryId,
+    this.optionKey,
+    this.payload,
+    this.gainedBy = HeroEntryGainedBy.grant,
+  });
+
+  final String featureId;
+  final String sourceId;
+  final String entryType;
+  final String entryId;
+  final String? optionKey;
+  final Map<String, dynamic>? payload;
+  final String gainedBy;
+}
+
+/// One resolved resistance the class-feature batch will write.
+class _ResolvedFeatureResistance {
+  const _ResolvedFeatureResistance({
+    required this.sourceId,
+    required this.damageType,
+    this.immunity = 0,
+    this.weakness = 0,
+    this.dynamicImmunity,
+    this.dynamicWeakness,
+    this.immunityPerEchelon = 0,
+    this.weaknessPerEchelon = 0,
+  });
+
+  final String sourceId;
+  final String damageType;
+  final int immunity;
+  final int weakness;
+  final String? dynamicImmunity;
+  final String? dynamicWeakness;
+  final int immunityPerEchelon;
+  final int weaknessPerEchelon;
+}
+
+/// The complete future `class_feature` state, resolved before any write.
+///
+/// Collecting the whole batch first is what lets validation see the same rows
+/// the writer will produce, so the preview cannot drift from persistence.
+class _ClassFeatureBatch {
+  final List<_ResolvedFeatureEntry> entries = [];
+  final List<_ResolvedFeatureResistance> resistances = [];
+
+  void addEntry(_ResolvedFeatureEntry entry) {
+    if (entry.entryId.trim().isEmpty) return;
+    entries.add(entry);
+  }
+
+  void addResistance(_ResolvedFeatureResistance resistance) {
+    resistances.add(resistance);
+  }
+
+  /// The component-backed subset the hero-wide duplicate rule guards.
+  List<ClassFeatureEntryGrant> get componentGrants {
+    const guard = HeroDuplicateGuardService();
+    return [
+      for (final entry in entries)
+        if (guard.guardsEntryType(entry.entryType))
+          ClassFeatureEntryGrant(
+            featureId: entry.featureId,
+            sourceId: entry.sourceId,
+            optionKey: entry.optionKey,
+            entryType: entry.entryType,
+            entryId: entry.entryId.trim(),
+          ),
+    ];
+  }
+}
+
+class _ClassFeatureResistanceGrant {
+  int immunity = 0;
+  int weakness = 0;
+  String? dynamicImmunity;
+  String? dynamicWeakness;
+
+  void add({required String stat, required dynamic value}) {
+    if (stat != 'immunity' && stat != 'weakness') return;
+
+    if (value is num) {
+      _addStatic(stat, value.toInt());
+      return;
+    }
+
+    final text = value?.toString().trim();
+    if (text == null || text.isEmpty) return;
+
+    final parsed = int.tryParse(text);
+    if (parsed != null) {
+      _addStatic(stat, parsed);
+      return;
+    }
+
+    if (stat == 'immunity') {
+      dynamicImmunity = text;
+    } else {
+      dynamicWeakness = text;
+    }
+  }
+
+  void _addStatic(String stat, int value) {
+    if (stat == 'immunity') {
+      immunity += value;
+    } else {
+      weakness += value;
+    }
+  }
 }

@@ -7,11 +7,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/db/providers.dart';
 import '../../core/models/component.dart' as model;
+import '../../core/services/perk_grants_service.dart';
+import '../../core/storage/hero_storage_contract.dart';
 import '../../core/theme/app_icon.dart';
 import '../../core/theme/app_icons.dart';
 import '../../core/theme/navigation_theme.dart';
 import '../../core/theme/form_theme.dart';
 import '../../core/text/widgets/perks_widget_text.dart';
+import '../../features/hero_builder/domain/hero_claim.dart';
+import '../../features/hero_builder/domain/hero_conflict_index.dart';
+import '../../features/hero_builder/domain/hero_mutation_scope.dart';
 import '../abilities/ability_expandable_item.dart';
 
 // Perks accent color for default styling
@@ -43,6 +48,10 @@ class PerksSelectionWidget extends ConsumerStatefulWidget {
     required this.heroId,
     this.selectedPerkIds = const {},
     this.reservedPerkIds = const {},
+    this.perkConflictIndex,
+    this.languageConflictIndex,
+    this.skillConflictIndex,
+    this.perkSlotKeyPrefix,
     this.perkType,
     this.allowedGroups,
     this.pickCount,
@@ -52,6 +61,7 @@ class PerksSelectionWidget extends ConsumerStatefulWidget {
     this.skills = const [],
     this.reservedLanguageIds = const {},
     this.reservedSkillIds = const {},
+    this.ownedSkillIds,
     this.showHeader = true,
     this.headerTitle = 'Perks',
     this.headerSubtitle,
@@ -68,6 +78,18 @@ class PerksSelectionWidget extends ConsumerStatefulWidget {
 
   /// Perk IDs that are reserved (e.g., from other sources) and should be excluded
   final Set<String> reservedPerkIds;
+
+  /// Source-aware conflicts for selection slots. When supplied, this replaces
+  /// flat [reservedPerkIds] filtering for the indexed perk picker.
+  final HeroConflictIndex? perkConflictIndex;
+
+  /// Parent-draft projections used by language/skill choices nested inside a
+  /// selected perk. The nested editor removes only that perk's exact source.
+  final HeroConflictIndex? languageConflictIndex;
+  final HeroConflictIndex? skillConflictIndex;
+
+  /// Stable prefix used to identify each indexed perk slot.
+  final String? perkSlotKeyPrefix;
 
   /// Optional perk type filter (e.g., "crafting", "exploration")
   final String? perkType;
@@ -95,6 +117,10 @@ class PerksSelectionWidget extends ConsumerStatefulWidget {
 
   /// Skill IDs reserved by other sources
   final Set<String> reservedSkillIds;
+
+  /// Effective skills for `one_owned` grants. Null keeps the compatibility
+  /// behavior where [reservedSkillIds] doubles as the owned-skill set.
+  final Set<String>? ownedSkillIds;
 
   /// Whether to show the header
   final bool showHeader;
@@ -148,7 +174,8 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
 
     return perksAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text(PerksWidgetText.failedToLoadPerks(e))),
+      error: (e, _) =>
+          Center(child: Text(PerksWidgetText.failedToLoadPerks(e))),
       data: (perks) => _buildContent(context, perks),
     );
   }
@@ -341,7 +368,8 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
                     borderColor,
                   ),
                   icon: Icon(Icons.add, color: borderColor),
-                  label: Text(PerksWidgetText.addPerk, style: TextStyle(color: borderColor)),
+                  label: Text(PerksWidgetText.addPerk,
+                      style: TextStyle(color: borderColor)),
                 ),
             ],
           ),
@@ -412,7 +440,6 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
       ),
     );
   }
-
 
   Widget _buildSelectionMode(
     BuildContext context,
@@ -511,6 +538,18 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
               ),
             ),
           ),
+          if (_perkConflictForSlot(index, slots[index]) case final conflict?)
+            Padding(
+              padding: const EdgeInsets.only(top: 6),
+              child: Text(
+                'Already owned by: ${_ownerLabels(conflict)}',
+                style: const TextStyle(
+                  color: Colors.orange,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
           if (slots[index] != null) ...[
             const SizedBox(height: 6),
             _buildPerkDisplay(context, perkMap[slots[index]]!, borderColor),
@@ -556,7 +595,8 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
                   color: borderColor.withAlpha(38),
                   borderRadius: BorderRadius.circular(6),
                 ),
-                child: AppIcon(PerkGroupIcons.fromGroup(group), size: 16, color: borderColor),
+                child: AppIcon(PerkGroupIcons.fromGroup(group),
+                    size: 16, color: borderColor),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -571,8 +611,7 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
               ),
               if (showRemove)
                 IconButton(
-                  icon:
-                      Icon(Icons.close, size: 18, color: FormTheme.textMuted),
+                  icon: Icon(Icons.close, size: 18, color: FormTheme.textMuted),
                   onPressed: () => _removePerk(perk.id, perk.name),
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
@@ -581,7 +620,8 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
           ),
           const SizedBox(height: 8),
           Text(
-            perk.data['description']?.toString() ?? PerksWidgetText.noDescriptionAvailable,
+            perk.data['description']?.toString() ??
+                PerksWidgetText.noDescriptionAvailable,
             style: TextStyle(
               fontSize: 13,
               color: FormTheme.textSecondary,
@@ -614,6 +654,9 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
               skills: widget.skills,
               reservedLanguageIds: widget.reservedLanguageIds,
               reservedSkillIds: widget.reservedSkillIds,
+              ownedSkillIds: widget.ownedSkillIds ?? widget.reservedSkillIds,
+              languageConflictIndex: widget.languageConflictIndex,
+              skillConflictIndex: widget.skillConflictIndex,
               onDirty: widget.onDirty ?? () {},
             ),
           ],
@@ -632,7 +675,8 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
           borderRadius: BorderRadius.circular(16),
           side: BorderSide(color: FormTheme.borderDim),
         ),
-        title: Text(PerksWidgetText.removePerk, style: TextStyle(color: FormTheme.textBright)),
+        title: Text(PerksWidgetText.removePerk,
+            style: TextStyle(color: FormTheme.textBright)),
         content: Text(
           'Are you sure you want to remove "$perkName"?',
           style: TextStyle(color: FormTheme.textSecondary),
@@ -640,8 +684,8 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child:
-                Text(PerksWidgetText.cancel, style: TextStyle(color: FormTheme.textSecondary)),
+            child: Text(PerksWidgetText.cancel,
+                style: TextStyle(color: FormTheme.textSecondary)),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
@@ -772,25 +816,45 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
       ),
     ];
 
+    final conflictIndex = widget.perkConflictIndex;
+    final slotKey = _perkSlotKey(currentIndex);
     final excludedIds = <String>{...widget.reservedPerkIds};
-    for (var i = 0; i < slots.length; i++) {
-      if (i == currentIndex) continue;
-      final pick = slots[i];
-      if (pick != null) {
-        excludedIds.add(pick);
+    if (conflictIndex == null || slotKey == null) {
+      for (var i = 0; i < slots.length; i++) {
+        if (i == currentIndex) continue;
+        final pick = slots[i];
+        if (pick != null) {
+          excludedIds.add(pick);
+        }
       }
     }
+    final currentValue = slots[currentIndex];
 
     for (final key in sortedGroupKeys) {
       for (final perk in grouped[key]!) {
-        if (_isBlocked(perk.id, excludedIds, currentId: slots[currentIndex])) {
+        final blocked = conflictIndex != null && slotKey != null
+            ? perk.id != currentValue &&
+                conflictIndex.isClaimed(
+                  HeroEntryKey(
+                    entryType: 'perk',
+                    canonicalEntryId: perk.id,
+                  ),
+                  ignoredDraftSlotKey: slotKey,
+                )
+            : _isBlocked(perk.id, excludedIds, currentId: currentValue);
+        if (blocked) {
           continue;
         }
+        final conflict = perk.id == currentValue
+            ? _perkConflictForSlot(currentIndex, perk.id)
+            : null;
         options.add(
           SearchOption<String?>(
             label: perk.name,
             value: perk.id,
-            subtitle: key,
+            subtitle: conflict == null
+                ? key
+                : 'Already owned by: ${_ownerLabels(conflict)}',
           ),
         );
       }
@@ -802,6 +866,36 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
   bool _isBlocked(String id, Set<String> blocked, {String? currentId}) {
     if (id == currentId) return false;
     return blocked.contains(id);
+  }
+
+  String? _perkSlotKey(int index) {
+    final prefix = widget.perkSlotKeyPrefix?.trim();
+    if (prefix == null || prefix.isEmpty) return null;
+    return '$prefix#$index';
+  }
+
+  HeroConflict? _perkConflictForSlot(int index, String? perkId) {
+    final conflictIndex = widget.perkConflictIndex;
+    final slotKey = _perkSlotKey(index);
+    if (conflictIndex == null ||
+        slotKey == null ||
+        perkId == null ||
+        perkId.trim().isEmpty) {
+      return null;
+    }
+    return conflictIndex.conflictFor(
+      HeroEntryKey(
+        entryType: 'perk',
+        canonicalEntryId: perkId,
+      ),
+      ignoredDraftSlotKey: slotKey,
+    );
+  }
+
+  String _ownerLabels(HeroConflict conflict) {
+    return conflict.owners
+        .map((owner) => owner.displayLabel ?? owner.source.toString())
+        .join(', ');
   }
 
   Future<void> _ensureExistingPerkGrants() async {
@@ -837,21 +931,42 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
     Map<String, model.Component>? perkMap,
   }) async {
     final added = next.difference(widget.selectedPerkIds);
+    final effectiveNext = Set<String>.from(next);
 
     // Only persist to database and apply grants if persistToDatabase is enabled
     if (widget.persistToDatabase && widget.heroId.isNotEmpty) {
       final db = ref.read(appDatabaseProvider);
+      final entries = ref.read(heroEntryRepositoryProvider);
+      final guard = ref.read(heroDuplicateGuardServiceProvider);
       final service = ref.read(perkGrantsServiceProvider);
-
-      // Persist the current perk list
-      await db.setHeroComponentIds(
-        heroId: widget.heroId,
-        category: 'perk',
-        componentIds: next.toList(),
-      );
 
       // Apply grants for newly added perks (abilities)
       for (final perkId in added) {
+        final existingPerks = await entries.listEntriesByType(
+          widget.heroId,
+          HeroEntryTypes.perk,
+        );
+        if (guard.isReserved(
+          candidateId: perkId,
+          entries: existingPerks,
+          entryType: HeroEntryTypes.perk,
+        )) {
+          effectiveNext.remove(perkId);
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text(PerksWidgetText.perkAlreadyAdded)),
+            );
+          }
+          continue;
+        }
+        await entries.addEntry(
+          heroId: widget.heroId,
+          entryType: HeroEntryTypes.perk,
+          entryId: perkId,
+          sourceType: HeroEntrySourceTypes.heroSheet,
+          sourceId: HeroEntryTypes.perk,
+          gainedBy: HeroEntryGainedBy.choice,
+        );
         final component = await _loadPerkComponent(perkId, perkMap, db);
         if (component == null) continue;
         await service.applyPerkGrants(
@@ -863,14 +978,31 @@ class _PerksSelectionWidgetState extends ConsumerState<PerksSelectionWidget> {
 
       // Remove grants from removed perks
       for (final perkId in removed) {
-        await service.removePerkGrants(
+        final removedCount = await entries.removeEntryFromSource(
           heroId: widget.heroId,
-          perkId: perkId,
+          entryType: HeroEntryTypes.perk,
+          entryId: perkId,
+          sourceType: HeroEntrySourceTypes.heroSheet,
+          sourceId: HeroEntryTypes.perk,
         );
+        if (removedCount == 0) {
+          effectiveNext.add(perkId);
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                  PerksWidgetText.perkOwnedElsewhere,
+                ),
+              ),
+            );
+          }
+          continue;
+        }
+        await service.removePerkGrants(heroId: widget.heroId, perkId: perkId);
       }
     }
 
-    widget.onSelectionChanged?.call(next);
+    widget.onSelectionChanged?.call(effectiveNext);
     widget.onDirty?.call();
   }
 
@@ -910,6 +1042,9 @@ class _PerkGrantsDisplay extends ConsumerWidget {
     required this.skills,
     required this.reservedLanguageIds,
     required this.reservedSkillIds,
+    required this.ownedSkillIds,
+    required this.languageConflictIndex,
+    required this.skillConflictIndex,
     required this.onDirty,
   });
 
@@ -921,6 +1056,9 @@ class _PerkGrantsDisplay extends ConsumerWidget {
   final List<model.Component> skills;
   final Set<String> reservedLanguageIds;
   final Set<String> reservedSkillIds;
+  final Set<String> ownedSkillIds;
+  final HeroConflictIndex? languageConflictIndex;
+  final HeroConflictIndex? skillConflictIndex;
   final VoidCallback onDirty;
 
   @override
@@ -955,6 +1093,18 @@ class _PerkGrantsDisplay extends ConsumerWidget {
       );
     }
 
+    final parsedGrant = PerkGrant.fromJson(grant);
+    if (parsedGrant != null) {
+      return _buildParsedGrantItem(
+        context,
+        ref,
+        parsedGrant,
+        textColor,
+        languageMap,
+        skillMap,
+      );
+    }
+
     if (grant.containsKey('ability')) {
       return _buildAbilityGrant(
           context, ref, grant['ability'] as String?, textColor);
@@ -976,6 +1126,42 @@ class _PerkGrantsDisplay extends ConsumerWidget {
     final formatted =
         grant.entries.map((e) => '${e.key}: ${e.value}').join(', ');
     return _buildGrantRow('• $formatted', textColor);
+  }
+
+  Widget _buildParsedGrantItem(
+    BuildContext context,
+    WidgetRef ref,
+    PerkGrant grant,
+    Color textColor,
+    Map<String, model.Component> languageMap,
+    Map<String, model.Component> skillMap,
+  ) {
+    return switch (grant) {
+      AbilityGrant(:final abilityName) =>
+        _buildAbilityGrant(context, ref, abilityName, textColor),
+      CreatureGrant(:final creatureName) =>
+        _buildGrantRow('• Creature: $creatureName', textColor),
+      SkillFromOwnedGrant(:final group) =>
+        _buildSkillOwnedGrant(context, ref, group, textColor, skillMap),
+      SkillPickGrant(:final group, :final count) =>
+        _buildSkillPickGrant(context, ref, group, count, textColor, skillMap),
+      LanguageGrant(:final count) =>
+        _buildLanguageGrant(context, ref, count, textColor, languageMap),
+      MultiGrant(:final grants) => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (final nestedGrant in grants)
+              _buildParsedGrantItem(
+                context,
+                ref,
+                nestedGrant,
+                textColor,
+                languageMap,
+                skillMap,
+              ),
+          ],
+        ),
+    };
   }
 
   Widget _buildAbilityGrant(
@@ -1028,10 +1214,16 @@ class _PerkGrantsDisplay extends ConsumerWidget {
     return choicesAsync.when(
       data: (choices) {
         final selected = List<String>.from(choices['language'] ?? const []);
+        final conflictIndex = _grantConflictIndex(
+          ref,
+          entryType: HeroEntryTypes.language,
+          grantType: 'language',
+          chosenIds: selected,
+        );
         final widgets = <Widget>[];
 
         // Add warning if some languages are reserved
-        if (reservedCount > 0) {
+        if (conflictIndex == null && reservedCount > 0) {
           final reservedNames = reservedLangs.map((l) => l.name).toList()
             ..sort();
           final langsText = reservedCount == 1
@@ -1059,6 +1251,8 @@ class _PerkGrantsDisplay extends ConsumerWidget {
                 slotIndex: index,
                 currentChoices: selected,
                 currentSelectedId: selectedId,
+                conflictIndex: conflictIndex,
+                slotKey: _grantSlotKey('language', index),
               ),
             ),
           );
@@ -1108,8 +1302,7 @@ class _PerkGrantsDisplay extends ConsumerWidget {
     final normalizedGroup = group.toLowerCase();
     final owned = skills.where((skill) {
       final skillGroup = (skill.data['group'] as String?)?.toLowerCase();
-      return skillGroup == normalizedGroup &&
-          reservedSkillIds.contains(skill.id);
+      return skillGroup == normalizedGroup && ownedSkillIds.contains(skill.id);
     }).toList()
       ..sort((a, b) => a.name.compareTo(b.name));
 
@@ -1163,32 +1356,27 @@ class _PerkGrantsDisplay extends ConsumerWidget {
       return skillGroup == normalizedGroup;
     }).toList();
 
-    // Get available skills (not reserved)
-    final available = allInGroup
-        .where((skill) => !reservedSkillIds.contains(skill.id))
-        .toList()
-      ..sort((a, b) => a.name.compareTo(b.name));
-
     // Calculate how many are reserved
     final reservedInGroup = allInGroup
         .where((skill) => reservedSkillIds.contains(skill.id))
         .toList();
     final reservedCount = reservedInGroup.length;
 
-    if (available.isEmpty) {
-      return _buildGrantRow(
-          'No ${_capitalize(group)} skills available to learn.', textColor);
-    }
-
     final choicesAsync =
         ref.watch(perkGrantChoicesProvider((heroId: heroId, perkId: perkId)));
     return choicesAsync.when(
       data: (choices) {
         final selected = List<String>.from(choices['skill_pick'] ?? const []);
+        final conflictIndex = _grantConflictIndex(
+          ref,
+          entryType: HeroEntryTypes.skill,
+          grantType: 'skill_pick',
+          chosenIds: selected,
+        );
         final widgets = <Widget>[];
 
         // Add warning if some skills are reserved
-        if (reservedCount > 0) {
+        if (conflictIndex == null && reservedCount > 0) {
           final reservedNames = reservedInGroup.map((s) => s.name).toList()
             ..sort();
           final skillsText = reservedCount == 1
@@ -1220,6 +1408,8 @@ class _PerkGrantsDisplay extends ConsumerWidget {
                 currentSelectedId: selectedId,
                 group: group,
                 allowOwnedOnly: false,
+                conflictIndex: conflictIndex,
+                slotKey: _grantSlotKey('skill_pick', index),
               ),
             ),
           );
@@ -1331,12 +1521,22 @@ class _PerkGrantsDisplay extends ConsumerWidget {
     required int slotIndex,
     required List<String> currentChoices,
     required String? currentSelectedId,
+    required HeroConflictIndex? conflictIndex,
+    required String slotKey,
   }) async {
-    final exclude = <String>{
-      ...reservedLanguageIds.where((id) => id.isNotEmpty),
-      ...currentChoices.where((id) => id.isNotEmpty && id != currentSelectedId),
-    };
-    final options = _buildLanguageOptions(exclude, currentSelectedId);
+    final exclude = conflictIndex == null
+        ? <String>{
+            ...reservedLanguageIds.where((id) => id.isNotEmpty),
+            ...currentChoices
+                .where((id) => id.isNotEmpty && id != currentSelectedId),
+          }
+        : const <String>{};
+    final options = _buildLanguageOptions(
+      exclude,
+      currentSelectedId,
+      conflictIndex: conflictIndex,
+      slotKey: slotKey,
+    );
     final result = await showSearchablePicker<String?>(
       context: context,
       title: PerksWidgetText.selectLanguage,
@@ -1357,11 +1557,13 @@ class _PerkGrantsDisplay extends ConsumerWidget {
     required String? currentSelectedId,
     required String group,
     required bool allowOwnedOnly,
+    HeroConflictIndex? conflictIndex,
+    String? slotKey,
   }) async {
     final exclude = currentChoices
         .where((id) => id.isNotEmpty && id != currentSelectedId)
         .toSet();
-    if (!allowOwnedOnly) {
+    if (!allowOwnedOnly && conflictIndex == null) {
       exclude.addAll(reservedSkillIds);
     }
     final options = _buildSkillOptions(
@@ -1369,6 +1571,8 @@ class _PerkGrantsDisplay extends ConsumerWidget {
       allowOwnedOnly: allowOwnedOnly,
       exclude: exclude,
       currentSelectedId: currentSelectedId,
+      conflictIndex: allowOwnedOnly ? null : conflictIndex,
+      slotKey: slotKey,
     );
     final result = await showSearchablePicker<String?>(
       context: context,
@@ -1382,7 +1586,11 @@ class _PerkGrantsDisplay extends ConsumerWidget {
   }
 
   List<SearchOption<String?>> _buildLanguageOptions(
-      Set<String> exclude, String? currentSelectedId) {
+    Set<String> exclude,
+    String? currentSelectedId, {
+    HeroConflictIndex? conflictIndex,
+    String? slotKey,
+  }) {
     final grouped = <String, List<model.Component>>{};
     for (final lang in languages) {
       final type =
@@ -1399,7 +1607,16 @@ class _PerkGrantsDisplay extends ConsumerWidget {
 
     for (final entry in grouped.entries) {
       for (final lang in entry.value) {
-        if (lang.id != currentSelectedId && exclude.contains(lang.id)) {
+        final blocked = conflictIndex != null && slotKey != null
+            ? conflictIndex.isClaimed(
+                HeroEntryKey(
+                  entryType: HeroEntryTypes.language,
+                  canonicalEntryId: lang.id,
+                ),
+                ignoredDraftSlotKey: slotKey,
+              )
+            : exclude.contains(lang.id);
+        if (lang.id != currentSelectedId && blocked) {
           continue;
         }
         options.add(
@@ -1419,6 +1636,8 @@ class _PerkGrantsDisplay extends ConsumerWidget {
     required bool allowOwnedOnly,
     required Set<String> exclude,
     required String? currentSelectedId,
+    HeroConflictIndex? conflictIndex,
+    String? slotKey,
   }) {
     final normalizedGroup = group.toLowerCase();
     final source = skills.where((skill) {
@@ -1427,7 +1646,8 @@ class _PerkGrantsDisplay extends ConsumerWidget {
       if (allowOwnedOnly) {
         return reservedSkillIds.contains(skill.id);
       }
-      return !reservedSkillIds.contains(skill.id) ||
+      return conflictIndex != null ||
+          !reservedSkillIds.contains(skill.id) ||
           skill.id == currentSelectedId;
     }).toList()
       ..sort((a, b) => a.name.compareTo(b.name));
@@ -1437,7 +1657,16 @@ class _PerkGrantsDisplay extends ConsumerWidget {
     ];
 
     for (final skill in source) {
-      if (skill.id != currentSelectedId && exclude.contains(skill.id)) continue;
+      final blocked = conflictIndex != null && slotKey != null
+          ? conflictIndex.isClaimed(
+              HeroEntryKey(
+                entryType: HeroEntryTypes.skill,
+                canonicalEntryId: skill.id,
+              ),
+              ignoredDraftSlotKey: slotKey,
+            )
+          : exclude.contains(skill.id);
+      if (skill.id != currentSelectedId && blocked) continue;
       options.add(SearchOption<String?>(label: skill.name, value: skill.id));
     }
     return options;
@@ -1468,6 +1697,79 @@ class _PerkGrantsDisplay extends ConsumerWidget {
     onDirty();
     ref.invalidate(perkGrantChoicesProvider((heroId: heroId, perkId: perkId)));
   }
+
+  HeroConflictIndex? _grantConflictIndex(
+    WidgetRef ref, {
+    required String entryType,
+    required String grantType,
+    required List<String> chosenIds,
+  }) {
+    final entries = ref.watch(heroEntriesProvider(heroId)).valueOrNull;
+    if (entries == null) return null;
+    final perkSource = HeroClaimSource(
+      sourceType: HeroEntrySourceTypes.perk,
+      sourceId: perkId,
+    );
+
+    final draftClaims = chosenIds
+        .asMap()
+        .entries
+        .where((choice) => choice.value.trim().isNotEmpty)
+        .map(
+          (choice) => HeroEntryClaim(
+            key: HeroEntryKey(
+              entryType: entryType,
+              canonicalEntryId: choice.value,
+            ),
+            owner: HeroClaimOwner.draft(
+              source: perkSource,
+              slotKey: _grantSlotKey(grantType, choice.key),
+              displayLabel: 'Perk grant',
+            ),
+          ),
+        );
+    final parentIndex = entryType == HeroEntryTypes.language
+        ? languageConflictIndex
+        : entryType == HeroEntryTypes.skill
+            ? skillConflictIndex
+            : null;
+    if (parentIndex != null) {
+      return parentIndex.replacing(
+        mutationScopes: [
+          HeroMutationScope.single(perkSource, entryType: entryType),
+        ],
+        draftClaims: draftClaims,
+      );
+    }
+
+    return HeroConflictIndex.projected(
+      persistedClaims:
+          entries.where((entry) => entry.entryType == entryType).map(
+                (entry) => HeroEntryClaim(
+                  key: HeroEntryKey(
+                    entryType: entry.entryType,
+                    canonicalEntryId: entry.entryId,
+                  ),
+                  owner: HeroClaimOwner.persisted(
+                    source: HeroClaimSource(
+                      sourceType: entry.sourceType,
+                      sourceId: entry.sourceId,
+                    ),
+                    displayLabel: entry.sourceId.trim().isEmpty
+                        ? entry.sourceType
+                        : '${entry.sourceType}:${entry.sourceId}',
+                  ),
+                ),
+              ),
+      mutationScopes: [
+        HeroMutationScope.single(perkSource, entryType: entryType),
+      ],
+      draftClaims: draftClaims,
+    );
+  }
+
+  String _grantSlotKey(String grantType, int index) =>
+      'perk:$perkId:$grantType#$index';
 
   Widget _buildGrantRow(String text, Color color) {
     return Padding(
@@ -1623,7 +1925,8 @@ Future<PickerSelection<T>?> showSearchablePicker<T>({
                               color: _perksColor.withValues(alpha: 0.4),
                             ),
                           ),
-                          child: Icon(Icons.auto_awesome, color: _perksColor, size: 20),
+                          child: Icon(Icons.auto_awesome,
+                              color: _perksColor, size: 20),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -1638,7 +1941,8 @@ Future<PickerSelection<T>?> showSearchablePicker<T>({
                         ),
                         IconButton(
                           onPressed: () => Navigator.of(context).pop(),
-                          icon: Icon(Icons.close, color: FormTheme.textSecondary),
+                          icon:
+                              Icon(Icons.close, color: FormTheme.textSecondary),
                           splashRadius: 20,
                         ),
                       ],
@@ -1721,7 +2025,8 @@ Future<PickerSelection<T>?> showSearchablePicker<T>({
                                   borderRadius: BorderRadius.circular(10),
                                   border: isSelected
                                       ? Border.all(
-                                          color: _perksColor.withValues(alpha: 0.4))
+                                          color: _perksColor.withValues(
+                                              alpha: 0.4))
                                       : null,
                                 ),
                                 child: ListTile(
@@ -1743,7 +2048,8 @@ Future<PickerSelection<T>?> showSearchablePicker<T>({
                                         )
                                       : null,
                                   trailing: isSelected
-                                      ? Icon(Icons.check_circle, color: _perksColor, size: 22)
+                                      ? Icon(Icons.check_circle,
+                                          color: _perksColor, size: 22)
                                       : null,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
@@ -1781,4 +2087,3 @@ Future<PickerSelection<T>?> showSearchablePicker<T>({
     },
   );
 }
-

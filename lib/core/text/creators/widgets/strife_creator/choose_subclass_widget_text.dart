@@ -13,6 +13,7 @@
   static const String subclassPickerTitle = 'Select Subclass';
   static const String subclassLabel = 'Subclass';
   static const String grantsAbilityPrefix = 'Grants ability: ';
+  static const String duplicateLabel = 'duplicate';
   static const String reservedSkillWarningPrefix = 'You already have the ';
   static const String reservedSkillWarningSuffix =
       ' skill from a previous selection.';
