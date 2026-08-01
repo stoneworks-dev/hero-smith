@@ -60,9 +60,11 @@ class StoryCareerSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final careersAsync = ref.watch(componentsByTypeProvider('career'));
-    final skillsAsync = ref.watch(componentsByTypeProvider('skill'));
-    final langsAsync = ref.watch(componentsByTypeProvider('language'));
+    final careersAsync =
+        ref.watch(selectableComponentsByTypeProvider('career'));
+    final skillsAsync = ref.watch(selectableComponentsByTypeProvider('skill'));
+    final langsAsync =
+        ref.watch(selectableComponentsByTypeProvider('language'));
 
     const accent = CreatorTheme.careerAccent;
 

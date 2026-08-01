@@ -139,6 +139,7 @@ class HeroRetainerSection extends ConsumerWidget {
             retainerComponentId: retainer.id,
             name: retainer.name,
             role: retainer.role,
+            startingLevel: retainer.startingLevel,
           );
         },
       ),
@@ -224,7 +225,14 @@ class _RetainerStatsCard extends ConsumerWidget {
       title: instance.name,
       borderColor: accent,
       leading: AppIcon(DowntimeIcons.follower, color: accent, size: 20),
-      badge: _roleBadge(accent),
+      badge: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _roleBadge(accent),
+          const SizedBox(width: 6),
+          _levelButton(context, ref, accent),
+        ],
+      ),
       subtitle: InkWell(
         borderRadius: BorderRadius.circular(8),
         onTap: () => _showRenameDialog(context, ref),
@@ -253,7 +261,7 @@ class _RetainerStatsCard extends ConsumerWidget {
 
   Widget _roleBadge(Color color) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
         border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
@@ -262,9 +270,163 @@ class _RetainerStatsCard extends ConsumerWidget {
       child: Text(
         '${instance.role[0].toUpperCase()}${instance.role.substring(1)}',
         style: TextStyle(
-          fontSize: 9,
+          fontSize: 11,
           fontWeight: FontWeight.bold,
           color: color.withValues(alpha: 0.8),
+        ),
+      ),
+    );
+  }
+
+  /// Button-style level chip shown beside the retainer's name. Displays the
+  /// current level with a small "tap to level" hint and opens the level
+  /// up/down dialog on tap (retainers level independently of their hero).
+  /// When the hero has out-leveled the retainer it highlights with a
+  /// "tap to level up" prompt.
+  Widget _levelButton(BuildContext context, WidgetRef ref, Color accent) {
+    final canLevelUp =
+        ref.watch(heroRetainerLevelUpAvailableProvider(heroId)).valueOrNull ??
+            false;
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(10),
+      onTap: () => _showLevelDialog(context, ref, accent),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        decoration: BoxDecoration(
+          color: accent.withValues(alpha: canLevelUp ? 0.18 : 0.1),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: accent.withValues(alpha: canLevelUp ? 0.7 : 0.4),
+            width: canLevelUp ? 1.5 : 1,
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Lv ',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: accent.withValues(alpha: 0.8),
+                  ),
+                ),
+                Text(
+                  '${instance.level}',
+                  style: TextStyle(
+                    fontSize: 18,
+                    height: 1.0,
+                    fontWeight: FontWeight.bold,
+                    color: accent,
+                  ),
+                ),
+                if (canLevelUp) ...[
+                  const SizedBox(width: 2),
+                  Icon(Icons.arrow_upward_rounded, size: 14, color: accent),
+                ],
+              ],
+            ),
+            Text(
+              canLevelUp ? 'tap to level up' : 'tap to level',
+              style: TextStyle(
+                fontSize: 8,
+                fontStyle: FontStyle.italic,
+                color: accent.withValues(alpha: 0.7),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Dialog with −/+ steppers to level the retainer up or down.
+  Future<void> _showLevelDialog(
+      BuildContext context, WidgetRef ref, Color accent) async {
+    final repo = ref.read(retainerRepositoryProvider);
+    var level = instance.level;
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) => AlertDialog(
+          backgroundColor: NavigationTheme.cardBackgroundDark,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: FormTheme.borderDim),
+          ),
+          title: const Text('Retainer Level',
+              style: TextStyle(color: FormTheme.textBright, fontSize: 16)),
+          content: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _stepButton(
+                icon: Icons.remove,
+                enabled: level > 1,
+                onTap: () {
+                  setDialogState(() => level--);
+                  repo.setLevel(instance.id, level);
+                },
+              ),
+              const SizedBox(width: 24),
+              Text(
+                '$level',
+                style: TextStyle(
+                  color: accent,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(width: 24),
+              _stepButton(
+                icon: Icons.add,
+                enabled: level < 10,
+                onTap: () {
+                  setDialogState(() => level++);
+                  repo.setLevel(instance.id, level);
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('Done'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _stepButton({
+    required IconData icon,
+    required bool enabled,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: enabled ? onTap : null,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: enabled
+              ? FormTheme.surfaceDark
+              : FormTheme.surfaceDark.withValues(alpha: 0.4),
+          border: Border.all(
+            color: enabled ? FormTheme.borderLight : FormTheme.borderDim,
+          ),
+        ),
+        child: Icon(
+          icon,
+          size: 20,
+          color: enabled ? FormTheme.textBright : FormTheme.textMuted,
         ),
       ),
     );
@@ -310,60 +472,52 @@ class _RetainerStatsCard extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: 4),
-        // Stamina bar (reused from hero)
+        // Full-width stamina bar (reused from hero).
+        StaminaBarWidget(
+          maxStamina: maxStamina,
+          currentStamina: currentStamina,
+          tempHp: instance.tempStamina,
+          staminaState: staminaState,
+        ),
+        const SizedBox(height: 4),
+        // Current / Temp / Max values with the shared compact fate control.
         Row(
           children: [
             Expanded(
-              flex: 3,
-              child: StaminaBarWidget(
-                maxStamina: maxStamina,
-                currentStamina: currentStamina,
-                tempHp: instance.tempStamina,
-                staminaState: staminaState,
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: () => _showStaminaEditDialog(
+                        context, ref, currentStamina, maxStamina),
+                    child:
+                        _vitalItem('Current', currentStamina, staminaState.color),
+                  ),
+                  const SizedBox(width: 12),
+                  GestureDetector(
+                    onTap: () =>
+                        _showTempEditDialog(context, ref, instance.tempStamina),
+                    child: _vitalItem(
+                        'Temp', instance.tempStamina, Colors.cyan.shade300),
+                  ),
+                  const SizedBox(width: 12),
+                  _vitalItem(
+                    'Max',
+                    maxStamina,
+                    textColor.withValues(alpha: 0.7),
+                  ),
+                ],
               ),
             ),
             const SizedBox(width: 8),
-            // Action buttons (DMG / Heal)
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _compactActionButton(
-                  icon: Icons.local_fire_department_rounded,
-                  label: 'DMG',
-                  color: Colors.red.shade600,
-                  onPressed: () =>
-                      _showDamageDialog(context, ref, currentStamina, maxStamina),
-                ),
-                const SizedBox(height: 4),
-                _compactActionButton(
-                  icon: Icons.favorite_rounded,
-                  label: 'Heal',
-                  color: Colors.green,
-                  onPressed: () =>
-                      _showHealDialog(context, ref, currentStamina, maxStamina),
-                ),
-              ],
+            StaminaFateButton(
+              semanticLabel: 'Change retainer stamina',
+              onPressed: () => _showStaminaFateDialog(
+                context,
+                ref,
+                currentStamina,
+                maxStamina,
+              ),
             ),
-          ],
-        ),
-        const SizedBox(height: 4),
-        // Current / Temp stamina values
-        Row(
-          children: [
-            GestureDetector(
-              onTap: () => _showStaminaEditDialog(
-                  context, ref, currentStamina, maxStamina),
-              child: _vitalItem('Current', currentStamina, staminaState.color),
-            ),
-            const SizedBox(width: 12),
-            GestureDetector(
-              onTap: () =>
-                  _showTempEditDialog(context, ref, instance.tempStamina),
-              child: _vitalItem(
-                  'Temp', instance.tempStamina, Colors.cyan.shade300),
-            ),
-            const SizedBox(width: 12),
-            _vitalItem('Max', maxStamina, textColor.withValues(alpha: 0.7)),
           ],
         ),
         const Divider(height: 16),
@@ -424,33 +578,21 @@ class _RetainerStatsCard extends ConsumerWidget {
             ),
           ],
         ),
-        const SizedBox(height: 6),
-        // Quick stat chips
-        Wrap(
-          spacing: 6,
-          runSpacing: 4,
-          children: [
-            _chip('Lvl ${stats.level}', textColor.withValues(alpha: 0.7)),
-            _chip('SPD ${stats.speed}', textColor.withValues(alpha: 0.7)),
-            _chip('STB ${stats.stability}', textColor.withValues(alpha: 0.7)),
-            _chip('FS ${stats.freeStrikeDamage}', textColor.withValues(alpha: 0.7)),
-            if (hasPending)
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: Colors.amber.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(8),
-                  border:
-                      Border.all(color: Colors.amber.withValues(alpha: 0.3)),
-                ),
-                child: Text(
-                  '⚠ Choices pending',
-                  style: TextStyle(fontSize: 10, color: Colors.amber.shade300),
-                ),
-              ),
-          ],
-        ),
+        if (hasPending) ...[
+          const SizedBox(height: 6),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: BoxDecoration(
+              color: Colors.amber.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.amber.withValues(alpha: 0.3)),
+            ),
+            child: Text(
+              '⚠ Choices pending',
+              style: TextStyle(fontSize: 10, color: Colors.amber.shade300),
+            ),
+          ),
+        ],
       ],
     );
   }
@@ -798,59 +940,43 @@ class _RetainerStatsCard extends ConsumerWidget {
     );
   }
 
-  Future<void> _showDamageDialog(
+  Future<void> _showStaminaFateDialog(
     BuildContext context,
     WidgetRef ref,
     int currentStamina,
     int maxStamina,
   ) async {
-    final amount = await showCombatAmountDialog(
-      context,
-      title: 'Deal Damage',
-      icon: Icons.local_fire_department_rounded,
-      color: Colors.red.shade400,
-    );
-    if (amount == null || amount <= 0) return;
-
-    var temp = instance.tempStamina;
-    var current = currentStamina;
-    if (amount <= temp) {
-      temp -= amount;
-    } else {
-      final remaining = amount - temp;
-      temp = 0;
-      current -= remaining;
-    }
-    final halfMax = maxStamina ~/ 2;
-    current = current.clamp(-halfMax, maxStamina);
-
-    final repo = ref.read(retainerRepositoryProvider);
-    repo.updateCombatState(
-      instance.id,
-      currentStamina: current,
-      tempStamina: temp,
-    );
-  }
-
-  Future<void> _showHealDialog(
-    BuildContext context,
-    WidgetRef ref,
-    int currentStamina,
-    int maxStamina,
-  ) async {
-    final result = await showHealingAmountDialog(
-      context,
-      title: 'Heal',
-      showTempToggle: true,
-    );
+    final result = await showStaminaFateDialog(context);
     if (result == null || result.amount <= 0) return;
-
     final repo = ref.read(retainerRepositoryProvider);
-    if (result.applyToTemp) {
-      repo.updateCombatState(instance.id, tempStamina: result.amount);
-    } else {
-      final newStamina = math.min(currentStamina + result.amount, maxStamina);
-      repo.updateCombatState(instance.id, currentStamina: newStamina);
+    switch (result.fate) {
+      case StaminaFate.damage:
+        var temp = instance.tempStamina;
+        var current = currentStamina;
+        if (result.amount <= temp) {
+          temp -= result.amount;
+        } else {
+          current -= result.amount - temp;
+          temp = 0;
+        }
+        final halfMax = maxStamina ~/ 2;
+        current = current.clamp(-halfMax, maxStamina);
+        repo.updateCombatState(
+          instance.id,
+          currentStamina: current,
+          tempStamina: temp,
+        );
+        break;
+      case StaminaFate.heal:
+        final healed = math.min(currentStamina + result.amount, maxStamina);
+        repo.updateCombatState(instance.id, currentStamina: healed);
+        break;
+      case StaminaFate.tempStamina:
+        repo.updateCombatState(
+          instance.id,
+          tempStamina: instance.tempStamina + result.amount,
+        );
+        break;
     }
   }
 
@@ -1259,33 +1385,6 @@ class _RetainerStatsCard extends ConsumerWidget {
       },
       loading: () => const SizedBox.shrink(),
       error: (_, __) => const SizedBox.shrink(),
-    );
-  }
-
-  Widget _compactActionButton({
-    required IconData icon,
-    required String label,
-    required VoidCallback onPressed,
-    required Color color,
-  }) {
-    return SizedBox(
-      width: 56,
-      height: 32,
-      child: OutlinedButton(
-        onPressed: onPressed,
-        style: OutlinedButton.styleFrom(
-          padding: EdgeInsets.zero,
-          side: BorderSide(color: color.withValues(alpha: 0.5)),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 14, color: color),
-            const SizedBox(width: 2),
-            Text(label, style: TextStyle(fontSize: 10, color: color)),
-          ],
-        ),
-      ),
     );
   }
 

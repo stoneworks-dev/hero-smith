@@ -5,6 +5,7 @@ import '../../../../core/theme/app_icon.dart';
 import '../../../../core/theme/app_icon_data.dart';
 import '../../../../core/theme/app_icons.dart';
 import '../../../../core/theme/creator_theme.dart';
+import '../../../../core/theme/feature_tokens.dart';
 import '../../../../core/theme/navigation_theme.dart';
 import '../../../../core/theme/form_theme.dart';
 import '../../../../core/text/creators/widgets/strife_creator/class_selector_widget_text.dart';
@@ -221,12 +222,14 @@ Future<_PickerSelection?> _showSearchablePicker({
                                       padding: const EdgeInsets.all(12),
                                       decoration: BoxDecoration(
                                         color: isSelected
-                                            ? accentColor.withValues(alpha: 0.15)
+                                            ? accentColor.withValues(
+                                                alpha: 0.15)
                                             : FormTheme.surface,
                                         borderRadius: BorderRadius.circular(10),
                                         border: Border.all(
                                           color: isSelected
-                                              ? accentColor.withValues(alpha: 0.5)
+                                              ? accentColor.withValues(
+                                                  alpha: 0.5)
                                               : FormTheme.border,
                                         ),
                                       ),
@@ -249,12 +252,14 @@ Future<_PickerSelection?> _showSearchablePicker({
                                                         : FontWeight.normal,
                                                   ),
                                                 ),
-                                                if (option.subtitle != null) ...[
+                                                if (option.subtitle !=
+                                                    null) ...[
                                                   const SizedBox(height: 4),
                                                   Text(
                                                     option.subtitle!,
                                                     style: TextStyle(
-                                                      color: FormTheme.textSecondary,
+                                                      color: FormTheme
+                                                          .textSecondary,
                                                       fontSize: 12,
                                                     ),
                                                   ),
@@ -328,9 +333,12 @@ class ClassSelectorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final accent = selectedClass == null
+        ? _accent
+        : FeatureTokens.getClassColor(selectedClass!.classId);
     return Container(
       margin: CreatorTheme.sectionMargin,
-      decoration: CreatorTheme.sectionDecoration(_accent),
+      decoration: CreatorTheme.sectionDecoration(accent),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -338,7 +346,7 @@ class ClassSelectorWidget extends StatelessWidget {
             title: ClassSelectorWidgetText.title,
             subtitle: ClassSelectorWidgetText.subtitle,
             appIcon: StoryIcons.heroClass,
-            accent: _accent,
+            accent: accent,
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
@@ -348,10 +356,12 @@ class ClassSelectorWidget extends StatelessWidget {
                 InkWell(
                   onTap: () async {
                     final options = availableClasses
+                        .where((classData) => !classData.isRetired)
                         .map((classData) => _SearchOption(
                               value: classData.name,
                               label: classData.name,
-                              subtitle: classData.startingCharacteristics.heroicResourceName,
+                              subtitle: classData
+                                  .startingCharacteristics.heroicResourceName,
                             ))
                         .toList();
 
@@ -360,7 +370,7 @@ class ClassSelectorWidget extends StatelessWidget {
                       options: options,
                       title: ClassSelectorWidgetText.selectClassTitle,
                       currentValue: selectedClass?.name,
-                      accentColor: _accent,
+                      accentColor: accent,
                       icon: StoryIcons.heroClass,
                     );
 
@@ -375,13 +385,14 @@ class ClassSelectorWidget extends StatelessWidget {
                   child: InputDecorator(
                     decoration: CreatorTheme.dropdownDecoration(
                       label: ClassSelectorWidgetText.classLabel,
-                      accent: _accent,
+                      accent: accent,
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          selectedClass?.name ?? ClassSelectorWidgetText.selectClassHint,
+                          selectedClass?.name ??
+                              ClassSelectorWidgetText.selectClassHint,
                           style: TextStyle(
                             color: selectedClass != null
                                 ? FormTheme.textBright
@@ -402,10 +413,10 @@ class ClassSelectorWidget extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: _accent.withValues(alpha: 0.1),
+                      color: accent.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                        color: _accent.withValues(alpha: 0.3),
+                        color: accent.withValues(alpha: 0.3),
                       ),
                     ),
                     child: Column(
@@ -418,21 +429,23 @@ class ClassSelectorWidget extends StatelessWidget {
                               height: 32,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(8),
-                                color: _accent.withValues(alpha: 0.2),
-                                border: Border.all(color: _accent.withValues(alpha: 0.4)),
+                                color: accent.withValues(alpha: 0.2),
+                                border: Border.all(
+                                    color: accent.withValues(alpha: 0.4)),
                               ),
-                              child: const AppIcon(
+                              child: AppIcon(
                                 StoryIcons.heroClass,
-                                color: _accent,
+                                color: accent,
                                 size: 16,
                               ),
                             ),
                             const SizedBox(width: 10),
                             Expanded(
                               child: Text(
-                                selectedClass!.startingCharacteristics.heroicResourceName,
-                                style: const TextStyle(
-                                  color: _accent,
+                                selectedClass!
+                                    .startingCharacteristics.heroicResourceName,
+                                style: TextStyle(
+                                  color: accent,
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -441,7 +454,8 @@ class ClassSelectorWidget extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 8),
-                        if (selectedClass!.startingCharacteristics.motto != null)
+                        if (selectedClass!.startingCharacteristics.motto !=
+                            null)
                           Text(
                             selectedClass!.startingCharacteristics.motto!,
                             style: TextStyle(
@@ -450,9 +464,11 @@ class ClassSelectorWidget extends StatelessWidget {
                               fontStyle: FontStyle.italic,
                             ),
                           ),
-                        if (selectedClass!.startingCharacteristics.motto != null)
+                        if (selectedClass!.startingCharacteristics.motto !=
+                            null)
                           const SizedBox(height: 12),
-                        if (selectedClass!.startingCharacteristics.motto == null)
+                        if (selectedClass!.startingCharacteristics.motto ==
+                            null)
                           const SizedBox(height: 4),
                         Wrap(
                           spacing: 10,
@@ -461,10 +477,12 @@ class ClassSelectorWidget extends StatelessWidget {
                             _buildStatChip(
                               ClassSelectorWidgetText.staminaLabel,
                               '${_calculateStamina(selectedClass!.startingCharacteristics.baseStamina, selectedClass!.startingCharacteristics.staminaPerLevel, selectedLevel)}${ClassSelectorWidgetText.staminaValueSuffixPrefix}${selectedClass!.startingCharacteristics.baseStamina}${ClassSelectorWidgetText.staminaValueSuffixMiddle}${selectedClass!.startingCharacteristics.staminaPerLevel}${ClassSelectorWidgetText.staminaValueSuffixSuffix}',
+                              accent,
                             ),
                             _buildStatChip(
                               ClassSelectorWidgetText.recoveriesLabel,
                               '${selectedClass!.startingCharacteristics.baseRecoveries}',
+                              accent,
                             ),
                           ],
                         ),
@@ -484,14 +502,14 @@ class ClassSelectorWidget extends StatelessWidget {
     return baseStamina + (staminaPerLevel * (level - 1));
   }
 
-  Widget _buildStatChip(String label, String value) {
+  Widget _buildStatChip(String label, String value, Color accent) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: _accent.withValues(alpha: 0.15),
+        color: accent.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: _accent.withValues(alpha: 0.3),
+          color: accent.withValues(alpha: 0.3),
         ),
       ),
       child: Row(
@@ -517,4 +535,3 @@ class ClassSelectorWidget extends StatelessWidget {
     );
   }
 }
-

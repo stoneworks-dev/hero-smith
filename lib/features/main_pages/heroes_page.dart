@@ -11,6 +11,7 @@ import '../../core/services/update_provider.dart';
 import '../../core/theme/ability_colors.dart';
 import '../../core/theme/app_icon.dart';
 import '../../core/theme/app_icons.dart';
+import '../../core/theme/feature_tokens.dart';
 import '../../core/theme/form_theme.dart';
 import '../../core/text/main_pages/heroes_page_text.dart';
 import '../../core/theme/hero_theme.dart';
@@ -285,9 +286,17 @@ class HeroesPage extends ConsumerWidget {
     );
   }
 
-  Color _accentFor(dynamic hero) => hero.heroicResourceName != null
-      ? AbilityColors.getHeroicResourceColor(hero.heroicResourceName!)
-      : NavigationTheme.heroesColor;
+  Color _accentFor(dynamic hero) {
+    final className = hero.className?.toString().trim().toLowerCase();
+    final normalizedClassName =
+        className?.replaceFirst(RegExp(r'^class[_\s-]*'), '');
+    if (normalizedClassName == 'beastheart') {
+      return FeatureTokens.getClassColor(className!);
+    }
+    return hero.heroicResourceName != null
+        ? AbilityColors.getHeroicResourceColor(hero.heroicResourceName!)
+        : NavigationTheme.heroesColor;
+  }
 
   /// Class/ancestry/career/complication chips (level excluded — the caller
   /// decides where the level chip goes).
@@ -295,9 +304,7 @@ class HeroesPage extends ConsumerWidget {
     final chips = <Widget>[];
 
     if (hero.className != null && hero.className!.isNotEmpty) {
-      final resourceColor = hero.heroicResourceName != null
-          ? AbilityColors.getHeroicResourceColor(hero.heroicResourceName!)
-          : HeroTheme.primarySection;
+      final resourceColor = _accentFor(hero);
 
       final hasSubclass =
           hero.subclassName != null && hero.subclassName!.isNotEmpty;

@@ -182,7 +182,12 @@ class RetainerTemplateCard extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 2),
-                  _buildAbilityLookup(e.value, ref, textColor, accent),
+                  for (final abilityId in e.value)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 2),
+                      child:
+                          _buildAbilityLookup(abilityId, ref, textColor, accent),
+                    ),
                 ],
               ),
             ),

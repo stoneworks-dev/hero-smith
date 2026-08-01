@@ -30,11 +30,13 @@ final heroMainStatsProvider =
   final treasureBonusesAsync =
       ref.watch(heroEquippedTreasureBonusesProvider(heroId));
 
-  // Propagate loading/error states if any dependency is not ready
-  if (valuesAsync.isLoading ||
-      assemblyAsync.isLoading ||
-      equipmentBonusesAsync.isLoading ||
-      treasureBonusesAsync.isLoading) {
+  // Only block the initial load. Async providers retain their previous value
+  // while refreshing; continuing to use it prevents the sheet (including the
+  // companion card) from being replaced by a spinner after every vitals edit.
+  if ((valuesAsync.isLoading && !valuesAsync.hasValue) ||
+      (assemblyAsync.isLoading && !assemblyAsync.hasValue) ||
+      (equipmentBonusesAsync.isLoading && !equipmentBonusesAsync.hasValue) ||
+      (treasureBonusesAsync.isLoading && !treasureBonusesAsync.hasValue)) {
     return const AsyncLoading();
   }
 

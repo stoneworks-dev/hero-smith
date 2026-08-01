@@ -5,9 +5,188 @@ import '../../core/theme/app_icons.dart';
 import '../../core/theme/form_theme.dart';
 import '../../core/theme/navigation_theme.dart';
 import '../../core/theme/story_theme.dart';
+import '../shared/drag_scroll_behavior.dart';
 
 /// Accent color for title dialogs.
 const _titlesColor = StoryTheme.titlesAccent;
+
+/// Shows the "select a benefit" dialog for [title], or auto-selects a
+/// benefit (calling [onTitleSelected] directly) when there is nothing to
+/// choose between. Shared by [AddTitleDialog] and by callers that already
+/// know which title was earned (e.g. the title-progress/track page), so
+/// they can jump straight to benefit selection without going through the
+/// full title picker first.
+void showTitleBenefitSelectionDialog({
+  required BuildContext context,
+  required Map<String, dynamic> title,
+  required Function(String, int) onTitleSelected,
+}) {
+  final benefits = title['benefits'] as List? ?? [];
+
+  if (benefits.isEmpty) {
+    onTitleSelected(title['id'] as String, -1);
+    return;
+  }
+
+  // Separate auto vs chooseable benefits
+  final choiceIndices = <int>[];
+  for (int i = 0; i < benefits.length; i++) {
+    final b = benefits[i];
+    if (b is Map<String, dynamic> && b['auto'] != true) {
+      choiceIndices.add(i);
+    }
+  }
+
+  // If no choices needed (all auto or director-assigned), auto-select with -1
+  if (choiceIndices.isEmpty) {
+    onTitleSelected(title['id'] as String, -1);
+    return;
+  }
+
+  // If only one chooseable benefit, auto-select it
+  if (choiceIndices.length == 1) {
+    onTitleSelected(title['id'] as String, choiceIndices.first);
+    return;
+  }
+
+  showDialog(
+    context: context,
+    builder: (context) => Dialog(
+      backgroundColor: NavigationTheme.cardBackgroundDark,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Container(
+        width: 400,
+        constraints: const BoxConstraints(maxHeight: 450),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Header
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(16)),
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    _titlesColor.withAlpha(51),
+                    _titlesColor.withAlpha(13),
+                  ],
+                ),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: _titlesColor.withAlpha(51),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const AppIcon(
+                      TitleIcons.tab,
+                      size: 24,
+                      color: _titlesColor,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      SheetStoryTitlesTabText.selectBenefitFor(
+                          title['name'].toString()),
+                      style: const TextStyle(
+                        color: FormTheme.textBright,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close, color: Colors.white70),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ],
+              ),
+            ),
+            // Benefits list — only chooseable (non-auto) benefits
+            Flexible(
+              child: ListView.builder(
+                shrinkWrap: true,
+                padding: const EdgeInsets.all(16),
+                itemCount: choiceIndices.length,
+                itemBuilder: (context, listIndex) {
+                  final originalIndex = choiceIndices[listIndex];
+                  final benefit = benefits[originalIndex];
+
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    decoration: BoxDecoration(
+                      color: StoryTheme.cardBackground,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: FormTheme.borderDim),
+                    ),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(10),
+                      onTap: () {
+                        onTitleSelected(title['id'] as String, originalIndex);
+                        Navigator.of(context).pop();
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    color: _titlesColor.withAlpha(26),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: const AppIcon(
+                                    TitleIcons.benefits,
+                                    size: 16,
+                                    color: _titlesColor,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  (benefit is Map<String, dynamic> && benefit['name'] != null)
+                                      ? benefit['name'] as String
+                                      : SheetStoryTitlesTabText.benefitLabel(listIndex),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: FormTheme.textBright,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            if (benefit is Map<String, dynamic>) ...[
+                              if (benefit['description'] != null)
+                                Text(
+                                  benefit['description'] as String,
+                                  style: TextStyle(
+                                    color: FormTheme.textSecondary,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
 
 /// Dialog for adding a title to a hero.
 class AddTitleDialog extends StatefulWidget {
@@ -57,170 +236,10 @@ class _AddTitleDialogState extends State<AddTitleDialog> {
   }
 
   void _showBenefitSelectionDialog(Map<String, dynamic> title) {
-    final benefits = title['benefits'] as List? ?? [];
-
-    if (benefits.isEmpty) {
-      widget.onTitleSelected(title['id'] as String, -1);
-      return;
-    }
-
-    // Separate auto vs chooseable benefits
-    final choiceIndices = <int>[];
-    for (int i = 0; i < benefits.length; i++) {
-      final b = benefits[i];
-      if (b is Map<String, dynamic> && b['auto'] != true) {
-        choiceIndices.add(i);
-      }
-    }
-
-    // If no choices needed (all auto or director-assigned), auto-select with -1
-    if (choiceIndices.isEmpty) {
-      widget.onTitleSelected(title['id'] as String, -1);
-      return;
-    }
-
-    // If only one chooseable benefit, auto-select it
-    if (choiceIndices.length == 1) {
-      widget.onTitleSelected(title['id'] as String, choiceIndices.first);
-      return;
-    }
-
-    showDialog(
+    showTitleBenefitSelectionDialog(
       context: context,
-      builder: (context) => Dialog(
-        backgroundColor: NavigationTheme.cardBackgroundDark,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: Container(
-          width: 400,
-          constraints: const BoxConstraints(maxHeight: 450),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Header
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(16)),
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      _titlesColor.withAlpha(51),
-                      _titlesColor.withAlpha(13),
-                    ],
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: _titlesColor.withAlpha(51),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const AppIcon(
-                        TitleIcons.tab,
-                        size: 24,
-                        color: _titlesColor,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        SheetStoryTitlesTabText.selectBenefitFor(
-                            title['name'].toString()),
-                        style: const TextStyle(
-                          color: FormTheme.textBright,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close, color: Colors.white70),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ],
-                ),
-              ),
-              // Benefits list — only chooseable (non-auto) benefits
-              Flexible(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.all(16),
-                  itemCount: choiceIndices.length,
-                  itemBuilder: (context, listIndex) {
-                    final originalIndex = choiceIndices[listIndex];
-                    final benefit = benefits[originalIndex];
-
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 8),
-                      decoration: BoxDecoration(
-                        color: StoryTheme.cardBackground,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: FormTheme.borderDim),
-                      ),
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(10),
-                        onTap: () {
-                          widget.onTitleSelected(title['id'] as String, originalIndex);
-                          Navigator.of(context).pop();
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(4),
-                                    decoration: BoxDecoration(
-                                      color: _titlesColor.withAlpha(26),
-                                      borderRadius: BorderRadius.circular(6),
-                                    ),
-                                    child: const AppIcon(
-                                      TitleIcons.benefits,
-                                      size: 16,
-                                      color: _titlesColor,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    (benefit is Map<String, dynamic> && benefit['name'] != null)
-                                        ? benefit['name'] as String
-                                        : SheetStoryTitlesTabText.benefitLabel(listIndex),
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: FormTheme.textBright,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
-                              if (benefit is Map<String, dynamic>) ...[
-                                if (benefit['description'] != null)
-                                  Text(
-                                    benefit['description'] as String,
-                                    style: TextStyle(
-                                      color: FormTheme.textSecondary,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                              ],
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+      title: title,
+      onTitleSelected: widget.onTitleSelected,
     );
   }
 
@@ -311,19 +330,23 @@ class _AddTitleDialogState extends State<AddTitleDialog> {
                     },
                   ),
                   const SizedBox(height: 12),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      _buildFilterChip(
-                          SheetStoryTitlesTabText.allFilter, null),
-                      ...List.generate(4, (index) {
-                        final echelon = index + 1;
-                        return _buildFilterChip(
-                            SheetStoryTitlesTabText.echelonLabel(echelon),
-                            echelon);
-                      }),
-                    ],
+                  ScrollConfiguration(
+                    behavior: const DragScrollBehavior(),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          _buildFilterChip(
+                              SheetStoryTitlesTabText.allFilter, null),
+                          ...List.generate(4, (index) {
+                            final echelon = index + 1;
+                            return _buildFilterChip(
+                                SheetStoryTitlesTabText.echelonLabel(echelon),
+                                echelon);
+                          }),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -436,6 +459,7 @@ class _AddTitleDialogState extends State<AddTitleDialog> {
         _filterTitles();
       },
       child: Container(
+        margin: const EdgeInsets.only(right: 8),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
           color: isSelected

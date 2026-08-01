@@ -30,6 +30,8 @@ import 'coin_purse_model.dart';
 import 'conditions_tracker_widget.dart';
 import 'damage_resistance_tracker_widget.dart';
 import 'hero_main_stats_models.dart';
+import 'hero_companion_section.dart';
+import 'hero_minion_section.dart';
 import 'hero_retainer_section.dart';
 import 'hero_stat_insights.dart';
 import 'hero_stamina_helpers.dart';
@@ -505,6 +507,10 @@ class _HeroMainStatsViewState extends ConsumerState<HeroMainStatsView> {
           const SizedBox(height: 12),
           _buildVitalsCard(context, stats, resourceDetails),
           const SizedBox(height: 12),
+          HeroCompanionSection(heroId: widget.heroId),
+          const SizedBox(height: 12),
+          HeroMinionSection(heroId: widget.heroId),
+          const SizedBox(height: 12),
           AutoHeroGreenFormWidget(
             heroId: widget.heroId,
             sectionTitle: HeroMainStatsViewText.greenElementalistFormsTitle,
@@ -781,79 +787,53 @@ class _HeroMainStatsViewState extends ConsumerState<HeroMainStatsView> {
               ],
             ),
             const SizedBox(height: 8),
-            // Stamina bar and values
+            // Full-width stamina bar, then values and the compact fate control.
+            StaminaBarWidget(
+              maxStamina: stats.staminaMaxEffective,
+              currentStamina: stats.staminaCurrent,
+              tempHp: stats.staminaTemp,
+              staminaState: staminaState,
+            ),
+            const SizedBox(height: 6),
             Row(
               children: [
                 Expanded(
-                  flex: 3,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
                     children: [
-                      // Custom stamina bar showing -halfMax to max with temp HP
-                      StaminaBarWidget(
-                        maxStamina: stats.staminaMaxEffective,
-                        currentStamina: stats.staminaCurrent,
-                        tempHp: stats.staminaTemp,
-                        staminaState: staminaState,
+                      _buildVitalItem(
+                        context,
+                        label: HeroMainStatsViewText.vitalsStaminaCurrentLabel,
+                        value: stats.staminaCurrent,
+                        field: _NumericField.staminaCurrent,
+                        allowNegative: true,
                       ),
-                      const SizedBox(height: 6),
-                      // Current / Temp / Max row
-                      Row(
-                        children: [
-                          _buildVitalItem(
-                            context,
-                            label:
-                                HeroMainStatsViewText.vitalsStaminaCurrentLabel,
-                            value: stats.staminaCurrent,
-                            field: _NumericField.staminaCurrent,
-                            allowNegative: true,
-                          ),
-                          const SizedBox(width: 12),
-                          _buildVitalItem(
-                            context,
-                            label: HeroMainStatsViewText.vitalsStaminaTempLabel,
-                            value: stats.staminaTemp,
-                            field: _NumericField.staminaTemp,
-                          ),
-                          const SizedBox(width: 12),
-                          _buildMaxVitalItem(
-                            context,
-                            label: HeroMainStatsViewText.vitalsStaminaMaxLabel,
-                            value: stats.staminaMaxEffective,
-                            modKey: HeroModKeys.staminaMax,
-                            choiceValue: staminaChoice,
-                            userValue: staminaUser,
-                            baseValue: stats.staminaMaxBase,
-                            equipmentBonus: equipmentStaminaBonus,
-                            featureBonus: staminaFeatureBonus,
-                            treasureBonus: treasureStaminaBonus,
-                          ),
-                        ],
+                      const SizedBox(width: 12),
+                      _buildVitalItem(
+                        context,
+                        label: HeroMainStatsViewText.vitalsStaminaTempLabel,
+                        value: stats.staminaTemp,
+                        field: _NumericField.staminaTemp,
+                      ),
+                      const SizedBox(width: 12),
+                      _buildMaxVitalItem(
+                        context,
+                        label: HeroMainStatsViewText.vitalsStaminaMaxLabel,
+                        value: stats.staminaMaxEffective,
+                        modKey: HeroModKeys.staminaMax,
+                        choiceValue: staminaChoice,
+                        userValue: staminaUser,
+                        baseValue: stats.staminaMaxBase,
+                        equipmentBonus: equipmentStaminaBonus,
+                        featureBonus: staminaFeatureBonus,
+                        treasureBonus: treasureStaminaBonus,
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(width: 8),
-                // Action buttons
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _buildCompactActionButton(
-                      context,
-                      icon: CombatIcons.damage,
-                      label: HeroMainStatsViewText.vitalsDamageLabel,
-                      onPressed: () => _handleDealDamage(stats),
-                      color: Colors.red.shade600,
-                    ),
-                    const SizedBox(height: 4),
-                    _buildCompactActionButton(
-                      context,
-                      icon: CombatIcons.heal,
-                      label: HeroMainStatsViewText.vitalsHealLabel,
-                      onPressed: () => _handleApplyHealing(stats),
-                      color: Colors.green,
-                    ),
-                  ],
+                StaminaFateButton(
+                  semanticLabel: 'Change hero stamina',
+                  onPressed: () => _handleStaminaFate(stats),
                 ),
               ],
             ),
@@ -1371,37 +1351,6 @@ class _HeroMainStatsViewState extends ConsumerState<HeroMainStatsView> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildCompactActionButton(
-    BuildContext context, {
-    required AppIconData icon,
-    required String label,
-    required VoidCallback onPressed,
-    required Color color,
-  }) {
-    return SizedBox(
-      width: 56,
-      height: 32,
-      child: OutlinedButton(
-        onPressed: onPressed,
-        style: OutlinedButton.styleFrom(
-          padding: EdgeInsets.zero,
-          side: BorderSide(color: color.withOpacity(0.5)),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            AppIcon(icon, size: 14, color: color),
-            const SizedBox(width: 2),
-            Text(
-              label,
-              style: TextStyle(fontSize: 10, color: color),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -4020,6 +3969,50 @@ class _HeroMainStatsViewState extends ConsumerState<HeroMainStatsView> {
     } catch (err) {
       if (!mounted) return;
       _showSnack('${HeroMainStatsViewText.spendRecoveryErrorPrefix}$err');
+    }
+  }
+
+  Future<void> _handleStaminaFate(HeroMainStats stats) async {
+    final result = await showStaminaFateDialog(context);
+    if (result == null || result.amount <= 0 || !mounted) return;
+
+    try {
+      switch (result.fate) {
+        case StaminaFate.damage:
+          var temp = stats.staminaTemp;
+          var current = stats.staminaCurrent;
+          if (result.amount <= temp) {
+            temp -= result.amount;
+          } else {
+            current -= result.amount - temp;
+            temp = 0;
+          }
+          await ref.read(heroRepositoryProvider).updateVitals(
+                widget.heroId,
+                staminaTemp: temp,
+                staminaCurrent: current,
+              );
+          break;
+        case StaminaFate.heal:
+          final healed = math.min(
+            stats.staminaCurrent + result.amount,
+            stats.staminaMaxEffective,
+          );
+          await ref.read(heroRepositoryProvider).updateVitals(
+                widget.heroId,
+                staminaCurrent: healed,
+              );
+          break;
+        case StaminaFate.tempStamina:
+          await ref.read(heroRepositoryProvider).updateVitals(
+                widget.heroId,
+                staminaTemp: stats.staminaTemp + result.amount,
+              );
+          break;
+      }
+    } catch (err) {
+      if (!mounted) return;
+      _showSnack('Could not change stamina: $err');
     }
   }
 

@@ -3,7 +3,6 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app_database.dart' as db;
-import 'database_maintenance.dart';
 import '../seed/asset_seeder.dart';
 import '../repositories/component_drift_repository.dart';
 import '../repositories/hero_repository.dart';
@@ -21,11 +20,19 @@ import '../services/hero_duplicate_guard_service.dart';
 import '../services/hero_mutation_service.dart';
 import '../services/hero_assembly_service.dart';
 import '../services/treasure_bonus_service.dart';
+import '../services/treasure_grants_service.dart';
 import '../services/items_catalog_service.dart';
 import '../services/retainer_advancement_service.dart';
 import '../repositories/retainer_repository.dart';
 import '../models/retainer.dart';
 import '../models/retainer_instance.dart';
+import '../repositories/companion_repository.dart';
+import '../models/companion.dart';
+import '../models/companion_instance.dart';
+import '../services/companion_advancement_service.dart';
+import '../repositories/minion_repository.dart';
+import '../models/minion.dart';
+import '../models/minion_squad_instance.dart';
 import '../models/hero_assembled_model.dart';
 import '../../features/hero_builder/domain/hero_claim.dart';
 import '../../features/hero_builder/domain/hero_conflict_index.dart';
@@ -66,6 +73,12 @@ final heroAssemblyServiceProvider = Provider<HeroAssemblyService>((ref) {
 final treasureBonusServiceProvider = Provider<TreasureBonusService>((ref) {
   final db = ref.read(appDatabaseProvider);
   return TreasureBonusService(db);
+});
+
+final treasureGrantsServiceProvider = Provider<TreasureGrantsService>((ref) {
+  final db = ref.read(appDatabaseProvider);
+  final mutations = ref.read(heroMutationServiceProvider);
+  return TreasureGrantsService(db, mutations: mutations);
 });
 
 final perkGrantsServiceProvider = Provider<PerkGrantsService>((ref) {
@@ -121,15 +134,12 @@ final itemsCatalogServiceProvider = Provider<ItemsCatalogService>((ref) {
 // Toggle for auto-seeding on startup. Tests can override this to false.
 final autoSeedEnabledProvider = Provider<bool>((ref) => true);
 
-// Seed once on startup if DB is empty. Safe to call repeatedly.
+// Synchronize bundled content when data/content_manifest.json is newer.
 final seedOnStartupProvider = FutureProvider<void>((ref) async {
   final enabled = ref.read(autoSeedEnabledProvider);
   if (!enabled) return;
   final db = ref.read(appDatabaseProvider);
-  await AssetSeeder.seedFromManifestIfEmpty(db);
-  // Always reseed perks to ensure all perks are available
-  // This fixes cases where perks.json was updated after initial DB creation
-  await DatabaseMaintenance.reseedPerks(db);
+  await AssetSeeder.seedBundledContentIfNeeded(db);
 });
 
 // Data streams
@@ -143,6 +153,51 @@ final componentsByTypeProvider =
   final repo = ref.read(componentRepositoryProvider);
   return repo.watchByType(type);
 });
+
+/// IDs whose retired rows may remain visible while editing an existing hero.
+///
+/// The hero creator overrides this with the current draft and persisted IDs.
+/// Outside that scope, selectable providers hide every retired component.
+final retiredContentVisibleIdsProvider =
+    Provider<Set<String>>((ref) => const <String>{});
+
+/// Component stream for choice controls. Retired content is excluded unless
+/// the current hero already has that exact ID selected.
+final selectableComponentsByTypeProvider =
+    StreamProvider.family<List<model.Component>, String>(
+  (ref, type) {
+    final visibleRetiredIds = ref.watch(retiredContentVisibleIdsProvider);
+    final repo = ref.read(componentRepositoryProvider);
+    return repo.watchByType(type).map(
+          (components) => components
+              .where(
+                (component) =>
+                    !component.isRetired ||
+                    visibleRetiredIds.contains(component.id),
+              )
+              .toList(growable: false),
+        );
+  },
+  dependencies: [retiredContentVisibleIdsProvider],
+);
+
+/// All components suitable for a creator choice control.
+final selectableAllComponentsProvider = StreamProvider<List<model.Component>>(
+  (ref) {
+    final visibleRetiredIds = ref.watch(retiredContentVisibleIdsProvider);
+    final repo = ref.read(componentRepositoryProvider);
+    return repo.watchAll().map(
+          (components) => components
+              .where(
+                (component) =>
+                    !component.isRetired ||
+                    visibleRetiredIds.contains(component.id),
+              )
+              .toList(growable: false),
+        );
+  },
+  dependencies: [retiredContentVisibleIdsProvider],
+);
 
 // Heroes data streams
 final allHeroesProvider = StreamProvider((ref) {
@@ -323,7 +378,12 @@ const _supplementalAbilityJsonFiles = [
   'data/abilities/complication_abilities.json',
   'data/abilities/ancestry_abilities.json',
   'data/abilities/kit_abilities.json',
+  'data/abilities/kits_abilities.json',
+  'data/abilities/treasure_abilities.json',
+  'data/abilities/item_imbuement_abilities.json',
+  'data/abilities/stormwight_abilities.json',
   'data/abilities/retainer_abilities.json',
+  'data/abilities/minion_abilities.json',
   'data/retainers/role_advancement_abilities.json',
 ];
 
@@ -368,8 +428,13 @@ final heroRetainerTemplateProvider =
   }));
 });
 
-/// Computed retainer stats at the hero's current level.
+/// Computed retainer stats at the retainer's own tracked level.
 /// Combines the base template + player choices + advancement rules.
+///
+/// Retainers level up independently of their hero (see
+/// [RetainerRepository.levelUp]) rather than always mirroring the hero's
+/// level — [heroRetainerLevelUpAvailableProvider] tells the UI when the hero
+/// has out-leveled the retainer so it can prompt for a level-up.
 final heroRetainerStatsProvider =
     FutureProvider.family<RetainerStats?, String>((ref, heroId) async {
   final instance = ref.watch(heroRetainerProvider(heroId)).valueOrNull;
@@ -377,16 +442,23 @@ final heroRetainerStatsProvider =
   final template = await ref.watch(heroRetainerTemplateProvider(heroId).future);
   if (template == null) return null;
 
-  // Get hero level from assembly
-  final assembly = await ref.watch(heroAssemblyProvider(heroId).future);
-  final heroLevel = assembly?.level ?? 1;
-
   final svc = ref.read(retainerAdvancementServiceProvider);
   return svc.computeStats(
     template: template,
-    mentorLevel: heroLevel,
+    mentorLevel: instance.level,
     instance: instance,
   );
+});
+
+/// Whether the hero has out-leveled their retainer, i.e. the retainer can be
+/// leveled up. Returns null when there's no active retainer.
+final heroRetainerLevelUpAvailableProvider =
+    FutureProvider.family<bool?, String>((ref, heroId) async {
+  final instance = ref.watch(heroRetainerProvider(heroId)).valueOrNull;
+  if (instance == null) return null;
+  final assembly = await ref.watch(heroAssemblyProvider(heroId).future);
+  final heroLevel = assembly?.level ?? 1;
+  return heroLevel > instance.level && instance.level < 10;
 });
 
 /// All seeded retainer templates (for the "Add Retainer" picker).
@@ -397,6 +469,116 @@ final allRetainerTemplatesProvider = StreamProvider<List<Retainer>>((ref) {
             components.map((c) => Retainer.fromComponent(c)).toList()
               ..sort((a, b) => a.name.compareTo(b.name)),
       );
+});
+
+// ---------------------------------------------------------------------------
+// Companion providers
+// ---------------------------------------------------------------------------
+
+final companionRepositoryProvider = Provider<CompanionRepository>((ref) {
+  final database = ref.read(appDatabaseProvider);
+  return CompanionRepository(database);
+});
+
+final companionAdvancementServiceProvider =
+    Provider<CompanionAdvancementService>((ref) {
+  return const CompanionAdvancementService();
+});
+
+/// Watch the active companion instance for a hero.
+final heroCompanionProvider =
+    StreamProvider.family<CompanionInstance?, String>((ref, heroId) {
+  final repo = ref.read(companionRepositoryProvider);
+  return repo.watchCompanionForHero(heroId);
+});
+
+/// Watch the companion template (base stat block) for a hero's active companion.
+final heroCompanionTemplateProvider =
+    FutureProvider.family<Companion?, String>((ref, heroId) async {
+  final instance = ref.watch(heroCompanionProvider(heroId)).valueOrNull;
+  if (instance == null) return null;
+  final database = ref.read(appDatabaseProvider);
+  final row = await (database.select(database.components)
+        ..where((c) => c.id.equals(instance.companionComponentId)))
+      .getSingleOrNull();
+  if (row == null) return null;
+  return Companion.fromComponent(model.Component.fromJson({
+    'id': row.id,
+    'type': row.type,
+    'name': row.name,
+    ...row.dataJson.isNotEmpty
+        ? (jsonDecode(row.dataJson) as Map<String, dynamic>)
+        : <String, dynamic>{},
+  }));
+});
+
+/// Computed companion advancement state at the hero's current level.
+/// Combines the base template with the hero's (mentor's) level.
+final heroCompanionStatsProvider =
+    FutureProvider.family<CompanionAdvancementState?, String>(
+        (ref, heroId) async {
+  final template =
+      await ref.watch(heroCompanionTemplateProvider(heroId).future);
+  if (template == null) return null;
+
+  final assembly = await ref.watch(heroAssemblyProvider(heroId).future);
+  final heroLevel = assembly?.level ?? 1;
+
+  final svc = ref.read(companionAdvancementServiceProvider);
+  return svc.computeStats(template: template, mentorLevel: heroLevel);
+});
+
+/// All seeded companion templates (for the "Add Companion" picker).
+final allCompanionTemplatesProvider = StreamProvider<List<Companion>>((ref) {
+  final repo = ref.read(componentRepositoryProvider);
+  return repo.watchByType('companion').map(
+        (components) =>
+            components.map((c) => Companion.fromComponent(c)).toList()
+              ..sort((a, b) => a.name.compareTo(b.name)),
+      );
+});
+
+// ---------------------------------------------------------------------------
+// Minion providers
+// ---------------------------------------------------------------------------
+
+final minionRepositoryProvider = Provider<MinionRepository>((ref) {
+  final database = ref.read(appDatabaseProvider);
+  return MinionRepository(database);
+});
+
+/// Watch all active minion squads for a hero (0-2).
+final heroMinionSquadsProvider =
+    StreamProvider.family<List<MinionSquadInstance>, String>((ref, heroId) {
+  final repo = ref.read(minionRepositoryProvider);
+  return repo.watchSquadsForHero(heroId);
+});
+
+/// All seeded minion templates (for the "Add Squad" picker).
+final allMinionTemplatesProvider = StreamProvider<List<Minion>>((ref) {
+  final repo = ref.read(componentRepositoryProvider);
+  return repo.watchByType('minion').map(
+        (components) => components.map((c) => Minion.fromComponent(c)).toList()
+          ..sort((a, b) => a.name.compareTo(b.name)),
+      );
+});
+
+/// Watch the minion template (base stat block) for a given component ID.
+final minionTemplateProvider =
+    FutureProvider.family<Minion?, String>((ref, minionComponentId) async {
+  final database = ref.read(appDatabaseProvider);
+  final row = await (database.select(database.components)
+        ..where((c) => c.id.equals(minionComponentId)))
+      .getSingleOrNull();
+  if (row == null) return null;
+  return Minion.fromComponent(model.Component.fromJson({
+    'id': row.id,
+    'type': row.type,
+    'name': row.name,
+    ...row.dataJson.isNotEmpty
+        ? (jsonDecode(row.dataJson) as Map<String, dynamic>)
+        : <String, dynamic>{},
+  }));
 });
 
 /// Cache for loaded supplemental abilities - keyed by both name and id

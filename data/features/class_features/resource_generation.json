@@ -9,6 +9,7 @@
     { "key": "plus_1d3", "label": "+1d3" },
     { "key": "plus_1d3+1", "label": "+1d3+1" },
     { "key": "plus_1d3+2", "label": "+1d3+2" },
+    { "key": "plus_2d3+1", "label": "+2d3+1" },
     { "key": "pray_1d3", "label": "pray", "values": [1, 1, 2] }
   ],
 
@@ -20,6 +21,16 @@
       "generation_increase_at_levels": [
         { "level": 7, "increase": "plus_3" },
         { "level": 10, "increase": "plus_4", "remove": "plus_3" }
+      ]
+    },
+    {
+      "class_key": "beastheart",
+      "resource_key": "ferocity",
+      "generation_options": ["victories", "plus_2", "plus_1d3"],
+      "generation_increase_at_levels": [
+        { "level": 4, "increase": "plus_3", "remove": "plus_2" },
+        { "level": 7, "increase": "plus_1d3+1", "remove": "plus_1d3" },
+        { "level": 10, "increase": "plus_2d3+1", "remove": "plus_1d3+1" }
       ]
     },
     {
@@ -46,6 +57,12 @@
         { "level": 7, "increase": "plus_3" },
         { "level": 10, "increase": "plus_4" }
       ]
+    },
+    {
+      "class_key": "summoner",
+      "resource_key": "essence",
+      "generation_options": ["victories", "plus_1", "plus_2"],
+      "generation_increase_at_levels": []
     },
     {
       "class_key": "fury",

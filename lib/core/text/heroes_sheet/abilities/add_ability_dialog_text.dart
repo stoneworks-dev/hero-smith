@@ -7,6 +7,7 @@
   static const String filterActionTypeLabel = 'Action Type';
   static const String filterDistanceLabel = 'Distance';
   static const String filterTargetsLabel = 'Targets';
+  static const String filterClassLabel = 'Class';
   static const String signatureLabel = 'Signature';
   static const String allFilterPrefix = 'All ';
   static const String searchPrompt =

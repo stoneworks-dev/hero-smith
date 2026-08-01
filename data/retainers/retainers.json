@@ -39,9 +39,15 @@
       }
     ],
     "advancement_abilities": {
-      "4": "angulotl_hopper__leaping_attack",
-      "7": "angulotl_hopper__three_poison_dart",
-      "10": "angulotl_hopper__trip_of_the_tongue"
+      "4": [
+        "angulotl_hopper__leaping_attack"
+      ],
+      "7": [
+        "angulotl_hopper__three_poison_dart"
+      ],
+      "10": [
+        "angulotl_hopper__trip_of_the_tongue"
+      ]
     }
   },
   {
@@ -78,9 +84,15 @@
     ],
     "passive_traits": [],
     "advancement_abilities": {
-      "4": "bugbear_commando__face_grab",
-      "7": "bugbear_commando__shadow_drag",
-      "10": "bugbear_commando__neck_snap"
+      "4": [
+        "bugbear_commando__face_grab"
+      ],
+      "7": [
+        "bugbear_commando__shadow_drag"
+      ],
+      "10": [
+        "bugbear_commando__neck_snap"
+      ]
     }
   },
   {
@@ -124,8 +136,12 @@
       }
     ],
     "advancement_abilities": {
-      "7": "devil_defector__flames_of_revenge",
-      "10": "devil_defector__hell_on_earth"
+      "7": [
+        "devil_defector__flames_of_revenge"
+      ],
+      "10": [
+        "devil_defector__hell_on_earth"
+      ]
     }
   },
   {
@@ -170,8 +186,12 @@
       }
     ],
     "advancement_abilities": {
-      "7": "the_nameless__looming_wings",
-      "10": "the_nameless__spew_death"
+      "7": [
+        "the_nameless__looming_wings"
+      ],
+      "10": [
+        "the_nameless__spew_death"
+      ]
     }
   },
   {
@@ -209,9 +229,15 @@
       }
     ],
     "advancement_abilities": {
-      "4": "dwarf_mortar__signal_shell",
-      "7": "dwarf_mortar__screaming_shell",
-      "10": "dwarf_mortar__pacifier_shell"
+      "4": [
+        "dwarf_mortar__signal_shell"
+      ],
+      "7": [
+        "dwarf_mortar__screaming_shell"
+      ],
+      "10": [
+        "dwarf_mortar__pacifier_shell"
+      ]
     }
   },
   {
@@ -250,9 +276,15 @@
       }
     ],
     "advancement_abilities": {
-      "4": "high_elf_weatherwise__winter_s_breath",
-      "7": "high_elf_weatherwise__spring_s_rebirth",
-      "10": "high_elf_weatherwise__autumn_s_decay"
+      "4": [
+        "high_elf_weatherwise__winter_s_breath"
+      ],
+      "7": [
+        "high_elf_weatherwise__spring_s_rebirth"
+      ],
+      "10": [
+        "high_elf_weatherwise__autumn_s_decay"
+      ]
     }
   },
   {
@@ -295,8 +327,12 @@
       }
     ],
     "advancement_abilities": {
-      "7": "shadow_elf_shade__slow_poison_needle",
-      "10": "shadow_elf_shade__shadow_dagger"
+      "7": [
+        "shadow_elf_shade__slow_poison_needle"
+      ],
+      "10": [
+        "shadow_elf_shade__shadow_dagger"
+      ]
     }
   },
   {
@@ -335,9 +371,15 @@
       }
     ],
     "advancement_abilities": {
-      "4": "wode_elf_arrowswift__snipe",
-      "7": "wode_elf_arrowswift__magic_arrows",
-      "10": "wode_elf_arrowswift__double_shot"
+      "4": [
+        "wode_elf_arrowswift__snipe"
+      ],
+      "7": [
+        "wode_elf_arrowswift__magic_arrows"
+      ],
+      "10": [
+        "wode_elf_arrowswift__double_shot"
+      ]
     }
   },
   {
@@ -375,9 +417,15 @@
       }
     ],
     "advancement_abilities": {
-      "4": "gnoll_gnasher__frenzied_bite",
-      "7": "gnoll_gnasher__flurry_of_fangs",
-      "10": "gnoll_gnasher__horrific_feast"
+      "4": [
+        "gnoll_gnasher__frenzied_bite"
+      ],
+      "7": [
+        "gnoll_gnasher__flurry_of_fangs"
+      ],
+      "10": [
+        "gnoll_gnasher__horrific_feast"
+      ]
     }
   },
   {
@@ -417,9 +465,15 @@
       }
     ],
     "advancement_abilities": {
-      "4": "goblin_guide__weaving_knives",
-      "7": "goblin_guide__sneak_and_stab",
-      "10": "goblin_guide__poison_blade"
+      "4": [
+        "goblin_guide__weaving_knives"
+      ],
+      "7": [
+        "goblin_guide__sneak_and_stab"
+      ],
+      "10": [
+        "goblin_guide__poison_blade"
+      ]
     }
   },
   {
@@ -463,8 +517,12 @@
       }
     ],
     "advancement_abilities": {
-      "7": "hobgoblin_flameslinger__unholy_attraction",
-      "10": "hobgoblin_flameslinger__fire_spiral"
+      "7": [
+        "hobgoblin_flameslinger__unholy_attraction"
+      ],
+      "10": [
+        "hobgoblin_flameslinger__fire_spiral"
+      ]
     }
   },
   {
@@ -502,9 +560,15 @@
       }
     ],
     "advancement_abilities": {
-      "4": "human_warrior__scuse_me_boss",
-      "7": "human_warrior__defensive_fighting",
-      "10": "human_warrior__whirlwind_of_steel"
+      "4": [
+        "human_warrior__scuse_me_boss"
+      ],
+      "7": [
+        "human_warrior__defensive_fighting"
+      ],
+      "10": [
+        "human_warrior__whirlwind_of_steel"
+      ]
     }
   },
   {
@@ -542,9 +606,15 @@
       }
     ],
     "advancement_abilities": {
-      "4": "kobold_shieldbearer__shield_block",
-      "7": "kobold_shieldbearer__living_backpack",
-      "10": "kobold_shieldbearer__let_s_go_sledding"
+      "4": [
+        "kobold_shieldbearer__shield_block"
+      ],
+      "7": [
+        "kobold_shieldbearer__living_backpack"
+      ],
+      "10": [
+        "kobold_shieldbearer__let_s_go_sledding"
+      ]
     }
   },
   {
@@ -585,9 +655,15 @@
       }
     ],
     "advancement_abilities": {
-      "4": "minotaur_gorer__horn_toss",
-      "7": "minotaur_gorer__triumphant_bay",
-      "10": "minotaur_gorer__horn_rake"
+      "4": [
+        "minotaur_gorer__horn_toss"
+      ],
+      "7": [
+        "minotaur_gorer__triumphant_bay"
+      ],
+      "10": [
+        "minotaur_gorer__horn_rake"
+      ]
     }
   },
   {
@@ -625,9 +701,15 @@
       }
     ],
     "advancement_abilities": {
-      "4": "orc_charger__blood_oath",
-      "7": "orc_charger__mow_em_down",
-      "10": "orc_charger__vein_burst"
+      "4": [
+        "orc_charger__blood_oath"
+      ],
+      "7": [
+        "orc_charger__mow_em_down"
+      ],
+      "10": [
+        "orc_charger__vein_burst"
+      ]
     }
   },
   {
@@ -663,9 +745,15 @@
     ],
     "passive_traits": [],
     "advancement_abilities": {
-      "4": "radenwight_sidekick__boost",
-      "7": "radenwight_sidekick__bug_bag",
-      "10": "radenwight_sidekick__triumphant_squeak"
+      "4": [
+        "radenwight_sidekick__boost"
+      ],
+      "7": [
+        "radenwight_sidekick__bug_bag"
+      ],
+      "10": [
+        "radenwight_sidekick__triumphant_squeak"
+      ]
     }
   },
   {
@@ -705,9 +793,15 @@
       }
     ],
     "advancement_abilities": {
-      "4": "time_raider_mind_healer__stim_charge",
-      "7": "time_raider_mind_healer__mind_whelm",
-      "10": "time_raider_mind_healer__psychic_short_circuit"
+      "4": [
+        "time_raider_mind_healer__stim_charge"
+      ],
+      "7": [
+        "time_raider_mind_healer__mind_whelm"
+      ],
+      "10": [
+        "time_raider_mind_healer__psychic_short_circuit"
+      ]
     }
   },
   {
@@ -750,8 +844,12 @@
       }
     ],
     "advancement_abilities": {
-      "7": "troll_mercenary__hangry_frenzy",
-      "10": "troll_mercenary__fire_bad"
+      "7": [
+        "troll_mercenary__hangry_frenzy"
+      ],
+      "10": [
+        "troll_mercenary__fire_bad"
+      ]
     }
   },
   {
@@ -789,9 +887,15 @@
       }
     ],
     "advancement_abilities": {
-      "4": "undead_servitor__grab_and_bite",
-      "7": "undead_servitor__death_to_death",
-      "10": "undead_servitor__death_miasma"
+      "4": [
+        "undead_servitor__grab_and_bite"
+      ],
+      "7": [
+        "undead_servitor__death_to_death"
+      ],
+      "10": [
+        "undead_servitor__death_miasma"
+      ]
     }
   },
   {
@@ -837,9 +941,15 @@
       }
     ],
     "advancement_abilities": {
-      "4": "unquiet_spirit__enervating_curse",
-      "7": "unquiet_spirit__ectoplasm",
-      "10": "unquiet_spirit__death_phase"
+      "4": [
+        "unquiet_spirit__enervating_curse"
+      ],
+      "7": [
+        "unquiet_spirit__ectoplasm"
+      ],
+      "10": [
+        "unquiet_spirit__death_phase"
+      ]
     }
   },
   {
@@ -881,8 +991,67 @@
       }
     ],
     "advancement_abilities": {
-      "7": "vampire_rebel__blood_surge",
-      "10": "vampire_rebel__exsanguination"
+      "7": [
+        "vampire_rebel__blood_surge"
+      ],
+      "10": [
+        "vampire_rebel__exsanguination"
+      ]
+    }
+  },
+  {
+    "id": "devil_detective",
+    "type": "retainer",
+    "name": "Devil Detective",
+    "ancestry_tags": [
+      "Devil",
+      "Infernal"
+    ],
+    "starting_level": 1,
+    "role": "controller",
+    "size": "1M",
+    "speed": 5,
+    "base_stamina": 21,
+    "stability": 0,
+    "free_strike_damage": 2,
+    "immunities": [
+      "Fire 2"
+    ],
+    "weaknesses": [],
+    "movement_modes": [],
+    "characteristics": {
+      "might": -1,
+      "agility": 0,
+      "reason": 2,
+      "intuition": 2,
+      "presence": 0
+    },
+    "signature_ability": "devil_detective__diabolic_probe",
+    "base_abilities": [],
+    "passive_traits": [
+      {
+        "id": "devil_detective__demon_summoner",
+        "name": "Demon Summoner",
+        "description": "The detective can command up to two squads of minions with a maximum of 4 minions per squad. They can only have one squad of signature minions active at any time. At the start of each of the detective's turns, up to three razors appear in unoccupied spaces within 5 squares of the detective. On each of the detective's turns, they direct the squad of razors to move and use a main action."
+      },
+      {
+        "id": "devil_detective__true_name",
+        "name": "True Name",
+        "description": "If a creature within 10 squares speaks the detective's true name, the detective loses their damage immunities and can't summon any razors until the end of the encounter."
+      }
+    ],
+    "advancement_abilities": {
+      "7": [
+        "devil_detective__cleansing_flense"
+      ],
+      "10": [
+        "devil_detective__blightwash",
+        "devil_detective__summon_gorrres"
+      ],
+      "4": [
+        "devil_detective__soul_sleuth",
+        "devil_detective__summon_violents"
+      ]
     }
   }
 ]

@@ -1,6 +1,6 @@
 name: hero_smith
 description: Hero Smith app - assemble heroes from modular Components.
-version: 0.1.12
+version: 0.1.13
 publish_to: "none"
 
 environment:
@@ -93,6 +93,10 @@ flutter:
     - data/kits/
     # Retainer data
     - data/retainers/
+    # Companion data
+    - data/companions/
+    # Minion data
+    - data/minions/
     # Treasure data
     - data/treasures/
     # Downtime projects data

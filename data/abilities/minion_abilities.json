@@ -1,0 +1,102 @@
+[
+  {
+    "type": "ability",
+    "id": "twisted_bengrul__mind_twist",
+    "name": "Mind Twist",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "Magic, Ranged, Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 5",
+    "targets": "One creature or object per minion",
+    "power_roll": "Power Roll + R",
+    "tier_effects": [
+      {"tier1": "4 damage; twisted (save ends)", "tier2": "6 damage; twisted (save ends)", "tier3": "8 damage; twisted (save ends)"}
+    ],
+    "effect": "A twisted target can't take advantage of edges or search for hidden creatures until the condition ends.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "flow_of_magma__molten_strike",
+    "name": "Molten Strike",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "Magic, Melee, Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 2",
+    "targets": "One creature or object per minion",
+    "power_roll": "Power Roll + R",
+    "tier_effects": [
+      {"tier1": "4 fire damage; shift 3", "tier2": "6 fire damage; shift 4", "tier3": "8 fire damage; shift 5"}
+    ],
+    "effect": "Each square that the flow shifts into becomes wreathed in flames until the start of the flow's next turn. An enemy that enters an affected square takes 2 damage.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "pixie_hydrain__burning_healing_rain",
+    "name": "Burning/Healing Rain",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "Magic, Ranged, Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 5",
+    "targets": "One creature or object per minion",
+    "power_roll": "Power Roll + R",
+    "tier_effects": [
+      {"tier1": "5 acid damage; M<WEAK weakened (EoT)", "tier2": "7 acid damage; M<AVERAGE weakened (EoT)", "tier3": "9 acid damage; M<STRONG weakened (save ends)"}
+    ],
+    "effect": "After the hydrain's squad uses this ability, you or one ally within distance can spend a Recovery and end a condition.",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "grave_knight__knight_strike",
+    "name": "Knight Strike",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "Melee, Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Melee 1",
+    "targets": "One creature or object per minion",
+    "power_roll": "Power Roll + R",
+    "tier_effects": [
+      {"tier1": "5 corruption damage; M<WEAK bleeding (EoT)", "tier2": "7 corruption damage; M<AVERAGE bleeding (EoT)", "tier3": "9 corruption damage; M<STRONG bleeding (save ends)"}
+    ],
+    "effect": "",
+    "special_effect": ""
+  },
+  {
+    "type": "ability",
+    "id": "faded_blightling__blighted_strike",
+    "name": "Blighted Strike",
+    "level": 1,
+    "resource": "",
+    "resource_value": 0,
+    "story_text": "",
+    "keywords": "Magic, Ranged, Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 5",
+    "targets": "One creature or object per minion",
+    "power_roll": "Power Roll + R",
+    "tier_effects": [
+      {"tier1": "7 corruption damage; P<WEAK bleeding (EoT)", "tier2": "11 corruption damage; P<AVERAGE bleeding (EoT)", "tier3": "16 corruption damage; P<STRONG bleeding (save ends)"}
+    ],
+    "effect": "Instead of taking damage, you or an ally targeted by this ability can impose a double bane on the next strike that targets them.",
+    "special_effect": ""
+  }
+]

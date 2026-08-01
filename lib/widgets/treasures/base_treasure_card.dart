@@ -100,6 +100,15 @@ class _BaseTreasureCardState extends State<BaseTreasureCard>
                   children: [
                     const SizedBox(height: 16),
                     ...widget.children,
+                    if ((widget.component.data['special'] as String?)?.trim().isNotEmpty ==
+                        true) ...[
+                      const SizedBox(height: 12),
+                      EffectSection(
+                        title: 'SPECIAL',
+                        text: (widget.component.data['special'] as String).trim(),
+                        colorScheme: colorScheme,
+                      ),
+                    ],
                   ],
                 ),
               ),

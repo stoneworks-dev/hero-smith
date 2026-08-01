@@ -273,6 +273,7 @@ class HeroEntrySourceTypes {
   static const String perk = 'perk';
   static const String subclass = 'subclass';
   static const String title = 'title';
+  static const String treasure = 'treasure';
 
   static const Set<String> validTypes = {
     ancestry,
@@ -294,6 +295,7 @@ class HeroEntrySourceTypes {
     perk,
     subclass,
     title,
+    treasure,
   };
 
   static bool isValid(String sourceType) => validTypes.contains(sourceType);

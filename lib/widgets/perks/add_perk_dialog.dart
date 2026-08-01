@@ -8,6 +8,7 @@ import '../../core/theme/app_icons.dart';
 import '../../core/theme/form_theme.dart';
 import '../../core/theme/navigation_theme.dart';
 import '../../core/theme/story_theme.dart';
+import '../shared/drag_scroll_behavior.dart';
 
 /// Accent color for perk dialogs.
 const _perksColor = StoryTheme.perksAccent;
@@ -174,14 +175,18 @@ class _AddPerkDialogState extends ConsumerState<AddPerkDialog> {
                     },
                   ),
                   const SizedBox(height: 12),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      _buildFilterChip('All', null),
-                      ..._groups.map((group) =>
-                          _buildFilterChip(_capitalize(group), group)),
-                    ],
+                  ScrollConfiguration(
+                    behavior: const DragScrollBehavior(),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          _buildFilterChip('All', null),
+                          ..._groups.map((group) =>
+                              _buildFilterChip(_capitalize(group), group)),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -287,6 +292,7 @@ class _AddPerkDialogState extends ConsumerState<AddPerkDialog> {
         _filterPerks();
       },
       child: Container(
+        margin: const EdgeInsets.only(right: 8),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
           color: isSelected

@@ -6,12 +6,14 @@ class FeatureTokens {
 
   // Class colors - distinct hues for each class
   static const Map<String, Color> _classColors = {
+    'beastheart': Color(0xFF8D6E63),  // Earthy brown - matches companionAccent
     'censor': Color(0xFFFFB300),      // Golden yellow - divine
     'conduit': Color(0xFF7B1FA2),     // Deep purple - mystical
     'elementalist': Color(0xFFFF5722), // Red-orange - elemental fire
     'fury': Color(0xFFB71C1C),        // Dark red - rage/fury
     'null': Color(0xFF546E7A),        // Blue-grey - void/neutral
     'shadow': Color(0xFF424242),      // Dark grey - stealth
+    'summoner': Color(0xFF5E35B1),    // Deep violet - summoned magic
     'tactician': Color(0xFF1565C0),   // Royal blue - strategy
     'talent': Color(0xFF2E7D32),      // Green - natural talent
     'troubadour': Color(0xFFE91E63),  // Pink - performance/charisma
@@ -29,7 +31,11 @@ class FeatureTokens {
 
   /// Get color for a specific class
   static Color getClassColor(String className) {
-    return _classColors[className.toLowerCase()] ?? const Color(0xFF607D8B);
+    final normalized = className
+        .trim()
+        .toLowerCase()
+        .replaceFirst(RegExp(r'^class[_\s-]*'), '');
+    return _classColors[normalized] ?? const Color(0xFF607D8B);
   }
 
   /// Get light variant of class color for backgrounds

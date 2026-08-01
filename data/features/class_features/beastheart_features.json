@@ -1,0 +1,405 @@
+[
+  {
+    "id": "feature_beastheart_wild_nature",
+    "type": "subclass",
+    "name": "Wild Nature",
+    "class": "beastheart",
+    "is_subclass_feature": true,
+    "level": 1,
+    "description": "Your bond with your companion has awakened ancient, predatory instincts in you that fuel your battle prowess. But you aren't bound by your primal passions. As you decide which of your instincts to ignore and which to hone to deadly sharpness, you choose a wild nature from the following options, each of which grants you a skill. (Quick Build: Punisher.)\n\nYour wild nature is your subclass, and your choice of wild nature determines many of the features you'll gain as you gain new levels.",
+    "options": [
+      {
+        "subclass_name": "Guardian",
+        "skill": "Read Person",
+        "description": "You are the fearless defender of your pack—anyone who harms them must go through you. You have the Read Person skill."
+      },
+      {
+        "subclass_name": "Prowler",
+        "skill": "Hide",
+        "description": "You are an unseen ambusher that strikes from the shadows. Your prey is dead before they even know you're there. You have the Hide skill."
+      },
+      {
+        "subclass_name": "Punisher",
+        "skill": "Endurance",
+        "description": "Using brute force, you overwhelm anyone unwise enough to earn your wrath. You have the Endurance skill."
+      },
+      {
+        "subclass_name": "Spark",
+        "skill": "Magic",
+        "description": "Your connection to nature has imbued you and your companion with the raging magic of an elemental storm. Flame, frost, and lightning crackle from your hands and their claws. You have the Magic skill."
+      }
+    ]
+  },
+  {
+    "id": "feature_beastheart_companion",
+    "type": "feature",
+    "name": "Companion",
+    "class": "beastheart",
+    "level": 1,
+    "description": "You gain the companionship of a wild animal who travels with you. Your companion isn't your pet. Rather, they've forged a mystical bond with you—one that allows you to share your companion's senses and primal instincts. Choose a companion from the following options. (Quick Build: Wolf.)\n\nManage your companion, its stats, abilities, and rampage from the Companion panel on your hero sheet."
+  },
+  {
+    "id": "feature_beastheart_heart_of_the_beast",
+    "type": "feature",
+    "name": "Heart of the Beast",
+    "class": "beastheart",
+    "level": 1,
+    "description": "You and your companion share a primordial bond so intense your hearts literally beat as one. If your partner is lost, you can split your heart in two and summon them back to your side. Both you and your companion can use the following ability.",
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "heart-of-the-beast",
+        "payload": {
+          "name": "Heart of the Beast"
+        }
+      }
+    ]
+  },
+  {
+    "id": "feature_beastheart_feral_strike",
+    "type": "feature",
+    "name": "Feral Strike",
+    "class": "beastheart",
+    "level": 1,
+    "description": "Relying on their instincts, your companion launches toward the nearest threat. Your companion can use the Feral Strike signature ability. This ability gains an additional benefit based on your wild nature.",
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "feral-strike",
+        "payload": {
+          "name": "Feral Strike"
+        }
+      }
+    ]
+  },
+  {
+    "id": "feature_beastheart_ferocity",
+    "type": "heroic resource",
+    "name": "Ferocity",
+    "class": "beastheart",
+    "level": 1,
+    "description": "You and your companion tap into a predator's bloodlust that grants you a Heroic Resource called ferocity.",
+    "in_combat": {
+      "name": "Ferocity in Combat",
+      "description": "At the start of a combat encounter or some other stressful situation tracked in combat rounds (as determined by the Director), you gain ferocity equal to your Victories. At the start of each of your turns during combat, you gain 1d3 ferocity.\n\nAdditionally, the first time each combat round that a creature adjacent to your companion takes damage, you gain 2 ferocity.\n\nYou lose any remaining ferocity at the end of the encounter."
+    },
+    "out_of_combat": {
+      "name": "Ferocity Outside of Combat",
+      "description": "Though you can't gain ferocity outside of combat, you can use your heroic abilities and effects that cost ferocity without spending it. Whenever you or your companion uses an ability or effect outside of combat that costs ferocity, that same ability or effect can't be used outside of combat again until you earn 1 or more Victories or finish a respite.\n\nWhen you or your companion uses an ability outside of combat that has a variable or unlimited ferocity cost, the ability can be used as if you had spent an amount of ferocity equal to your Victories."
+    }
+  },
+  {
+    "id": "feature_beastheart_rampage",
+    "type": "feature",
+    "name": "Rampage",
+    "class": "beastheart",
+    "level": 1,
+    "description": "While your ferocity sharpens your killer instinct, it can also drive your companion into a rampage, causing them to strike friends and foes alike in a blood-soaked battle frenzy. As their rampage builds, they become something more than a mortal companion, embodying a primordial spirit of destruction.\n\nYour companion has a resource called rampage. Whenever you or your companion spends ferocity, your companion gains rampage equal to the ferocity spent. Your companion loses their rampage and its effects at the end of an encounter.\n\nYour companion doesn't spend rampage to activate abilities. Instead, when your companion gains 8 rampage, they are rampaging. As your companion's rampage increases, they gain the listed effects from the Rampage table. Effects are cumulative. Some Rampage effects are applied only if you are a specific level or higher.\n\n• 8: At the end of each of your turns, your companion must use their Feral Strike ability as a free maneuver. You can't willingly decrease the power roll outcome to a lower tier. For each ally damaged this way, you gain 2 surges, which you can use on this strike.\n• 12: Your companion has damage immunity equal to their Intuition score.\n• 16 (4th level): When your companion uses their Feral Strike ability, they deal extra damage equal to their Intuition score to each target. You gain 1 additional surge for each ally damaged this way.\n• 20 (7th level): As a free maneuver, your companion can increase their size up to size 2, or increase their size by 1 if their original size is already 2 or larger. This size increase lasts until your companion's rampage ends or they use a free maneuver to end it. While your companion's size is increased, they gain a +2 bonus to speed and stability, the potencies of their abilities increase by 1, and the size of their Feral Strike ability's burst increases by 1.\n• 24 (10th level): When your companion increases their size, they can increase it up to size 3, or increase their size by 1 if their original size is already 3 or larger. Whenever they make a power roll while their size is increased this way, they can roll 3d10 and discard the lowest roll."
+  },
+  {
+    "id": "feature_beastheart_wild_nature_maneuver",
+    "type": "feature",
+    "name": "Wild Nature Maneuver",
+    "class": "beastheart",
+    "is_subclass_feature": true,
+    "level": 1,
+    "description": "Your wild nature grants you a maneuver, as shown on the Wild Nature Maneuvers table. Each maneuver can be used only by the beastheart.",
+    "grants": [
+      {
+        "subclass_name": "Guardian",
+        "name": "Living Arrow",
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "living-arrow",
+        "payload": {
+          "name": "Living Arrow"
+        }
+      },
+      {
+        "subclass_name": "Prowler",
+        "name": "Lightning Leap",
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "lightning-leap",
+        "payload": {
+          "name": "Lightning Leap"
+        }
+      },
+      {
+        "subclass_name": "Punisher",
+        "name": "Avalanche Rush",
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "avalanche-rush",
+        "payload": {
+          "name": "Avalanche Rush"
+        }
+      },
+      {
+        "subclass_name": "Spark",
+        "name": "Jaws of the Storm",
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "jaws-of-the-storm",
+        "payload": {
+          "name": "Jaws of the Storm"
+        }
+      }
+    ]
+  },
+  {
+    "id": "feature_beastheart_wild_nature_triggered_action",
+    "type": "feature",
+    "name": "Wild Nature Triggered Action",
+    "class": "beastheart",
+    "is_subclass_feature": true,
+    "level": 1,
+    "description": "Your wild nature grants you a triggered action, as shown on the Wild Nature Triggered Actions table. Each triggered action can be used by either you or your companion.",
+    "grants": [
+      {
+        "subclass_name": "Guardian",
+        "name": "The Pack Defends",
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "the-pack-defends",
+        "payload": {
+          "name": "The Pack Defends"
+        }
+      },
+      {
+        "subclass_name": "Prowler",
+        "name": "Shadow in the Mist",
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "shadow-in-the-mist",
+        "payload": {
+          "name": "Shadow in the Mist"
+        }
+      },
+      {
+        "subclass_name": "Punisher",
+        "name": "Thunderclap",
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "thunderclap",
+        "payload": {
+          "name": "Thunderclap"
+        }
+      },
+      {
+        "subclass_name": "Spark",
+        "name": "Pyre",
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "pyre",
+        "payload": {
+          "name": "Pyre"
+        }
+      }
+    ]
+  },
+  {
+    "id": "feature_beastheart_kit",
+    "type": "feature",
+    "name": "Kit",
+    "class": "beastheart",
+    "level": 1,
+    "description": "You can use and gain the benefits of a kit. See the Kits chapter of Draw Steel: Heroes for more information. You and your companion both gain the benefits of the kit, with the following exceptions:\n• Only you can use the kit's signature ability, not your companion.\n• Your companion is always armed to the teeth. When choosing or changing a kit, your companion can choose between the melee damage bonus provided by the kit (if any) or a melee damage bonus of +0/+0/+4."
+  },
+  {
+    "id": "feature_beastheart_everyones_best_friend",
+    "type": "feature",
+    "name": "Everyone's Best Friend",
+    "class": "beastheart",
+    "level": 2,
+    "description": "Your companion may not be much of a talker, but they've got a lifetime of experience surviving the dangers of the wild. They can offer aid in nearly any circumstance: helping exhausted travelers find their way, leading panicked villagers out of a burning building, or even providing a comforting nuzzle at just the right time. Once per round during a montage test, when you or another character makes a test, your companion can increase the tier outcome by one tier (to a maximum of tier 3)."
+  },
+  {
+    "id": "feature_beastheart_wild_nature_feature_2",
+    "type": "feature",
+    "name": "Wild Nature Feature",
+    "class": "beastheart",
+    "is_subclass_feature": true,
+    "level": 2,
+    "description": "Your wild nature grants you a feature, as shown on the 2nd-Level Wild Nature Features table.",
+    "grants": [
+      {
+        "subclass_name": "Guardian",
+        "name": "Watchdog",
+        "description": "You and your companion can't be surprised."
+      },
+      {
+        "subclass_name": "Prowler",
+        "name": "Supersniffer",
+        "description": "While a creature is adjacent to your companion, that creature can't be hidden or have concealment from your companion."
+      },
+      {
+        "subclass_name": "Punisher",
+        "name": "This One's Yours",
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "this-ones-yours",
+        "payload": {
+          "name": "This One's Yours"
+        }
+      },
+      {
+        "subclass_name": "Spark",
+        "name": "Stormheart",
+        "description": "Whenever you or your companion deals cold, fire, lightning, sonic, or untyped damage, you can change the damage type to cold, fire, lightning, or sonic damage."
+      }
+    ]
+  },
+  {
+    "id": "feature_beastheart_companion_advancement_3",
+    "type": "feature",
+    "name": "Companion Advancement Feature",
+    "class": "beastheart",
+    "level": 3,
+    "description": "Your companion gains the level 3 advancement feature granted by their stat block."
+  },
+  {
+    "id": "feature_beastheart_rampage_improvement_4",
+    "type": "feature",
+    "name": "Rampage Improvement",
+    "class": "beastheart",
+    "level": 4,
+    "description": "Your Rampage feature provides additional effects when your companion has 16 or more rampage."
+  },
+  {
+    "id": "feature_beastheart_unleash_the_beast",
+    "type": "feature",
+    "name": "Unleash the Beast",
+    "class": "beastheart",
+    "level": 4,
+    "description": "The first time each combat round that a creature adjacent to your companion takes damage, you gain 3 ferocity instead of 2 ferocity."
+  },
+  {
+    "id": "feature_beastheart_wild_nature_feature_5",
+    "type": "feature",
+    "name": "Wild Nature Feature",
+    "class": "beastheart",
+    "is_subclass_feature": true,
+    "level": 5,
+    "description": "Your wild nature grants you a feature, as shown on the 5th-Level Wild Nature Features table.",
+    "grants": [
+      {
+        "subclass_name": "Guardian",
+        "name": "There For Each Other",
+        "description": "When you or your companion uses your The Pack Defends ability to spend a Recovery, you and the target both regain Stamina."
+      },
+      {
+        "subclass_name": "Prowler",
+        "name": "Melt Away",
+        "description": "You or your companion can use your Shadow in the Mist ability even when targeted by the triggering ability."
+      },
+      {
+        "subclass_name": "Punisher",
+        "name": "I Can Take It",
+        "description": "When you or your companion uses your Thunderclap ability and halves the triggering damage, whoever uses the ability can take the remaining damage instead of the original target. The damage is transferred before immunity and weakness are applied."
+      },
+      {
+        "subclass_name": "Spark",
+        "name": "Wildfire Pyre",
+        "description": "When you or your companion deals damage with your Pyre ability, each enemy adjacent to either of you takes the damage."
+      }
+    ]
+  },
+  {
+    "id": "feature_beastheart_become_the_beast",
+    "type": "feature",
+    "name": "Become the Beast",
+    "class": "beastheart",
+    "level": 6,
+    "description": "Your companion's rampage burns in your brain, and you become part beast yourself. You gain the level 6 advancement feature granted by your companion's stat block."
+  },
+  {
+    "id": "feature_beastheart_feral_heart",
+    "type": "feature",
+    "name": "Feral Heart",
+    "class": "beastheart",
+    "level": 7,
+    "description": "At the start of each of your turns in combat, you gain 1d3 + 1 ferocity instead of 1d3."
+  },
+  {
+    "id": "feature_beastheart_rampage_improvement_7",
+    "type": "feature",
+    "name": "Rampage Improvement",
+    "class": "beastheart",
+    "level": 7,
+    "description": "Your Rampage feature provides additional effects when your companion has 20 or more rampage."
+  },
+  {
+    "id": "feature_beastheart_wild_nature_feature_8",
+    "type": "feature",
+    "name": "Wild Nature Feature",
+    "class": "beastheart",
+    "is_subclass_feature": true,
+    "level": 8,
+    "description": "Your wild nature grants you a feature, as shown on the 8th-Level Wild Nature Features table.",
+    "grants": [
+      {
+        "subclass_name": "Guardian",
+        "name": "Reflexes Perfected",
+        "description": "Your and your companion's free strikes deal extra damage equal to your Intuition score. Whenever an adjacent enemy moves to a space that isn't adjacent, you or your companion can make an opportunity attack, even if the enemy shifted, teleported, was force moved, or another feature that doesn't provoke opportunity attacks."
+      },
+      {
+        "subclass_name": "Prowler",
+        "name": "Born to Run",
+        "description": "You and your companion gain a +2 bonus to speed."
+      },
+      {
+        "subclass_name": "Punisher",
+        "name": "Built for Violence",
+        "description": "You and your companion gain a +2 damage bonus to maneuvers that deal damage. When you or your companion pushes a creature, you can vertical push that creature."
+      },
+      {
+        "subclass_name": "Spark",
+        "name": "Nature Will Not Harm Us",
+        "description": "You and your companion have damage immunity 10 to cold, fire, lightning, and sonic damage."
+      }
+    ]
+  },
+  {
+    "id": "feature_beastheart_avatar_of_the_green",
+    "type": "feature",
+    "name": "Avatar of the Green",
+    "class": "beastheart",
+    "level": 9,
+    "description": "Your companion has transcended beasthood. Although they're still your faithful friend, they're also a vessel for nature's wisdom and memories. Your companion's Reason score increases to 1, or increases by 1 if it is already 1 or higher, and they learn every language you know. Your companion can communicate telepathically with any creature within 10 squares, using language as well as images and feelings. Additionally, you learn the Nature skill and one other skill from the lore skill group."
+  },
+  {
+    "id": "feature_beastheart_companion_advancement_10",
+    "type": "feature",
+    "name": "Companion Advancement Feature",
+    "class": "beastheart",
+    "level": 10,
+    "description": "Your companion gains the level 10 advancement feature granted by their stat block."
+  },
+  {
+    "id": "feature_beastheart_final_evolution",
+    "type": "feature",
+    "name": "Final Evolution",
+    "class": "beastheart",
+    "level": 10,
+    "description": "When you gain ferocity at the start of each of your turns during combat, you gain 2d3 + 1 ferocity instead of 1d3 + 1."
+  },
+  {
+    "id": "feature_beastheart_ferox",
+    "type": "feature",
+    "name": "Ferox",
+    "class": "beastheart",
+    "level": 10,
+    "description": "You have an epic resource called ferox. Each time you finish a respite, you gain ferox equal to the XP you gain. You can spend ferox on your abilities as if it were ferocity.\n\nAdditionally, you can spend 1 ferox as a free maneuver to allow you and your companion to each take a main action on your turn, instead of a main action and a maneuver. On that turn, the ferocity cost of your heroic abilities is reduced by 1.\n\nFerox remains until you spend it."
+  },
+  {
+    "id": "feature_beastheart_rampage_improvement_10",
+    "type": "feature",
+    "name": "Rampage Improvement",
+    "class": "beastheart",
+    "level": 10,
+    "description": "Your Rampage feature provides additional effects when your companion has 24 or more rampage."
+  }
+]

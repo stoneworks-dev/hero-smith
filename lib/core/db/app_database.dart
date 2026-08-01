@@ -216,6 +216,11 @@ class HeroRetainers extends Table {
   /// JSON map of level (int) → characteristic name at levels 2/8.
   TextColumn get characteristicChoicesJson =>
       text().withDefault(const Constant('{}'))();
+
+  /// The retainer's own tracked level (1-10). Retainers level up
+  /// independently of their hero — this does not auto-follow the hero's
+  /// level, though the UI prompts to level up once the hero outpaces it.
+  IntColumn get level => integer().withDefault(const Constant(1))();
   // Combat state
   IntColumn get currentStamina => integer().nullable()();
   IntColumn get tempStamina => integer().withDefault(const Constant(0))();
@@ -244,6 +249,65 @@ class HeroNotes extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+/// Companion instances belonging to heroes (Beastheart class mechanic).
+/// Each hero can have 0-1 active companions (one-time pick per the class's
+/// level-1 Companion feature).
+///
+/// Per the rules ("Companion Stamina and Recoveries"), a companion's Stamina
+/// maximum always equals its hero's Stamina maximum (not a value of its own),
+/// and it has no Recoveries of its own — it spends the hero's. So this table
+/// tracks the companion's own *current* stamina (it can be damaged
+/// independently of its hero) but not a max or a recovery count; those are
+/// read from the hero's own vitals at display time.
+class HeroCompanions extends Table {
+  TextColumn get id => text()();
+  TextColumn get heroId => text().references(Heroes, #id)();
+
+  /// Component ID of the companion template (from Components with type='companion').
+  TextColumn get companionComponentId => text()();
+  TextColumn get name => text()();
+  IntColumn get currentStamina => integer().nullable()();
+  IntColumn get tempStamina => integer().withDefault(const Constant(0))();
+
+  /// The companion's current rampage stacks (Beastheart "Rampage" resource).
+  /// Tracked on the companion, not the hero, and adjusted manually — it isn't
+  /// tied to the class heroic resource generation. Lost at end of encounter.
+  IntColumn get currentRampage => integer().withDefault(const Constant(0))();
+  BoolColumn get isActive => boolean().withDefault(const Constant(true))();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// Tracks one active minion squad belonging to a hero (Summoner class
+/// mechanic). Unlike [HeroCompanions]/[HeroRetainers] — each capped at one
+/// active row per hero by their repositories — a hero can have **up to 2**
+/// active squad rows at once (enforced in `MinionRepository.addSquad`, not
+/// here, since Drift table definitions can't express a counting constraint).
+///
+/// A squad pools its Stamina across its members rather than tracking each
+/// minion individually, so this stores squad-level current/temp Stamina and
+/// a member count, not per-minion rows. The squad's pooled max Stamina is
+/// derived at display time from the minion template's per-member Stamina
+/// times [memberCount], not stored here.
+class HeroMinionSquads extends Table {
+  TextColumn get id => text()();
+  TextColumn get heroId => text().references(Heroes, #id)();
+
+  /// Component ID of the minion template (from Components with type='minion').
+  TextColumn get minionComponentId => text()();
+  TextColumn get squadName => text()();
+  IntColumn get memberCount => integer().withDefault(const Constant(1))();
+  IntColumn get currentStamina => integer().nullable()();
+  IntColumn get tempStamina => integer().withDefault(const Constant(0))();
+  BoolColumn get isActive => boolean().withDefault(const Constant(true))();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 @DriftDatabase(tables: [
   Components,
   Heroes,
@@ -256,6 +320,8 @@ class HeroNotes extends Table {
   HeroEntries,
   HeroConfig,
   HeroRetainers,
+  HeroCompanions,
+  HeroMinionSquads,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase._internal() : super(_openConnection());
@@ -273,7 +339,7 @@ class AppDatabase extends _$AppDatabase {
   static bool databasePreexisted = false;
 
   @override
-  int get schemaVersion => 16;
+  int get schemaVersion => 20;
 
   static const heroStorageDedupeReportMetaKey =
       'migration.v13.hero_storage_dedupe_report';
@@ -439,6 +505,30 @@ class AppDatabase extends _$AppDatabase {
             }
             await _createHeroStorageUniqueIndexes();
             await _createHeroConfigUniqueIndex();
+          }
+          if (from < 17) {
+            // v17: Add hero_companions table for companion instances
+            // (Beastheart class mechanic).
+            await m.createTable(heroCompanions);
+          }
+          if (from < 18) {
+            // v18: Retainers now track their own level independently of
+            // their hero's level (previously always mirrored it).
+            await m.addColumn(heroRetainers, heroRetainers.level);
+          }
+          if (from >= 17 && from < 19) {
+            // v19: Companions track their own rampage stacks (Beastheart
+            // "Rampage" resource), adjusted manually and shown as a table.
+            // Only add the column for databases that already had the
+            // hero_companions table (created at v17); databases older than
+            // v17 get the table created fresh above with this column already
+            // present, so adding it again would fail as a duplicate.
+            await m.addColumn(heroCompanions, heroCompanions.currentRampage);
+          }
+          if (from < 20) {
+            // v20: Add hero_minion_squads table for minion squad instances
+            // (Summoner class mechanic).
+            await m.createTable(heroMinionSquads);
           }
         },
       );

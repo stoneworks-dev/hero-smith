@@ -102,7 +102,8 @@ class _StoryNameSectionState extends ConsumerState<StoryNameSection> {
   }
 
   void _pickRandomName() {
-    final ancestriesAsync = ref.read(componentsByTypeProvider('ancestry'));
+    final ancestriesAsync =
+        ref.read(selectableComponentsByTypeProvider('ancestry'));
     final ancestries = ancestriesAsync.valueOrNull;
     if (ancestries == null || ancestries.isEmpty) return;
 
@@ -140,7 +141,8 @@ class _StoryNameSectionState extends ConsumerState<StoryNameSection> {
   }
 
   Widget _buildNameSuggestions(BuildContext context) {
-    final ancestriesAsync = ref.watch(componentsByTypeProvider('ancestry'));
+    final ancestriesAsync =
+        ref.watch(selectableComponentsByTypeProvider('ancestry'));
     return ancestriesAsync.when(
       loading: () => const SizedBox.shrink(),
       error: (_, __) => const SizedBox.shrink(),
@@ -182,7 +184,8 @@ class _ExampleNameGroups extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final data = ancestry.data;
-    final exampleNames = (data['exampleNames'] as Map?)?.cast<String, dynamic>();
+    final exampleNames =
+        (data['exampleNames'] as Map?)?.cast<String, dynamic>();
     if (exampleNames == null || exampleNames.isEmpty) {
       return const SizedBox.shrink();
     }

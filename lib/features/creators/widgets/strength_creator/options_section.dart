@@ -27,15 +27,29 @@ class _OptionsSection extends StatelessWidget {
     final minimumRequired = optionsContext.minimumRequired;
     final allowMultiple = selectionLimit != 1;
     final effectiveSelections = optionsContext.selectedKeys;
+    final visibleOptions = optionsContext.options.where((option) {
+      if (option['isRetired'] != true) return true;
+      final key = ClassFeatureDataService.featureOptionKey(option);
+      return effectiveSelections.contains(key);
+    }).toList(growable: false);
+    final retiredOptionNames = visibleOptions
+        .where((option) => option['isRetired'] == true)
+        .map(
+          (option) =>
+              option['name']?.toString().trim() ??
+              ClassFeatureDataService.featureOptionKey(option),
+        )
+        .where((name) => name.isNotEmpty)
+        .toList(growable: false);
     final canEdit = widget.onSelectionChanged != null &&
         optionsContext.allowEditing &&
         !isGrantsFeature;
-    final isAutoApplied = _isAutoAppliedSelection();
+    final isAutoApplied = _isAutoAppliedSelection(visibleOptions);
 
     final grantType =
         widget.grantTypeByFeatureName[feature.name.toLowerCase().trim()] ?? '';
     final isPickFeature = grantType == 'pick';
-    final hasOptions = optionsContext.options.isNotEmpty;
+    final hasOptions = visibleOptions.isNotEmpty;
 
     // Determine if this feature requires a selection:
     // 1. Not a grants feature (auto-applied)
@@ -43,8 +57,7 @@ class _OptionsSection extends StatelessWidget {
     // 3. Has options available
     // 4. Either explicitly a 'pick' feature OR has multiple options that require choice
     // 5. Not enough selections have been made yet
-    final hasMultipleOptionsToChoose =
-        hasOptions && optionsContext.options.length > 1;
+    final hasMultipleOptionsToChoose = hasOptions && visibleOptions.length > 1;
     final requiresChoice = isPickFeature ||
         (hasMultipleOptionsToChoose && optionsContext.allowEditing);
     final needsSelection = !isGrantsFeature &&
@@ -81,8 +94,11 @@ class _OptionsSection extends StatelessWidget {
               child: _InfoMessage(message: message),
             ),
 
+        if (retiredOptionNames.isNotEmpty)
+          _RetiredOptionWarning(names: retiredOptionNames),
+
         // For grants: display all matching as auto-applied content
-        if (isGrantsFeature && optionsContext.options.isNotEmpty) ...[
+        if (isGrantsFeature && visibleOptions.isNotEmpty) ...[
           Text(
             OptionsSectionText.grantedFeaturesTitle,
             style: theme.textTheme.titleSmall?.copyWith(
@@ -91,7 +107,7 @@ class _OptionsSection extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          ...optionsContext.options.map((option) => Padding(
+          ...visibleOptions.map((option) => Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: _AutoAppliedContent(
                   option: option,
@@ -101,13 +117,13 @@ class _OptionsSection extends StatelessWidget {
               )),
         ]
         // For options: use existing behavior
-        else if (isAutoApplied && optionsContext.options.isNotEmpty)
+        else if (isAutoApplied && visibleOptions.isNotEmpty)
           _AutoAppliedContent(
-            option: optionsContext.options.first,
+            option: visibleOptions.first,
             widget: widget,
             featureId: feature.id,
           )
-        else if (optionsContext.options.isNotEmpty) ...[
+        else if (visibleOptions.isNotEmpty) ...[
           Text(
             _headingText(selectionLimit),
             style: theme.textTheme.titleSmall?.copyWith(
@@ -116,7 +132,7 @@ class _OptionsSection extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          ...optionsContext.options.map((option) => Padding(
+          ...visibleOptions.map((option) => Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: _OptionTile(
                   key: ValueKey(
@@ -148,10 +164,10 @@ class _OptionsSection extends StatelessWidget {
     return OptionsSectionText.selectOptionsHeading;
   }
 
-  bool _isAutoAppliedSelection() {
+  bool _isAutoAppliedSelection(List<Map<String, dynamic>> visibleOptions) {
     if (optionsContext.allowEditing) return false;
     if (optionsContext.requiresExternalSelection) return false;
-    if (optionsContext.options.length != 1) return false;
+    if (visibleOptions.length != 1) return false;
     return true;
   }
 
@@ -202,6 +218,47 @@ class _OptionsSection extends StatelessWidget {
     );
 
     widget.onSelectionChanged!(feature.id, clamped);
+  }
+}
+
+class _RetiredOptionWarning extends StatelessWidget {
+  const _RetiredOptionWarning({required this.names});
+
+  final List<String> names;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Colors.orange.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.orange.withValues(alpha: 0.5)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            Icons.warning_amber_rounded,
+            size: 18,
+            color: Colors.orange.shade300,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              '${OptionsSectionText.retiredOptionPrefix}${names.join(', ')}'
+              '${OptionsSectionText.retiredOptionSuffix}',
+              style: TextStyle(
+                color: Colors.orange.shade200,
+                fontSize: 13,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

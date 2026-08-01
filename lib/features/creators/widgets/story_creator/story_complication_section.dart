@@ -339,7 +339,7 @@ class _StoryComplicationSectionState
   Widget build(BuildContext context) {
     const accent = CreatorTheme.complicationAccent;
     final complicationsAsync =
-        ref.watch(componentsByTypeProvider('complication'));
+        ref.watch(selectableComponentsByTypeProvider('complication'));
 
     return Container(
       margin: const EdgeInsets.all(16),
@@ -1136,7 +1136,7 @@ class StoryComplicationDetails extends ConsumerWidget {
   ) {
     const accent = CreatorTheme.complicationAccent;
     final groupsStr = grant.groups.join(', ');
-    final skillsAsync = ref.watch(componentsByTypeProvider('skill'));
+    final skillsAsync = ref.watch(selectableComponentsByTypeProvider('skill'));
 
     return Container(
       padding: const EdgeInsets.all(12),
@@ -1334,7 +1334,7 @@ class StoryComplicationDetails extends ConsumerWidget {
     HeroConflictIndex conflictIndex,
   ) {
     const accent = CreatorTheme.complicationAccent;
-    final skillsAsync = ref.watch(componentsByTypeProvider('skill'));
+    final skillsAsync = ref.watch(selectableComponentsByTypeProvider('skill'));
     final choiceKey = '${complicationId}_skill_option';
 
     return Container(
@@ -1511,7 +1511,7 @@ class StoryComplicationDetails extends ConsumerWidget {
     HeroConflictIndex conflictIndex,
   ) {
     const accent = CreatorTheme.complicationAccent;
-    final componentsAsync = ref.watch(allComponentsProvider);
+    final componentsAsync = ref.watch(selectableAllComponentsProvider);
 
     // Determine the treasure type to filter by
     final treasureType = grant.treasureType.toLowerCase();
@@ -1703,7 +1703,7 @@ class StoryComplicationDetails extends ConsumerWidget {
     HeroConflictIndex conflictIndex,
   ) {
     const accent = CreatorTheme.complicationAccent;
-    final componentsAsync = ref.watch(allComponentsProvider);
+    final componentsAsync = ref.watch(selectableAllComponentsProvider);
 
     // The category to filter by (e.g., "weapon", "armor")
     final category = grant.category?.toLowerCase();
@@ -1897,7 +1897,8 @@ class StoryComplicationDetails extends ConsumerWidget {
     HeroConflictIndex conflictIndex,
   ) {
     const accent = CreatorTheme.complicationAccent;
-    final languagesAsync = ref.watch(componentsByTypeProvider('language'));
+    final languagesAsync =
+        ref.watch(selectableComponentsByTypeProvider('language'));
 
     return Container(
       padding: const EdgeInsets.all(12),
@@ -2096,7 +2097,8 @@ class StoryComplicationDetails extends ConsumerWidget {
     HeroConflictIndex conflictIndex,
   ) {
     const accent = CreatorTheme.complicationAccent;
-    final languagesAsync = ref.watch(componentsByTypeProvider('language'));
+    final languagesAsync =
+        ref.watch(selectableComponentsByTypeProvider('language'));
 
     return Container(
       padding: const EdgeInsets.all(12),
@@ -2385,7 +2387,7 @@ class StoryComplicationDetails extends ConsumerWidget {
   ) {
     const accent = CreatorTheme.complicationAccent;
     final ancestryTraitsAsync =
-        ref.watch(componentsByTypeProvider('ancestry_trait'));
+        ref.watch(selectableComponentsByTypeProvider('ancestry_trait'));
 
     return Container(
       padding: const EdgeInsets.all(12),
@@ -2720,7 +2722,7 @@ class StoryComplicationDetails extends ConsumerWidget {
     String complicationId,
     HeroConflictIndex conflictIndex,
   ) {
-    final skillsAsync = ref.watch(componentsByTypeProvider('skill'));
+    final skillsAsync = ref.watch(selectableComponentsByTypeProvider('skill'));
     final skills = skillsAsync.valueOrNull;
     final normalizedName = skillName.trim().toLowerCase();
     final skillId = skills
@@ -3094,7 +3096,7 @@ class StoryComplicationDetails extends ConsumerWidget {
     final choiceKey = '${complicationId}_trait_$traitId';
     final slotKey = 'story.complication:$choiceKey';
     final abilities =
-        ref.watch(componentsByTypeProvider('ability')).valueOrNull ??
+        ref.watch(selectableComponentsByTypeProvider('ability')).valueOrNull ??
             const <model.Component>[];
     String? abilityId(String value) => abilities
         .firstWhereOrNull(

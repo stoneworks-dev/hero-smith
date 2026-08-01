@@ -285,36 +285,19 @@ class _TitlesTabState extends ConsumerState<_TitlesTab> {
           heroId: widget.heroId,
           earnedTitleIds: _selectedTitles.keys.toSet(),
           onTitleEarned: (titleId) {
-            // When a title is earned from the progress page, show the add dialog
-            // pre-filtered to that title so the user can pick a benefit.
+            // When a title is earned from the progress page, jump straight
+            // to benefit selection for that title — skip the full add-title
+            // picker screen since we already know which title was earned.
             final title = _availableTitles.firstWhere(
               (t) => t['id'] == titleId,
               orElse: () => <String, dynamic>{},
             );
             if (title.isNotEmpty) {
-              final benefits = title['benefits'] as List? ?? [];
-              // Count chooseable (non-auto) benefits
-              final choiceCount = benefits
-                  .where((b) => b is Map<String, dynamic> && b['auto'] != true)
-                  .length;
-              if (choiceCount <= 1) {
-                // Find the single chooseable index, or -1 if all auto
-                final choiceIdx = benefits.indexWhere(
-                    (b) => b is Map<String, dynamic> && b['auto'] != true);
-                _addTitle(titleId, choiceIdx);
-              } else {
-                // Show benefit selection via the add dialog
-                showDialog(
-                  context: context,
-                  builder: (ctx) => AddTitleDialog(
-                    availableTitles: [title],
-                    onTitleSelected: (id, benefitIndex) {
-                      _addTitle(id, benefitIndex);
-                      Navigator.of(ctx).pop();
-                    },
-                  ),
-                );
-              }
+              showTitleBenefitSelectionDialog(
+                context: context,
+                title: title,
+                onTitleSelected: _addTitle,
+              );
             }
           },
         ),

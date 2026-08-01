@@ -52,9 +52,11 @@ class Retainer {
   final List<String> baseAbilities;
   final List<RetainerPassiveTrait> passiveTraits;
 
-  /// Maps advancement level (4, 7, 10) → retainer-specific ability ID.
-  /// At each of these levels the player can choose this OR a role ability.
-  final Map<int, String> advancementAbilities;
+  /// Maps advancement level (4, 7, 10) → retainer-specific ability ID options.
+  /// At each of these levels the player can choose one of these OR a role
+  /// ability. Most retainers offer exactly one option per level; some (e.g.
+  /// summoner-type retainers with a minion-unlock alternative) offer more.
+  final Map<int, List<String>> advancementAbilities;
 
   /// Maximum recoveries this retainer can use per respite.
   final int maxRecoveries;
@@ -140,10 +142,13 @@ class Retainer {
     return const [];
   }
 
-  static Map<int, String> _parseAdvancementAbilities(dynamic value) {
+  static Map<int, List<String>> _parseAdvancementAbilities(dynamic value) {
     if (value is Map) {
       return value.map(
-        (k, v) => MapEntry(int.parse(k.toString()), v.toString()),
+        (k, v) => MapEntry(
+          int.parse(k.toString()),
+          v is List ? v.map((e) => e.toString()).toList() : [v.toString()],
+        ),
       );
     }
     return const {};

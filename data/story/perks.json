@@ -12,7 +12,9 @@
         "choice_type": "skill",
         "entry_type": "skill",
         "count": 1,
-        "groups": ["crafting"],
+        "groups": [
+          "crafting"
+        ],
         "allow_owned": true
       }
     ]
@@ -84,7 +86,9 @@
         "kind": "entry",
         "entry_type": "ability",
         "entry_id": "friend_catapult",
-        "payload": { "name": "Friend Catapult" }
+        "payload": {
+          "name": "Friend Catapult"
+        }
       }
     ]
   },
@@ -99,7 +103,9 @@
         "kind": "entry",
         "entry_type": "ability",
         "entry_id": "ive_got_you",
-        "payload": { "name": "I've Got You!" }
+        "payload": {
+          "name": "I've Got You!"
+        }
       }
     ]
   },
@@ -233,7 +239,9 @@
         "kind": "entry",
         "entry_type": "ability",
         "entry_id": "gum_up_the_works",
-        "payload": { "name": "Gum Up the Works" }
+        "payload": {
+          "name": "Gum Up the Works"
+        }
       }
     ]
   },
@@ -278,7 +286,9 @@
         "choice_type": "skill",
         "entry_type": "skill",
         "count": 1,
-        "groups": ["lore"],
+        "groups": [
+          "lore"
+        ],
         "allow_owned": false
       }
     ]
@@ -333,7 +343,9 @@
         "choice_type": "skill",
         "entry_type": "skill",
         "count": 1,
-        "groups": ["lore"],
+        "groups": [
+          "lore"
+        ],
         "allow_owned": true
       }
     ]
@@ -356,7 +368,9 @@
         "kind": "entry",
         "entry_type": "ability",
         "entry_id": "arcane_trick",
-        "payload": { "name": "Arcane Trick" }
+        "payload": {
+          "name": "Arcane Trick"
+        }
       }
     ]
   },
@@ -371,7 +385,9 @@
         "kind": "entry",
         "entry_type": "ability",
         "entry_id": "creature_sense",
-        "payload": { "name": "Creature Sense" }
+        "payload": {
+          "name": "Creature Sense"
+        }
       }
     ]
   },
@@ -387,7 +403,9 @@
         "choice_key": "familiar.creature",
         "choice_type": "creature",
         "count": 1,
-        "options": ["Familiar"]
+        "options": [
+          "Familiar"
+        ]
       }
     ]
   },
@@ -402,7 +420,9 @@
         "kind": "entry",
         "entry_type": "ability",
         "entry_id": "invisible_force",
-        "payload": { "name": "Invisible Force" }
+        "payload": {
+          "name": "Invisible Force"
+        }
       }
     ]
   },
@@ -417,7 +437,9 @@
         "kind": "entry",
         "entry_type": "ability",
         "entry_id": "psychic_whisper",
-        "payload": { "name": "Psychic Whisper" }
+        "payload": {
+          "name": "Psychic Whisper"
+        }
       }
     ]
   },
@@ -434,5 +456,94 @@
     "group": "supernatural",
     "name": "Thingspeaker",
     "description": "When you hold an object in your hand for 1 uninterrupted minute, you can sense whether it bears emotional resonance. Objects with emotional resonance could include treasured gifts, murder weapons, or personal keepsakes. If the Director determines that the object bears emotional resonance, you learn the most dominant emotion associated with the object, then receive a vision that answers one of the following questions:\n- What was the name of the person whose emotion is imprinted on this object?\n- Why does this emotion linger on the object?\n- How long has it been since the object was held by the person whose emotion lingers on it?\nAfter asking one question, you can choose to delve deeper by asking one additional question from the list, but you are then overcome with emotions that do not belong to you. You take a bane on Intuition and Presence tests until you finish a respite, and you can't use this perk again while you suffer this bane."
+  },
+  {
+    "id": "born_tracker",
+    "type": "perk",
+    "group": "exploration",
+    "name": "Born Tracker",
+    "description": "You and your companion gain an edge on tests made to track creatures, find your way, or search for hidden creatures."
+  },
+  {
+    "id": "people_sense",
+    "type": "perk",
+    "group": "interpersonal",
+    "name": "People Sense",
+    "description": "Whenever you or your companion makes a test to determine a creature's motives, emotions, or body language while within 5 squares of each other, your partner can make the same test as a free triggered action. You both use the higher result."
+  },
+  {
+    "id": "ride_along",
+    "type": "perk",
+    "group": "exploration",
+    "name": "Ride Along",
+    "description": "Your bond with your companion has permeated your very soul; you are just as much beast as you are beastheart. You can leave behind your mortal body and join your consciousness to that of your companion. You have the following ability.",
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+      "entry_id": "ride-along",
+        "payload": {
+          "name": "Ride Along"
+        }
+      }
+    ]
+  },
+  {
+    "id": "trained_thief",
+    "type": "perk",
+    "group": "intrigue",
+    "name": "Trained Thief",
+    "description": "You have the Conceal Object or Pick Pocket skill. Your companion can make a test using that skill as a maneuver.",
+    "grants": [
+      {
+        "kind": "choice",
+        "choice_key": "trained_thief.skill",
+        "choice_type": "skill",
+        "options": [
+          "conceal_object",
+          "pick_pocket"
+        ],
+        "count": 1,
+        "allow_owned": false
+      }
+    ]
+  },
+  {
+    "id": "voice_of_the_wild",
+    "type": "perk",
+    "group": "interpersonal",
+    "name": "Voice of the Wild",
+    "description": "Your companion can speak any language you can speak."
+  },
+  {
+    "id": "wild_rumpus",
+    "type": "perk",
+    "group": "exploration",
+    "name": "Wild Rumpus",
+    "description": "You have the following ability.",
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+      "entry_id": "wild-rumpus",
+        "payload": {
+          "name": "Wild Rumpus"
+        }
+      }
+    ]
+  },
+  {
+    "id": "wilds_explorer",
+    "type": "perk",
+    "group": "exploration",
+    "name": "Wilds Explorer",
+    "description": "You and your companion gain an edge on tests made to overcome environmental cold, heat, weather, unsteady ground, or challenging terrain. During your turn, you and your companion can ignore the first square of difficult terrain you each enter."
+  },
+  {
+    "id": "you_can_pet_them_they_re_friendly",
+    "type": "perk",
+    "group": "interpersonal",
+    "name": "You Can Pet Them, They're Friendly",
+    "description": "Whenever you make a Presence test to interact with a creature while you are within 5 squares of your companion, you can use your companion's Presence instead of your own."
   }
 ]

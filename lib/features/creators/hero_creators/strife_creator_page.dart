@@ -14,7 +14,6 @@ import '../../../core/models/skills_models.dart';
 import '../../../core/models/subclass_models.dart';
 import '../../../core/repositories/hero_repository.dart';
 import '../../../core/services/abilities_service.dart';
-import '../../../core/services/ability_data_service.dart';
 import '../../../core/services/class_data_service.dart';
 import '../../../core/services/perk_data_service.dart';
 import '../../../core/services/perk_grants_service.dart';
@@ -33,6 +32,7 @@ import '../../hero_builder/domain/hero_conflict_index.dart';
 import '../../hero_builder/domain/hero_draft.dart';
 import '../../hero_builder/domain/hero_draft_claims.dart';
 import '../../hero_builder/domain/hero_mutation_scope.dart';
+import '../../../widgets/abilities/abilities_shared.dart';
 import '../widgets/strife_creator/choose_abilities_widget.dart';
 import '../widgets/strife_creator/choose_equipment_widget.dart';
 import '../widgets/strife_creator/choose_perks_widget.dart';
@@ -69,7 +69,6 @@ class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage>
   final ClassDataService _classDataService = ClassDataService();
   final StartingAbilitiesService _startingAbilitiesService =
       const StartingAbilitiesService();
-  final AbilityDataService _abilityDataService = AbilityDataService();
   final StartingSkillsService _startingSkillsService =
       const StartingSkillsService();
   final SkillDataService _skillDataService = SkillDataService();
@@ -78,6 +77,7 @@ class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage>
   final StartingPerksService _startingPerksService =
       const StartingPerksService();
   final PerkDataService _perkDataService = PerkDataService();
+  late final ClassAbilityLoader _classAbilityLoader;
 
   static const Map<String, List<String>> _kitFeatureTypeMappings = {
     'kit': ['kit'],
@@ -150,6 +150,7 @@ class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage>
   @override
   void initState() {
     super.initState();
+    _classAbilityLoader = _loadClassAbilitiesFromDatabase;
     _load();
   }
 
@@ -358,11 +359,9 @@ class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage>
     }
 
     final classSlug = _classSlug(classData.classId);
-    final components = await _abilityDataService.loadClassAbilities(classSlug);
+    final components = await _loadClassAbilitiesFromDatabase(classSlug);
     final options = components.map(_mapComponentToAbilityOption).toList();
-    final optionById = {
-      for (final option in options) option.id: option,
-    };
+    final optionById = _abilityOptionAliases(options);
 
     final filledCounts = <String, int>{
       for (final allowance in plan.allowances) allowance.id: 0,
@@ -371,7 +370,16 @@ class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage>
     final unmatched = <AbilityOption>[];
 
     for (final abilityId in abilityIds) {
-      final option = optionById[abilityId];
+      final normalizedAbilityId = abilityId.trim().toLowerCase();
+      AbilityOption? option = optionById[normalizedAbilityId];
+      if (option == null) {
+        for (final entry in optionById.entries) {
+          if (normalizedAbilityId.endsWith('_${entry.key}')) {
+            option = entry.value;
+            break;
+          }
+        }
+      }
       if (option == null) {
         continue;
       }
@@ -469,9 +477,10 @@ class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage>
   HeroConflictIndex get _strifeAbilityConflictIndex {
     final entries = ref.watch(heroEntriesProvider(widget.heroId)).valueOrNull;
     if (entries == null) return HeroConflictIndex.empty;
-    final perks = ref.watch(componentsByTypeProvider(HeroEntryTypes.perk));
+    final perks =
+        ref.watch(selectableComponentsByTypeProvider(HeroEntryTypes.perk));
     final abilities =
-        ref.watch(componentsByTypeProvider(HeroEntryTypes.ability));
+        ref.watch(selectableComponentsByTypeProvider(HeroEntryTypes.ability));
 
     return _buildStrifeAbilityConflictIndex(
       entries: entries,
@@ -1003,27 +1012,7 @@ class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage>
 
   AbilityOption _mapComponentToAbilityOption(Component component) {
     final data = component.data;
-    final costsRaw = data['costs'];
-
-    final bool isSignature;
-    if (costsRaw is String) {
-      isSignature = costsRaw.toLowerCase() == 'signature';
-    } else if (costsRaw is Map) {
-      isSignature = costsRaw['signature'] == true;
-    } else {
-      isSignature = false;
-    }
-
-    final int? costAmount;
-    final String? resource;
-    if (costsRaw is Map) {
-      final amountRaw = costsRaw['amount'];
-      costAmount = amountRaw is num ? amountRaw.toInt() : null;
-      resource = costsRaw['resource']?.toString();
-    } else {
-      costAmount = null;
-      resource = null;
-    }
+    final abilityData = AbilityData.fromComponent(component);
 
     final level = data['level'] is num
         ? (data['level'] as num).toInt()
@@ -1037,11 +1026,51 @@ class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage>
       name: component.name,
       component: component,
       level: level,
-      isSignature: isSignature,
-      costAmount: costAmount,
-      resource: resource,
+      isSignature: abilityData.isSignature,
+      costAmount: abilityData.costAmount,
+      resource: abilityData.resourceLabel ?? abilityData.resourceType,
       subclass: subclass,
     );
+  }
+
+  Future<List<Component>> _loadClassAbilitiesFromDatabase(
+    String classSlug,
+  ) async {
+    await ref.read(seedOnStartupProvider.future);
+    final normalizedSlug = classSlug.trim().toLowerCase();
+    final repository = ref.read(componentRepositoryProvider);
+    final abilities =
+        await repository.watchByType(HeroEntryTypes.ability).first;
+    final result = abilities.where((component) {
+      final slug =
+          component.data['class_slug']?.toString().trim().toLowerCase();
+      return slug == normalizedSlug && !component.isRetired;
+    }).toList(growable: false)
+      ..sort((a, b) {
+        final levelA = CharacteristicUtils.toIntOrNull(a.data['level']) ?? 0;
+        final levelB = CharacteristicUtils.toIntOrNull(b.data['level']) ?? 0;
+        if (levelA != levelB) return levelA.compareTo(levelB);
+        return a.name.compareTo(b.name);
+      });
+    return result;
+  }
+
+  Map<String, AbilityOption> _abilityOptionAliases(
+    Iterable<AbilityOption> options,
+  ) {
+    final aliases = <String, AbilityOption>{};
+    for (final option in options) {
+      void add(String? value) {
+        final normalized = value?.trim().toLowerCase();
+        if (normalized == null || normalized.isEmpty) return;
+        aliases[normalized] = option;
+      }
+
+      add(option.id);
+      add(option.component.data['original_id']?.toString());
+      add(option.component.data['resolved_id']?.toString());
+    }
+    return aliases;
   }
 
   String _classSlug(String classId) {
@@ -1580,6 +1609,7 @@ class _StrifeCreatorPageState extends ConsumerState<StrifeCreatorPage>
                 selectedDomainNames: selectedSubclass?.domainNames ?? const [],
                 selectedAbilities: strife.abilitySelections,
                 conflictIndex: _strifeAbilityConflictIndex,
+                loadClassAbilities: _classAbilityLoader,
                 onSelectionChanged: _handleAbilitySelectionsChanged,
               ),
               StartingSkillsWidget(

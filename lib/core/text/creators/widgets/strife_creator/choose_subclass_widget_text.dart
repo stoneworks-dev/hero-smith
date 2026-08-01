@@ -1,4 +1,4 @@
-﻿class ChooseSubclassWidgetText {
+class ChooseSubclassWidgetText {
   static const String searchHint = 'Search...';
   static const String noMatchesFound = 'No matches found';
   static const String cancelLabel = 'Cancel';
@@ -32,4 +32,8 @@
   static const String remainingPicksPrefix = ' pick';
   static const String remainingPicksSingularSuffix = ' remaining.';
   static const String remainingPicksPluralSuffix = 's remaining.';
+  static const String retiredSelectionPrefix = '“';
+  static const String retiredSelectionSuffix =
+      '” is retired content. It remains on this hero, but cannot be selected '
+      'again after you replace it.';
 }

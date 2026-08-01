@@ -8,6 +8,10 @@ class Component {
   final String source; // 'seed' | 'user' | 'import'
   final String? parentId; // optional linkage to base component
 
+  /// Retired content remains resolvable for existing heroes, but should not be
+  /// offered as a new choice.
+  bool get isRetired => data['isRetired'] == true;
+
   const Component({
     required this.id,
     required this.type,
@@ -50,7 +54,8 @@ class Component {
     Map<String, dynamic>? data,
     String? source,
     String? parentId,
-  }) => Component(
+  }) =>
+      Component(
         id: id ?? this.id,
         type: type ?? this.type,
         name: name ?? this.name,

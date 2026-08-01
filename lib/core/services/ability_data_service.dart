@@ -127,7 +127,8 @@ class AbilityDataService {
   }
 
   /// Load simplified abilities for a class from the class_abilities_simplified folder
-  Future<List<AbilitySimplified>> loadClassAbilitiesSimplified(String classSlug) async {
+  Future<List<AbilitySimplified>> loadClassAbilitiesSimplified(
+      String classSlug) async {
     final normalizedSlug = classSlug.trim().toLowerCase();
     if (normalizedSlug.isEmpty) return const [];
 
@@ -136,12 +137,13 @@ class AbilityDataService {
       return cached;
     }
 
-    final path = 'data/abilities/class_abilities_simplified/${normalizedSlug}_abilities.json';
-    
+    final path =
+        'data/abilities/class_abilities_simplified/${normalizedSlug}_abilities.json';
+
     try {
       final raw = await rootBundle.loadString(path);
       final decoded = jsonDecode(raw);
-      
+
       if (decoded is! List) {
         return const [];
       }
@@ -321,8 +323,9 @@ class AbilityDataService {
       final classSegment = _classSegmentFromRelative(relative);
       final levelSegment = _levelSegmentFromRelative(relative);
 
-      final classSlug =
-          classSegment != null ? _slugify(classSegment) : _inferSlugFromRelativePath(relative);
+      final classSlug = classSegment != null
+          ? _slugify(classSegment)
+          : _inferSlugFromRelativePath(relative);
       if (classSlug != null && classSlug.isNotEmpty) {
         augmented['class_slug'] ??= classSlug;
         augmented['class_name'] ??= classSegment ?? classSlug;

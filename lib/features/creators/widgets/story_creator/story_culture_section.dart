@@ -346,12 +346,15 @@ class StoryCultureSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final envAsync = ref.watch(componentsByTypeProvider('culture_environment'));
+    final envAsync =
+        ref.watch(selectableComponentsByTypeProvider('culture_environment'));
     final orgAsync =
-        ref.watch(componentsByTypeProvider('culture_organisation'));
-    final upAsync = ref.watch(componentsByTypeProvider('culture_upbringing'));
-    final langsAsync = ref.watch(componentsByTypeProvider('language'));
-    final skillsAsync = ref.watch(componentsByTypeProvider('skill'));
+        ref.watch(selectableComponentsByTypeProvider('culture_organisation'));
+    final upAsync =
+        ref.watch(selectableComponentsByTypeProvider('culture_upbringing'));
+    final langsAsync =
+        ref.watch(selectableComponentsByTypeProvider('language'));
+    final skillsAsync = ref.watch(selectableComponentsByTypeProvider('skill'));
 
     const accent = CreatorTheme.cultureAccent;
 
@@ -427,7 +430,8 @@ class StoryCultureSection extends ConsumerWidget {
                             cultureItems: envs,
                             selectedSkillId: environmentSkillId,
                             conflictIndex: skillConflictIndex,
-                            slotKey: HeroDraftClaims.cultureEnvironmentSkillSlot,
+                            slotKey:
+                                HeroDraftClaims.cultureEnvironmentSkillSlot,
                             allSkills: skills,
                             accent: const Color(0xFF66BB6A),
                             onChanged: (value) {
@@ -481,7 +485,8 @@ class StoryCultureSection extends ConsumerWidget {
                             cultureItems: orgs,
                             selectedSkillId: organisationSkillId,
                             conflictIndex: skillConflictIndex,
-                            slotKey: HeroDraftClaims.cultureOrganisationSkillSlot,
+                            slotKey:
+                                HeroDraftClaims.cultureOrganisationSkillSlot,
                             allSkills: skills,
                             accent: const Color(0xFFFFB74D),
                             onChanged: (value) {

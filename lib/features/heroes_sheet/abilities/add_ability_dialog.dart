@@ -40,6 +40,7 @@ class _AddAbilityDialogState extends State<AddAbilityDialog> {
   String? _actionTypeFilter;
   String? _distanceFilter;
   String? _targetsFilter;
+  String? _classFilter;
   List<Component>? _allAbilities;
   bool _isLoading = false;
 
@@ -96,6 +97,13 @@ class _AddAbilityDialogState extends State<AddAbilityDialog> {
         final abilityData = AbilityData.fromComponent(item);
         final targets = abilityData.targets?.toLowerCase();
         return targets?.contains(_targetsFilter!.toLowerCase()) ?? false;
+      }).toList();
+    }
+
+    if (_classFilter != null) {
+      filtered = filtered.where((item) {
+        final className = item.data['class_name'] as String?;
+        return className?.toLowerCase() == _classFilter!.toLowerCase();
       }).toList();
     }
 
@@ -186,6 +194,15 @@ class _AddAbilityDialogState extends State<AddAbilityDialog> {
         [];
     if (targetsOptions.isNotEmpty) targetsOptions.sort();
 
+    final classOptions = _allAbilities
+            ?.map((item) => item.data['class_name'] as String?)
+            .where((className) => className != null && className.isNotEmpty)
+            .cast<String>()
+            .toSet()
+            .toList() ??
+        [];
+    if (classOptions.isNotEmpty) classOptions.sort();
+
     return Dialog(
       backgroundColor: NavigationTheme.cardBackgroundDark,
       child: Container(
@@ -217,6 +234,7 @@ class _AddAbilityDialogState extends State<AddAbilityDialog> {
                         actionTypeOptions: actionTypeOptions,
                         distanceOptions: distanceOptions,
                         targetsOptions: targetsOptions,
+                        classOptions: classOptions,
                       ),
                     ),
                   ),
@@ -314,6 +332,7 @@ class _AddAbilityDialogState extends State<AddAbilityDialog> {
     required List<String> actionTypeOptions,
     required List<String> distanceOptions,
     required List<String> targetsOptions,
+    required List<String> classOptions,
   }) {
     final isEnabled = _allAbilities != null;
     return Card(
@@ -452,6 +471,20 @@ class _AddAbilityDialogState extends State<AddAbilityDialog> {
                     allLabelPrefix: AddAbilityDialogText.allFilterPrefix,
                     onChanged: (value) {
                       setState(() => _targetsFilter = value);
+                      _triggerSearch();
+                    },
+                  ),
+                ),
+                GestureDetector(
+                  onTap: !isEnabled ? _triggerSearch : null,
+                  child: AbilityFilterDropdown(
+                    label: AddAbilityDialogText.filterClassLabel,
+                    value: _classFilter,
+                    options: classOptions,
+                    enabled: isEnabled,
+                    allLabelPrefix: AddAbilityDialogText.allFilterPrefix,
+                    onChanged: (value) {
+                      setState(() => _classFilter = value);
                       _triggerSearch();
                     },
                   ),

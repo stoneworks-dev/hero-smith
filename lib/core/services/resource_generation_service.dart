@@ -237,6 +237,12 @@ class ResourceGenerationService {
       case 'plus_1d3+2':
         return _roll1d3WithBonus(2);
 
+      case 'plus_2d3':
+        return _roll2d3WithBonus(0);
+
+      case 'plus_2d3+1':
+        return _roll2d3WithBonus(1);
+
       default:
         // Check if this matches plus_1d3+N pattern for any other bonus
         if (optionKey.startsWith('plus_1d3+')) {
@@ -246,7 +252,16 @@ class ResourceGenerationService {
             return _roll1d3WithBonus(bonus);
           }
         }
-        
+
+        // Check if this matches plus_2d3+N pattern for any other bonus
+        if (optionKey.startsWith('plus_2d3+')) {
+          final bonusStr = optionKey.substring('plus_2d3+'.length);
+          final bonus = int.tryParse(bonusStr);
+          if (bonus != null) {
+            return _roll2d3WithBonus(bonus);
+          }
+        }
+
         // Check if this is a preset with fixed dice values (like pray_1d3)
         final preset = _presets[optionKey];
         if (preset != null && preset.values != null && preset.values!.length >= 3) {
@@ -294,6 +309,30 @@ class ResourceGenerationService {
       requiresConfirmation: true,
       alternativeValues: alternativeValues,
       diceToValueMapping: diceToValueMapping,
+    );
+  }
+
+  /// Helper method to roll 2d3 with a bonus added to the sum.
+  ///
+  /// Unlike [_roll1d3WithBonus], the outcome is the sum of two dice, so there
+  /// is no single-die-to-value mapping. The full range of possible totals
+  /// (2 + bonus .. 6 + bonus) is offered as alternatives so the player can
+  /// adjust the confirmed value, matching how the roll dialog renders chips.
+  GenerationResult _roll2d3WithBonus(int bonus) {
+    final rollA = _random.nextInt(3) + 1;
+    final rollB = _random.nextInt(3) + 1;
+    final actualValue = rollA + rollB + bonus;
+
+    final alternativeValues = [
+      for (var total = 2; total <= 6; total++) total + bonus,
+    ];
+
+    final bonusLabel = bonus > 0 ? '+$bonus' : '';
+    return GenerationResult(
+      value: actualValue,
+      description: '+$actualValue (2d3$bonusLabel → $rollA+$rollB)',
+      requiresConfirmation: true,
+      alternativeValues: alternativeValues,
     );
   }
 

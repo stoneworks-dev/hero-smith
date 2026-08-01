@@ -5,10 +5,16 @@
     "name": "Color Cloak (Blue)",
     "echelon": 1,
     "description": "This silky-blue hooded cloak is emblazoned with a golden Anjali sigil meaning ‘ice.’",
-    "keywords": ["Magic", "Neck"],
+    "keywords": [
+      "Magic",
+      "Neck"
+    ],
     "item_prerequisite": "A pint of blue ichor; soul chalk",
     "project_source": "Licensing agreements in Anjali",
-    "project_roll_characteristics": ["Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 150,
     "project_goal_description": null,
     "leveled": false,
@@ -36,10 +42,16 @@
     "name": "Color Cloak (Red)",
     "echelon": 1,
     "description": "This red woolen hooded cloak is emblazoned with a golden Anjali sigil meaning ‘fire.’",
-    "keywords": ["Magic", "Neck"],
+    "keywords": [
+      "Magic",
+      "Neck"
+    ],
     "item_prerequisite": "A pint of red ichor; soul chalk",
     "project_source": "Licensing agreements in Anjali",
-    "project_roll_characteristics": ["Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 150,
     "project_goal_description": null,
     "leveled": false,
@@ -67,10 +79,16 @@
     "name": "Color Cloak (Yellow)",
     "echelon": 1,
     "description": "This yellow rubbery hooded cloak is emblazoned with a golden Anjali sigil meaning ‘lightning.’",
-    "keywords": ["Magic", "Neck"],
+    "keywords": [
+      "Magic",
+      "Neck"
+    ],
     "item_prerequisite": "A pint of yellow ichor; soul chalk",
     "project_source": "Licensing agreements in Anjali",
-    "project_roll_characteristics": ["Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 150,
     "project_goal_description": null,
     "leveled": false,
@@ -98,10 +116,15 @@
     "name": "Deadweight",
     "echelon": 1,
     "description": "Though this humanoid femur is coated in lead, it feels impossibly heavy for its size.",
-    "keywords": ["Magic"],
+    "keywords": [
+      "Magic"
+    ],
     "item_prerequisite": "One humanoid femur; one bar of lead laced with starmetal",
     "project_source": "Texts or lore in Caelian",
-    "project_roll_characteristics": ["Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 150,
     "project_goal_description": null,
     "leveled": false,
@@ -122,10 +145,15 @@
     "name": "Displacing Replacement Bracer",
     "echelon": 1,
     "description": "A wooden bangle is etched with an ambigram sigil of the Zaliac word for ‘transfer’.",
-    "keywords": ["Arms", "Psionic"],
+    "keywords": [
+      "Arms",
+      "Psionic"
+    ],
     "item_prerequisite": "Petrified wood from a tree that has not been observed since falling",
     "project_source": "Texts or lore in Zaliac",
-    "project_roll_characteristics": ["Reason"],
+    "project_roll_characteristics": [
+      "Reason"
+    ],
     "project_goal": 150,
     "project_goal_description": null,
     "leveled": false,
@@ -146,10 +174,15 @@
     "name": "Divine Vine",
     "echelon": 1,
     "description": "A coil of emerald‑green vines is topped with the jaws of an enormous Venus flytrap.",
-    "keywords": ["Magic"],
+    "keywords": [
+      "Magic"
+    ],
     "item_prerequisite": "Three withered mundane vines; a tree’s blessing",
     "project_source": "Songs in Yllryc",
-    "project_roll_characteristics": ["Reason", "Presence"],
+    "project_roll_characteristics": [
+      "Reason",
+      "Presence"
+    ],
     "project_goal": 150,
     "project_goal_description": null,
     "leveled": false,
@@ -170,10 +203,15 @@
     "name": "Flameshade Gloves",
     "echelon": 1,
     "description": "These finely stitched gloves appear to flicker in and out of reality when first handled.",
-    "keywords": ["Hands", "Psionic"],
+    "keywords": [
+      "Hands",
+      "Psionic"
+    ],
     "item_prerequisite": "A humanoid’s shadow disconnected from its source",
     "project_source": "Texts or lore in Khelf",
-    "project_roll_characteristics": ["Reason"],
+    "project_roll_characteristics": [
+      "Reason"
+    ],
     "project_goal": 150,
     "project_goal_description": null,
     "leveled": false,
@@ -194,10 +232,16 @@
     "name": "Gecko Gloves",
     "echelon": 1,
     "description": "These scaled gloves have palms and fingers covered in near‑invisible sticky hairs.",
-    "keywords": ["Hands", "Magic"],
+    "keywords": [
+      "Hands",
+      "Magic"
+    ],
     "item_prerequisite": "Ten gecko tails",
     "project_source": "Texts or lore in Caelian",
-    "project_roll_characteristics": ["Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 150,
     "project_goal_description": null,
     "leveled": false,
@@ -218,10 +262,16 @@
     "name": "Hellcharger Helm",
     "echelon": 1,
     "description": "A steel helm is set with two curved ebony horns, a crackling plume of fire floating between them.",
-    "keywords": ["Head", "Magic"],
+    "keywords": [
+      "Head",
+      "Magic"
+    ],
     "item_prerequisite": "One broken contract; one ingot of steel",
     "project_source": "Texts or lore in Anjali and Caelian",
-    "project_roll_characteristics": ["Might", "Reason"],
+    "project_roll_characteristics": [
+      "Might",
+      "Reason"
+    ],
     "project_goal": 150,
     "project_goal_description": null,
     "leveled": false,
@@ -242,10 +292,16 @@
     "name": "Mask of the Many",
     "echelon": 1,
     "description": "A plain white mask is lined with soft black velvet— which smells faintly of blood.",
-    "keywords": ["Head", "Magic"],
+    "keywords": [
+      "Head",
+      "Magic"
+    ],
     "item_prerequisite": "One used death shroud",
     "project_source": "Texts or lore in Caelian",
-    "project_roll_characteristics": ["Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 150,
     "project_goal_description": null,
     "leveled": false,
@@ -266,10 +322,15 @@
     "name": "Quantum Satchel",
     "echelon": 1,
     "description": "A woven metal drawstring seals this plain‑looking leather bag, which is affixed with an opal brooch.",
-    "keywords": ["Magic"],
+    "keywords": [
+      "Magic"
+    ],
     "item_prerequisite": "One uncut opal",
     "project_source": "Texts or lore in Caelian",
-    "project_roll_characteristics": ["Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 150,
     "project_goal_description": null,
     "leveled": false,
@@ -290,10 +351,16 @@
     "name": "Unbinder Boots",
     "echelon": 1,
     "description": "A pair of ornately embroidered leather boots are covered in images of broken chains.",
-    "keywords": ["Feet", "Magic"],
+    "keywords": [
+      "Feet",
+      "Magic"
+    ],
     "item_prerequisite": "One battered gold chain of at least fifty links",
     "project_source": "Texts or lore in Caelian",
-    "project_roll_characteristics": ["Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 150,
     "project_goal_description": null,
     "leveled": false,
@@ -314,10 +381,16 @@
     "name": "Bastion Belt",
     "echelon": 2,
     "description": "This thick leather belt features a bone clasp and feels unusually heavy when handled.",
-    "keywords": ["Magic", "Waist"],
+    "keywords": [
+      "Magic",
+      "Waist"
+    ],
     "item_prerequisite": "A giant’s tooth",
     "project_source": "Texts or lore in High Kuric",
-    "project_roll_characteristics": ["Might", "Intuition"],
+    "project_roll_characteristics": [
+      "Might",
+      "Intuition"
+    ],
     "project_goal": 300,
     "project_goal_description": null,
     "leveled": false,
@@ -335,13 +408,23 @@
       {
         "kind": "stat_mod",
         "stat": "stamina",
-        "mods": [{ "value": 3 }],
-        "payload": { "stacks_with_other_treasures": true }
+        "mods": [
+          {
+            "value": 3
+          }
+        ],
+        "payload": {
+          "stacks_with_other_treasures": true
+        }
       },
       {
         "kind": "stat_mod",
         "stat": "stability",
-        "mods": [{ "value": 1 }]
+        "mods": [
+          {
+            "value": 1
+          }
+        ]
       }
     ]
   },
@@ -351,10 +434,16 @@
     "name": "Evilest Eye",
     "echelon": 2,
     "description": "A perfectly preserved eyeball hangs unnervingly from a gold chain.",
-    "keywords": ["Neck", "Psionic"],
+    "keywords": [
+      "Neck",
+      "Psionic"
+    ],
     "item_prerequisite": "An eyeball from a pirate captain who drowned at sea",
     "project_source": "Texts or lore in Caelian",
-    "project_roll_characteristics": ["Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 300,
     "project_goal_description": null,
     "leveled": false,
@@ -375,10 +464,16 @@
     "name": "Insightful Crown",
     "echelon": 2,
     "description": "Shaped of polished crystal, this shimmering circlet shifts through myriad colors in the presence of strong emotions.",
-    "keywords": ["Head", "Psionic"],
+    "keywords": [
+      "Head",
+      "Psionic"
+    ],
     "item_prerequisite": "One measure of pure crystal, a jarred memory of true joy",
     "project_source": "Texts or lore in Variac",
-    "project_roll_characteristics": ["Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 300,
     "project_goal_description": null,
     "leveled": false,
@@ -399,10 +494,15 @@
     "name": "Key of Inquiry",
     "echelon": 2,
     "description": "A foot-long platinum key is set with three opals.",
-    "keywords": ["Psionic"],
+    "keywords": [
+      "Psionic"
+    ],
     "item_prerequisite": "The finger bone of a creature with telepathy, three black opals",
     "project_source": "Texts or lore in Ullorvic",
-    "project_roll_characteristics": ["Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 300,
     "project_goal_description": null,
     "leveled": false,
@@ -423,10 +523,16 @@
     "name": "Mediator’s Charm",
     "echelon": 2,
     "description": "A fancy gold earring is set with a small ruby.",
-    "keywords": ["Head", "Psionic"],
+    "keywords": [
+      "Head",
+      "Psionic"
+    ],
     "item_prerequisite": "The gold nib of a fountain pen used to sign a major treaty or compact, a ruby once worn by a devil",
     "project_source": "Texts or lore in Hyallic",
-    "project_roll_characteristics": ["Reason", "Presence"],
+    "project_roll_characteristics": [
+      "Reason",
+      "Presence"
+    ],
     "project_goal": 300,
     "project_goal_description": null,
     "leveled": false,
@@ -447,10 +553,16 @@
     "name": "Necklace of the Bayou",
     "echelon": 2,
     "description": "A worn leather circlet bears a lizard-shaped pendant of rotting wood.",
-    "keywords": ["Magic", "Neck"],
+    "keywords": [
+      "Magic",
+      "Neck"
+    ],
     "item_prerequisite": "A gallon of swamp water, the limbs of four different newts",
     "project_source": "Texts or lore in Yllryc",
-    "project_roll_characteristics": ["Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 300,
     "project_goal_description": null,
     "leveled": false,
@@ -471,10 +583,15 @@
     "name": "Scannerstone",
     "echelon": 2,
     "description": "This flat, palm-sized triangular stone is decorated with a starfield of tiny gems.",
-    "keywords": ["Psionic"],
+    "keywords": [
+      "Psionic"
+    ],
     "item_prerequisite": "A piece of polished obsidian, seven flawless pea-sized diamonds",
     "project_source": "Texts or lore in Variac",
-    "project_roll_characteristics": ["Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 300,
     "project_goal_description": null,
     "leveled": false,
@@ -495,10 +612,15 @@
     "name": "Stop-’n-Go Coin",
     "echelon": 2,
     "description": "This small, featureless coin is solid green on one side and solid red on the other.",
-    "keywords": ["Magic"],
+    "keywords": [
+      "Magic"
+    ],
     "item_prerequisite": "A coin minted during an earthquake",
     "project_source": "Texts or lore in Caelian",
-    "project_roll_characteristics": ["Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 300,
     "project_goal_description": null,
     "leveled": false,
@@ -519,10 +641,16 @@
     "name": "Bracers of Strife",
     "echelon": 3,
     "description": "Each of these metallic blue bracers is oversized.",
-    "keywords": ["Arms", "Magic"],
+    "keywords": [
+      "Arms",
+      "Magic"
+    ],
     "item_prerequisite": "The severed hand of a giant",
     "project_source": "Texts or lore in Yllryc",
-    "project_roll_characteristics": ["Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": false,
@@ -543,10 +671,16 @@
     "name": "Mask of Oversight",
     "echelon": 3,
     "description": "This angular electrum mask is set with an excess of eye holes and a horrifying maw.",
-    "keywords": ["Head", "Magic"],
+    "keywords": [
+      "Head",
+      "Magic"
+    ],
     "item_prerequisite": "An overmind egg, the skin of any shapeshifter",
     "project_source": "Texts or lore in the First Language",
-    "project_roll_characteristics": ["Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": false,
@@ -567,10 +701,16 @@
     "name": "Mirage Band",
     "echelon": 3,
     "description": "A sable blue circlet shimmers with finely woven threads of sparkling white.",
-    "keywords": ["Head", "Psionic"],
+    "keywords": [
+      "Head",
+      "Psionic"
+    ],
     "item_prerequisite": "A spool of mindspider silk, an ingot of white gold",
     "project_source": "Texts or lore in Higaran",
-    "project_roll_characteristics": ["Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": false,
@@ -591,10 +731,16 @@
     "name": "Nullfield Resonator Ring",
     "echelon": 3,
     "description": "This simple band of copper vibrates slightly when handled.",
-    "keywords": ["Psionic", "Ring"],
+    "keywords": [
+      "Psionic",
+      "Ring"
+    ],
     "item_prerequisite": "A wafer of gallium arsenide",
     "project_source": "Texts or lore in Mindspeech",
-    "project_roll_characteristics": ["Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": false,
@@ -615,10 +761,16 @@
     "name": "Shifting Ring",
     "echelon": 3,
     "description": "This silvery metal ring seems to momentarily vanish when observed from certain angles.",
-    "keywords": ["Psionic", "Ring"],
+    "keywords": [
+      "Psionic",
+      "Ring"
+    ],
     "item_prerequisite": "One-third of a pound of diamond dust, one nugget of pure silver",
     "project_source": "Texts or lore in Khelt",
-    "project_roll_characteristics": ["Agility", "Intuition"],
+    "project_roll_characteristics": [
+      "Agility",
+      "Intuition"
+    ],
     "project_goal": 450,
     "project_goal_description": null,
     "leveled": false,
@@ -639,10 +791,15 @@
     "name": "Gravekeeper’s Lantern",
     "echelon": 4,
     "description": "This ancient wooden tablet is inscribed with eldritch runes and stained with dark blood.",
-    "keywords": ["Magic"],
+    "keywords": [
+      "Magic"
+    ],
     "item_prerequisite": "The powdered jawbone of a powerful spellcaster, wood from a tree marking multiple graves",
     "project_source": "Texts or lore in Hyrallic",
-    "project_roll_characteristics": ["Reason", "Intuition"],
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
     "project_goal": 600,
     "project_goal_description": null,
     "leveled": false,
@@ -663,10 +820,16 @@
     "name": "Psi Blade",
     "echelon": 4,
     "description": "This wide metal bracer is set with a glowing gemstone.",
-    "keywords": ["Arms", "Psionic"],
+    "keywords": [
+      "Arms",
+      "Psionic"
+    ],
     "item_prerequisite": "Steel alloy, one fine-cut topaz",
     "project_source": "Texts or lore in Mindspeech",
-    "project_roll_characteristics": ["Agility", "Presence"],
+    "project_roll_characteristics": [
+      "Agility",
+      "Presence"
+    ],
     "project_goal": 600,
     "project_goal_description": null,
     "leveled": false,
@@ -680,5 +843,467 @@
     "level_9": null,
     "enchanted": false,
     "enchants": []
+  },
+  {
+    "id": "abyssal_map_ink",
+    "type": "trinket",
+    "name": "Abyssal Map Ink",
+    "echelon": 2,
+    "description": "The puddle of living ink snarls and snaps while it feeds on parchment and smooth surfaces. It spreads itself across its meal until it resembles a flat, top-down view of its immediate surroundings, wriggling and readjusting itself wherever it goes.",
+    "keywords": [
+      "Magic"
+    ],
+    "item_prerequisite": "A vial of pitling spit, and a jar of human blood",
+    "project_source": "Texts or lore in Tholl",
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
+    "project_goal": 300,
+    "project_goal_description": null,
+    "leveled": false,
+    "effect": {
+      "effect_description": "While the ink is spread on a smooth surface or a piece of parchment paper, it turns into a size 1T or 1S map. This map grants you a double edge on tests you make using the Navigate skill. If you have the map active before the start of an encounter, you can move up to three allies (including yourself) up to 3 squares away from the starting area.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": null,
+    "level_5": null,
+    "level_9": null,
+    "enchanted": false,
+    "enchants": [],
+    "special": null
+  },
+  {
+    "id": "bandana_of_invisibility",
+    "type": "trinket",
+    "name": "Bandana of Invisibility",
+    "echelon": 3,
+    "description": "Although you see nothing before you, your hands can discern an invisible scrap of cloth.",
+    "keywords": [
+      "Neck",
+      "Psionic"
+    ],
+    "item_prerequisite": "Lightbender fur",
+    "project_source": "Texts or lore in Hyrallic",
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition",
+      "Presence"
+    ],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": false,
+    "effect": {
+      "effect_description": "Only a beastheart's companion or an animal can wear this bandanna. While wearing this bandanna, the creature is invisible. When the creature uses an ability that deals damage, they become visible until the start of their next turn.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": null,
+    "level_5": null,
+    "level_9": null,
+    "enchanted": false,
+    "enchants": [],
+    "special": null
+  },
+  {
+    "id": "battle_wings",
+    "type": "trinket",
+    "name": "Battle Wings",
+    "echelon": 4,
+    "description": "These gently undulating wings affix themselves to a creature's shoulders.",
+    "keywords": [
+      "Magic",
+      "Neck"
+    ],
+    "item_prerequisite": "A creature's feather given as a gift by the creature",
+    "project_source": "Texts or lore in Khelt and Yllric",
+    "project_roll_characteristics": [
+      "Agility",
+      "Intuition"
+    ],
+    "project_goal": 600,
+    "project_goal_description": null,
+    "leveled": false,
+    "effect": {
+      "effect_description": "Only a beastheart's companion or an animal can wear this item. While wearing it, the creature grows feathered wings if they don't already have wings and can fly. If the creature can already fly, they gain a +3 bonus to their speed while flying.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": null,
+    "level_5": null,
+    "level_9": null,
+    "enchanted": false,
+    "enchants": [],
+    "special": null
+  },
+  {
+    "id": "cross_of_the_scorned_puppeteer",
+    "type": "trinket",
+    "name": "Cross of the Scorned Puppeteer",
+    "echelon": 3,
+    "description": "This shiny black marionette cross reveals a masked figure standing in its reflection where its wielder should be.",
+    "keywords": [
+      "Magic",
+      "Psionic"
+    ],
+    "item_prerequisite": "A spool of silk, a plank of stage wood, and the soul of a famous performer",
+    "project_source": "A record of a soulbinder ritual in Anjali",
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": false,
+    "effect": {
+      "effect_description": "While holding the cross, it emits faint strings made of light that you can control with your mind. Whenever an enemy minion is reduced to 0 Stamina within 5 squares of you, you can use a free triggered action to attach a string of light to their corpse and command an illusory double of them until the end of the encounter. The minion is organized into the cross's squad of minions with the same name under your command (up to a maximum of six minions). On each of your turns, you can direct the squad to move and use a main action while they're within 5 squares of you. You can also pull the strings of your allies to keep them out of harm's way. Whenever an ally takes damage within 5 squares of you, you can use a triggered action to vertically pull them 5 squares (ignoring stability) and halve the damage.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": null,
+    "level_5": null,
+    "level_9": null,
+    "enchanted": false,
+    "enchants": [],
+    "special": "If you are a summoner holding the cross, you can organize the minions gained with the cross into one of your class's squads instead."
+  },
+  {
+    "id": "crystallized_essence",
+    "type": "trinket",
+    "name": "Crystallized Essence",
+    "echelon": 3,
+    "description": "A storm rages at the center of this color-shifting shard of rock.",
+    "keywords": [
+      "Magic"
+    ],
+    "item_prerequisite": "The remains of an elemental",
+    "project_source": "Records in Rhorvic",
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": false,
+    "effect": {
+      "effect_description": "While holding crystallized essence, the distance of your ranged magic abilities increases by 5. Any creatures you create or summon using magic have their Stamina increased by one-third of their Stamina maximum. Additionally, you can shatter and destroy the crystallized essence as a maneuver to immediately give yourself 5 essence.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": null,
+    "level_5": null,
+    "level_9": null,
+    "enchanted": false,
+    "enchants": [],
+    "special": "The treasure must be crafted within a cave in Quintessence"
+  },
+  {
+    "id": "grasp_of_the_chained_hand",
+    "type": "trinket",
+    "name": "Grasp of the Chained Hand",
+    "echelon": 2,
+    "description": "A gauntlet of loose chains rattles, shackled to each of the user's fingers. They clatter whenever magic surges through them.",
+    "keywords": [
+      "Arms",
+      "Magic"
+    ],
+    "item_prerequisite": "Blood-soaked chains that restrained a demon for at least 30 days",
+    "project_source": "Texts or lore in the Tholl",
+    "project_roll_characteristics": [
+      "Reason",
+      "Presence"
+    ],
+    "project_goal": 300,
+    "project_goal_description": null,
+    "leveled": false,
+    "effect": {
+      "effect_description": "While wearing this gauntlet, your ranged free strikes have the Magic keyword and if the target has P < AVERAGE, they are magically chained to you until the end of their next turn. While chained, the target can't move farther away from you, and you can use a maneuver to either vertically pull the target up to 3 squares or shift yourself up to 3 squares through the air toward the target.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": null,
+    "level_5": null,
+    "level_9": null,
+    "enchanted": false,
+    "enchants": [],
+    "special": "If you are a summoner, you regain the use of your standard ranged free strike while wearing this gauntlet."
+  },
+  {
+    "id": "hagbasket",
+    "type": "trinket",
+    "name": "Hagbasket",
+    "echelon": 4,
+    "description": "This throne woven from wood, hair, and metal floats several feet above the ground. The gentle humming it makes while it soars sounds reminiscent of a hag's cackle.",
+    "keywords": [
+      "Magic"
+    ],
+    "item_prerequisite": "A mundane broom, a hag's hut, and a hag's kiss",
+    "project_source": "Texts or lore in Khelt",
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
+    "project_goal": 600,
+    "project_goal_description": null,
+    "leveled": false,
+    "effect": {
+      "effect_description": "The hagbasket can be used as a size 2 mount. Its speed is equal to its rider's speed, and it can fly and hover. While riding in the hagbasket, power rolls made against you have a double edge. However, you can use a free triggered action when a power roll made against you gets a tier 3 result to halve the damage.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": null,
+    "level_5": null,
+    "level_9": null,
+    "enchanted": false,
+    "enchants": [],
+    "special": "If you are a summoner riding in the hagbasket, you can use a maneuver to enable a willing ally within your Summoner's Range to use Minion Bridge using your minions."
+  },
+  {
+    "id": "precious_collar",
+    "type": "trinket",
+    "name": "Precious Collar",
+    "echelon": 1,
+    "description": "This gold collar is bedazzled with semiprecious gems spelling out a cute pet name.",
+    "keywords": [
+      "Magic",
+      "Neck"
+    ],
+    "item_prerequisite": "One collar worn by a royal pet",
+    "project_source": "Texts or lore in Vaslorian",
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
+    "project_goal": 150,
+    "project_goal_description": null,
+    "leveled": false,
+    "effect": {
+      "effect_description": "Only a beastheart's companion can wear this collar. As a free maneuver, the companion can shrink to size 1T or grow back to their original size. While reduced in size, the companion gains an edge on tests made to hide, sneak, and disguise themself as an ordinary animal.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": null,
+    "level_5": null,
+    "level_9": null,
+    "enchanted": false,
+    "enchants": [],
+    "special": null
+  },
+  {
+    "id": "ruby_ring_of_recall",
+    "type": "trinket",
+    "name": "Ruby Ring of Recall",
+    "echelon": 1,
+    "description": "A dim light gleams in the heart of this ring's gem.",
+    "keywords": [
+      "Magic",
+      "Ring"
+    ],
+    "item_prerequisite": "A ruby retrieved from an ancient sky elf ruin",
+    "project_source": "Texts or lore in Hyrallic",
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition",
+      "Presence"
+    ],
+    "project_goal": 150,
+    "project_goal_description": null,
+    "leveled": false,
+    "effect": {
+      "effect_description": "While wearing this ring, you can pull a willing, unconscious, or dead creature within 2 squares into the ring's ruby as a maneuver. If the creature inside the ring is conscious, they can see and hear the ring's surroundings. Either you or the creature inside the ring can use a maneuver to recall the creature from the ring, causing the creature to appear in an unoccupied space within 2 squares. A creature inside the ring can't act except to exit the ring.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": null,
+    "level_5": null,
+    "level_9": null,
+    "enchanted": false,
+    "enchants": [],
+    "special": null
+  },
+  {
+    "id": "snakerattle_bangle",
+    "type": "trinket",
+    "name": "Snakerattle Bangle",
+    "echelon": 1,
+    "description": "This loose-fitting, scaley bangle shifts and slithers while worn. It emits a bone-chilling rattle each time it hits its user's wrist.",
+    "keywords": [
+      "Arms",
+      "Magic"
+    ],
+    "item_prerequisite": "The tail of a size 3 or larger rattlesnake",
+    "project_source": "Texts or lore in Anjali",
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
+    "project_goal": 150,
+    "project_goal_description": null,
+    "leveled": false,
+    "effect": {
+      "effect_description": "While wearing this bangle, your melee free strikes inflict I < AVERAGE frightened (EoT). The potency increases by 1 if you have an edge on the power roll.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": null,
+    "level_5": null,
+    "level_9": null,
+    "enchanted": false,
+    "enchants": [],
+    "special": "If you are a summoner, you regain the use of your standard melee free strike while wearing this bangle."
+  },
+  {
+    "id": "speaking_scarab",
+    "type": "trinket",
+    "name": "Speaking Scarab",
+    "echelon": 1,
+    "description": "This black leather necklace is set with a golden representation of a scarab beetle.",
+    "keywords": [
+      "Neck",
+      "Psionic"
+    ],
+    "item_prerequisite": "Jewelry worn by a voiceless talker",
+    "project_source": "Texts or lore in Variac",
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition",
+      "Presence"
+    ],
+    "project_goal": 150,
+    "project_goal_description": null,
+    "leveled": false,
+    "effect": {
+      "effect_description": "Only a beastheart's companion or an animal can wear this necklace. While wearing this necklace, the creature's Reason score is 0 unless it would otherwise be higher. The creature can speak any language they know, and another creature who knows a language can teach that language to the creature as a respite activity. When the creature speaks, their voice issues from the scarab on the necklace.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": null,
+    "level_5": null,
+    "level_9": null,
+    "enchanted": false,
+    "enchants": [],
+    "special": null
+  },
+  {
+    "id": "thunder_chariot",
+    "type": "trinket",
+    "name": "Thunder Chariot",
+    "echelon": 2,
+    "description": "A porcelain cart with golden filigree and wheels that crackle with electricity.",
+    "keywords": [
+      "Magic"
+    ],
+    "item_prerequisite": "Twenty lightning bolts frozen in time",
+    "project_source": "Texts or lore in the First Language",
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
+    "project_goal": 300,
+    "project_goal_description": null,
+    "leveled": false,
+    "effect": {
+      "effect_description": "The thunder chariot can be used as a size 2 mount. Its speed is equal to its rider's speed + 3. While riding in the thunder chariot, you have lightning immunity 5. An ally can use their maneuver while adjacent to you to move up to their speed, pulling you along.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": null,
+    "level_5": null,
+    "level_9": null,
+    "enchanted": false,
+    "enchants": [],
+    "special": null
+  },
+  {
+    "id": "warbanner_of_pride",
+    "type": "trinket",
+    "name": "Warbanner of Pride",
+    "echelon": 3,
+    "description": "A large banner billows from this tall flagpole. Its heraldry depicts a three-headed lion covered in wounds but still standing.",
+    "keywords": [
+      "Magic"
+    ],
+    "item_prerequisite": "A king's cape and a solid gold flagpole",
+    "project_source": "Texts or lore in Caelian",
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": false,
+    "effect": {
+      "effect_description": "While holding the banner, you have a +1 bonus to saving throws and resisting potencies. At the end of each of your turns, each ally within 10 squares of you can make a saving throw against one effect they are suffering that is ended by a saving throw.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": null,
+    "level_5": null,
+    "level_9": null,
+    "enchanted": false,
+    "enchants": [],
+    "special": null
+  },
+  {
+    "id": "warbanner_of_wrath",
+    "type": "trinket",
+    "name": "Warbanner of Wrath",
+    "echelon": 4,
+    "description": "A large banner billows from this tall flagpole. Its heraldry depicts a dragon breathing fire with outstretched wings covered in holes and tears.",
+    "keywords": [
+      "Magic"
+    ],
+    "item_prerequisite": "A king's deathbed veil and a solid brass flagpole",
+    "project_source": "Texts or lore in Caelian",
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition"
+    ],
+    "project_goal": 600,
+    "project_goal_description": null,
+    "leveled": false,
+    "effect": {
+      "effect_description": "You can choose to regain 1 Recovery at the end of every combat encounter while holding the banner. Once per turn when you or an ally within 10 squares of you makes a melee strike, the strike can deal extra damage based on the number of Recoveries the striker has left. The strike deals +1 damage if the striker has more than half their Recoveries remaining, +2 damage if the striker has half or fewer but still at least one of their Recoveries remaining, and +5 damage if the striker has no Recoveries.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": null,
+    "level_5": null,
+    "level_9": null,
+    "enchanted": false,
+    "enchants": [],
+    "special": null
+  },
+  {
+    "id": "werewolf_tooth_pendant",
+    "type": "trinket",
+    "name": "Werewolf Tooth Pendant",
+    "echelon": 2,
+    "description": "The blood encrusting this tooth can never be washed off.",
+    "keywords": [
+      "Magic",
+      "Neck"
+    ],
+    "item_prerequisite": "An incisor from a werewolf",
+    "project_source": "Sagas in High Kuric",
+    "project_roll_characteristics": [
+      "Might",
+      "Intuition"
+    ],
+    "project_goal": 300,
+    "project_goal_description": null,
+    "leveled": false,
+    "effect": {
+      "effect_description": "You must be a beastheart to wear this necklace. While wearing this necklace, you can use a free maneuver and spend 1 ferocity during combat to shapeshift into a hybrid form that grants you your companion's physical characteristics. Your hybrid form lasts until the end of the encounter or you revert to your true form as a free maneuver. While in hybrid form, you can use abilities with the Companion keyword, your speed increases to your companion's speed (if it is higher), and you gain your companion's movement types and damage immunities.",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": null,
+    "level_5": null,
+    "level_9": null,
+    "enchanted": false,
+    "enchants": [],
+    "special": null
   }
 ]

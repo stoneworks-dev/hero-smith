@@ -2445,5 +2445,119 @@
     "signature": false,
     "role": "support",
     "advancement_level": 10
+  },
+  {
+    "type": "ability",
+    "id": "devil_detective__blightwash",
+    "name": "Blightwash",
+    "keywords": "Area/Magic",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 5",
+    "targets": "One of the detective's minions",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "5 corruption damage; M < WEAK weakened (save ends)",
+        "tier2": "8 corruption damage; M < AVERAGE weakened (save ends)",
+        "tier3": "10 corruption damage; M < STRONG weakened (save ends)"
+      }
+    ],
+    "effect": "The minion explodes. Make a power roll, targeting each enemy within 2 squares of the target. The area within 2 squares of the exploded minion is covered in blight until the end of the encounter. Abilities used against an enemy in the area have an edge.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false
+  },
+  {
+    "type": "ability",
+    "id": "devil_detective__cleansing_flense",
+    "name": "Cleansing Flense",
+    "keywords": "Area/Magic",
+    "action_type": "maneuver",
+    "trigger_text": "",
+    "distance": "5 burst",
+    "targets": "Each of the detective's minions in the area",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "Each target moves up to their speed toward an ally. Each ally within line of effect of the detective can give one EoT or save ends effect they're affected by to an adjacent minion and end that effect on themself. Until the end of the encounter, whenever an enemy kills a target and has P < STRONG, they receive all EoT or save ends effects the target was affected by.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false
+  },
+  {
+    "type": "ability",
+    "id": "devil_detective__diabolic_probe",
+    "name": "Diabolic Probe",
+    "keywords": "Magic/Ranged/Strike",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "One creature or object",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "1 damage",
+        "tier2": "3 damage",
+        "tier3": "5 damage; R < STRONG slowed (save ends)"
+      }
+    ],
+    "effect": "The target takes an additional 1 damage for each demon adjacent to them.",
+    "special_effect": "",
+    "encounter": false,
+    "signature": true
+  },
+  {
+    "type": "ability",
+    "id": "devil_detective__soul_sleuth",
+    "name": "Soul Sleuth",
+    "keywords": "Area/Magic",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "4 cube within 5",
+    "targets": "Each enemy or object in the area",
+    "power_roll": "Power Roll + highest characteristic",
+    "tier_effects": [
+      {
+        "tier1": "2 damage; A < WEAK bleeding (save ends)",
+        "tier2": "4 damage; A < AVERAGE bleeding (save ends)",
+        "tier3": "5 damage; A < STRONG bleeding (save ends)"
+      }
+    ],
+    "effect": "Any enemy that was hiding in the area is revealed. The area is now difficult terrain for enemies.",
+    "special_effect": "The detective can instantly kill one or more of their minions to give themself a double edge on the power roll.",
+    "encounter": true,
+    "signature": false
+  },
+  {
+    "type": "ability",
+    "id": "devil_detective__summon_gorrres",
+    "name": "Summon Gorrres",
+    "keywords": "Magic/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Special",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The detective summons two gorrres into unoccupied spaces within distance. On each of the detective's turns, they direct the squad of gorrres to move and use a main action.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false
+  },
+  {
+    "type": "ability",
+    "id": "devil_detective__summon_violents",
+    "name": "Summon Violents",
+    "keywords": "Magic/Ranged",
+    "action_type": "main action",
+    "trigger_text": "",
+    "distance": "Ranged 10",
+    "targets": "Special",
+    "power_roll": "",
+    "tier_effects": [],
+    "effect": "The detective summons 3 violents into unoccupied spaces within distance. On each of the detective's turns, they direct the squad of violents to move and use a main action.",
+    "special_effect": "",
+    "encounter": true,
+    "signature": false
   }
 ]

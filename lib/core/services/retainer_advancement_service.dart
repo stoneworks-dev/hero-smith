@@ -172,10 +172,9 @@ class RetainerAdvancementService {
   }
 
   /// Available retainer-specific ability IDs at a given advancement level.
-  /// The player picks ONE from either this list or the role's ability.
+  /// The player picks ONE from either these options or the role's ability.
   List<String> retainerAbilityOptions(Retainer template, int level) {
-    final abilityId = template.advancementAbilities[level];
-    return abilityId != null ? [abilityId] : [];
+    return template.advancementAbilities[level] ?? const [];
   }
 
   // ---------------------------------------------------------------------------

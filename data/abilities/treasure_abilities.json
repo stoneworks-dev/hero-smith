@@ -142,5 +142,29 @@
     ],
     "effect": "The lantern can temporarily trap a nonhostile spirit of the dead—either an incorporeal undead or the wandering spirit of a creature who died within the last 30 days—allowing you to interrogate them. Trapping a spirit requires you to be within 10 squares of them and succeed on a hard Intuition test. A trapped spirit remains in the lantern for 10 minutes. They remember being trapped and might become hostile thereafter.",
     "special_effect": null
+  },
+  {
+    "type": "ability",
+    "id": "scorpion_tail",
+    "name": "Scorpion Tail",
+    "level": null,
+    "resource": null,
+    "resource_value": null,
+    "story_text": "Your scorpion tail lashes out.",
+    "keywords": "Melee, Strike",
+    "action_type": "maneuver",
+    "trigger_text": null,
+    "distance": "Melee 2",
+    "targets": "One creature",
+    "power_roll": null,
+    "tier_effects": [
+      {
+        "tier1": null,
+        "tier2": null,
+        "tier3": null
+      }
+    ],
+    "effect": "The target takes poison damage equal to 3 + your Might score.",
+    "special_effect": null
   }
 ]

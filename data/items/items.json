@@ -6,9 +6,7 @@
     "source": "seed",
     "category": "project_material",
     "description": "A rare crystal imbued with elemental wind energy, required for constructing an airship.",
-    "used_by_projects": [
-      "build_airship"
-    ]
+    "used_by_projects": ["build_airship"]
   },
   {
     "id": "engineers_guild_approval",
@@ -17,9 +15,7 @@
     "source": "seed",
     "category": "project_material",
     "description": "Three writs of approval, from an engineers' guild, a masons' guild, and a guards' guild. Required for road construction or repair.",
-    "used_by_projects": [
-      "build_or_repair_road"
-    ]
+    "used_by_projects": ["build_or_repair_road"]
   },
   {
     "id": "spatial_navigator",
@@ -28,9 +24,7 @@
     "source": "seed",
     "category": "project_material",
     "description": "A mystical device attuned to spatial magic, required for crafting a teleportation platform.",
-    "used_by_projects": [
-      "craft_teleportation_platform"
-    ]
+    "used_by_projects": ["craft_teleportation_platform"]
   },
   {
     "id": "fishing_tackle_simple",
@@ -39,9 +33,7 @@
     "source": "seed",
     "category": "equipment",
     "description": "String, hook, and worm. Used for catching common freshwater fish. Project goal: 30.",
-    "used_by_projects": [
-      "fishing"
-    ]
+    "used_by_projects": ["fishing"]
   },
   {
     "id": "fishing_tackle_professional",
@@ -50,9 +42,7 @@
     "source": "seed",
     "category": "equipment",
     "description": "Rod, reel, and lures. Used for catching sport fish and larger specimens. Project goal: 45.",
-    "used_by_projects": [
-      "fishing"
-    ]
+    "used_by_projects": ["fishing"]
   },
   {
     "id": "fishing_tackle_specialized",
@@ -61,9 +51,7 @@
     "source": "seed",
     "category": "equipment",
     "description": "Nets, traps, and deep-water gear. Used for catching rare or exotic fish. Project goal: 60.",
-    "used_by_projects": [
-      "fishing"
-    ]
+    "used_by_projects": ["fishing"]
   },
   {
     "id": "fishing_tackle_magical",
@@ -72,9 +60,7 @@
     "source": "seed",
     "category": "equipment",
     "description": "Enchanted lures and divination rods. Used for catching supernatural fish with special properties. Project goal: 90.",
-    "used_by_projects": [
-      "fishing"
-    ]
+    "used_by_projects": ["fishing"]
   },
   {
     "id": "common_cooking_ingredient",
@@ -83,9 +69,7 @@
     "source": "seed",
     "category": "consumable",
     "description": "Flour, carrots, beef, and so forth. Used for perfecting modern recipes.",
-    "used_by_projects": [
-      "perfect_new_recipe_modern"
-    ]
+    "used_by_projects": ["perfect_new_recipe_modern"]
   },
   {
     "id": "key_cooking_ingredient",
@@ -94,9 +78,7 @@
     "source": "seed",
     "category": "consumable",
     "description": "Starfruit, kindleseeds, oarfish, and so forth. Used for perfecting vintage or home recipes.",
-    "used_by_projects": [
-      "perfect_new_recipe_vintage_or_home"
-    ]
+    "used_by_projects": ["perfect_new_recipe_vintage_or_home"]
   },
   {
     "id": "rare_cooking_ingredient",
@@ -105,9 +87,7 @@
     "source": "seed",
     "category": "consumable",
     "description": "Honeylilies, steel apples, and so forth. Rare or extinct ingredients used for perfecting ancient or lost recipes.",
-    "used_by_projects": [
-      "perfect_new_recipe_ancient_or_lost"
-    ]
+    "used_by_projects": ["perfect_new_recipe_ancient_or_lost"]
   },
   {
     "id": "prereq_ancient_bronze_gear_covered_in_indecipherable_runes",
@@ -116,9 +96,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "displacer"
-    ]
+    "used_by_projects": ["displacer"]
   },
   {
     "id": "prereq_ballad_of_heroism",
@@ -127,9 +105,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "kings_roar"
-    ]
+    "used_by_projects": ["kings_roar"]
   },
   {
     "id": "prereq_bar_of_lead_laced_with_starmetal",
@@ -138,9 +114,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "deadweight"
-    ]
+    "used_by_projects": ["deadweight"]
   },
   {
     "id": "prereq_battered_gold_chain_of_at_least_fifty_links",
@@ -149,9 +123,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "unbinder_boots"
-    ]
+    "used_by_projects": ["unbinder_boots"]
   },
   {
     "id": "prereq_blessed_parchment",
@@ -160,9 +132,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "page_from_the_infinite_library_solaris"
-    ]
+    "used_by_projects": ["page_from_the_infinite_library_solaris"]
   },
   {
     "id": "prereq_branch_of_an_ancient_evergreen",
@@ -171,9 +141,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "icemaker_maul"
-    ]
+    "used_by_projects": ["icemaker_maul"]
   },
   {
     "id": "prereq_breath_of_a_mystic_sage_captured_at_sunrise",
@@ -182,9 +150,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "breath_of_dawn"
-    ]
+    "used_by_projects": ["breath_of_dawn"]
   },
   {
     "id": "prereq_brief_period_of_contact_with_the_creature_the_effigy_is_tied_to",
@@ -193,9 +159,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "personal_effigy"
-    ]
+    "used_by_projects": ["personal_effigy"]
   },
   {
     "id": "prereq_broken_contract",
@@ -204,9 +168,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "hellcharger_helm"
-    ]
+    "used_by_projects": ["hellcharger_helm"]
   },
   {
     "id": "prereq_captured_breath_of_a_god",
@@ -215,9 +177,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "breath_of_creation"
-    ]
+    "used_by_projects": ["breath_of_creation"]
   },
   {
     "id": "prereq_chocolate_made_by_a_gnome_confectioner",
@@ -226,9 +186,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "chocolate_of_immovability"
-    ]
+    "used_by_projects": ["chocolate_of_immovability"]
   },
   {
     "id": "prereq_cloak_worn_by_a_murdered_monarch",
@@ -237,9 +195,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "revengers_wrap"
-    ]
+    "used_by_projects": ["revengers_wrap"]
   },
   {
     "id": "prereq_coin_minted_during_an_earthquake",
@@ -248,9 +204,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "stop_n_go_coin"
-    ]
+    "used_by_projects": ["stop_n_go_coin"]
   },
   {
     "id": "prereq_cotton_bolt_soaked_in_the_blood_of_six_adventurers",
@@ -259,9 +213,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "bloody_hand_wraps"
-    ]
+    "used_by_projects": ["bloody_hand_wraps"]
   },
   {
     "id": "prereq_cup_of_algae_from_glacial_water",
@@ -270,9 +222,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "purified_jelly"
-    ]
+    "used_by_projects": ["purified_jelly"]
   },
   {
     "id": "prereq_diamond_ring",
@@ -281,9 +231,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "abjurers_bastion"
-    ]
+    "used_by_projects": ["abjurers_bastion"]
   },
   {
     "id": "prereq_iron_bar_cooled_in_a_glacier",
@@ -292,9 +240,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "icemaker_maul"
-    ]
+    "used_by_projects": ["icemaker_maul"]
   },
   {
     "id": "prereq_dagger",
@@ -303,9 +249,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "knife_of_nine"
-    ]
+    "used_by_projects": ["knife_of_nine"]
   },
   {
     "id": "prereq_expired_contract",
@@ -314,9 +258,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "gallios_visiting_card"
-    ]
+    "used_by_projects": ["gallios_visiting_card"]
   },
   {
     "id": "prereq_eyeball_from_a_pirate_captain_who_drowned_at_sea",
@@ -325,9 +267,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "evilest_eye"
-    ]
+    "used_by_projects": ["evilest_eye"]
   },
   {
     "id": "prereq_eye_of_a_time_raider_who_died_valiantly_in_battle",
@@ -336,9 +276,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "kuranzoi_prismscale"
-    ]
+    "used_by_projects": ["kuranzoi_prismscale"]
   },
   {
     "id": "prereq_snapdragon_seed",
@@ -347,9 +285,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "snapdragon"
-    ]
+    "used_by_projects": ["snapdragon"]
   },
   {
     "id": "prereq_finecut_topaz",
@@ -358,9 +294,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "psi_blade"
-    ]
+    "used_by_projects": ["psi_blade"]
   },
   {
     "id": "prereq_finger_bone_of_a_creature_with_telepathy",
@@ -369,9 +303,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "key_of_inquiry"
-    ]
+    "used_by_projects": ["key_of_inquiry"]
   },
   {
     "id": "prereq_rabid_honey_badger_pelt",
@@ -380,9 +312,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "adaptive_second_skin_of_toxins"
-    ]
+    "used_by_projects": ["adaptive_second_skin_of_toxins"]
   },
   {
     "id": "prereq_folded_metal_blade_infused_with_blood",
@@ -391,9 +321,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "wetwork"
-    ]
+    "used_by_projects": ["wetwork"]
   },
   {
     "id": "prereq_iron_bar_coated_in_magma_slag",
@@ -402,9 +330,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "molten_constrictor"
-    ]
+    "used_by_projects": ["molten_constrictor"]
   },
   {
     "id": "prereq_swamp_water",
@@ -413,9 +339,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "necklace_of_the_bayou"
-    ]
+    "used_by_projects": ["necklace_of_the_bayou"]
   },
   {
     "id": "prereq_giant_scarab_beetle_carapace",
@@ -424,9 +348,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "grand_scarab"
-    ]
+    "used_by_projects": ["grand_scarab"]
   },
   {
     "id": "prereq_giants_tooth",
@@ -435,9 +357,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "bastion_belt"
-    ]
+    "used_by_projects": ["bastion_belt"]
   },
   {
     "id": "prereq_gold_nib_of_a_fountain_pen_used_to_sign_a_major_treaty_or_compact",
@@ -446,9 +366,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "mediators_charm"
-    ]
+    "used_by_projects": ["mediators_charm"]
   },
   {
     "id": "prereq_ground_sapphire",
@@ -457,9 +375,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "bottled_paradox"
-    ]
+    "used_by_projects": ["bottled_paradox"]
   },
   {
     "id": "prereq_grub_steeped_in_voiceless_talker_bile",
@@ -468,9 +384,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "anamorphic_larva"
-    ]
+    "used_by_projects": ["anamorphic_larva"]
   },
   {
     "id": "prereq_seagrass",
@@ -479,9 +393,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "growth_potion"
-    ]
+    "used_by_projects": ["growth_potion"]
   },
   {
     "id": "prereq_handful_of_shattered_quartz",
@@ -490,9 +402,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "brittlebreaker"
-    ]
+    "used_by_projects": ["brittlebreaker"]
   },
   {
     "id": "prereq_heart_strings_of_a_tapir",
@@ -501,9 +411,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "third_eye_seeker"
-    ]
+    "used_by_projects": ["third_eye_seeker"]
   },
   {
     "id": "prereq_humanoid_femur",
@@ -512,9 +420,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "deadweight"
-    ]
+    "used_by_projects": ["deadweight"]
   },
   {
     "id": "prereq_humanoids_shadow_disconnected_from_its_source",
@@ -523,9 +429,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "flameshade_gloves"
-    ]
+    "used_by_projects": ["flameshade_gloves"]
   },
   {
     "id": "prereq_imps_tongue",
@@ -534,9 +438,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "imps_tongue"
-    ]
+    "used_by_projects": ["imps_tongue"]
   },
   {
     "id": "prereq_incense_distilled_from_the_essence_of_ether",
@@ -545,9 +447,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "ether_fueled_vessel"
-    ]
+    "used_by_projects": ["ether_fueled_vessel"]
   },
   {
     "id": "prereq_ingot_of_steel",
@@ -556,9 +456,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "hellcharger_helm"
-    ]
+    "used_by_projects": ["hellcharger_helm"]
   },
   {
     "id": "prereq_ingot_of_white_gold",
@@ -567,9 +465,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "mirage_band"
-    ]
+    "used_by_projects": ["mirage_band"]
   },
   {
     "id": "prereq_jar_of_captured_thunder",
@@ -578,9 +474,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "thunderhead_bident"
-    ]
+    "used_by_projects": ["thunderhead_bident"]
   },
   {
     "id": "prereq_jar_of_lightning",
@@ -589,9 +483,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "lightning_treads"
-    ]
+    "used_by_projects": ["lightning_treads"]
   },
   {
     "id": "prereq_jarred_memory_of_true_joy",
@@ -600,9 +492,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "insightful_crown"
-    ]
+    "used_by_projects": ["insightful_crown"]
   },
   {
     "id": "prereq_large_obsidian_disk",
@@ -611,9 +501,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "vial_of_ethereal_attack"
-    ]
+    "used_by_projects": ["vial_of_ethereal_attack"]
   },
   {
     "id": "prereq_large_vessel_of_astral_ice",
@@ -622,9 +510,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "star_hunter"
-    ]
+    "used_by_projects": ["star_hunter"]
   },
   {
     "id": "prereq_lash_used_to_punish_a_mutineer",
@@ -633,9 +519,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "authoritys_end"
-    ]
+    "used_by_projects": ["authoritys_end"]
   },
   {
     "id": "prereq_laughter_of_a_young_hero",
@@ -644,9 +528,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "restorative_of_the_bright_court"
-    ]
+    "used_by_projects": ["restorative_of_the_bright_court"]
   },
   {
     "id": "prereq_leftover_carcass_of_a_lachomp_meal",
@@ -655,9 +537,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "lachomp_tooth"
-    ]
+    "used_by_projects": ["lachomp_tooth"]
   },
   {
     "id": "prereq_limb_of_a_newt",
@@ -666,9 +546,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "necklace_of_the_bayou"
-    ]
+    "used_by_projects": ["necklace_of_the_bayou"]
   },
   {
     "id": "prereq_measure_of_pure_crystal",
@@ -677,9 +555,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "insightful_crown"
-    ]
+    "used_by_projects": ["insightful_crown"]
   },
   {
     "id": "prereq_months_lifespan_from_a_willing_creature",
@@ -688,9 +564,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "bottled_paradox"
-    ]
+    "used_by_projects": ["bottled_paradox"]
   },
   {
     "id": "prereq_nightblooming_flower_petals",
@@ -699,9 +573,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "lance_of_the_sundered_star"
-    ]
+    "used_by_projects": ["lance_of_the_sundered_star"]
   },
   {
     "id": "prereq_nugget_of_pure_silver",
@@ -710,9 +582,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "shifting_ring"
-    ]
+    "used_by_projects": ["shifting_ring"]
   },
   {
     "id": "prereq_steel_arrowhead_stained_with_blood",
@@ -721,9 +591,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "steeltongue"
-    ]
+    "used_by_projects": ["steeltongue"]
   },
   {
     "id": "prereq_diamond_dust",
@@ -732,9 +600,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "shifting_ring"
-    ]
+    "used_by_projects": ["shifting_ring"]
   },
   {
     "id": "prereq_condensed_dream",
@@ -743,9 +609,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "breath_of_creation"
-    ]
+    "used_by_projects": ["breath_of_creation"]
   },
   {
     "id": "prereq_costmary_leave",
@@ -754,9 +618,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "healing_potion"
-    ]
+    "used_by_projects": ["healing_potion"]
   },
   {
     "id": "prereq_demon_honey",
@@ -765,9 +627,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "buzz_balm"
-    ]
+    "used_by_projects": ["buzz_balm"]
   },
   {
     "id": "prereq_ferrous_metal",
@@ -776,9 +636,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "telemagnet"
-    ]
+    "used_by_projects": ["telemagnet"]
   },
   {
     "id": "prereq_mammothivory_shards",
@@ -787,9 +645,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "chaldorb"
-    ]
+    "used_by_projects": ["chaldorb"]
   },
   {
     "id": "prereq_primordial_ice",
@@ -798,9 +654,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "chaldorb"
-    ]
+    "used_by_projects": ["chaldorb"]
   },
   {
     "id": "prereq_sap_from_a_tree_damaged_by_psionic_fire",
@@ -809,9 +663,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "concealment_potion"
-    ]
+    "used_by_projects": ["concealment_potion"]
   },
   {
     "id": "prereq_scrapings_from_a_covens_used_cauldron",
@@ -820,9 +672,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "stygian_liquor"
-    ]
+    "used_by_projects": ["stygian_liquor"]
   },
   {
     "id": "prereq_blood_of_saint_elspeth",
@@ -831,9 +681,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "elixir_of_saint_elspeth"
-    ]
+    "used_by_projects": ["elixir_of_saint_elspeth"]
   },
   {
     "id": "prereq_trolls_blood",
@@ -842,9 +690,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "wellness_tonic"
-    ]
+    "used_by_projects": ["wellness_tonic"]
   },
   {
     "id": "prereq_witherite_crystal",
@@ -853,9 +699,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "catapult_dust"
-    ]
+    "used_by_projects": ["catapult_dust"]
   },
   {
     "id": "prereq_overmind_egg",
@@ -864,9 +708,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "mask_of_oversight"
-    ]
+    "used_by_projects": ["mask_of_oversight"]
   },
   {
     "id": "prereq_obituaries_that_each_mention_the_subject_of_the_other",
@@ -875,9 +717,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "bloodbound_band"
-    ]
+    "used_by_projects": ["bloodbound_band"]
   },
   {
     "id": "prereq_personal_blessing_from_the_greatest_duelist_in_the_land",
@@ -886,9 +726,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "blade_of_the_luxurious_fop"
-    ]
+    "used_by_projects": ["blade_of_the_luxurious_fop"]
   },
   {
     "id": "prereq_petrified_wood_from_a_tree_that_has_not_been_observed_since_falling",
@@ -897,9 +735,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "displacing_replacement_bracer"
-    ]
+    "used_by_projects": ["displacing_replacement_bracer"]
   },
   {
     "id": "prereq_piece_of_polished_obsidian",
@@ -908,9 +744,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "scannerstone"
-    ]
+    "used_by_projects": ["scannerstone"]
   },
   {
     "id": "prereq_pint_of_blue_ichor",
@@ -919,9 +753,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "color_cloak_blue"
-    ]
+    "used_by_projects": ["color_cloak_blue"]
   },
   {
     "id": "prereq_pint_of_red_ichor",
@@ -930,9 +762,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "color_cloak_red"
-    ]
+    "used_by_projects": ["color_cloak_red"]
   },
   {
     "id": "prereq_pint_of_supercooled_mercury",
@@ -941,9 +771,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "star_hunter"
-    ]
+    "used_by_projects": ["star_hunter"]
   },
   {
     "id": "prereq_pint_of_yellow_ichor",
@@ -952,9 +780,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "color_cloak_yellow"
-    ]
+    "used_by_projects": ["color_cloak_yellow"]
   },
   {
     "id": "prereq_brick_from_the_seven_cities_of_hell",
@@ -963,9 +789,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "thief_of_joy"
-    ]
+    "used_by_projects": ["thief_of_joy"]
   },
   {
     "id": "prereq_feather",
@@ -974,9 +798,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "thief_of_joy"
-    ]
+    "used_by_projects": ["thief_of_joy"]
   },
   {
     "id": "prereq_tigers_eye_gemstone",
@@ -985,9 +807,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "third_eye_seeker"
-    ]
+    "used_by_projects": ["third_eye_seeker"]
   },
   {
     "id": "prereq_powdered_jawbone_of_a_powerful_spellcaster",
@@ -996,9 +816,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "gravekeepers_lantern"
-    ]
+    "used_by_projects": ["gravekeepers_lantern"]
   },
   {
     "id": "prereq_quill_of_a_hedgehog",
@@ -1007,9 +825,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "adaptive_second_skin_of_toxins"
-    ]
+    "used_by_projects": ["adaptive_second_skin_of_toxins"]
   },
   {
     "id": "prereq_raw_honey",
@@ -1018,9 +834,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "wellness_tonic"
-    ]
+    "used_by_projects": ["wellness_tonic"]
   },
   {
     "id": "prereq_roots_of_a_justbudded_nightshade",
@@ -1029,9 +843,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "professor_veratismos_quaff_n_huf_snuff"
-    ]
+    "used_by_projects": ["professor_veratismos_quaff_n_huf_snuff"]
   },
   {
     "id": "prereq_ruby_hardened_in_the_fires_of_the_city_of_brass",
@@ -1040,9 +852,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "blade_of_quintessence"
-    ]
+    "used_by_projects": ["blade_of_quintessence"]
   },
   {
     "id": "prereq_ruby_once_worn_by_a_devil",
@@ -1051,9 +861,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "mediators_charm"
-    ]
+    "used_by_projects": ["mediators_charm"]
   },
   {
     "id": "prereq_ruby_purloined_from_a_vampire",
@@ -1062,9 +870,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "blood_essence_vial"
-    ]
+    "used_by_projects": ["blood_essence_vial"]
   },
   {
     "id": "prereq_sapphire_that_has_been_struck_by_lightning",
@@ -1073,9 +879,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "blade_of_quintessence"
-    ]
+    "used_by_projects": ["blade_of_quintessence"]
   },
   {
     "id": "prereq_chain_mail_rusted_by_seawater",
@@ -1084,9 +888,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "chain_of_the_sea_and_sky"
-    ]
+    "used_by_projects": ["chain_of_the_sea_and_sky"]
   },
   {
     "id": "prereq_wing_from_a_flying_carp",
@@ -1095,9 +897,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "chain_of_the_sea_and_sky"
-    ]
+    "used_by_projects": ["chain_of_the_sea_and_sky"]
   },
   {
     "id": "prereq_flawless_pea_sized_diamond",
@@ -1106,9 +906,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "scannerstone"
-    ]
+    "used_by_projects": ["scannerstone"]
   },
   {
     "id": "prereq_strand_of_hag_hair",
@@ -1117,9 +915,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "float_powder"
-    ]
+    "used_by_projects": ["float_powder"]
   },
   {
     "id": "prereq_severed_hand_of_a_giant",
@@ -1128,9 +924,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "bracers_of_strife"
-    ]
+    "used_by_projects": ["bracers_of_strife"]
   },
   {
     "id": "prereq_shard_of_prismacore",
@@ -1139,9 +933,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "telemagnet"
-    ]
+    "used_by_projects": ["telemagnet"]
   },
   {
     "id": "prereq_sheet_of_paper_infused_with_the_dust_of_a_painite",
@@ -1150,9 +942,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "scroll_of_resurrection"
-    ]
+    "used_by_projects": ["scroll_of_resurrection"]
   },
   {
     "id": "prereq_signed_agreement_with_a_ghost",
@@ -1161,9 +951,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "vial_of_ethereal_attack"
-    ]
+    "used_by_projects": ["vial_of_ethereal_attack"]
   },
   {
     "id": "prereq_crystal_that_resonates_with_psionic_power",
@@ -1172,9 +960,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "telekinetic_bulwark"
-    ]
+    "used_by_projects": ["telekinetic_bulwark"]
   },
   {
     "id": "prereq_fake_and_extremely_shiny_gemstone",
@@ -1183,9 +969,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "blade_of_the_luxurious_fop"
-    ]
+    "used_by_projects": ["blade_of_the_luxurious_fop"]
   },
   {
     "id": "prereq_skin_of_a_shapeshifter",
@@ -1194,9 +978,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "mask_of_oversight"
-    ]
+    "used_by_projects": ["mask_of_oversight"]
   },
   {
     "id": "prereq_skull_of_a_convicted_criminal",
@@ -1205,9 +987,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "executioners_blade"
-    ]
+    "used_by_projects": ["executioners_blade"]
   },
   {
     "id": "prereq_small_quartz",
@@ -1216,9 +996,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "ward_token"
-    ]
+    "used_by_projects": ["ward_token"]
   },
   {
     "id": "prereq_soul_chalk",
@@ -1240,9 +1018,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "mirage_band"
-    ]
+    "used_by_projects": ["mirage_band"]
   },
   {
     "id": "prereq_starmetal_meteorite",
@@ -1251,9 +1027,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "lance_of_the_sundered_star"
-    ]
+    "used_by_projects": ["lance_of_the_sundered_star"]
   },
   {
     "id": "prereq_steel_alloy",
@@ -1262,9 +1036,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "psi_blade"
-    ]
+    "used_by_projects": ["psi_blade"]
   },
   {
     "id": "prereq_strip_of_smartmetal",
@@ -1273,9 +1045,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "pocket_homunculus"
-    ]
+    "used_by_projects": ["pocket_homunculus"]
   },
   {
     "id": "prereq_sunbaked_gold_dust",
@@ -1284,9 +1054,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "mirror_token"
-    ]
+    "used_by_projects": ["mirror_token"]
   },
   {
     "id": "prereq_gecko_tail",
@@ -1295,9 +1063,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "gecko_gloves"
-    ]
+    "used_by_projects": ["gecko_gloves"]
   },
   {
     "id": "prereq_pages_from_each_of_a_hundred_different_books",
@@ -1306,9 +1072,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "paper_trappings"
-    ]
+    "used_by_projects": ["paper_trappings"]
   },
   {
     "id": "prereq_steel_gear_from_an_ancient_construct",
@@ -1317,9 +1081,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "spiny_turtle"
-    ]
+    "used_by_projects": ["spiny_turtle"]
   },
   {
     "id": "prereq_black_opal",
@@ -1328,9 +1090,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "key_of_inquiry"
-    ]
+    "used_by_projects": ["key_of_inquiry"]
   },
   {
     "id": "prereq_ingot_of_steel",
@@ -1339,9 +1099,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "telekinetic_bulwark"
-    ]
+    "used_by_projects": ["telekinetic_bulwark"]
   },
   {
     "id": "prereq_sheet_of_glass",
@@ -1350,9 +1108,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "mirror_token"
-    ]
+    "used_by_projects": ["mirror_token"]
   },
   {
     "id": "prereq_vial_of_black_ash_from_the_college_of_black_ash",
@@ -1361,9 +1117,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "black_ash_dart"
-    ]
+    "used_by_projects": ["black_ash_dart"]
   },
   {
     "id": "prereq_withered_mundane_vines",
@@ -1372,9 +1126,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "divine_vine"
-    ]
+    "used_by_projects": ["divine_vine"]
   },
   {
     "id": "prereq_time_crystal",
@@ -1383,9 +1135,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "timesplitter"
-    ]
+    "used_by_projects": ["timesplitter"]
   },
   {
     "id": "prereq_trees_blessing",
@@ -1394,9 +1144,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "divine_vine"
-    ]
+    "used_by_projects": ["divine_vine"]
   },
   {
     "id": "prereq_clear_lenses_carved_from_volcanic_glass",
@@ -1405,9 +1153,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "foesense_lenses"
-    ]
+    "used_by_projects": ["foesense_lenses"]
   },
   {
     "id": "prereq_ingot_of_moon_metal",
@@ -1416,9 +1162,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "thunderhead_bident"
-    ]
+    "used_by_projects": ["thunderhead_bident"]
   },
   {
     "id": "prereq_ingot_of_sunmetal",
@@ -1427,9 +1171,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "kings_roar"
-    ]
+    "used_by_projects": ["kings_roar"]
   },
   {
     "id": "prereq_uncut_opal",
@@ -1438,9 +1180,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "quantum_satchel"
-    ]
+    "used_by_projects": ["quantum_satchel"]
   },
   {
     "id": "prereq_used_death_shroud",
@@ -1449,9 +1189,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "mask_of_the_many"
-    ]
+    "used_by_projects": ["mask_of_the_many"]
   },
   {
     "id": "prereq_valok_gyroscope",
@@ -1460,9 +1198,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "onerous_bow"
-    ]
+    "used_by_projects": ["onerous_bow"]
   },
   {
     "id": "prereq_venom_sac_from_a_giant_spider",
@@ -1471,9 +1207,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "onerous_bow"
-    ]
+    "used_by_projects": ["onerous_bow"]
   },
   {
     "id": "prereq_vial_of_archdevils_blood",
@@ -1482,9 +1216,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "gallios_visiting_card"
-    ]
+    "used_by_projects": ["gallios_visiting_card"]
   },
   {
     "id": "prereq_vial_of_fire_giant_blood",
@@ -1493,9 +1225,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "giants_blood_flame"
-    ]
+    "used_by_projects": ["giants_blood_flame"]
   },
   {
     "id": "prereq_vial_of_pure_bovine_essence",
@@ -1504,9 +1234,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "bull_shot"
-    ]
+    "used_by_projects": ["bull_shot"]
   },
   {
     "id": "prereq_vial_of_sacred_ink",
@@ -1515,9 +1243,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "page_from_the_infinite_library_solaris"
-    ]
+    "used_by_projects": ["page_from_the_infinite_library_solaris"]
   },
   {
     "id": "prereq_wafer_of_gallium_arsenide",
@@ -1526,9 +1252,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "nullfield_resonator_ring"
-    ]
+    "used_by_projects": ["nullfield_resonator_ring"]
   },
   {
     "id": "prereq_will_of_a_deceased_person_with_no_heirs",
@@ -1537,9 +1261,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "shrouded_memory"
-    ]
+    "used_by_projects": ["shrouded_memory"]
   },
   {
     "id": "prereq_wood_from_a_tree_marking_multiple_graves",
@@ -1548,9 +1270,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "gravekeepers_lantern"
-    ]
+    "used_by_projects": ["gravekeepers_lantern"]
   },
   {
     "id": "prereq_written_permission_from_a_high_elf_magistrate",
@@ -1559,9 +1279,7 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "words_become_wonders_at_next_breath"
-    ]
+    "used_by_projects": ["words_become_wonders_at_next_breath"]
   },
   {
     "id": "prereq_years_lifespan_from_the_creator_or_another_willing_creature",
@@ -1570,8 +1288,350 @@
     "source": "seed",
     "category": "treasure_component",
     "description": "Crafting component for treasure projects.",
-    "used_by_projects": [
-      "restorative_of_the_bright_court"
-    ]
+    "used_by_projects": ["restorative_of_the_bright_court"]
+  },
+  {
+    "id": "prereq_tail_of_size_3_or_larger_rattlesnake",
+    "type": "item",
+    "name": "Tail of large (size 3+) rattlesnake",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["snakerattle_bangle"]
+  },
+  {
+    "id": "prereq_vial_of_pitling_spit",
+    "type": "item",
+    "name": "Vial of pitling spit",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["abyssal_map_ink"]
+  },
+  {
+    "id": "prereq_jar_of_human_blood",
+    "type": "item",
+    "name": "Jar of human blood",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["abyssal_map_ink"]
+  },
+  {
+    "id": "prereq_blood_soaked_chains_that_restrained_a_demon_for_at_least_30_days",
+    "type": "item",
+    "name": "Blood-soaked chains that restrained a demon for at least 30 days",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["grasp_of_the_chained_hand"]
+  },
+  {
+    "id": "prereq_lightning_bolt_frozen_in_time",
+    "type": "item",
+    "name": "Lightning bolt frozen in time",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["thunder_chariot"]
+  },
+  {
+    "id": "prereq_spool_of_silk",
+    "type": "item",
+    "name": "Spool of silk",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["cross_of_the_scorned_puppeteer"]
+  },
+  {
+    "id": "prereq_plank_of_stage_wood",
+    "type": "item",
+    "name": "Plank of stage wood",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["cross_of_the_scorned_puppeteer"]
+  },
+  {
+    "id": "prereq_the_soul_of_a_famous_performer",
+    "type": "item",
+    "name": "the soul of a famous performer",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["cross_of_the_scorned_puppeteer"]
+  },
+  {
+    "id": "prereq_remains_of_an_elemental",
+    "type": "item",
+    "name": "Remains of an elemental",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["crystallized_essence"]
+  },
+  {
+    "id": "prereq_a_king_s_cape",
+    "type": "item",
+    "name": " A king’s cape",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["warbanner_of_pride"]
+  },
+  {
+    "id": "prereq_solid_gold_flagpole",
+    "type": "item",
+    "name": "Solid gold flagpole",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["warbanner_of_pride"]
+  },
+  {
+    "id": "prereq_mundane_broom",
+    "type": "item",
+    "name": "Mundane broom",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["hagbasket"]
+  },
+  {
+    "id": "prereq_a_hag_s_hut",
+    "type": "item",
+    "name": "A hag’s hut",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["hagbasket"]
+  },
+  {
+    "id": "prereq_a_hag_s_kiss",
+    "type": "item",
+    "name": "A hag’s kiss",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["hagbasket"]
+  },
+  {
+    "id": "prereq_solid_brass_flagpole",
+    "type": "item",
+    "name": "Solid brass flagpole",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["warbanner_of_wrath"]
+  },
+  {
+    "id": "prereq_king_s_deathbed_veil",
+    "type": "item",
+    "name": "King’s deathbed veil",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["warbanner_of_wrath"]
+  },
+  {
+    "id": "prereq_silver_ingot",
+    "type": "item",
+    "name": "Silver ingot",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["33_field_commanders_baton"]
+  },
+  {
+    "id": "prereq_written_strategy_from_33_warleaders",
+    "type": "item",
+    "name": "Written strategy from 33 warleaders",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["33_field_commanders_baton"]
+  },
+  {
+    "id": "prereq_tree_branch",
+    "type": "item",
+    "name": "Tree branch",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["rex_scepter"]
+  },
+  {
+    "id": "prereq_fealty_from_three_hundred_or_more_sworn_followers",
+    "type": "item",
+    "name": "Fealty from three hundred or more sworn followers",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["rex_scepter"]
+  },
+  {
+    "id": "prereq_spiral_shell_of_a_fallen_armory_snail",
+    "type": "item",
+    "name": "Spiral shell of a fallen armory snail ",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["sanctuary_horn"]
+  },
+  {
+    "id": "prereq_whirlwinds_captured_from_quintessence",
+    "type": "item",
+    "name": "Whirlwinds captured from Quintessence",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["sanctuary_horn"]
+  },
+  {
+    "id": "prereq_iron_ingot",
+    "type": "item",
+    "name": "Iron ingot",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["wand_of_the_unheard_orchestra"]
+  },
+  {
+    "id": "prereq_a_singing_tree_s_wood_found_in_arcadia",
+    "type": "item",
+    "name": "a singing tree’s wood found in Arcadia",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["wand_of_the_unheard_orchestra"]
+  }
+
+  ,
+  {
+    "id": "prereq_collar_worn_by_a_royal_pet",
+    "type": "item",
+    "name": "Collar worn by a royal pet",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["precious_collar"]
+  },
+  {
+    "id": "prereq_ruby_retrieved_from_an_ancient_sky_elf_ruin",
+    "type": "item",
+    "name": "Ruby retrieved from an ancient sky elf ruin",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["ruby_ring_of_recall"]
+  },
+  {
+    "id": "prereq_jewelry_worn_by_a_voiceless_talker",
+    "type": "item",
+    "name": "Jewelry worn by a voiceless talker",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["speaking_scarab"]
+  },
+  {
+    "id": "prereq_lightbender_fur",
+    "type": "item",
+    "name": "Lightbender fur",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["bandana_of_invisibility"]
+  },
+  {
+    "id": "prereq_an_incisor_from_a_werewolf",
+    "type": "item",
+    "name": "An incisor from a werewolf",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["werewolf_tooth_pendant"]
+  },
+  {
+    "id": "prereq_a_creatures_feather_given_as_a_gift_by_the_creature",
+    "type": "item",
+    "name": "A creature’s feather given as a gift by the creature",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["battle_wings"]
+  },
+  {
+    "id": "prereq_melted_down_dragon_knight_armor",
+    "type": "item",
+    "name": "Melted-down dragon knight armor",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["cavalry_armor"]
+  },
+  {
+    "id": "prereq_a_leash_from_an_archfey_s_hunting_pack",
+    "type": "item",
+    "name": "A leash from an archfey’s hunting pack",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["pack_harness"]
+  },
+  {
+    "id": "prereq_strands_from_the_manes_of_nine_lions",
+    "type": "item",
+    "name": "Strands from the manes of nine lions",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["rampant_shield"]
+  },
+  {
+    "id": "prereq_scales_of_a_slain_thorn_dragon",
+    "type": "item",
+    "name": "Scales of a slain thorn dragon",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["thorn_dragonscale"]
+  },
+  {
+    "id": "prereq_a_bow_used_to_shoot_an_apple_from_someone_s_head",
+    "type": "item",
+    "name": "A bow used to shoot an apple from someone’s head",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["glancing_bow"]
+  },
+  {
+    "id": "prereq_the_horns_of_a_minotaur",
+    "type": "item",
+    "name": "The horns of a minotaur",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["horned_champion"]
+  },
+  {
+    "id": "prereq_the_claws_of_a_dragon",
+    "type": "item",
+    "name": "The claws of a dragon",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["longclaw"]
+  },
+  {
+    "id": "prereq_stinger_from_a_manticore_s_tail",
+    "type": "item",
+    "name": "Stinger from a manticore’s tail",
+    "source": "seed",
+    "category": "treasure_component",
+    "description": "Crafting component for treasure projects.",
+    "used_by_projects": ["scorpion_tails"]
   }
 ]

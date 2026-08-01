@@ -53,6 +53,7 @@ class _AbilitiesViewState extends State<_AbilitiesView> {
   String? _actionTypeFilter;
   String? _distanceFilter;
   String? _targetsFilter;
+  String? _classFilter;
 
   // Cache filter options
   List<String>? _cachedResourceOptions;
@@ -60,6 +61,7 @@ class _AbilitiesViewState extends State<_AbilitiesView> {
   List<String>? _cachedActionTypeOptions;
   List<String>? _cachedDistanceOptions;
   List<String>? _cachedTargetsOptions;
+  List<String>? _cachedClassOptions;
   List<Component>? _cachedItems;
 
   List<Component> get _filteredItems {
@@ -122,6 +124,14 @@ class _AbilitiesViewState extends State<_AbilitiesView> {
       }).toList();
     }
 
+    // Filter by class
+    if (_classFilter != null) {
+      filtered = filtered.where((item) {
+        final className = item.data['class_name'] as String?;
+        return className?.toLowerCase() == _classFilter!.toLowerCase();
+      }).toList();
+    }
+
     return filtered..sort((a, b) => a.name.compareTo(b.name));
   }
 
@@ -133,6 +143,7 @@ class _AbilitiesViewState extends State<_AbilitiesView> {
       _actionTypeFilter = null;
       _distanceFilter = null;
       _targetsFilter = null;
+      _classFilter = null;
     });
   }
 
@@ -146,6 +157,7 @@ class _AbilitiesViewState extends State<_AbilitiesView> {
     final actionTypeSet = <String>{};
     final distanceSet = <String>{};
     final targetsSet = <String>{};
+    final classSet = <String>{};
 
     for (final item in widget.items) {
       final ability = AbilityData.fromComponent(item);
@@ -173,6 +185,11 @@ class _AbilitiesViewState extends State<_AbilitiesView> {
       if (ability.targets?.isNotEmpty ?? false) {
         targetsSet.add(ability.targets!);
       }
+
+      final className = item.data['class_name'] as String?;
+      if (className != null && className.isNotEmpty) {
+        classSet.add(className);
+      }
     }
 
     _cachedResourceOptions = resourceSet.toList()..sort();
@@ -188,6 +205,7 @@ class _AbilitiesViewState extends State<_AbilitiesView> {
     _cachedActionTypeOptions = actionTypeSet.toList()..sort();
     _cachedDistanceOptions = distanceSet.toList()..sort();
     _cachedTargetsOptions = targetsSet.toList()..sort();
+    _cachedClassOptions = classSet.toList()..sort();
   }
 
   @override
@@ -210,7 +228,8 @@ class _AbilitiesViewState extends State<_AbilitiesView> {
         _costFilter != null ||
         _actionTypeFilter != null ||
         _distanceFilter != null ||
-        _targetsFilter != null;
+        _targetsFilter != null ||
+        _classFilter != null;
 
     return DecoratedBox(
       decoration: decoration,
@@ -233,6 +252,7 @@ class _AbilitiesViewState extends State<_AbilitiesView> {
                 actionTypeOptions: _cachedActionTypeOptions ?? [],
                 distanceOptions: _cachedDistanceOptions ?? [],
                 targetsOptions: _cachedTargetsOptions ?? [],
+                classOptions: _cachedClassOptions ?? [],
               ),
             ),
           ),
@@ -301,6 +321,7 @@ class _AbilitiesViewState extends State<_AbilitiesView> {
     required List<String> actionTypeOptions,
     required List<String> distanceOptions,
     required List<String> targetsOptions,
+    required List<String> classOptions,
   }) {
     final accent = StrifeTheme.abilitiesAccent;
 
@@ -408,6 +429,13 @@ class _AbilitiesViewState extends State<_AbilitiesView> {
                   value: _targetsFilter,
                   options: targetsOptions,
                   onChanged: (value) => setState(() => _targetsFilter = value),
+                ),
+                _buildFilterDropdown(
+                  context,
+                  label: AbilitiesPageText.classFilter,
+                  value: _classFilter,
+                  options: classOptions,
+                  onChanged: (value) => setState(() => _classFilter = value),
                 ),
               ],
             ),
@@ -521,6 +549,14 @@ class _AbilitiesViewState extends State<_AbilitiesView> {
         context,
         label: AbilitiesPageText.targetsFilterChip(_targetsFilter!),
         onRemove: () => setState(() => _targetsFilter = null),
+      ));
+    }
+
+    if (_classFilter != null) {
+      chips.add(_buildFilterChip(
+        context,
+        label: AbilitiesPageText.classFilterChip(_classFilter!),
+        onRemove: () => setState(() => _classFilter = null),
       ));
     }
 

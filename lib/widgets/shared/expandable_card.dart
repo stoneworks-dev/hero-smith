@@ -11,6 +11,11 @@ class ExpandableCard extends StatefulWidget {
   final Color borderColor;
   final Widget? preview;
   final bool initiallyExpanded;
+  final bool expandOnTap;
+  final bool showExpandButton;
+  final bool showHeaderExpandIndicator;
+  final String expandButtonLabel;
+  final String collapseButtonLabel;
 
   const ExpandableCard({
     super.key,
@@ -22,6 +27,11 @@ class ExpandableCard extends StatefulWidget {
     required this.borderColor,
     this.preview,
     this.initiallyExpanded = false,
+    this.expandOnTap = true,
+    this.showExpandButton = false,
+    this.showHeaderExpandIndicator = true,
+    this.expandButtonLabel = 'Expand',
+    this.collapseButtonLabel = 'Collapse',
   });
 
   @override
@@ -83,7 +93,7 @@ class _ExpandableCardState extends State<ExpandableCard>
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: _toggleExpanded,
+          onTap: widget.expandOnTap ? _toggleExpanded : null,
           borderRadius: BorderRadius.circular(10),
           child: Padding(
             padding: const EdgeInsets.all(12),
@@ -94,7 +104,8 @@ class _ExpandableCardState extends State<ExpandableCard>
                 // Always visible header with title and badge
                 Row(
                   children: [
-                    if (widget.leading != null) ...[                      widget.leading!,
+                    if (widget.leading != null) ...[
+                      widget.leading!,
                       const SizedBox(width: 8),
                     ],
                     Expanded(
@@ -113,24 +124,63 @@ class _ExpandableCardState extends State<ExpandableCard>
                       const SizedBox(width: 8),
                       widget.badge!,
                     ],
-                    const SizedBox(width: 8),
-                    AnimatedRotation(
-                      turns: _isExpanded ? 0.5 : 0.0,
-                      duration: const Duration(milliseconds: 200),
-                      child: Icon(
-                        Icons.expand_more,
-                        color: widget.borderColor.withAlpha(178),
-                        size: 20,
+                    if (widget.showHeaderExpandIndicator) ...[
+                      const SizedBox(width: 8),
+                      AnimatedRotation(
+                        turns: _isExpanded ? 0.5 : 0.0,
+                        duration: const Duration(milliseconds: 200),
+                        child: Icon(
+                          Icons.expand_more,
+                          color: widget.borderColor.withAlpha(178),
+                          size: 20,
+                        ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
-                if (widget.subtitle != null) ...[                  const SizedBox(height: 4),
+                if (widget.subtitle != null) ...[
+                  const SizedBox(height: 4),
                   widget.subtitle!,
                 ],
                 if (widget.preview != null) ...[
                   const SizedBox(height: 8),
                   widget.preview!,
+                ],
+                if (widget.showExpandButton) ...[
+                  const SizedBox(height: 6),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton.icon(
+                      onPressed: _toggleExpanded,
+                      icon: AnimatedRotation(
+                        turns: _isExpanded ? 0.5 : 0.0,
+                        duration: const Duration(milliseconds: 200),
+                        child: Icon(
+                          Icons.expand_more,
+                          size: 18,
+                          color: widget.borderColor,
+                        ),
+                      ),
+                      label: Text(
+                        _isExpanded
+                            ? widget.collapseButtonLabel
+                            : widget.expandButtonLabel,
+                      ),
+                      style: TextButton.styleFrom(
+                        foregroundColor: widget.borderColor,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        minimumSize: const Size(0, 32),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        textStyle: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
                 // Expandable content
                 SizeTransition(

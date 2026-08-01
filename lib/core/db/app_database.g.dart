@@ -4655,6 +4655,13 @@ class $HeroRetainersTable extends HeroRetainers
           type: DriftSqlType.string,
           requiredDuringInsert: false,
           defaultValue: const Constant('{}'));
+  static const VerificationMeta _levelMeta = const VerificationMeta('level');
+  @override
+  late final GeneratedColumn<int> level = GeneratedColumn<int>(
+      'level', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(1));
   static const VerificationMeta _currentStaminaMeta =
       const VerificationMeta('currentStamina');
   @override
@@ -4714,6 +4721,7 @@ class $HeroRetainersTable extends HeroRetainers
         customDataJson,
         advancementChoicesJson,
         characteristicChoicesJson,
+        level,
         currentStamina,
         tempStamina,
         currentRecoveries,
@@ -4785,6 +4793,10 @@ class $HeroRetainersTable extends HeroRetainers
               data['characteristic_choices_json']!,
               _characteristicChoicesJsonMeta));
     }
+    if (data.containsKey('level')) {
+      context.handle(
+          _levelMeta, level.isAcceptableOrUnknown(data['level']!, _levelMeta));
+    }
     if (data.containsKey('current_stamina')) {
       context.handle(
           _currentStaminaMeta,
@@ -4845,6 +4857,8 @@ class $HeroRetainersTable extends HeroRetainers
       characteristicChoicesJson: attachedDatabase.typeMapping.read(
           DriftSqlType.string,
           data['${effectivePrefix}characteristic_choices_json'])!,
+      level: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}level'])!,
       currentStamina: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}current_stamina']),
       tempStamina: attachedDatabase.typeMapping
@@ -4887,6 +4901,11 @@ class HeroRetainer extends DataClass implements Insertable<HeroRetainer> {
 
   /// JSON map of level (int) → characteristic name at levels 2/8.
   final String characteristicChoicesJson;
+
+  /// The retainer's own tracked level (1-10). Retainers level up
+  /// independently of their hero — this does not auto-follow the hero's
+  /// level, though the UI prompts to level up once the hero outpaces it.
+  final int level;
   final int? currentStamina;
   final int tempStamina;
   final int? currentRecoveries;
@@ -4903,6 +4922,7 @@ class HeroRetainer extends DataClass implements Insertable<HeroRetainer> {
       this.customDataJson,
       required this.advancementChoicesJson,
       required this.characteristicChoicesJson,
+      required this.level,
       this.currentStamina,
       required this.tempStamina,
       this.currentRecoveries,
@@ -4924,6 +4944,7 @@ class HeroRetainer extends DataClass implements Insertable<HeroRetainer> {
     map['advancement_choices_json'] = Variable<String>(advancementChoicesJson);
     map['characteristic_choices_json'] =
         Variable<String>(characteristicChoicesJson);
+    map['level'] = Variable<int>(level);
     if (!nullToAbsent || currentStamina != null) {
       map['current_stamina'] = Variable<int>(currentStamina);
     }
@@ -4950,6 +4971,7 @@ class HeroRetainer extends DataClass implements Insertable<HeroRetainer> {
           : Value(customDataJson),
       advancementChoicesJson: Value(advancementChoicesJson),
       characteristicChoicesJson: Value(characteristicChoicesJson),
+      level: Value(level),
       currentStamina: currentStamina == null && nullToAbsent
           ? const Value.absent()
           : Value(currentStamina),
@@ -4979,6 +5001,7 @@ class HeroRetainer extends DataClass implements Insertable<HeroRetainer> {
           serializer.fromJson<String>(json['advancementChoicesJson']),
       characteristicChoicesJson:
           serializer.fromJson<String>(json['characteristicChoicesJson']),
+      level: serializer.fromJson<int>(json['level']),
       currentStamina: serializer.fromJson<int?>(json['currentStamina']),
       tempStamina: serializer.fromJson<int>(json['tempStamina']),
       currentRecoveries: serializer.fromJson<int?>(json['currentRecoveries']),
@@ -5002,6 +5025,7 @@ class HeroRetainer extends DataClass implements Insertable<HeroRetainer> {
           serializer.toJson<String>(advancementChoicesJson),
       'characteristicChoicesJson':
           serializer.toJson<String>(characteristicChoicesJson),
+      'level': serializer.toJson<int>(level),
       'currentStamina': serializer.toJson<int?>(currentStamina),
       'tempStamina': serializer.toJson<int>(tempStamina),
       'currentRecoveries': serializer.toJson<int?>(currentRecoveries),
@@ -5021,6 +5045,7 @@ class HeroRetainer extends DataClass implements Insertable<HeroRetainer> {
           Value<String?> customDataJson = const Value.absent(),
           String? advancementChoicesJson,
           String? characteristicChoicesJson,
+          int? level,
           Value<int?> currentStamina = const Value.absent(),
           int? tempStamina,
           Value<int?> currentRecoveries = const Value.absent(),
@@ -5040,6 +5065,7 @@ class HeroRetainer extends DataClass implements Insertable<HeroRetainer> {
             advancementChoicesJson ?? this.advancementChoicesJson,
         characteristicChoicesJson:
             characteristicChoicesJson ?? this.characteristicChoicesJson,
+        level: level ?? this.level,
         currentStamina:
             currentStamina.present ? currentStamina.value : this.currentStamina,
         tempStamina: tempStamina ?? this.tempStamina,
@@ -5069,6 +5095,7 @@ class HeroRetainer extends DataClass implements Insertable<HeroRetainer> {
       characteristicChoicesJson: data.characteristicChoicesJson.present
           ? data.characteristicChoicesJson.value
           : this.characteristicChoicesJson,
+      level: data.level.present ? data.level.value : this.level,
       currentStamina: data.currentStamina.present
           ? data.currentStamina.value
           : this.currentStamina,
@@ -5095,6 +5122,7 @@ class HeroRetainer extends DataClass implements Insertable<HeroRetainer> {
           ..write('customDataJson: $customDataJson, ')
           ..write('advancementChoicesJson: $advancementChoicesJson, ')
           ..write('characteristicChoicesJson: $characteristicChoicesJson, ')
+          ..write('level: $level, ')
           ..write('currentStamina: $currentStamina, ')
           ..write('tempStamina: $tempStamina, ')
           ..write('currentRecoveries: $currentRecoveries, ')
@@ -5116,6 +5144,7 @@ class HeroRetainer extends DataClass implements Insertable<HeroRetainer> {
       customDataJson,
       advancementChoicesJson,
       characteristicChoicesJson,
+      level,
       currentStamina,
       tempStamina,
       currentRecoveries,
@@ -5135,6 +5164,7 @@ class HeroRetainer extends DataClass implements Insertable<HeroRetainer> {
           other.customDataJson == this.customDataJson &&
           other.advancementChoicesJson == this.advancementChoicesJson &&
           other.characteristicChoicesJson == this.characteristicChoicesJson &&
+          other.level == this.level &&
           other.currentStamina == this.currentStamina &&
           other.tempStamina == this.tempStamina &&
           other.currentRecoveries == this.currentRecoveries &&
@@ -5153,6 +5183,7 @@ class HeroRetainersCompanion extends UpdateCompanion<HeroRetainer> {
   final Value<String?> customDataJson;
   final Value<String> advancementChoicesJson;
   final Value<String> characteristicChoicesJson;
+  final Value<int> level;
   final Value<int?> currentStamina;
   final Value<int> tempStamina;
   final Value<int?> currentRecoveries;
@@ -5170,6 +5201,7 @@ class HeroRetainersCompanion extends UpdateCompanion<HeroRetainer> {
     this.customDataJson = const Value.absent(),
     this.advancementChoicesJson = const Value.absent(),
     this.characteristicChoicesJson = const Value.absent(),
+    this.level = const Value.absent(),
     this.currentStamina = const Value.absent(),
     this.tempStamina = const Value.absent(),
     this.currentRecoveries = const Value.absent(),
@@ -5188,6 +5220,7 @@ class HeroRetainersCompanion extends UpdateCompanion<HeroRetainer> {
     this.customDataJson = const Value.absent(),
     this.advancementChoicesJson = const Value.absent(),
     this.characteristicChoicesJson = const Value.absent(),
+    this.level = const Value.absent(),
     this.currentStamina = const Value.absent(),
     this.tempStamina = const Value.absent(),
     this.currentRecoveries = const Value.absent(),
@@ -5210,6 +5243,7 @@ class HeroRetainersCompanion extends UpdateCompanion<HeroRetainer> {
     Expression<String>? customDataJson,
     Expression<String>? advancementChoicesJson,
     Expression<String>? characteristicChoicesJson,
+    Expression<int>? level,
     Expression<int>? currentStamina,
     Expression<int>? tempStamina,
     Expression<int>? currentRecoveries,
@@ -5231,6 +5265,7 @@ class HeroRetainersCompanion extends UpdateCompanion<HeroRetainer> {
         'advancement_choices_json': advancementChoicesJson,
       if (characteristicChoicesJson != null)
         'characteristic_choices_json': characteristicChoicesJson,
+      if (level != null) 'level': level,
       if (currentStamina != null) 'current_stamina': currentStamina,
       if (tempStamina != null) 'temp_stamina': tempStamina,
       if (currentRecoveries != null) 'current_recoveries': currentRecoveries,
@@ -5251,6 +5286,7 @@ class HeroRetainersCompanion extends UpdateCompanion<HeroRetainer> {
       Value<String?>? customDataJson,
       Value<String>? advancementChoicesJson,
       Value<String>? characteristicChoicesJson,
+      Value<int>? level,
       Value<int?>? currentStamina,
       Value<int>? tempStamina,
       Value<int?>? currentRecoveries,
@@ -5270,6 +5306,7 @@ class HeroRetainersCompanion extends UpdateCompanion<HeroRetainer> {
           advancementChoicesJson ?? this.advancementChoicesJson,
       characteristicChoicesJson:
           characteristicChoicesJson ?? this.characteristicChoicesJson,
+      level: level ?? this.level,
       currentStamina: currentStamina ?? this.currentStamina,
       tempStamina: tempStamina ?? this.tempStamina,
       currentRecoveries: currentRecoveries ?? this.currentRecoveries,
@@ -5313,6 +5350,9 @@ class HeroRetainersCompanion extends UpdateCompanion<HeroRetainer> {
       map['characteristic_choices_json'] =
           Variable<String>(characteristicChoicesJson.value);
     }
+    if (level.present) {
+      map['level'] = Variable<int>(level.value);
+    }
     if (currentStamina.present) {
       map['current_stamina'] = Variable<int>(currentStamina.value);
     }
@@ -5349,9 +5389,1071 @@ class HeroRetainersCompanion extends UpdateCompanion<HeroRetainer> {
           ..write('customDataJson: $customDataJson, ')
           ..write('advancementChoicesJson: $advancementChoicesJson, ')
           ..write('characteristicChoicesJson: $characteristicChoicesJson, ')
+          ..write('level: $level, ')
           ..write('currentStamina: $currentStamina, ')
           ..write('tempStamina: $tempStamina, ')
           ..write('currentRecoveries: $currentRecoveries, ')
+          ..write('isActive: $isActive, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $HeroCompanionsTable extends HeroCompanions
+    with TableInfo<$HeroCompanionsTable, HeroCompanion> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $HeroCompanionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _heroIdMeta = const VerificationMeta('heroId');
+  @override
+  late final GeneratedColumn<String> heroId = GeneratedColumn<String>(
+      'hero_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES heroes (id)'));
+  static const VerificationMeta _companionComponentIdMeta =
+      const VerificationMeta('companionComponentId');
+  @override
+  late final GeneratedColumn<String> companionComponentId =
+      GeneratedColumn<String>('companion_component_id', aliasedName, false,
+          type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _currentStaminaMeta =
+      const VerificationMeta('currentStamina');
+  @override
+  late final GeneratedColumn<int> currentStamina = GeneratedColumn<int>(
+      'current_stamina', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _tempStaminaMeta =
+      const VerificationMeta('tempStamina');
+  @override
+  late final GeneratedColumn<int> tempStamina = GeneratedColumn<int>(
+      'temp_stamina', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _currentRampageMeta =
+      const VerificationMeta('currentRampage');
+  @override
+  late final GeneratedColumn<int> currentRampage = GeneratedColumn<int>(
+      'current_rampage', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _isActiveMeta =
+      const VerificationMeta('isActive');
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+      'is_active', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("is_active" IN (0, 1))'),
+      defaultValue: const Constant(true));
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        heroId,
+        companionComponentId,
+        name,
+        currentStamina,
+        tempStamina,
+        currentRampage,
+        isActive,
+        createdAt,
+        updatedAt
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'hero_companions';
+  @override
+  VerificationContext validateIntegrity(Insertable<HeroCompanion> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('hero_id')) {
+      context.handle(_heroIdMeta,
+          heroId.isAcceptableOrUnknown(data['hero_id']!, _heroIdMeta));
+    } else if (isInserting) {
+      context.missing(_heroIdMeta);
+    }
+    if (data.containsKey('companion_component_id')) {
+      context.handle(
+          _companionComponentIdMeta,
+          companionComponentId.isAcceptableOrUnknown(
+              data['companion_component_id']!, _companionComponentIdMeta));
+    } else if (isInserting) {
+      context.missing(_companionComponentIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('current_stamina')) {
+      context.handle(
+          _currentStaminaMeta,
+          currentStamina.isAcceptableOrUnknown(
+              data['current_stamina']!, _currentStaminaMeta));
+    }
+    if (data.containsKey('temp_stamina')) {
+      context.handle(
+          _tempStaminaMeta,
+          tempStamina.isAcceptableOrUnknown(
+              data['temp_stamina']!, _tempStaminaMeta));
+    }
+    if (data.containsKey('current_rampage')) {
+      context.handle(
+          _currentRampageMeta,
+          currentRampage.isAcceptableOrUnknown(
+              data['current_rampage']!, _currentRampageMeta));
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(_isActiveMeta,
+          isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  HeroCompanion map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return HeroCompanion(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      heroId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}hero_id'])!,
+      companionComponentId: attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}companion_component_id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      currentStamina: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}current_stamina']),
+      tempStamina: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}temp_stamina'])!,
+      currentRampage: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}current_rampage'])!,
+      isActive: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_active'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+    );
+  }
+
+  @override
+  $HeroCompanionsTable createAlias(String alias) {
+    return $HeroCompanionsTable(attachedDatabase, alias);
+  }
+}
+
+class HeroCompanion extends DataClass implements Insertable<HeroCompanion> {
+  final String id;
+  final String heroId;
+
+  /// Component ID of the companion template (from Components with type='companion').
+  final String companionComponentId;
+  final String name;
+  final int? currentStamina;
+  final int tempStamina;
+
+  /// The companion's current rampage stacks (Beastheart "Rampage" resource).
+  /// Tracked on the companion, not the hero, and adjusted manually — it isn't
+  /// tied to the class heroic resource generation. Lost at end of encounter.
+  final int currentRampage;
+  final bool isActive;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const HeroCompanion(
+      {required this.id,
+      required this.heroId,
+      required this.companionComponentId,
+      required this.name,
+      this.currentStamina,
+      required this.tempStamina,
+      required this.currentRampage,
+      required this.isActive,
+      required this.createdAt,
+      required this.updatedAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['hero_id'] = Variable<String>(heroId);
+    map['companion_component_id'] = Variable<String>(companionComponentId);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || currentStamina != null) {
+      map['current_stamina'] = Variable<int>(currentStamina);
+    }
+    map['temp_stamina'] = Variable<int>(tempStamina);
+    map['current_rampage'] = Variable<int>(currentRampage);
+    map['is_active'] = Variable<bool>(isActive);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  HeroCompanionsCompanion toCompanion(bool nullToAbsent) {
+    return HeroCompanionsCompanion(
+      id: Value(id),
+      heroId: Value(heroId),
+      companionComponentId: Value(companionComponentId),
+      name: Value(name),
+      currentStamina: currentStamina == null && nullToAbsent
+          ? const Value.absent()
+          : Value(currentStamina),
+      tempStamina: Value(tempStamina),
+      currentRampage: Value(currentRampage),
+      isActive: Value(isActive),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory HeroCompanion.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return HeroCompanion(
+      id: serializer.fromJson<String>(json['id']),
+      heroId: serializer.fromJson<String>(json['heroId']),
+      companionComponentId:
+          serializer.fromJson<String>(json['companionComponentId']),
+      name: serializer.fromJson<String>(json['name']),
+      currentStamina: serializer.fromJson<int?>(json['currentStamina']),
+      tempStamina: serializer.fromJson<int>(json['tempStamina']),
+      currentRampage: serializer.fromJson<int>(json['currentRampage']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'heroId': serializer.toJson<String>(heroId),
+      'companionComponentId': serializer.toJson<String>(companionComponentId),
+      'name': serializer.toJson<String>(name),
+      'currentStamina': serializer.toJson<int?>(currentStamina),
+      'tempStamina': serializer.toJson<int>(tempStamina),
+      'currentRampage': serializer.toJson<int>(currentRampage),
+      'isActive': serializer.toJson<bool>(isActive),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  HeroCompanion copyWith(
+          {String? id,
+          String? heroId,
+          String? companionComponentId,
+          String? name,
+          Value<int?> currentStamina = const Value.absent(),
+          int? tempStamina,
+          int? currentRampage,
+          bool? isActive,
+          DateTime? createdAt,
+          DateTime? updatedAt}) =>
+      HeroCompanion(
+        id: id ?? this.id,
+        heroId: heroId ?? this.heroId,
+        companionComponentId: companionComponentId ?? this.companionComponentId,
+        name: name ?? this.name,
+        currentStamina:
+            currentStamina.present ? currentStamina.value : this.currentStamina,
+        tempStamina: tempStamina ?? this.tempStamina,
+        currentRampage: currentRampage ?? this.currentRampage,
+        isActive: isActive ?? this.isActive,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+      );
+  HeroCompanion copyWithCompanion(HeroCompanionsCompanion data) {
+    return HeroCompanion(
+      id: data.id.present ? data.id.value : this.id,
+      heroId: data.heroId.present ? data.heroId.value : this.heroId,
+      companionComponentId: data.companionComponentId.present
+          ? data.companionComponentId.value
+          : this.companionComponentId,
+      name: data.name.present ? data.name.value : this.name,
+      currentStamina: data.currentStamina.present
+          ? data.currentStamina.value
+          : this.currentStamina,
+      tempStamina:
+          data.tempStamina.present ? data.tempStamina.value : this.tempStamina,
+      currentRampage: data.currentRampage.present
+          ? data.currentRampage.value
+          : this.currentRampage,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HeroCompanion(')
+          ..write('id: $id, ')
+          ..write('heroId: $heroId, ')
+          ..write('companionComponentId: $companionComponentId, ')
+          ..write('name: $name, ')
+          ..write('currentStamina: $currentStamina, ')
+          ..write('tempStamina: $tempStamina, ')
+          ..write('currentRampage: $currentRampage, ')
+          ..write('isActive: $isActive, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id,
+      heroId,
+      companionComponentId,
+      name,
+      currentStamina,
+      tempStamina,
+      currentRampage,
+      isActive,
+      createdAt,
+      updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is HeroCompanion &&
+          other.id == this.id &&
+          other.heroId == this.heroId &&
+          other.companionComponentId == this.companionComponentId &&
+          other.name == this.name &&
+          other.currentStamina == this.currentStamina &&
+          other.tempStamina == this.tempStamina &&
+          other.currentRampage == this.currentRampage &&
+          other.isActive == this.isActive &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class HeroCompanionsCompanion extends UpdateCompanion<HeroCompanion> {
+  final Value<String> id;
+  final Value<String> heroId;
+  final Value<String> companionComponentId;
+  final Value<String> name;
+  final Value<int?> currentStamina;
+  final Value<int> tempStamina;
+  final Value<int> currentRampage;
+  final Value<bool> isActive;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const HeroCompanionsCompanion({
+    this.id = const Value.absent(),
+    this.heroId = const Value.absent(),
+    this.companionComponentId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.currentStamina = const Value.absent(),
+    this.tempStamina = const Value.absent(),
+    this.currentRampage = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  HeroCompanionsCompanion.insert({
+    required String id,
+    required String heroId,
+    required String companionComponentId,
+    required String name,
+    this.currentStamina = const Value.absent(),
+    this.tempStamina = const Value.absent(),
+    this.currentRampage = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        heroId = Value(heroId),
+        companionComponentId = Value(companionComponentId),
+        name = Value(name);
+  static Insertable<HeroCompanion> custom({
+    Expression<String>? id,
+    Expression<String>? heroId,
+    Expression<String>? companionComponentId,
+    Expression<String>? name,
+    Expression<int>? currentStamina,
+    Expression<int>? tempStamina,
+    Expression<int>? currentRampage,
+    Expression<bool>? isActive,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (heroId != null) 'hero_id': heroId,
+      if (companionComponentId != null)
+        'companion_component_id': companionComponentId,
+      if (name != null) 'name': name,
+      if (currentStamina != null) 'current_stamina': currentStamina,
+      if (tempStamina != null) 'temp_stamina': tempStamina,
+      if (currentRampage != null) 'current_rampage': currentRampage,
+      if (isActive != null) 'is_active': isActive,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  HeroCompanionsCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? heroId,
+      Value<String>? companionComponentId,
+      Value<String>? name,
+      Value<int?>? currentStamina,
+      Value<int>? tempStamina,
+      Value<int>? currentRampage,
+      Value<bool>? isActive,
+      Value<DateTime>? createdAt,
+      Value<DateTime>? updatedAt,
+      Value<int>? rowid}) {
+    return HeroCompanionsCompanion(
+      id: id ?? this.id,
+      heroId: heroId ?? this.heroId,
+      companionComponentId: companionComponentId ?? this.companionComponentId,
+      name: name ?? this.name,
+      currentStamina: currentStamina ?? this.currentStamina,
+      tempStamina: tempStamina ?? this.tempStamina,
+      currentRampage: currentRampage ?? this.currentRampage,
+      isActive: isActive ?? this.isActive,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (heroId.present) {
+      map['hero_id'] = Variable<String>(heroId.value);
+    }
+    if (companionComponentId.present) {
+      map['companion_component_id'] =
+          Variable<String>(companionComponentId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (currentStamina.present) {
+      map['current_stamina'] = Variable<int>(currentStamina.value);
+    }
+    if (tempStamina.present) {
+      map['temp_stamina'] = Variable<int>(tempStamina.value);
+    }
+    if (currentRampage.present) {
+      map['current_rampage'] = Variable<int>(currentRampage.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HeroCompanionsCompanion(')
+          ..write('id: $id, ')
+          ..write('heroId: $heroId, ')
+          ..write('companionComponentId: $companionComponentId, ')
+          ..write('name: $name, ')
+          ..write('currentStamina: $currentStamina, ')
+          ..write('tempStamina: $tempStamina, ')
+          ..write('currentRampage: $currentRampage, ')
+          ..write('isActive: $isActive, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $HeroMinionSquadsTable extends HeroMinionSquads
+    with TableInfo<$HeroMinionSquadsTable, HeroMinionSquad> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $HeroMinionSquadsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _heroIdMeta = const VerificationMeta('heroId');
+  @override
+  late final GeneratedColumn<String> heroId = GeneratedColumn<String>(
+      'hero_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES heroes (id)'));
+  static const VerificationMeta _minionComponentIdMeta =
+      const VerificationMeta('minionComponentId');
+  @override
+  late final GeneratedColumn<String> minionComponentId =
+      GeneratedColumn<String>('minion_component_id', aliasedName, false,
+          type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _squadNameMeta =
+      const VerificationMeta('squadName');
+  @override
+  late final GeneratedColumn<String> squadName = GeneratedColumn<String>(
+      'squad_name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _memberCountMeta =
+      const VerificationMeta('memberCount');
+  @override
+  late final GeneratedColumn<int> memberCount = GeneratedColumn<int>(
+      'member_count', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(1));
+  static const VerificationMeta _currentStaminaMeta =
+      const VerificationMeta('currentStamina');
+  @override
+  late final GeneratedColumn<int> currentStamina = GeneratedColumn<int>(
+      'current_stamina', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _tempStaminaMeta =
+      const VerificationMeta('tempStamina');
+  @override
+  late final GeneratedColumn<int> tempStamina = GeneratedColumn<int>(
+      'temp_stamina', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _isActiveMeta =
+      const VerificationMeta('isActive');
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+      'is_active', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("is_active" IN (0, 1))'),
+      defaultValue: const Constant(true));
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        heroId,
+        minionComponentId,
+        squadName,
+        memberCount,
+        currentStamina,
+        tempStamina,
+        isActive,
+        createdAt,
+        updatedAt
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'hero_minion_squads';
+  @override
+  VerificationContext validateIntegrity(Insertable<HeroMinionSquad> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('hero_id')) {
+      context.handle(_heroIdMeta,
+          heroId.isAcceptableOrUnknown(data['hero_id']!, _heroIdMeta));
+    } else if (isInserting) {
+      context.missing(_heroIdMeta);
+    }
+    if (data.containsKey('minion_component_id')) {
+      context.handle(
+          _minionComponentIdMeta,
+          minionComponentId.isAcceptableOrUnknown(
+              data['minion_component_id']!, _minionComponentIdMeta));
+    } else if (isInserting) {
+      context.missing(_minionComponentIdMeta);
+    }
+    if (data.containsKey('squad_name')) {
+      context.handle(_squadNameMeta,
+          squadName.isAcceptableOrUnknown(data['squad_name']!, _squadNameMeta));
+    } else if (isInserting) {
+      context.missing(_squadNameMeta);
+    }
+    if (data.containsKey('member_count')) {
+      context.handle(
+          _memberCountMeta,
+          memberCount.isAcceptableOrUnknown(
+              data['member_count']!, _memberCountMeta));
+    }
+    if (data.containsKey('current_stamina')) {
+      context.handle(
+          _currentStaminaMeta,
+          currentStamina.isAcceptableOrUnknown(
+              data['current_stamina']!, _currentStaminaMeta));
+    }
+    if (data.containsKey('temp_stamina')) {
+      context.handle(
+          _tempStaminaMeta,
+          tempStamina.isAcceptableOrUnknown(
+              data['temp_stamina']!, _tempStaminaMeta));
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(_isActiveMeta,
+          isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  HeroMinionSquad map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return HeroMinionSquad(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      heroId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}hero_id'])!,
+      minionComponentId: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}minion_component_id'])!,
+      squadName: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}squad_name'])!,
+      memberCount: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}member_count'])!,
+      currentStamina: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}current_stamina']),
+      tempStamina: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}temp_stamina'])!,
+      isActive: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_active'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+    );
+  }
+
+  @override
+  $HeroMinionSquadsTable createAlias(String alias) {
+    return $HeroMinionSquadsTable(attachedDatabase, alias);
+  }
+}
+
+class HeroMinionSquad extends DataClass implements Insertable<HeroMinionSquad> {
+  final String id;
+  final String heroId;
+
+  /// Component ID of the minion template (from Components with type='minion').
+  final String minionComponentId;
+  final String squadName;
+  final int memberCount;
+  final int? currentStamina;
+  final int tempStamina;
+  final bool isActive;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const HeroMinionSquad(
+      {required this.id,
+      required this.heroId,
+      required this.minionComponentId,
+      required this.squadName,
+      required this.memberCount,
+      this.currentStamina,
+      required this.tempStamina,
+      required this.isActive,
+      required this.createdAt,
+      required this.updatedAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['hero_id'] = Variable<String>(heroId);
+    map['minion_component_id'] = Variable<String>(minionComponentId);
+    map['squad_name'] = Variable<String>(squadName);
+    map['member_count'] = Variable<int>(memberCount);
+    if (!nullToAbsent || currentStamina != null) {
+      map['current_stamina'] = Variable<int>(currentStamina);
+    }
+    map['temp_stamina'] = Variable<int>(tempStamina);
+    map['is_active'] = Variable<bool>(isActive);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  HeroMinionSquadsCompanion toCompanion(bool nullToAbsent) {
+    return HeroMinionSquadsCompanion(
+      id: Value(id),
+      heroId: Value(heroId),
+      minionComponentId: Value(minionComponentId),
+      squadName: Value(squadName),
+      memberCount: Value(memberCount),
+      currentStamina: currentStamina == null && nullToAbsent
+          ? const Value.absent()
+          : Value(currentStamina),
+      tempStamina: Value(tempStamina),
+      isActive: Value(isActive),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory HeroMinionSquad.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return HeroMinionSquad(
+      id: serializer.fromJson<String>(json['id']),
+      heroId: serializer.fromJson<String>(json['heroId']),
+      minionComponentId: serializer.fromJson<String>(json['minionComponentId']),
+      squadName: serializer.fromJson<String>(json['squadName']),
+      memberCount: serializer.fromJson<int>(json['memberCount']),
+      currentStamina: serializer.fromJson<int?>(json['currentStamina']),
+      tempStamina: serializer.fromJson<int>(json['tempStamina']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'heroId': serializer.toJson<String>(heroId),
+      'minionComponentId': serializer.toJson<String>(minionComponentId),
+      'squadName': serializer.toJson<String>(squadName),
+      'memberCount': serializer.toJson<int>(memberCount),
+      'currentStamina': serializer.toJson<int?>(currentStamina),
+      'tempStamina': serializer.toJson<int>(tempStamina),
+      'isActive': serializer.toJson<bool>(isActive),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  HeroMinionSquad copyWith(
+          {String? id,
+          String? heroId,
+          String? minionComponentId,
+          String? squadName,
+          int? memberCount,
+          Value<int?> currentStamina = const Value.absent(),
+          int? tempStamina,
+          bool? isActive,
+          DateTime? createdAt,
+          DateTime? updatedAt}) =>
+      HeroMinionSquad(
+        id: id ?? this.id,
+        heroId: heroId ?? this.heroId,
+        minionComponentId: minionComponentId ?? this.minionComponentId,
+        squadName: squadName ?? this.squadName,
+        memberCount: memberCount ?? this.memberCount,
+        currentStamina:
+            currentStamina.present ? currentStamina.value : this.currentStamina,
+        tempStamina: tempStamina ?? this.tempStamina,
+        isActive: isActive ?? this.isActive,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+      );
+  HeroMinionSquad copyWithCompanion(HeroMinionSquadsCompanion data) {
+    return HeroMinionSquad(
+      id: data.id.present ? data.id.value : this.id,
+      heroId: data.heroId.present ? data.heroId.value : this.heroId,
+      minionComponentId: data.minionComponentId.present
+          ? data.minionComponentId.value
+          : this.minionComponentId,
+      squadName: data.squadName.present ? data.squadName.value : this.squadName,
+      memberCount:
+          data.memberCount.present ? data.memberCount.value : this.memberCount,
+      currentStamina: data.currentStamina.present
+          ? data.currentStamina.value
+          : this.currentStamina,
+      tempStamina:
+          data.tempStamina.present ? data.tempStamina.value : this.tempStamina,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HeroMinionSquad(')
+          ..write('id: $id, ')
+          ..write('heroId: $heroId, ')
+          ..write('minionComponentId: $minionComponentId, ')
+          ..write('squadName: $squadName, ')
+          ..write('memberCount: $memberCount, ')
+          ..write('currentStamina: $currentStamina, ')
+          ..write('tempStamina: $tempStamina, ')
+          ..write('isActive: $isActive, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, heroId, minionComponentId, squadName,
+      memberCount, currentStamina, tempStamina, isActive, createdAt, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is HeroMinionSquad &&
+          other.id == this.id &&
+          other.heroId == this.heroId &&
+          other.minionComponentId == this.minionComponentId &&
+          other.squadName == this.squadName &&
+          other.memberCount == this.memberCount &&
+          other.currentStamina == this.currentStamina &&
+          other.tempStamina == this.tempStamina &&
+          other.isActive == this.isActive &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class HeroMinionSquadsCompanion extends UpdateCompanion<HeroMinionSquad> {
+  final Value<String> id;
+  final Value<String> heroId;
+  final Value<String> minionComponentId;
+  final Value<String> squadName;
+  final Value<int> memberCount;
+  final Value<int?> currentStamina;
+  final Value<int> tempStamina;
+  final Value<bool> isActive;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const HeroMinionSquadsCompanion({
+    this.id = const Value.absent(),
+    this.heroId = const Value.absent(),
+    this.minionComponentId = const Value.absent(),
+    this.squadName = const Value.absent(),
+    this.memberCount = const Value.absent(),
+    this.currentStamina = const Value.absent(),
+    this.tempStamina = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  HeroMinionSquadsCompanion.insert({
+    required String id,
+    required String heroId,
+    required String minionComponentId,
+    required String squadName,
+    this.memberCount = const Value.absent(),
+    this.currentStamina = const Value.absent(),
+    this.tempStamina = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        heroId = Value(heroId),
+        minionComponentId = Value(minionComponentId),
+        squadName = Value(squadName);
+  static Insertable<HeroMinionSquad> custom({
+    Expression<String>? id,
+    Expression<String>? heroId,
+    Expression<String>? minionComponentId,
+    Expression<String>? squadName,
+    Expression<int>? memberCount,
+    Expression<int>? currentStamina,
+    Expression<int>? tempStamina,
+    Expression<bool>? isActive,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (heroId != null) 'hero_id': heroId,
+      if (minionComponentId != null) 'minion_component_id': minionComponentId,
+      if (squadName != null) 'squad_name': squadName,
+      if (memberCount != null) 'member_count': memberCount,
+      if (currentStamina != null) 'current_stamina': currentStamina,
+      if (tempStamina != null) 'temp_stamina': tempStamina,
+      if (isActive != null) 'is_active': isActive,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  HeroMinionSquadsCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? heroId,
+      Value<String>? minionComponentId,
+      Value<String>? squadName,
+      Value<int>? memberCount,
+      Value<int?>? currentStamina,
+      Value<int>? tempStamina,
+      Value<bool>? isActive,
+      Value<DateTime>? createdAt,
+      Value<DateTime>? updatedAt,
+      Value<int>? rowid}) {
+    return HeroMinionSquadsCompanion(
+      id: id ?? this.id,
+      heroId: heroId ?? this.heroId,
+      minionComponentId: minionComponentId ?? this.minionComponentId,
+      squadName: squadName ?? this.squadName,
+      memberCount: memberCount ?? this.memberCount,
+      currentStamina: currentStamina ?? this.currentStamina,
+      tempStamina: tempStamina ?? this.tempStamina,
+      isActive: isActive ?? this.isActive,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (heroId.present) {
+      map['hero_id'] = Variable<String>(heroId.value);
+    }
+    if (minionComponentId.present) {
+      map['minion_component_id'] = Variable<String>(minionComponentId.value);
+    }
+    if (squadName.present) {
+      map['squad_name'] = Variable<String>(squadName.value);
+    }
+    if (memberCount.present) {
+      map['member_count'] = Variable<int>(memberCount.value);
+    }
+    if (currentStamina.present) {
+      map['current_stamina'] = Variable<int>(currentStamina.value);
+    }
+    if (tempStamina.present) {
+      map['temp_stamina'] = Variable<int>(tempStamina.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HeroMinionSquadsCompanion(')
+          ..write('id: $id, ')
+          ..write('heroId: $heroId, ')
+          ..write('minionComponentId: $minionComponentId, ')
+          ..write('squadName: $squadName, ')
+          ..write('memberCount: $memberCount, ')
+          ..write('currentStamina: $currentStamina, ')
+          ..write('tempStamina: $tempStamina, ')
           ..write('isActive: $isActive, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
@@ -5377,6 +6479,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $HeroEntriesTable heroEntries = $HeroEntriesTable(this);
   late final $HeroConfigTable heroConfig = $HeroConfigTable(this);
   late final $HeroRetainersTable heroRetainers = $HeroRetainersTable(this);
+  late final $HeroCompanionsTable heroCompanions = $HeroCompanionsTable(this);
+  late final $HeroMinionSquadsTable heroMinionSquads =
+      $HeroMinionSquadsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -5392,7 +6497,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         heroNotes,
         heroEntries,
         heroConfig,
-        heroRetainers
+        heroRetainers,
+        heroCompanions,
+        heroMinionSquads
       ];
 }
 
@@ -5810,6 +6917,33 @@ class $$HeroesTableFilterComposer
         builder: (joinBuilder, parentComposers) =>
             $$HeroRetainersTableFilterComposer(ComposerState($state.db,
                 $state.db.heroRetainers, joinBuilder, parentComposers)));
+    return f(composer);
+  }
+
+  ComposableFilter heroCompanionsRefs(
+      ComposableFilter Function($$HeroCompanionsTableFilterComposer f) f) {
+    final $$HeroCompanionsTableFilterComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $state.db.heroCompanions,
+        getReferencedColumn: (t) => t.heroId,
+        builder: (joinBuilder, parentComposers) =>
+            $$HeroCompanionsTableFilterComposer(ComposerState($state.db,
+                $state.db.heroCompanions, joinBuilder, parentComposers)));
+    return f(composer);
+  }
+
+  ComposableFilter heroMinionSquadsRefs(
+      ComposableFilter Function($$HeroMinionSquadsTableFilterComposer f) f) {
+    final $$HeroMinionSquadsTableFilterComposer composer =
+        $state.composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $state.db.heroMinionSquads,
+            getReferencedColumn: (t) => t.heroId,
+            builder: (joinBuilder, parentComposers) =>
+                $$HeroMinionSquadsTableFilterComposer(ComposerState($state.db,
+                    $state.db.heroMinionSquads, joinBuilder, parentComposers)));
     return f(composer);
   }
 }
@@ -7506,6 +8640,7 @@ typedef $$HeroRetainersTableCreateCompanionBuilder = HeroRetainersCompanion
   Value<String?> customDataJson,
   Value<String> advancementChoicesJson,
   Value<String> characteristicChoicesJson,
+  Value<int> level,
   Value<int?> currentStamina,
   Value<int> tempStamina,
   Value<int?> currentRecoveries,
@@ -7525,6 +8660,7 @@ typedef $$HeroRetainersTableUpdateCompanionBuilder = HeroRetainersCompanion
   Value<String?> customDataJson,
   Value<String> advancementChoicesJson,
   Value<String> characteristicChoicesJson,
+  Value<int> level,
   Value<int?> currentStamina,
   Value<int> tempStamina,
   Value<int?> currentRecoveries,
@@ -7560,6 +8696,7 @@ class $$HeroRetainersTableTableManager extends RootTableManager<
             Value<String?> customDataJson = const Value.absent(),
             Value<String> advancementChoicesJson = const Value.absent(),
             Value<String> characteristicChoicesJson = const Value.absent(),
+            Value<int> level = const Value.absent(),
             Value<int?> currentStamina = const Value.absent(),
             Value<int> tempStamina = const Value.absent(),
             Value<int?> currentRecoveries = const Value.absent(),
@@ -7578,6 +8715,7 @@ class $$HeroRetainersTableTableManager extends RootTableManager<
             customDataJson: customDataJson,
             advancementChoicesJson: advancementChoicesJson,
             characteristicChoicesJson: characteristicChoicesJson,
+            level: level,
             currentStamina: currentStamina,
             tempStamina: tempStamina,
             currentRecoveries: currentRecoveries,
@@ -7596,6 +8734,7 @@ class $$HeroRetainersTableTableManager extends RootTableManager<
             Value<String?> customDataJson = const Value.absent(),
             Value<String> advancementChoicesJson = const Value.absent(),
             Value<String> characteristicChoicesJson = const Value.absent(),
+            Value<int> level = const Value.absent(),
             Value<int?> currentStamina = const Value.absent(),
             Value<int> tempStamina = const Value.absent(),
             Value<int?> currentRecoveries = const Value.absent(),
@@ -7614,6 +8753,7 @@ class $$HeroRetainersTableTableManager extends RootTableManager<
             customDataJson: customDataJson,
             advancementChoicesJson: advancementChoicesJson,
             characteristicChoicesJson: characteristicChoicesJson,
+            level: level,
             currentStamina: currentStamina,
             tempStamina: tempStamina,
             currentRecoveries: currentRecoveries,
@@ -7668,6 +8808,11 @@ class $$HeroRetainersTableFilterComposer
           column: $state.table.characteristicChoicesJson,
           builder: (column, joinBuilders) =>
               ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get level => $state.composableBuilder(
+      column: $state.table.level,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
 
   ColumnFilters<int> get currentStamina => $state.composableBuilder(
       column: $state.table.currentStamina,
@@ -7757,6 +8902,11 @@ class $$HeroRetainersTableOrderingComposer
           builder: (column, joinBuilders) =>
               ColumnOrderings(column, joinBuilders: joinBuilders));
 
+  ColumnOrderings<int> get level => $state.composableBuilder(
+      column: $state.table.level,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
   ColumnOrderings<int> get currentStamina => $state.composableBuilder(
       column: $state.table.currentStamina,
       builder: (column, joinBuilders) =>
@@ -7769,6 +8919,452 @@ class $$HeroRetainersTableOrderingComposer
 
   ColumnOrderings<int> get currentRecoveries => $state.composableBuilder(
       column: $state.table.currentRecoveries,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get isActive => $state.composableBuilder(
+      column: $state.table.isActive,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get updatedAt => $state.composableBuilder(
+      column: $state.table.updatedAt,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  $$HeroesTableOrderingComposer get heroId {
+    final $$HeroesTableOrderingComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.heroId,
+        referencedTable: $state.db.heroes,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder, parentComposers) =>
+            $$HeroesTableOrderingComposer(ComposerState(
+                $state.db, $state.db.heroes, joinBuilder, parentComposers)));
+    return composer;
+  }
+}
+
+typedef $$HeroCompanionsTableCreateCompanionBuilder = HeroCompanionsCompanion
+    Function({
+  required String id,
+  required String heroId,
+  required String companionComponentId,
+  required String name,
+  Value<int?> currentStamina,
+  Value<int> tempStamina,
+  Value<int> currentRampage,
+  Value<bool> isActive,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<int> rowid,
+});
+typedef $$HeroCompanionsTableUpdateCompanionBuilder = HeroCompanionsCompanion
+    Function({
+  Value<String> id,
+  Value<String> heroId,
+  Value<String> companionComponentId,
+  Value<String> name,
+  Value<int?> currentStamina,
+  Value<int> tempStamina,
+  Value<int> currentRampage,
+  Value<bool> isActive,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<int> rowid,
+});
+
+class $$HeroCompanionsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $HeroCompanionsTable,
+    HeroCompanion,
+    $$HeroCompanionsTableFilterComposer,
+    $$HeroCompanionsTableOrderingComposer,
+    $$HeroCompanionsTableCreateCompanionBuilder,
+    $$HeroCompanionsTableUpdateCompanionBuilder> {
+  $$HeroCompanionsTableTableManager(
+      _$AppDatabase db, $HeroCompanionsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$HeroCompanionsTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$HeroCompanionsTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> heroId = const Value.absent(),
+            Value<String> companionComponentId = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<int?> currentStamina = const Value.absent(),
+            Value<int> tempStamina = const Value.absent(),
+            Value<int> currentRampage = const Value.absent(),
+            Value<bool> isActive = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updatedAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              HeroCompanionsCompanion(
+            id: id,
+            heroId: heroId,
+            companionComponentId: companionComponentId,
+            name: name,
+            currentStamina: currentStamina,
+            tempStamina: tempStamina,
+            currentRampage: currentRampage,
+            isActive: isActive,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String heroId,
+            required String companionComponentId,
+            required String name,
+            Value<int?> currentStamina = const Value.absent(),
+            Value<int> tempStamina = const Value.absent(),
+            Value<int> currentRampage = const Value.absent(),
+            Value<bool> isActive = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updatedAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              HeroCompanionsCompanion.insert(
+            id: id,
+            heroId: heroId,
+            companionComponentId: companionComponentId,
+            name: name,
+            currentStamina: currentStamina,
+            tempStamina: tempStamina,
+            currentRampage: currentRampage,
+            isActive: isActive,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            rowid: rowid,
+          ),
+        ));
+}
+
+class $$HeroCompanionsTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $HeroCompanionsTable> {
+  $$HeroCompanionsTableFilterComposer(super.$state);
+  ColumnFilters<String> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get companionComponentId => $state.composableBuilder(
+      column: $state.table.companionComponentId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get currentStamina => $state.composableBuilder(
+      column: $state.table.currentStamina,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get tempStamina => $state.composableBuilder(
+      column: $state.table.tempStamina,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get currentRampage => $state.composableBuilder(
+      column: $state.table.currentRampage,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get isActive => $state.composableBuilder(
+      column: $state.table.isActive,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get updatedAt => $state.composableBuilder(
+      column: $state.table.updatedAt,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  $$HeroesTableFilterComposer get heroId {
+    final $$HeroesTableFilterComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.heroId,
+        referencedTable: $state.db.heroes,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder, parentComposers) => $$HeroesTableFilterComposer(
+            ComposerState(
+                $state.db, $state.db.heroes, joinBuilder, parentComposers)));
+    return composer;
+  }
+}
+
+class $$HeroCompanionsTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $HeroCompanionsTable> {
+  $$HeroCompanionsTableOrderingComposer(super.$state);
+  ColumnOrderings<String> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get companionComponentId => $state.composableBuilder(
+      column: $state.table.companionComponentId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get currentStamina => $state.composableBuilder(
+      column: $state.table.currentStamina,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get tempStamina => $state.composableBuilder(
+      column: $state.table.tempStamina,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get currentRampage => $state.composableBuilder(
+      column: $state.table.currentRampage,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get isActive => $state.composableBuilder(
+      column: $state.table.isActive,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get updatedAt => $state.composableBuilder(
+      column: $state.table.updatedAt,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  $$HeroesTableOrderingComposer get heroId {
+    final $$HeroesTableOrderingComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.heroId,
+        referencedTable: $state.db.heroes,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder, parentComposers) =>
+            $$HeroesTableOrderingComposer(ComposerState(
+                $state.db, $state.db.heroes, joinBuilder, parentComposers)));
+    return composer;
+  }
+}
+
+typedef $$HeroMinionSquadsTableCreateCompanionBuilder
+    = HeroMinionSquadsCompanion Function({
+  required String id,
+  required String heroId,
+  required String minionComponentId,
+  required String squadName,
+  Value<int> memberCount,
+  Value<int?> currentStamina,
+  Value<int> tempStamina,
+  Value<bool> isActive,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<int> rowid,
+});
+typedef $$HeroMinionSquadsTableUpdateCompanionBuilder
+    = HeroMinionSquadsCompanion Function({
+  Value<String> id,
+  Value<String> heroId,
+  Value<String> minionComponentId,
+  Value<String> squadName,
+  Value<int> memberCount,
+  Value<int?> currentStamina,
+  Value<int> tempStamina,
+  Value<bool> isActive,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<int> rowid,
+});
+
+class $$HeroMinionSquadsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $HeroMinionSquadsTable,
+    HeroMinionSquad,
+    $$HeroMinionSquadsTableFilterComposer,
+    $$HeroMinionSquadsTableOrderingComposer,
+    $$HeroMinionSquadsTableCreateCompanionBuilder,
+    $$HeroMinionSquadsTableUpdateCompanionBuilder> {
+  $$HeroMinionSquadsTableTableManager(
+      _$AppDatabase db, $HeroMinionSquadsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$HeroMinionSquadsTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$HeroMinionSquadsTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> heroId = const Value.absent(),
+            Value<String> minionComponentId = const Value.absent(),
+            Value<String> squadName = const Value.absent(),
+            Value<int> memberCount = const Value.absent(),
+            Value<int?> currentStamina = const Value.absent(),
+            Value<int> tempStamina = const Value.absent(),
+            Value<bool> isActive = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updatedAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              HeroMinionSquadsCompanion(
+            id: id,
+            heroId: heroId,
+            minionComponentId: minionComponentId,
+            squadName: squadName,
+            memberCount: memberCount,
+            currentStamina: currentStamina,
+            tempStamina: tempStamina,
+            isActive: isActive,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String heroId,
+            required String minionComponentId,
+            required String squadName,
+            Value<int> memberCount = const Value.absent(),
+            Value<int?> currentStamina = const Value.absent(),
+            Value<int> tempStamina = const Value.absent(),
+            Value<bool> isActive = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updatedAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              HeroMinionSquadsCompanion.insert(
+            id: id,
+            heroId: heroId,
+            minionComponentId: minionComponentId,
+            squadName: squadName,
+            memberCount: memberCount,
+            currentStamina: currentStamina,
+            tempStamina: tempStamina,
+            isActive: isActive,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            rowid: rowid,
+          ),
+        ));
+}
+
+class $$HeroMinionSquadsTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $HeroMinionSquadsTable> {
+  $$HeroMinionSquadsTableFilterComposer(super.$state);
+  ColumnFilters<String> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get minionComponentId => $state.composableBuilder(
+      column: $state.table.minionComponentId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get squadName => $state.composableBuilder(
+      column: $state.table.squadName,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get memberCount => $state.composableBuilder(
+      column: $state.table.memberCount,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get currentStamina => $state.composableBuilder(
+      column: $state.table.currentStamina,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get tempStamina => $state.composableBuilder(
+      column: $state.table.tempStamina,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get isActive => $state.composableBuilder(
+      column: $state.table.isActive,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get updatedAt => $state.composableBuilder(
+      column: $state.table.updatedAt,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  $$HeroesTableFilterComposer get heroId {
+    final $$HeroesTableFilterComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.heroId,
+        referencedTable: $state.db.heroes,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder, parentComposers) => $$HeroesTableFilterComposer(
+            ComposerState(
+                $state.db, $state.db.heroes, joinBuilder, parentComposers)));
+    return composer;
+  }
+}
+
+class $$HeroMinionSquadsTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $HeroMinionSquadsTable> {
+  $$HeroMinionSquadsTableOrderingComposer(super.$state);
+  ColumnOrderings<String> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get minionComponentId => $state.composableBuilder(
+      column: $state.table.minionComponentId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get squadName => $state.composableBuilder(
+      column: $state.table.squadName,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get memberCount => $state.composableBuilder(
+      column: $state.table.memberCount,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get currentStamina => $state.composableBuilder(
+      column: $state.table.currentStamina,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get tempStamina => $state.composableBuilder(
+      column: $state.table.tempStamina,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
@@ -7825,4 +9421,8 @@ class $AppDatabaseManager {
       $$HeroConfigTableTableManager(_db, _db.heroConfig);
   $$HeroRetainersTableTableManager get heroRetainers =>
       $$HeroRetainersTableTableManager(_db, _db.heroRetainers);
+  $$HeroCompanionsTableTableManager get heroCompanions =>
+      $$HeroCompanionsTableTableManager(_db, _db.heroCompanions);
+  $$HeroMinionSquadsTableTableManager get heroMinionSquads =>
+      $$HeroMinionSquadsTableTableManager(_db, _db.heroMinionSquads);
 }

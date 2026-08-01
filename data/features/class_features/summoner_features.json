@@ -1,0 +1,41 @@
+[
+  {
+    "id": "feature_summoner_circle",
+    "type": "subclass",
+    "name": "Summoner Circle",
+    "class": "summoner",
+    "is_subclass_feature": true,
+    "level": 1,
+    "description": "Choose a summoner circle. Your circle determines the portfolio from which you summon minions and many later class features. (Quick Build: Circle of Graves.)",
+    "options": [
+      {"subclass_name": "Circle of Blight", "description": "You call forth demons from the Abyssal Waste."},
+      {"subclass_name": "Circle of Graves", "description": "You raise undead creatures from the Necropolitan Ruin."},
+      {"subclass_name": "Circle of Spring", "description": "You beckon pixies, nixies, and sprites from Arcadia."},
+      {"subclass_name": "Circle of Storms", "description": "You summon elementals from Quintessence."}
+    ]
+  },
+  {
+    "id": "feature_summoner_minions",
+    "type": "feature",
+    "name": "Minions",
+    "class": "summoner",
+    "level": 1,
+    "description": "You can summon and maintain up to eight minions and manage up to two squads. A squad can contain up to eight minions with the same name. Your Summoner's Range is 5 + your Reason score. Manage active squads from the Minion Squads panel on your hero sheet."
+  },
+  {
+    "id": "feature_summoner_essence",
+    "type": "heroic resource",
+    "name": "Essence",
+    "class": "summoner",
+    "level": 1,
+    "description": "You and your minions have a unique reserve of essence as your Heroic Resource.",
+    "in_combat": {"name": "Essence in Combat", "description": "At the start of a combat encounter, you gain essence equal to your Victories. At the start of each of your turns during combat, you gain 2 essence. The first time each round that any minion dies unwillingly within your Summoner's Range, you gain 1 essence. You lose remaining essence at the end of the encounter."},
+    "out_of_combat": {"name": "Essence Outside of Combat", "description": "You can't gain essence outside combat, but can use essence-costing heroic abilities and effects without spending it. After doing so, you can't use that same ability or effect outside combat again until you gain a Victory or finish a respite."}
+  },
+  {"id": "feature_summoner_summoner_strike", "type": "feature", "name": "Summoner Strike", "class": "summoner", "level": 1, "description": "You have a magical melee or ranged strike that replaces both your melee and ranged free strikes."},
+  {"id": "feature_summoner_strike_for_me", "type": "feature", "name": "Strike For Me", "class": "summoner", "level": 1, "description": "You have a free triggered action that directs your minions to make free strikes or use signature abilities."},
+  {"id": "feature_summoner_minion_bridge", "type": "feature", "name": "Minion Bridge", "class": "summoner", "level": 1, "description": "You can command your minions to form a bridge or other connected route."},
+  {"id": "feature_summoner_formation", "type": "feature", "name": "Formation", "class": "summoner", "level": 1, "description": "Your minion squads act together on your turn."},
+  {"id": "feature_summoner_quick_command", "type": "feature", "name": "Quick Command", "class": "summoner", "level": 1, "description": "You can give your minions commands as described by the Summoner class."},
+  {"id": "feature_summoner_summoner_abilities", "type": "feature", "name": "Summoner Abilities", "class": "summoner", "level": 1, "description": "You gain heroic abilities that use essence and interact with your minions."}
+]

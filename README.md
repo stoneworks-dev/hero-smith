@@ -89,6 +89,7 @@ See [PRIVACY_POLICY.md](PRIVACY_POLICY.md) for details.
 
 - **MCDM Productions** - Creators of Draw Steel TTRPG. Great game!
 - **Steel Compendium** (https://steelcompendium.io) - Thanks for allowing use of the abilities data
+- **Game-Icons.net artists** - Thanks for the expressive feature, ability, and companion icons used throughout the hero sheet
 - **Flutter/Dart Team** - Framework and language
 - **Drift** - SQLite database package
 
@@ -197,9 +198,40 @@ hero_smith/
 
 ## Data Flow
 
-1. JSON files (`data/`) → seeded to `Components` table on first run
+1. JSON files (`data/`) → version-synchronized to `Components` on startup
 2. User selections → stored in database with source tracking
 3. `HeroAssemblyService.assemble()` → unified `HeroAssembly` view
+
+### Updating bundled game content
+
+Bundled JSON content has its own monotonic version in
+`data/content_manifest.json`. Whenever a release adds or changes selectable
+content:
+
+1. Keep every existing component ID stable.
+2. Edit or add the JSON records under `data/`.
+3. Increase the integer `version` in `data/content_manifest.json`.
+
+On the next startup, Hero Smith updates seed components in place and inserts
+new ones. It does not delete heroes, hero selections, custom/imported
+components, or seed records omitted from the new bundle. The content version
+is independent from the Drift schema version.
+
+To withdraw a selectable JSON record without breaking existing heroes, keep
+the record and add the JSON boolean:
+
+```json
+{
+  "id": "perk_example",
+  "type": "perk",
+  "name": "Example",
+  "isRetired": true
+}
+```
+
+Retired records are hidden from new choices in the hero creator. An existing
+hero keeps a retired selection and the creator displays a warning naming the
+retired content. Use the boolean `true`, not the string `"true"`.
 
 ##Creating a New Release
 

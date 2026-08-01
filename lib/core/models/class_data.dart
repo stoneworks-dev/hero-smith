@@ -3,6 +3,7 @@ class ClassData {
   final String classId;
   final String name;
   final String type;
+  final bool isRetired;
   final StartingCharacteristics startingCharacteristics;
   final List<LevelProgression> levels;
 
@@ -10,6 +11,7 @@ class ClassData {
     required this.classId,
     required this.name,
     required this.type,
+    this.isRetired = false,
     required this.startingCharacteristics,
     required this.levels,
   });
@@ -19,6 +21,7 @@ class ClassData {
       classId: json['classId'] as String,
       name: json['name'] as String,
       type: json['type'] as String,
+      isRetired: json['isRetired'] == true,
       startingCharacteristics: StartingCharacteristics.fromJson(
         json['starting_characteristics'] as Map<String, dynamic>,
       ),

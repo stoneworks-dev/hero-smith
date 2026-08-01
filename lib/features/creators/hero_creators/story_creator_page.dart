@@ -382,7 +382,8 @@ class StoryCreatorTabState extends ConsumerState<StoryCreatorTab>
 
   Set<String> _abilityIdsForChoices(Map<String, String> choices) {
     final abilities =
-        ref.watch(componentsByTypeProvider('ability')).valueOrNull ?? const [];
+        ref.watch(selectableComponentsByTypeProvider('ability')).valueOrNull ??
+            const [];
     final ids = <String>{};
     for (final value in choices.values) {
       final normalized = value.trim();

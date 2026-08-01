@@ -24,6 +24,10 @@ class RetainerInstance {
   /// Level 5 increases all by 1 automatically (not stored here).
   final Map<int, String> characteristicChoices;
 
+  /// The retainer's own tracked level (1-10). Independent of the hero's
+  /// level — retainers level up on their own via [RetainerRepository.levelUp].
+  final int level;
+
   // Combat state
   final int? currentStamina;
   final int tempStamina;
@@ -45,6 +49,7 @@ class RetainerInstance {
     this.customData,
     this.advancementChoices = const {},
     this.characteristicChoices = const {},
+    this.level = 1,
     this.currentStamina,
     this.tempStamina = 0,
     this.currentRecoveries = maxRecoveries,
@@ -63,6 +68,7 @@ class RetainerInstance {
     Map<String, dynamic>? customData,
     Map<int, String>? advancementChoices,
     Map<int, String>? characteristicChoices,
+    int? level,
     int? currentStamina,
     int? tempStamina,
     int? currentRecoveries,
@@ -81,6 +87,7 @@ class RetainerInstance {
       advancementChoices: advancementChoices ?? this.advancementChoices,
       characteristicChoices:
           characteristicChoices ?? this.characteristicChoices,
+      level: level ?? this.level,
       currentStamina: currentStamina ?? this.currentStamina,
       tempStamina: tempStamina ?? this.tempStamina,
       currentRecoveries: currentRecoveries ?? this.currentRecoveries,

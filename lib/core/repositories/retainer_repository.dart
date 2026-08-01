@@ -51,6 +51,13 @@ class RetainerRepository {
   // ---------------------------------------------------------------------------
 
   /// Add a retainer to a hero. Returns the new instance ID.
+  ///
+  /// Deactivates any existing active retainer for this hero first, so a hero
+  /// never ends up with more than one active row — [watchRetainerForHero]
+  /// assumes at most one and throws otherwise. This guards the invariant
+  /// directly instead of relying on every caller to pass the right
+  /// `replaceId`/remove the old one first (e.g. a double-tapped "Add"
+  /// button from the empty state, which has no replaceId to pass).
   Future<String> addRetainer({
     required String heroId,
     required String retainerComponentId,
@@ -58,7 +65,12 @@ class RetainerRepository {
     required String role,
     bool isCustom = false,
     Map<String, dynamic>? customData,
+    int startingLevel = 1,
   }) async {
+    await (_db.update(_db.heroRetainers)
+          ..where((t) => t.heroId.equals(heroId) & t.isActive.equals(true)))
+        .write(const HeroRetainersCompanion(isActive: Value(false)));
+
     final id = _generateId();
     final now = DateTime.now();
     await _db.into(_db.heroRetainers).insert(
@@ -72,11 +84,22 @@ class RetainerRepository {
             customDataJson: Value(
               customData != null ? jsonEncode(customData) : null,
             ),
+            level: Value(startingLevel),
             createdAt: Value(now),
             updatedAt: Value(now),
           ),
         );
     return id;
+  }
+
+  /// Set the retainer's own tracked level directly (clamped to 1-10).
+  /// Retainers level independently of their hero.
+  Future<void> setLevel(String id, int level) async {
+    await (_db.update(_db.heroRetainers)..where((t) => t.id.equals(id)))
+        .write(HeroRetainersCompanion(
+      level: Value(level.clamp(1, 10)),
+      updatedAt: Value(DateTime.now()),
+    ));
   }
 
   /// Remove a retainer instance by ID.
@@ -176,6 +199,7 @@ class RetainerRepository {
           RetainerInstance.decodeIntStringMap(row.advancementChoicesJson),
       characteristicChoices:
           RetainerInstance.decodeIntStringMap(row.characteristicChoicesJson),
+      level: row.level,
       currentStamina: row.currentStamina,
       tempStamina: row.tempStamina,
       currentRecoveries: row.currentRecoveries ?? RetainerInstance.maxRecoveries,

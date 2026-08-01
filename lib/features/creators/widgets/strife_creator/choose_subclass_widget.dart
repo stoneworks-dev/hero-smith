@@ -734,13 +734,13 @@ class _ChooseSubclassWidgetState extends State<ChooseSubclassWidget> {
           label: ChooseSubclassWidgetText.subclassPlaceholderOption,
           value: null,
         ),
-        ...options.map(
-          (option) => _SearchOption<String?>(
-            label: option.name,
-            value: option.key,
-            subtitle: option.description,
-          ),
-        ),
+        ...options.where((option) => !option.isRetired).map(
+              (option) => _SearchOption<String?>(
+                label: option.name,
+                value: option.key,
+                subtitle: option.description,
+              ),
+            ),
       ];
 
       final result = await _showSearchablePicker<String?>(
@@ -800,6 +800,10 @@ class _ChooseSubclassWidgetState extends State<ChooseSubclassWidget> {
       ),
       if (selectedOption != null) ...[
         const SizedBox(height: 12),
+        if (selectedOption.isRetired) ...[
+          _buildRetiredSelectionWarning(selectedOption.name),
+          const SizedBox(height: 12),
+        ],
         _buildSubclassDetails(selectedOption),
       ] else if (featureData?.featureDescription != null &&
           featureData!.featureDescription!.isNotEmpty) ...[
@@ -904,13 +908,13 @@ class _ChooseSubclassWidgetState extends State<ChooseSubclassWidget> {
           label: ChooseSubclassWidgetText.deityPlaceholderOption,
           value: null,
         ),
-        ..._deities.map(
-          (deity) => _SearchOption<String?>(
-            label: deity.name,
-            value: deity.id,
-            subtitle: deity.category,
-          ),
-        ),
+        ..._deities.where((deity) => !deity.isRetired).map(
+              (deity) => _SearchOption<String?>(
+                label: deity.name,
+                value: deity.id,
+                subtitle: deity.category,
+              ),
+            ),
       ];
 
       final result = await _showSearchablePicker<String?>(
@@ -980,7 +984,44 @@ class _ChooseSubclassWidgetState extends State<ChooseSubclassWidget> {
           ),
         ),
       ),
+      if (selectedDeity?.isRetired == true) ...[
+        const SizedBox(height: 12),
+        _buildRetiredSelectionWarning(selectedDeity!.name),
+      ],
     ];
+  }
+
+  Widget _buildRetiredSelectionWarning(String name) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Colors.orange.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.orange.withValues(alpha: 0.5)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            Icons.warning_amber_rounded,
+            size: 18,
+            color: Colors.orange.shade300,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              '${ChooseSubclassWidgetText.retiredSelectionPrefix}$name'
+              '${ChooseSubclassWidgetText.retiredSelectionSuffix}',
+              style: TextStyle(
+                color: Colors.orange.shade200,
+                fontSize: 13,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   List<Widget> _buildDomainSection() {

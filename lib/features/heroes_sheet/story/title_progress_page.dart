@@ -11,6 +11,7 @@ import '../../../core/theme/app_icons.dart';
 import '../../../core/theme/form_theme.dart';
 import '../../../core/theme/navigation_theme.dart';
 import '../../../core/theme/story_theme.dart';
+import '../../../widgets/shared/drag_scroll_behavior.dart';
 
 const _titlesColor = StoryTheme.titlesAccent;
 
@@ -445,27 +446,33 @@ class _TitleProgressPageState extends ConsumerState<TitleProgressPage> {
           ),
           const SizedBox(height: 10),
           // Echelon filter chips
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                _filterChip(SheetStoryTitleProgressText.allFilter, null),
-                for (int e = 1; e <= 4; e++)
-                  _filterChip(SheetStoryTitleProgressText.echelonLabel(e), e),
-              ],
+          ScrollConfiguration(
+            behavior: const DragScrollBehavior(),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  _filterChip(SheetStoryTitleProgressText.allFilter, null),
+                  for (int e = 1; e <= 4; e++)
+                    _filterChip(SheetStoryTitleProgressText.echelonLabel(e), e),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 6),
           // Status filter chips
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                _statusChip(SheetStoryTitleProgressText.allFilter, 'all'),
-                _statusChip(SheetStoryTitleProgressText.availableFilter, 'available'),
-                _statusChip(SheetStoryTitleProgressText.inProgressFilter, 'in_progress'),
-                _statusChip(SheetStoryTitleProgressText.completedFilter, 'completed'),
-              ],
+          ScrollConfiguration(
+            behavior: const DragScrollBehavior(),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  _statusChip(SheetStoryTitleProgressText.allFilter, 'all'),
+                  _statusChip(SheetStoryTitleProgressText.availableFilter, 'available'),
+                  _statusChip(SheetStoryTitleProgressText.inProgressFilter, 'in_progress'),
+                  _statusChip(SheetStoryTitleProgressText.completedFilter, 'completed'),
+                ],
+              ),
             ),
           ),
         ],

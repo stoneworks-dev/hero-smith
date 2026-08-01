@@ -36,4 +36,8 @@ class HeroCreatorPageText {
   static const String tabLabelStrength = 'Strength';
   static const String saved = 'Saved!';
   static const String failedToSavePrefix = 'Failed to save: ';
+  static const String retiredContentTitle = 'This hero uses retired content';
+  static const String retiredContentMessage =
+      'These choices are no longer available for new heroes, but they have '
+      'been kept on this hero:';
 }

@@ -142,7 +142,8 @@ class EquipmentAndModificationsWidget extends ConsumerWidget {
 
   static Future<Component?> _findItemById(WidgetRef ref, String itemId) async {
     for (final type in _allEquipmentTypes) {
-      final components = await ref.read(componentsByTypeProvider(type).future);
+      final components =
+          await ref.read(selectableComponentsByTypeProvider(type).future);
       for (final component in components) {
         if (component.id == itemId) {
           return component;
@@ -540,7 +541,7 @@ class _EquipmentSelectionDialogState
                   EquipmentAndModificationsWidget._titleize(type),
           icon: EquipmentAndModificationsWidget._equipmentTypeIcons[type] ??
               KitIcons.fallback,
-          data: ref.watch(componentsByTypeProvider(type)),
+          data: ref.watch(selectableComponentsByTypeProvider(type)),
         ),
     ];
   }

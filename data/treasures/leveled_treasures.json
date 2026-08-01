@@ -1662,5 +1662,593 @@
     },
     "enchanted": false,
     "enchants": []
+  },
+  {
+    "id": "33_field_commanders_baton",
+    "type": "leveled_treasure",
+    "name": "33 Field Commanders Baton",
+    "echelon": 4,
+    "description": "This long, ornate rod with a silver bulb head is braided with 33 green cords. A new cord starts to grow while you wield the baton.",
+    "keywords": [
+      "Implement",
+      "Magic"
+    ],
+    "item_prerequisite": "A silver ingot and a written strategy from 33 warleaders",
+    "project_source": "Texts or lore in Caelian",
+    "project_roll_characteristics": [
+      "Reason",
+      "Intuition",
+      "Presence"
+    ],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "effect": {
+      "effect_description": "",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "While you wield this baton, you are imbued with the experience of the commanders who wielded it before you. Your magic or psionic abilities that deal rolled damage gain a +1 damage bonus. On your turn, whenever you or an ally deal damage to a creature within 5 squares of you, you can immediately use your maneuver to slide the creature up to 2 squares.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The baton's damage bonus increases to +2. When you slide a creature using this ability and they end this slide adjacent to one of your allies, that ally can use the Grab or Knockback maneuver against the creature as a free triggered action.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The baton's damage bonus increases to +3. On your turn, whenever you or an ally deal damage to a creature within 10 squares of you, you can immediately use your maneuver to slide the creature up to 3 squares, ignoring stability.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": [],
+    "special": "If you are a tactician, you can wield this implement as if it had the Light Weapon keyword. Replace any reference to magic or psionic abilities with weapon abilities.",
+    "leveled_type": "implement"
+  },
+  {
+    "id": "cavalry_armor",
+    "type": "leveled_treasure",
+    "name": "Cavalry Armor",
+    "echelon": 4,
+    "description": "Wearing this absurdly heavy plate armor makes it almost impossible to move-and once you get into motion, it's equally hard to stop.",
+    "keywords": [
+      "Heavy Armor",
+      "Magic"
+    ],
+    "item_prerequisite": "Melted-down dragon knight armor",
+    "project_source": "Texts or lore in Vaslorian and Vastariax",
+    "project_roll_characteristics": [
+      "Might",
+      "Intuition"
+    ],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "effect": {
+      "effect_description": "",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "Only a beastheart can wear this armor. While you wear this armor, you gain a +6 bonus to Stamina and a +1 bonus to stability. The first time on a turn that you or your companion would move into a creature's space, whoever is moving can push that creature 1 square before continuing their movement. This forced movement ignores stability if the creature's stability is lower than the pusher's stability.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The armor's bonus to Stamina increases to +12, and its bonus to stability increases to +2. Additionally, when a creature is force moved into you or your companion, whoever was collided with takes no damage.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The armor's bonus to Stamina increases to +21, and its bonus to stability increases to +3. When you or your companion pushes a creature using this armor's feature, the creature takes damage equal to twice the pusher's Might score and is knocked prone.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": [],
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "leveled_bonuses": {
+          "stamina": {
+            "stacks_with_other_treasures": false,
+            "level_1": 6,
+            "level_5": 12,
+            "level_9": 21
+          },
+          "stability": {
+            "stacks_with_other_treasures": false,
+            "level_1": 1,
+            "level_5": 2,
+            "level_9": 3
+          }
+        }
+      }
+    ],
+    "special": null,
+    "leveled_type": "armor"
+  },
+  {
+    "id": "glancing_bow",
+    "type": "leveled_treasure",
+    "name": "Glancing Bow",
+    "echelon": 4,
+    "description": "This bow is festooned with mirrors and sights pointing in all directions.",
+    "keywords": [
+      "Bow",
+      "Magic"
+    ],
+    "item_prerequisite": "A bow used to shoot an apple from someone's head",
+    "project_source": "Texts or lore in Yllric",
+    "project_roll_characteristics": [
+      "Agility",
+      "Reason",
+      "Intuition"
+    ],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "effect": {
+      "effect_description": "",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "Only a beastheart can wield this bow. Any weapon ability that deals rolled damage using this weapon deals an extra 1 damage. Additionally, you can target your companion with a ranged weapon strike using this bow, making a glancing shot. The companion can use a free triggered action to redirect the strike to another target as if the companion were the source of the ability, using the ability's original distance. You can't make more than one glancing shot as part of the same ability.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The weapon's extra damage increases to 2. When your companion redirects your glancing shot, the strike gains an edge if the target is within 5 squares of your companion.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The weapon's extra damage increases to 3. Additionally, you can now make a glancing shot off of an enemy. When you do so, the enemy is unaffected by the strike but takes damage equal to your Intuition score, and you can redirect the strike to a second target as if the enemy was the source of the ability, provided you can see the second target.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": [],
+    "special": null,
+    "leveled_type": "weapon"
+  },
+  {
+    "id": "horned_champion",
+    "type": "leveled_treasure",
+    "name": "Horned Champion",
+    "echelon": 4,
+    "description": "This paired helmet and barding face shield are each set with a pair of curving metal horns.",
+    "keywords": [
+      "Heavy Weapon",
+      "Magic"
+    ],
+    "item_prerequisite": "The horns of a minotaur",
+    "project_source": "Epic poem in High Kuric",
+    "project_roll_characteristics": [
+      "Might",
+      "Reason",
+      "Intuition"
+    ],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "effect": {
+      "effect_description": "",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "Only a beastheart can wield this weapon. Any weapon ability that deals rolled damage using this weapon deals an extra 1 damage. Additionally, your abilities with the Melee and Weapon keywords also gain the Charge keyword.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The weapon's extra damage increases to 2. Additionally, whenever you or your companion uses the Charge main action and obtains a tier 3 outcome with an ability, whoever used the action can either knock the target prone, push them 2 squares or increase the distance of a push made as part of the charge, or deal extra damage equal to their own Might score.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The weapon's extra damage increases to 3. Additionally, when you or your companion uses the Charge main action, the movement doesn't provoke opportunity attacks.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": [],
+    "special": null,
+    "leveled_type": "weapon"
+  },
+  {
+    "id": "longclaw",
+    "type": "leveled_treasure",
+    "name": "Longclaw",
+    "echelon": 4,
+    "description": "The arm-length claws jutting from your armor are your only weapon.",
+    "keywords": [
+      "Magic",
+      "Medium Weapon"
+    ],
+    "item_prerequisite": "The claws of a dragon",
+    "project_source": "Texts or lore in the First Language",
+    "project_roll_characteristics": [
+      "Might",
+      "Reason",
+      "Intuition"
+    ],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "effect": {
+      "effect_description": "",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "Only a beastheart can wield this weapon. Any weapon ability that deals rolled damage using this weapon deals an extra 1 damage. Additionally, you and your companion gain a +1 bonus to melee distance.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The weapon's extra damage increases to 2. Additionally, whenever you or your companion grabs a creature or a creature grabs either of you, the creature is bleeding (save ends).",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The weapon's extra damage increases to 3. Additionally, whenever you or your companion causes a creature to become bleeding or uses an ability that deals damage to a bleeding creature, you can each spend a Recovery.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": [],
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "leveled_bonuses": {
+          "melee": {
+            "stacks_with_other_treasures": false,
+            "level_1": 1
+          }
+        }
+      }
+    ],
+    "special": null,
+    "leveled_type": "weapon"
+  },
+  {
+    "id": "pack_harness",
+    "type": "leveled_treasure",
+    "name": "Pack Harness",
+    "echelon": 4,
+    "description": "While wearing these worn leather bands, your companion appears as not a single creature, but a hunting pack.",
+    "keywords": [
+      "Light Armor",
+      "Magic"
+    ],
+    "item_prerequisite": "A leash from an archfey's hunting pack",
+    "project_source": "Texts or lore in Khelt",
+    "project_roll_characteristics": [
+      "Agility",
+      "Intuition"
+    ],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "effect": {
+      "effect_description": "",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "Only a beastheart can wear this armor. While you wear this armor, you gain a +6 bonus to Stamina. You can spend 10 minutes to activate this armor's power, causing two illusory copies of your companion to appear in their space and move with them. Whenever your companion takes damage from an ability that deals rolled damage while visible, you can banish one copy to decrease the power roll outcome by one tier (to a minimum of tier 1). When you activate this armor's power again, any old copies vanish.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The armor's bonus to Stamina increases to +12, and whenever you activate this armor's power, your companion gains three illusory copies.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The armor's bonus to Stamina increases to +21, and whenever you activate this armor's power, your companion gains four illusory copies. Additionally, while you share your companion's space, you take on the appearance of one of the pack. When you take damage from an ability that deals rolled damage while in your companion's space, you can banish one copy to decrease the power roll outcome by one tier (to a minimum of tier 1).",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": [],
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "leveled_bonuses": {
+          "stamina": {
+            "stacks_with_other_treasures": false,
+            "level_1": 6,
+            "level_5": 12,
+            "level_9": 21
+          }
+        }
+      }
+    ],
+    "special": null,
+    "leveled_type": "armor"
+  },
+  {
+    "id": "rampant_shield",
+    "type": "leveled_treasure",
+    "name": "Rampant Shield",
+    "echelon": 4,
+    "description": "This battered shield bears a magically animated painting of a lion rampant.",
+    "keywords": [
+      "Magic",
+      "Shield"
+    ],
+    "item_prerequisite": "Strands from the manes of nine lions",
+    "project_source": "Texts or lore in Vaslorian",
+    "project_roll_characteristics": [
+      "Might",
+      "Intuition"
+    ],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "effect": {
+      "effect_description": "",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "Only a beastheart can wield or carry this shield. You gain a +3 bonus to Stamina and the painting on the shield changes to resemble your companion. Additionally, your companion can see as if they were in your space as well as their own, and whenever your companion uses an ability, they can do so as if they were in either your space or their own.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The shield's bonus to Stamina increases to +6. Additionally, your companion can use 2 squares of movement to teleport from their current location and leap out of the shield, landing in a space adjacent to you.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The shield's bonus to Stamina increases to +9. Additionally, the shield can make opportunity attacks as if it was your companion.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": [],
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "leveled_bonuses": {
+          "stamina": {
+            "stacks_with_other_treasures": false,
+            "level_1": 3,
+            "level_5": 6,
+            "level_9": 9
+          }
+        }
+      }
+    ],
+    "special": null,
+    "leveled_type": "armor"
+  },
+  {
+    "id": "rex_scepter",
+    "type": "leveled_treasure",
+    "name": "Rex Scepter",
+    "echelon": 4,
+    "description": "The rod resembles a simple tree branch. It grows and braids itself into an ornate scepter in the heat of battle.",
+    "keywords": [
+      "Implement",
+      "Magic"
+    ],
+    "item_prerequisite": "A tree branch and fealty from three hundred or more sworn followers",
+    "project_source": "Texts or lore in Zaliac",
+    "project_roll_characteristics": [
+      "Might",
+      "Reason",
+      "Presence"
+    ],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "effect": {
+      "effect_description": "",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "While you wield this scepter, your Renown is increased by 1. Additionally, you can use a main action once per turn targeting a willing ally or two minions you control within 5 squares of you to make a free strike on a target within the same distance of you as a free triggered action.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The scepter's bonus to Renown increases to +2. Additionally, whenever a creature you command using the scepter makes a free strike, they gain 1 surge that can be used immediately.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The scepter's bonus to Renown increases to +4. Additionally, the scepter's main action can now be used as a maneuver.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": [],
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "leveled_bonuses": {
+          "renown": {
+            "stacks_with_other_treasures": false,
+            "level_5": 2,
+            "level_9": 4
+          }
+        }
+      }
+    ],
+    "special": null,
+    "leveled_type": "implement"
+  },
+  {
+    "id": "sanctuary_horn",
+    "type": "leveled_treasure",
+    "name": "Sanctuary Horn",
+    "echelon": 4,
+    "description": "This spiral hunting horn is embellished with branching veins of copper across the body. The metal glows red hot as the horn is blown.",
+    "keywords": [
+      "Implement",
+      "Magic"
+    ],
+    "item_prerequisite": "The spiral shell of a fallen armory snail and whirlwinds captured from Quintessence",
+    "project_source": "Texts or lore in Kalliak",
+    "project_roll_characteristics": [
+      "Might",
+      "Reason",
+      "Intuition"
+    ],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "effect": {
+      "effect_description": "",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "While you wield the horn, your magic and psionic strikes deal sonic damage instead of their usual damage. Additionally, you can use a maneuver once per turn to blow the horn, allowing one ally or up to two minions you control within 5 squares of you to be recalled, instantly teleporting them into unoccupied spaces adjacent to you.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "While you wield the horn, the area of your cube, burst, and aura magic or psionic abilities increases by 1. Additionally, whenever a creature is teleported by this horn, they can choose to either spend a Recovery or gain a surge.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The horn's area bonus increases to 2. After you blow the horn as a maneuver, you can teleport yourself, another ally, or up to two other minions you control within 5 squares of you into the space left behind by a recalled target, provided they fit into the space.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": [],
+    "special": null,
+    "leveled_type": "implement"
+  },
+  {
+    "id": "scorpion_tails",
+    "type": "leveled_treasure",
+    "name": "Scorpion Tails",
+    "echelon": 4,
+    "description": "These braids of articulated, wickedly barbed tails weave behind your heads, threatening painful stings.",
+    "keywords": [
+      "Light Weapon",
+      "Magic"
+    ],
+    "item_prerequisite": "The stinger from a manticore's tail",
+    "project_source": "Texts or lore in Khemharic",
+    "project_roll_characteristics": [
+      "Agility",
+      "Reason",
+      "Intuition"
+    ],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "effect": {
+      "effect_description": "",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "Only a beastheart can wield this weapon. Any weapon ability that deals rolled damage using this weapon deals an extra 1 poison damage. Additionally, you and your companion can use the following maneuver.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The weapon's extra poison damage increases to 2. Additionally, the Scorpion Tail ability's distance increases to melee 3.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The weapon's extra poison damage increases to 3. Additionally, the Scorpion Tail ability's distance increases to melee 4.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": [],
+    "grants": [
+      {
+        "kind": "entry",
+        "entry_type": "ability",
+        "entry_id": "scorpion_tail"
+      }
+    ],
+    "special": null,
+    "leveled_type": "weapon"
+  },
+  {
+    "id": "thorn_dragonscale",
+    "type": "leveled_treasure",
+    "name": "Thorn Dragonscale",
+    "echelon": 4,
+    "description": "This armor, fashioned from the barbed scales of a thorn dragon, still pulses with the echo of the dragon's heartbeat.",
+    "keywords": [
+      "Magic",
+      "Medium Armor"
+    ],
+    "item_prerequisite": "The scales of a slain thorn dragon",
+    "project_source": "Texts or lore in the First Language",
+    "project_roll_characteristics": [
+      "Agility",
+      "Intuition"
+    ],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "effect": {
+      "effect_description": "",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "Only a beastheart can wear this armor. While you wear this armor, you gain a +6 bonus to Stamina, and when a creature starts their turn either grabbed by or grabbing you or your companion, they are bleeding until the end of their next turn.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The armor's bonus to Stamina increases to +12. Additionally, you or your companion can use a maneuver to latch onto a creature or object of size 1L or smaller within 3 squares with thorned vines, pulling the target 3 squares.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The armor's bonus to Stamina increases to +21, and whenever you or your companion pulls a creature with thorned vines using the armor, the target also takes 5 damage and is grabbed by whoever force moved them.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": [],
+    "grants": [
+      {
+        "kind": "equipment_bonuses",
+        "leveled_bonuses": {
+          "stamina": {
+            "stacks_with_other_treasures": false,
+            "level_1": 6,
+            "level_5": 12,
+            "level_9": 21
+          }
+        }
+      }
+    ],
+    "special": null,
+    "leveled_type": "armor"
+  },
+  {
+    "id": "wand_of_the_unheard_orchestra",
+    "type": "leveled_treasure",
+    "name": "Wand of the Unheard Orchestra",
+    "echelon": 4,
+    "description": "This conductor's baton has an unassuming and inornate steel body. It increases in length when it's swung and flashes a bright light when wanded at a regular interval.",
+    "keywords": [
+      "Implement",
+      "Magic"
+    ],
+    "item_prerequisite": "An iron ingot and a singing tree's wood found in Arcadia",
+    "project_source": "Texts or lore in Khelt",
+    "project_roll_characteristics": [
+      "Agility",
+      "Reason",
+      "Intuition"
+    ],
+    "project_goal": 450,
+    "project_goal_description": null,
+    "leveled": true,
+    "effect": {
+      "effect_description": "",
+      "ability": null,
+      "feature": null
+    },
+    "level_1": {
+      "effect_description": "While you wield this wand, your magic or psionic abilities have their distance increased by 3. Additionally, you can use a maneuver once per turn targeting yourself or a willing ally within 5 squares of you to use a move action as a free triggered action.",
+      "feature": null
+    },
+    "level_5": {
+      "effect_description": "The wand's distance bonus increases to +5. Additionally, you and any minions you control have their speed increased by 2. Whenever you or any minions you control take the Disengage move action, they can shift 2 additional squares as part of that move action.",
+      "feature": null
+    },
+    "level_9": {
+      "effect_description": "The wand's distance bonus increases to +8. Additionally, the wand's maneuver can now be used as a free maneuver once during your turn, targeting yourself or an ally within 10 squares of you to use a move action as a free triggered action.",
+      "feature": null
+    },
+    "enchanted": false,
+    "enchants": [],
+    "special": null,
+    "leveled_type": "implement"
   }
 ]

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -180,6 +181,12 @@ class _TreasuresTabState extends ConsumerState<TreasuresTab> {
 
       // Recalculate and save equipped treasure bonuses
       await _recalculateEquippedBonuses();
+
+      // Grant or revoke any ability the treasure provides while equipped.
+      await _applyOrRemoveTreasureAbilityGrants(
+        treasureId,
+        equipped: willBeEquipped,
+      );
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -206,6 +213,30 @@ class _TreasuresTabState extends ConsumerState<TreasuresTab> {
     } catch (e) {
       // Silently ignore bonus calculation errors
     }
+  }
+
+  /// Apply or remove the ability grants a treasure declares in its `grants`
+  /// field, keeping them in sync with its equipped state.
+  Future<void> _applyOrRemoveTreasureAbilityGrants(
+    String treasureId, {
+    required bool equipped,
+  }) async {
+    final grantsService = ref.read(treasureGrantsServiceProvider);
+    if (!equipped) {
+      await grantsService.removeTreasureAbilityGrants(
+        heroId: widget.heroId,
+        treasureId: treasureId,
+      );
+      return;
+    }
+
+    final treasure =
+        _allTreasures.where((t) => t.id == treasureId).firstOrNull;
+    await grantsService.applyTreasureAbilityGrants(
+      heroId: widget.heroId,
+      treasureId: treasureId,
+      grantsJson: treasure?.data['grants'],
+    );
   }
 
   /// Count how many leveled treasures are currently equipped.
@@ -327,6 +358,13 @@ class _TreasuresTabState extends ConsumerState<TreasuresTab> {
         sourceType: _treasureSourceType,
         sourceId: _treasureSourceId,
       );
+
+      // The treasure is gone; drop any ability it was granting too, in case
+      // it was removed while still equipped.
+      await ref.read(treasureGrantsServiceProvider).removeTreasureAbilityGrants(
+            heroId: widget.heroId,
+            treasureId: treasureId,
+          );
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

@@ -6,7 +6,6 @@ import '../../../../core/models/class_data.dart';
 import '../../../../core/models/component.dart';
 import '../../../../core/models/abilities_models.dart';
 import '../../../../core/models/characteristics_models.dart';
-import '../../../../core/services/ability_data_service.dart';
 import '../../../../core/services/abilities_service.dart';
 import '../../../../core/storage/hero_storage_contract.dart';
 import '../../../../core/theme/app_icon.dart';
@@ -46,7 +45,7 @@ class StartingAbilitiesWidget extends StatefulWidget {
     this.selectedDomainNames = const <String>[],
     this.selectedAbilities = const <String, String?>{},
     this.conflictIndex = HeroConflictIndex.empty,
-    this.loadClassAbilities,
+    required this.loadClassAbilities,
     this.onSelectionChanged,
   });
 
@@ -56,7 +55,7 @@ class StartingAbilitiesWidget extends StatefulWidget {
   final List<String> selectedDomainNames;
   final Map<String, String?> selectedAbilities;
   final HeroConflictIndex conflictIndex;
-  final ClassAbilityLoader? loadClassAbilities;
+  final ClassAbilityLoader loadClassAbilities;
   final AbilitySelectionChanged? onSelectionChanged;
 
   @override
@@ -73,7 +72,6 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
   );
 
   final StartingAbilitiesService _service = const StartingAbilitiesService();
-  final AbilityDataService _abilityDataService = AbilityDataService();
   final MapEquality<String, String?> _mapEquality =
       const MapEquality<String, String?>();
   final SetEquality<String> _setEquality = const SetEquality<String>();
@@ -89,6 +87,7 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
 
   List<AbilityOption> _abilityOptions = const [];
   Map<String, AbilityOption> _abilityById = const {};
+  Map<String, String> _abilityIdByAlias = const {};
 
   @override
   bool get wantKeepAlive => true;
@@ -138,15 +137,27 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
 
     try {
       final classSlug = _classSlug(widget.classData.classId);
-      final components = await (widget.loadClassAbilities ??
-          _abilityDataService.loadClassAbilities)(classSlug);
+      final components = await widget.loadClassAbilities(classSlug);
       if (!mounted) return;
       final options = components.map(_mapComponentToOption).toList();
       final byId = {
         for (final option in options) option.id: option,
       };
+      final idByAlias = <String, String>{};
+      for (final option in options) {
+        void addAlias(String? value) {
+          final normalized = value?.trim().toLowerCase();
+          if (normalized == null || normalized.isEmpty) return;
+          idByAlias[normalized] = option.id;
+        }
+
+        addAlias(option.id);
+        addAlias(option.component.data['original_id']?.toString());
+        addAlias(option.component.data['resolved_id']?.toString());
+      }
       _abilityOptions = options;
       _abilityById = byId;
+      _abilityIdByAlias = Map<String, String>.unmodifiable(idByAlias);
       _rebuildPlan(
         preserveSelections: false,
         externalSelections: widget.selectedAbilities,
@@ -275,11 +286,14 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
       return trimmed;
     }
     final lowered = trimmed.toLowerCase();
-    try {
-      return _abilityById.keys.firstWhere((id) => id.toLowerCase() == lowered);
-    } catch (_) {
-      return null;
+    final directAlias = _abilityIdByAlias[lowered];
+    if (directAlias != null) return directAlias;
+    for (final entry in _abilityIdByAlias.entries) {
+      if (lowered.endsWith('_${entry.key}')) {
+        return entry.value;
+      }
     }
+    return null;
   }
 
   void _handleAbilitySelection(
@@ -578,6 +592,7 @@ class _StartingAbilitiesWidgetState extends State<StartingAbilitiesWidget>
                     );
               final isDuplicate = conflict != null;
               final availableOptions = options.where((option) {
+                if (option.component.isRetired) return false;
                 if (option.id == current) return true;
                 return !conflictIndex.isClaimed(
                   HeroEntryKey(

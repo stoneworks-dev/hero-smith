@@ -21,6 +21,8 @@ class SubclassOption {
   final String? domain;
   final String? abilityName;
   final Map<String, dynamic> raw;
+
+  bool get isRetired => raw['isRetired'] == true;
 }
 
 @immutable
@@ -43,12 +45,14 @@ class DeityOption {
     required this.name,
     required this.category,
     required this.domains,
+    this.isRetired = false,
   });
 
   final String id;
   final String name;
   final String category;
   final List<String> domains;
+  final bool isRetired;
 }
 
 @immutable

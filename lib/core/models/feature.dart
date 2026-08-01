@@ -11,6 +11,7 @@ class Feature {
   final int level;
   final String description;
   final List<String> grantedAbilityNames;
+  final bool isRetired;
 
   const Feature({
     required this.id,
@@ -22,6 +23,7 @@ class Feature {
     required this.level,
     required this.description,
     this.grantedAbilityNames = const [],
+    this.isRetired = false,
   });
 
   factory Feature.fromJson(Map<String, dynamic> json) {
@@ -52,7 +54,7 @@ class Feature {
     // Extract granted abilities from the grants/features list
     // The JSON can have a 'grants' field (array of grant objects) or other patterns
     final grantedAbilityNames = <String>[];
-    
+
     // Check for 'grants' array (common pattern)
     final grants = json['grants'];
     if (grants is List) {
@@ -79,6 +81,7 @@ class Feature {
       level: level,
       description: description,
       grantedAbilityNames: grantedAbilityNames,
+      isRetired: json['isRetired'] == true,
     );
   }
 
@@ -93,6 +96,7 @@ class Feature {
       'level': level,
       'description': description,
       'granted_ability_names': grantedAbilityNames,
+      if (isRetired) 'isRetired': true,
     };
   }
 

@@ -7,6 +7,7 @@ class AbilitiesPageText {
   static const String actionFilter = 'Action';
   static const String distanceFilter = 'Distance';
   static const String targetsFilter = 'Targets';
+  static const String classFilter = 'Class';
   static const String activeFiltersLabel = 'Active Filters';
   static const String clearAll = 'Clear All';
   static const String clearFilters = 'Clear Filters';
@@ -36,4 +37,5 @@ class AbilitiesPageText {
   static String actionFilterChip(String filter) => 'Action: $filter';
   static String distanceFilterChip(String filter) => 'Distance: $filter';
   static String targetsFilterChip(String filter) => 'Targets: $filter';
+  static String classFilterChip(String filter) => 'Class: $filter';
 }

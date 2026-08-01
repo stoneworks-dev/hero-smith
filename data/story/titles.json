@@ -1269,6 +1269,7 @@
   },
   {
     "id": "armed_and_dangerous",
+    "type": "title",
     "name": "Armed and Dangerous",
     "description_text": "Weapon mastery despite lacking kit support.",
     "echelon": 3,
@@ -2403,5 +2404,160 @@
         }
       }
     ]
+  },
+  {
+    "id": "delegator",
+    "type": "title",
+    "name": "Delegator",
+    "description_text": "They're all yours, buddy.",
+    "echelon": 4,
+    "prerequisite": "You are a summoner, and you strike a deal with your portfolio's champion.",
+    "benefits": [
+      {
+        "id": "delegator__benefit",
+        "name": "Benefit",
+        "description": "At the start of a combat encounter, you can choose to translate yourself into your circle's source manifold while your champion fights and summons monsters in your place. The champion uses your Stamina, Recoveries, abilities, and features (except for your Summoner Strikes and Summoner's Kit). You can dismiss the champion and summon yourself back into the place you left at the end of an encounter. If your champion would die while taking your place, you lose access to your Return to the Source feature and can only summon signature minions until you revive your champion as a respite activity.",
+        "ability": null,
+        "auto": true
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "high_summoner_of_the_circle",
+    "type": "title",
+    "name": "High Summoner of the Circle",
+    "description_text": "As I was taught, so I pass on to you.",
+    "echelon": 4,
+    "prerequisite": "You are a summoner, and you teach someone how to call forth two or more minions from your portfolio.",
+    "benefits": [
+      {
+        "id": "high_summoner_of_the_circle__general_effect",
+        "name": "General Effect",
+        "description": "You are considered a master that can be learned from using the Learn from a Master downtime project in Draw Steel: Heroes . Anyone that makes a project roll using you as the source gains a bonus to their roll equal to your Reason.",
+        "ability": null,
+        "auto": true
+      },
+      {
+        "id": "high_summoner_of_the_circle__essence_mastery",
+        "name": "Essence Mastery",
+        "description": "Your minions cost one fewer essence to summon (minimum cost of 1 essence).",
+        "ability": null
+      },
+      {
+        "id": "high_summoner_of_the_circle__expanded_domain",
+        "name": "Expanded Domain",
+        "description": "Your Summoner's Range increases by 5. You can use your minions' senses as your own as long as they're on the same manifold as you.",
+        "ability": null
+      },
+      {
+        "id": "high_summoner_of_the_circle__signature_summoner",
+        "name": "Signature Summoner",
+        "description": "Select a 3-Essence minion you can call forth. At the start of each of your turns in combat, you summon the set number of minions listed on the stat block in place of your signature minions at no cost.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "ringleader",
+    "type": "title",
+    "name": "Ringleader",
+    "description_text": "Don't worry. I've got a guy.",
+    "echelon": 3,
+    "prerequisite": "You complete three downtime projects during the same respite with the help of followers or minions.",
+    "benefits": [
+      {
+        "id": "ringleader__general_effect",
+        "name": "General Effect",
+        "description": "You no longer need line of effect to give commands to any minions you can summon.",
+        "ability": null,
+        "auto": true
+      },
+      {
+        "id": "ringleader__for_the_boss",
+        "name": "For the Boss",
+        "description": "Your followers gain a +3 bonus to project rolls that they make.",
+        "ability": null
+      },
+      {
+        "id": "ringleader__networker",
+        "name": "Networker",
+        "description": "Your maximum follower count increases by 1.",
+        "ability": null
+      },
+      {
+        "id": "ringleader__stringpuller",
+        "name": "Stringpuller",
+        "description": "While occupying a civilized area (such as a village, town, district, or city), you always have access to a follower native to the location. If the area is otherwise hostile to you, this follower is a spy in hiding who has any project points they earn halved.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "safeguarded",
+    "type": "title",
+    "name": "Safeguarded",
+    "description_text": "They risk their lives for me because I risk my life for theirs. This fight belongs to all of us!",
+    "echelon": 1,
+    "prerequisite": "You earn a noble rank or earn the favor of a knight's guild.",
+    "benefits": [
+      {
+        "id": "safeguarded__benefit",
+        "name": "Benefit",
+        "description": "You start combat encounters with a squad of three minions from the specific monster band or people you earned this title from. The squad takes their turn as a part of your turn. On the squad's turn, they can take a move action and either a main action or a maneuver.",
+        "ability": null,
+        "auto": true
+      }
+    ],
+    "special": "If two or more heroes in the party have this title from the same source, the party starts combat encounters with a squad of six minions instead. At the start of each round of combat, the heroes decide who controls the squad as a part of their turn."
+  },
+  {
+    "id": "sigilwright",
+    "type": "title",
+    "name": "Sigilwright",
+    "description_text": "Let's find out who's on the other side of the circle.",
+    "echelon": 2,
+    "prerequisite": "You complete a ritual to summon a non-minion entity using a summoning circle you drew.",
+    "benefits": [
+      {
+        "id": "sigilwright__quick_gate",
+        "name": "Quick Gate",
+        "description": "As a maneuver, you can etch an arcane circle in an adjacent square on the ground. Until the end of the encounter, you can use magic abilities and treat your Summoner's Range as if you were in that space. Each time you etch an arcane circle, your last circle fades and becomes inactive.",
+        "ability": null
+      },
+      {
+        "id": "sigilwright__ritual_circle",
+        "name": "Ritual Circle",
+        "description": "As a respite activity, you can draw a minor summoning circle to temporarily call forth a creature you've contacted previously, regardless of manifold. If the creature is willing and able to answer your call, they appear to you for the remainder of the respite. You can ask the creature for information or a service in exchange for ending the respite with two fewer Recoveries or a demand of their choosing. If the creature doesn't appear, you can choose to take a different respite activity.",
+        "ability": null
+      },
+      {
+        "id": "sigilwright__sigil_eye",
+        "name": "Sigil Eye",
+        "description": "You have an edge on tests made to identify summoning circles and who or where they're connected to. You also have an edge on strikes made against creatures not native to the manifold in which you're currently located.",
+        "ability": null
+      }
+    ],
+    "special": null
+  },
+  {
+    "id": "summoner_successor",
+    "type": "title",
+    "name": "Summoner Successor",
+    "description_text": "When their leader fell, they started listening to me for some reason.",
+    "echelon": 2,
+    "prerequisite": "You can't use the Call Forth ability, and you defeat a leader or solo creature with a Summon or Call Forth ability, such as a high elf ordinator.",
+    "benefits": [
+      {
+        "id": "summoner_successor__benefit",
+        "name": "Benefit",
+        "description": "Choose a signature minion from a summoner's portfolio that shares a keyword with one of the creatures the summoner could summon. You can summon three of that minion into a single squad (up to a maximum of four creatures) at the start of each of your turns in combat. The distance you can command them is equal to your ranged free strike distance. You also gain the Strike for Me triggered ability, which now has the Psionic keyword and loses the Magic keyword. Additionally, you can summon up to two of your signature minion while outside of combat to do simple tasks.",
+        "ability": null,
+        "auto": true
+      }
+    ],
+    "special": null
   }
 ]

@@ -25,6 +25,13 @@ class HeroicResourceGauge extends StatefulWidget {
     required this.currentResource,
     required this.heroLevel,
     this.showCompact = false,
+    this.accentColorOverride,
+    this.iconOverride,
+    this.showHeader = true,
+    this.showContainer = true,
+    this.collapseTierDetails = false,
+    this.expandTierDetailsLabel = 'Expand details',
+    this.hideTierDetailsLabel = 'Hide details',
   });
 
   /// The progression data containing tiers and their benefits
@@ -39,6 +46,25 @@ class HeroicResourceGauge extends StatefulWidget {
   /// If true, shows a more compact version of the gauge
   final bool showCompact;
 
+  /// Overrides the resource-derived accent color. Used for resources the
+  /// gauge doesn't know by name (e.g. companion Rampage, which uses the
+  /// companion's earthy-brown accent).
+  final Color? accentColorOverride;
+
+  /// Overrides the resource-derived header icon.
+  final AppIconData? iconOverride;
+
+  /// Whether to render the resource name/icon/value header.
+  final bool showHeader;
+
+  /// Whether to wrap the gauge in its own decorated panel.
+  final bool showContainer;
+
+  /// Keeps the progress bar visible while placing tier text behind a toggle.
+  final bool collapseTierDetails;
+  final String expandTierDetailsLabel;
+  final String hideTierDetailsLabel;
+
   @override
   State<HeroicResourceGauge> createState() => _HeroicResourceGaugeState();
 }
@@ -46,6 +72,7 @@ class HeroicResourceGauge extends StatefulWidget {
 class _HeroicResourceGaugeState extends State<HeroicResourceGauge>
     with AutomaticKeepAliveClientMixin {
   bool _isExpanded = false;
+  bool _areTierDetailsExpanded = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -62,6 +89,43 @@ class _HeroicResourceGaugeState extends State<HeroicResourceGauge>
     final isDark = theme.brightness == Brightness.dark;
     final resourceColor = _getResourceColor();
 
+    final content = Padding(
+      padding: widget.showContainer
+          ? EdgeInsets.all(showCompact ? 10 : 14)
+          : EdgeInsets.zero,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (widget.showHeader) ...[
+            _buildHeader(isDark, resourceColor),
+            SizedBox(height: showCompact ? 8 : 12),
+          ],
+          _buildProgressBar(isDark, resourceColor),
+          if (widget.collapseTierDetails) ...[
+            const SizedBox(height: 4),
+            _buildTierDetailsToggle(resourceColor),
+            AnimatedCrossFade(
+              duration: const Duration(milliseconds: 200),
+              crossFadeState: _areTierDetailsExpanded
+                  ? CrossFadeState.showSecond
+                  : CrossFadeState.showFirst,
+              firstChild: const SizedBox(width: double.infinity),
+              secondChild: Padding(
+                padding: EdgeInsets.only(top: showCompact ? 4 : 8),
+                child: _buildTiersList(isDark, resourceColor),
+              ),
+            ),
+          ] else ...[
+            SizedBox(height: showCompact ? 8 : 12),
+            _buildTiersList(isDark, resourceColor),
+          ],
+        ],
+      ),
+    );
+
+    if (!widget.showContainer) return content;
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
       curve: Curves.easeOutCubic,
@@ -73,18 +137,36 @@ class _HeroicResourceGaugeState extends State<HeroicResourceGauge>
           width: 1,
         ),
       ),
-      child: Padding(
-        padding: EdgeInsets.all(showCompact ? 10 : 14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildHeader(isDark, resourceColor),
-            SizedBox(height: showCompact ? 8 : 12),
-            _buildProgressBar(isDark, resourceColor),
-            SizedBox(height: showCompact ? 8 : 12),
-            _buildTiersList(isDark, resourceColor),
-          ],
+      child: content,
+    );
+  }
+
+  Widget _buildTierDetailsToggle(Color resourceColor) {
+    return Align(
+      alignment: Alignment.centerRight,
+      child: TextButton.icon(
+        onPressed: () {
+          setState(() => _areTierDetailsExpanded = !_areTierDetailsExpanded);
+        },
+        icon: AnimatedRotation(
+          turns: _areTierDetailsExpanded ? 0.5 : 0,
+          duration: const Duration(milliseconds: 200),
+          child: const Icon(Icons.expand_more, size: 18),
+        ),
+        label: Text(
+          _areTierDetailsExpanded
+              ? widget.hideTierDetailsLabel
+              : widget.expandTierDetailsLabel,
+        ),
+        style: TextButton.styleFrom(
+          foregroundColor: resourceColor,
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          minimumSize: const Size(0, 32),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          textStyle: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );
@@ -368,6 +450,7 @@ class _HeroicResourceGaugeState extends State<HeroicResourceGauge>
   }
 
   Color _getResourceColor() {
+    if (widget.accentColorOverride != null) return widget.accentColorOverride!;
     switch (progression.resourceName.toLowerCase()) {
       case 'ferocity':
         return AbilityColors.ferocity;
@@ -379,7 +462,8 @@ class _HeroicResourceGaugeState extends State<HeroicResourceGauge>
   }
 
   AppIconData _getResourceIcon() {
-    return HeroicResourceIcons.fromName(progression.resourceName);
+    return widget.iconOverride ??
+        HeroicResourceIcons.fromName(progression.resourceName);
   }
 }
 

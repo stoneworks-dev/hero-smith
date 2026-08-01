@@ -167,7 +167,16 @@ class ClassFeaturesWidget extends StatelessWidget {
     final isGrantsFeature = grants is List && grants.isNotEmpty;
 
     // Extract options using the service
-    final options = ClassFeatureDataService.extractOptionMaps(details);
+    final selectedKeys = selectedOptions[feature.id] ?? const <String>{};
+    final options = ClassFeatureDataService.extractOptionMaps(details)
+        .where(
+          (option) =>
+              option['isRetired'] != true ||
+              selectedKeys.contains(
+                ClassFeatureDataService.featureOptionKey(option),
+              ),
+        )
+        .toList(growable: false);
     if (options.isEmpty) return false;
 
     // Check for pending skill_group selections in any option
@@ -182,7 +191,7 @@ class ClassFeaturesWidget extends StatelessWidget {
     if (options.length <= 1) return false;
 
     // Check if user already made a selection
-    final currentSelections = selectedOptions[feature.id] ?? const <String>{};
+    final currentSelections = selectedKeys;
     final minimumRequired = ClassFeatureDataService.minimumSelections(details);
     final effectiveMinimum = minimumRequired <= 0 ? 1 : minimumRequired;
 
@@ -227,7 +236,13 @@ class ClassFeaturesWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (features.isEmpty) return const SizedBox.shrink();
 
-    final grouped = FeatureRepository.groupFeaturesByLevel(features);
+    final visibleFeatures = features
+        .where(
+          (feature) =>
+              !feature.isRetired || selectedOptions.containsKey(feature.id),
+        )
+        .toList(growable: false);
+    final grouped = FeatureRepository.groupFeaturesByLevel(visibleFeatures);
     final levels = FeatureRepository.getSortedLevels(grouped);
 
     return Padding(

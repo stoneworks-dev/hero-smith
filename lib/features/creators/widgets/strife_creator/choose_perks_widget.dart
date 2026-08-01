@@ -243,8 +243,9 @@ class _StartingPerksWidgetState extends ConsumerState<StartingPerksWidget>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final languagesAsync = ref.watch(componentsByTypeProvider('language'));
-    final skillsAsync = ref.watch(componentsByTypeProvider('skill'));
+    final languagesAsync =
+        ref.watch(selectableComponentsByTypeProvider('language'));
+    final skillsAsync = ref.watch(selectableComponentsByTypeProvider('skill'));
 
     return languagesAsync.when(
       loading: () => _buildLoadingCard(),

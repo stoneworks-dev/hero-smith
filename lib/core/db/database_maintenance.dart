@@ -14,13 +14,13 @@ class DatabaseMaintenance {
         .go();
   }
 
-  /// Clear all components and reseed from assets
-  /// WARNING: This will delete all seed data
+  /// Force a non-destructive synchronization from bundled assets.
+  ///
+  /// Despite the historical method name, seed rows are no longer deleted:
+  /// deleting them can break heroes that reference retired content.
   static Future<void> clearAndReseed(db.AppDatabase database) async {
-    await (database.delete(database.components)
-          ..where((c) => c.source.equals('seed')))
-        .go();
-    await AssetSeeder.seedFromManifestIfEmpty(database);
+    await database.setMeta(AssetSeeder.contentVersionMetaKey, '0');
+    await AssetSeeder.seedBundledContentIfNeeded(database);
   }
 
   /// Reseed a specific component type from a JSON file
@@ -105,7 +105,7 @@ class DatabaseMaintenance {
         final dataJson = ability.dataJson;
         final data = jsonDecode(dataJson);
         final hasSimplifiedResource = data['resource'] is String;
-        
+
         if (hasSimplifiedResource && simplified == null) {
           simplified = ability; // Keep this one
         } else {

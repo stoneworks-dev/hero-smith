@@ -334,11 +334,13 @@ class StoryAncestrySection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final ancestriesAsync = ref.watch(componentsByTypeProvider('ancestry'));
+    final ancestriesAsync =
+        ref.watch(selectableComponentsByTypeProvider('ancestry'));
     final ancestryTraitsAsync =
-        ref.watch(componentsByTypeProvider('ancestry_trait'));
-    final skillsAsync = ref.watch(componentsByTypeProvider('skill'));
-    final abilitiesAsync = ref.watch(componentsByTypeProvider('ability'));
+        ref.watch(selectableComponentsByTypeProvider('ancestry_trait'));
+    final skillsAsync = ref.watch(selectableComponentsByTypeProvider('skill'));
+    final abilitiesAsync =
+        ref.watch(selectableComponentsByTypeProvider('ability'));
 
     return Container(
       margin: CreatorTheme.sectionMargin,

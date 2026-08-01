@@ -1,0 +1,170 @@
+{
+  "classId": "class_summoner",
+  "name": "Summoner",
+  "type": "class",
+  "starting_characteristics": {
+    "motto": null,
+    "heroicResourceName": "Essence",
+    "baseStamina": 15,
+    "stamina_per_level": 6,
+    "baseRecoveries": 8,
+    "baseSpeed": 5,
+    "baseStability": 0,
+    "baseDisengage": 1,
+    "potency_progression": {
+      "characteristic": "Reason",
+      "modifiers": { "weak": -2, "average": -1, "strong": 0 }
+    },
+    "starting_skills": {
+      "granted_skills": ["Magic", "Strategy"],
+      "quick_build": ["Eavesdrop", "Magic", "Monsters", "Strategy"],
+      "allowances": [{ "count": 2, "groups": ["intrigue", "lore"] }]
+    },
+    "starting_characteristics_arrays": [
+      { "values": [2, 2, -1, -1] },
+      { "values": [2, 1, 1, -1] },
+      { "values": [2, 1, 0, 0] },
+      { "values": [1, 1, 1, 0] }
+    ],
+    "fixed_starting_characteristics": { "reason": 2 }
+  },
+  "levels": [
+    {
+      "level": 1,
+      "features": [
+        {
+          "name": "Summoner Circle",
+          "grant_type": "pick",
+          "type": "class_subclass"
+        },
+        { "name": "Minions", "grant_type": "granted" },
+        { "name": "Essence", "grant_type": "granted" },
+        { "name": "Summoner Strike", "grant_type": "granted" },
+        { "name": "Strike For Me", "grant_type": "granted" },
+        { "name": "Minion Bridge", "grant_type": "granted" },
+        { "name": "Formation", "grant_type": "granted" },
+        { "name": "Quick Command", "grant_type": "granted" },
+        { "name": "Summoner Abilities", "grant_type": "granted" },
+        {
+          "name": "Circle Features",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "new_abilities": { "5_cost": 1 }
+    },
+    {
+      "level": 2,
+      "features": [
+        {
+          "name": "Summoner's Dominion",
+          "grant_type": "granted",
+          "type": "subclass"
+        },
+        {
+          "name": "New Portfolio Minion",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "perks": [{ "count": 1, "perk_groups": ["intrigue", "lore"] }],
+      "new_abilities": { "grants_previous_levels": true, "5_cost": 1 }
+    },
+    {
+      "level": 3,
+      "features": [
+        { "name": "Summoner's Kit", "grant_type": "pick", "count": 1 }
+      ],
+      "new_abilities": { "7_cost": 1 }
+    },
+    {
+      "level": 4,
+      "features": [
+        { "name": "Minion Improvement", "grant_type": "granted" },
+        { "name": "Essence Salvage", "grant_type": "granted" },
+        { "name": "Minion Chain", "grant_type": "granted" }
+      ],
+      "perks": [{ "count": 1 }],
+      "skills": [{ "count": 1 }],
+      "characteristics": [
+        { "Reason": { "setTo": 3 } },
+        { "Any": { "increaseBy": 1, "max": 3 } }
+      ]
+    },
+    {
+      "level": 5,
+      "features": [
+        {
+          "name": "Circle Feature",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "new_abilities": { "7_cost": 1 }
+    },
+    {
+      "level": 6,
+      "features": [
+        { "name": "Minion Machinations", "grant_type": "granted" },
+        { "name": "Kit Improvement", "grant_type": "granted" },
+        {
+          "name": "Return to the Source",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "perks": [{ "count": 1, "perk_groups": ["intrigue", "lore"] }],
+      "new_abilities": { "9_cost": 1 }
+    },
+    {
+      "level": 7,
+      "features": [
+        { "name": "Minion Improvement", "grant_type": "granted" },
+        { "name": "Font of Creation", "grant_type": "granted" },
+        { "name": "Their Life for Mine", "grant_type": "granted" }
+      ],
+      "skills": [{ "count": 1 }],
+      "characteristics": [{ "All": { "increaseBy": 1, "max": 4 } }]
+    },
+    {
+      "level": 8,
+      "features": [
+        {
+          "name": "Circle Feature",
+          "grant_type": "granted",
+          "type": "subclass"
+        },
+        {
+          "name": "Portfolio Champion",
+          "grant_type": "granted",
+          "type": "subclass"
+        }
+      ],
+      "perks": [{ "count": 1 }],
+      "new_abilities": { "9_cost": 1 }
+    },
+    {
+      "level": 9,
+      "features": [
+        { "name": "Kit Improvement", "grant_type": "granted" },
+        { "name": "Steward of Two Worlds", "grant_type": "granted" }
+      ],
+      "new_abilities": { "11_cost": 1 }
+    },
+    {
+      "level": 10,
+      "features": [
+        { "name": "Minion Improvement", "grant_type": "granted" },
+        { "name": "Eidos", "grant_type": "granted" },
+        { "name": "No Matter the Cost", "grant_type": "granted" },
+        { "name": "Among Our Ranks", "grant_type": "granted" }
+      ],
+      "perks": [{ "count": 1, "perk_groups": ["intrigue", "lore"] }],
+      "skills": [{ "count": 1 }],
+      "characteristics": [
+        { "Reason": { "setTo": 5 } },
+        { "Any": { "increaseBy": 1, "max": 5 } }
+      ]
+    }
+  ]
+}

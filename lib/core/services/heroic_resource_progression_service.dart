@@ -20,6 +20,7 @@ class HeroicResourceProgressionService {
   // Cache for loaded progressions
   Map<String, HeroicResourceProgression>? _ferocityProgressions;
   Map<String, HeroicResourceProgression>? _disciplineProgressions;
+  HeroicResourceProgression? _rampageProgression;
 
   static const String _ferocityAssetPath = 'data/features/growing_ferocity.json';
   static const String _disciplineAssetPath = 'data/features/discipline_mastery.json';
@@ -110,6 +111,24 @@ class HeroicResourceProgressionService {
       // Return empty map on error
       return const {};
     }
+  }
+
+  /// Load the Beastheart companion Rampage progression table.
+  ///
+  /// Rampage lives in the same `growing_ferocity.json` asset (id
+  /// `beastheart_rampage`) but is keyed on `rampage` and is a *companion*
+  /// resource decoupled from the class heroic resource — so it has its own
+  /// loader rather than going through the Fury/Null class-progression path.
+  Future<HeroicResourceProgression?> getRampageProgression() async {
+    if (_rampageProgression != null) return _rampageProgression;
+
+    final progressions = await _loadProgressions(
+      assetPath: _ferocityAssetPath,
+      resourceName: 'Rampage',
+      resourceKey: 'rampage',
+    );
+    _rampageProgression = progressions['beastheart_rampage'];
+    return _rampageProgression;
   }
 
   /// Determine if a class uses heroic resource progression tables.

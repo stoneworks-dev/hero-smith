@@ -1,0 +1,46 @@
+[
+  {
+    "id": "ensnarer",
+    "type": "minion",
+    "name": "Ensnarer",
+    "description": "A warped, tongued horror.",
+    "portfolio": "demon",
+    "essence_cost": 1,
+    "minions_per_summon": 1,
+    "is_signature": true,
+    "role": "brute",
+    "keywords": [
+      "Abyssal",
+      "Demon"
+    ],
+    "size": "1M",
+    "speed": 5,
+    "stability": 0,
+    "stamina": 2,
+    "free_strike": "2",
+    "free_strike_damage_type": "",
+    "characteristics": {
+      "might": 2,
+      "agility": 0,
+      "reason": -1,
+      "intuition": -1,
+      "presence": -1
+    },
+    "immunities": [],
+    "weaknesses": [
+      "Holy 1"
+    ],
+    "movement_modes": [],
+    "traits": [
+      {
+        "name": "Extended Barbed Strike",
+        "description": "The ensnarer's melee free strikes have a distance of 3 and inflict pull 1. The pull distance increases by 1 for each additional ensnarer striking the same target. Choose the ensnarer that the target is being pulled to before applying forced movement."
+      },
+      {
+        "name": "Soulsight",
+        "description": "Each creature adjacent to the ensnarer can't be hidden from them."
+      }
+    ],
+    "abilities": []
+  }
+]

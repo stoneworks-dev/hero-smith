@@ -1,11 +1,13 @@
 {
   "classes": [
+    "beastheart",
     "censor",
     "conduit",
     "elementalist",
     "fury",
     "null",
     "shadow",
+    "summoner",
     "tactician",
     "talent",
     "troubadour"

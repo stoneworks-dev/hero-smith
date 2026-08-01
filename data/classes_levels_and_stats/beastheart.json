@@ -1,0 +1,166 @@
+{
+  "classId": "class_beastheart",
+  "name": "Beastheart",
+  "type": "class",
+  "starting_characteristics": {
+    "motto": null,
+    "heroicResourceName": "Ferocity",
+    "baseStamina": 21,
+    "stamina_per_level": 12,
+    "baseRecoveries": 12,
+    "baseSpeed": 5,
+    "baseStability": 0,
+    "baseDisengage": 1,
+
+    "potency_progression": {
+      "characteristic": "Might",
+      "modifiers": {
+        "weak": -2,
+        "average": -1,
+        "strong": 0
+      }
+    },
+
+    "starting_skills": {
+      "granted_skills": ["Animal Handling"],
+      "quick_build": ["Animal Handling", "Navigate", "Track"],
+      "allowances": [
+        { "count": 2, "groups": ["exploration", "intrigue"] }
+      ]
+    },
+
+    "starting_characteristics_arrays": [
+      { "values": [2, -1, -1] },
+      { "values": [1, 1, -1] },
+      { "values": [1, 0, 0] }
+    ],
+
+    "fixed_starting_characteristics": {
+      "might": 2,
+      "intuition": 2
+    }
+  },
+
+  "levels": [
+    {
+      "level": 1,
+      "features": [
+        { "name": "Wild Nature", "grant_type": "pick", "type": "class_subclass" },
+        { "name": "Companion", "grant_type": "pick", "count": 1 },
+        { "name": "Heart of the Beast", "grant_type": "granted" },
+        { "name": "Feral Strike", "grant_type": "granted" },
+        { "name": "Ferocity", "grant_type": "granted" },
+        { "name": "Rampage", "grant_type": "granted" },
+        { "name": "Wild Nature Maneuver", "grant_type": "granted", "type": "subclass" },
+        { "name": "Wild Nature Triggered Action", "grant_type": "granted", "type": "subclass" },
+        { "name": "Kit", "grant_type": "pick", "count": 1 }
+      ],
+      "new_abilities": {
+        "signature": 1,
+        "3_cost": 1,
+        "5_cost": 1
+      }
+    },
+    {
+      "level": 2,
+      "features": [
+        { "name": "Everyone's Best Friend", "grant_type": "granted" },
+        { "name": "Wild Nature Feature", "grant_type": "granted", "type": "subclass" }
+      ],
+      "perks": [
+        { "count": 1, "perk_groups": ["exploration", "interpersonal", "intrigue"] }
+      ],
+      "new_subclass_abilities": {
+        "5_cost": 1
+      }
+    },
+    {
+      "level": 3,
+      "features": [
+        { "name": "Companion Advancement Feature", "grant_type": "granted" }
+      ],
+      "new_abilities": {
+        "7_cost": 1
+      }
+    },
+    {
+      "level": 4,
+      "features": [
+        { "name": "Rampage Improvement", "grant_type": "granted" },
+        { "name": "Unleash the Beast", "grant_type": "granted" }
+      ],
+      "perks": [{ "count": 1 }],
+      "skills": [{ "count": 1 }],
+      "characteristics": [
+        { "Might": { "setTo": 3 } },
+        { "Intuition": { "setTo": 3 } }
+      ]
+    },
+    {
+      "level": 5,
+      "features": [
+        { "name": "Wild Nature Feature", "grant_type": "granted", "type": "subclass" }
+      ],
+      "new_abilities": {
+        "9_cost": 1
+      }
+    },
+    {
+      "level": 6,
+      "features": [
+        { "name": "Become the Beast", "grant_type": "granted" }
+      ],
+      "perks": [
+        { "count": 1, "perk_groups": ["exploration", "interpersonal", "intrigue"] }
+      ],
+      "new_subclass_abilities": {
+        "9_cost": 1
+      }
+    },
+    {
+      "level": 7,
+      "features": [
+        { "name": "Feral Heart", "grant_type": "granted" },
+        { "name": "Rampage Improvement", "grant_type": "granted" }
+      ],
+      "skills": [{ "count": 1 }],
+      "characteristics": [{ "All": { "increaseBy": 1, "max": 4 } }]
+    },
+    {
+      "level": 8,
+      "features": [
+        { "name": "Wild Nature Feature", "grant_type": "granted", "type": "subclass" }
+      ],
+      "perks": [{ "count": 1 }],
+      "new_abilities": {
+        "11_cost": 1
+      }
+    },
+    {
+      "level": 9,
+      "features": [
+        { "name": "Avatar of the Green", "grant_type": "granted" }
+      ],
+      "new_subclass_abilities": {
+        "11_cost": 1
+      }
+    },
+    {
+      "level": 10,
+      "features": [
+        { "name": "Companion Advancement Feature", "grant_type": "granted" },
+        { "name": "Final Evolution", "grant_type": "granted" },
+        { "name": "Ferox", "grant_type": "granted" },
+        { "name": "Rampage Improvement", "grant_type": "granted" }
+      ],
+      "perks": [
+        { "count": 1, "perk_groups": ["exploration", "interpersonal", "intrigue"] }
+      ],
+      "skills": [{ "count": 1 }],
+      "characteristics": [
+        { "Might": { "setTo": 5 } },
+        { "Intuition": { "setTo": 5 } }
+      ]
+    }
+  ]
+}

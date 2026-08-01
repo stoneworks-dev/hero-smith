@@ -4,6 +4,7 @@ import '../models/feature.dart';
 
 class FeatureRepository {
   static const List<String> _classNames = [
+    'beastheart',
     'censor',
     'conduit',
     'elementalist',

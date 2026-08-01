@@ -12,7 +12,8 @@ class OptionsSectionText {
   static const String promptChooseCountSuffix = ' options below';
   static const String promptChooseUpToPrefix = 'Choose up to ';
   static const String promptChooseUpToSuffix = ' options below';
-  static const String promptChooseOneOrMore = 'Choose one or more options below';
+  static const String promptChooseOneOrMore =
+      'Choose one or more options below';
   static const String autoAppliedLabel = 'Automatically Applied';
   static const String skillFromGroupPrefix = 'Skill from ';
   static const String chooseSkillLabel = 'Choose skill';
@@ -28,4 +29,8 @@ class OptionsSectionText {
   static const String matchesSubclassLabel = 'Matches your subclass';
   static const String collapseTooltip = 'Collapse';
   static const String expandTooltip = 'Expand';
+  static const String retiredOptionPrefix = 'Retired content: ';
+  static const String retiredOptionSuffix =
+      '. It remains on this hero, but cannot be selected again after you '
+      'replace it.';
 }
